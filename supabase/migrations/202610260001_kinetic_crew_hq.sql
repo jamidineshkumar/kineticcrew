@@ -1,5 +1,5 @@
 -- Kinetic Crew HQ: Supabase-compatible schema and role-checked API.
--- All objects are prefixed crew_ and do not modify KhetMitra tables.
+-- All objects are prefixed crew_ and do not modify KhetMitra tables. New accounts start as Members; the project owner must promote the intended owner account manually.
 create extension if not exists pgcrypto;
 create table if not exists public.crew_profiles (
   auth_id text primary key, email text not null unique, name text not null,
@@ -59,7 +59,7 @@ create or replace function public.crew_api(
 set search_path = pg_catalog, public, extensions, auth, pg_temp
 as $$
 declare
-  v_uid text; v_email text; v_name text; v_role text;
+  v_uid text; v_email text; v_name text; v_role text; v_random bytea;
   v_profile public.crew_profiles%rowtype;
   v_event public.crew_events%rowtype;
   v_member public.crew_profiles%rowtype;
@@ -84,7 +84,7 @@ begin
     perform pg_advisory_xact_lock(724193816);
     select * into v_profile from public.crew_profiles where auth_id=v_uid;
     if not found then
-      v_role := case when not exists(select 1 from public.crew_profiles) then 'super_admin' else 'member' end;
+      v_role := 'member'; -- Owner explicitly promotes the intended account after sign-in.
       insert into public.crew_profiles(auth_id,email,name,role) values(v_uid,v_email,v_name,v_role)
       on conflict(auth_id) do update set email=excluded.email returning * into v_profile;
     end if;
@@ -159,7 +159,8 @@ begin
     end if;
     if exists(select 1 from public.crew_attendance where event_id=v_event_id and member_id=v_uid) then raise exception 'Attendance is already marked.'; end if;
     update public.crew_otps set used=true where event_id=v_event_id and member_id=v_uid and used=false;
-    v_code:=lpad(((('x'||encode(gen_random_bytes(4),'hex'))::bit(32)::bigint)%1000000)::text,6,'0');
+    v_random:=gen_random_bytes(4);
+    v_code:=lpad(((get_byte(v_random,0)::bigint*16777216+get_byte(v_random,1)::bigint*65536+get_byte(v_random,2)::bigint*256+get_byte(v_random,3)::bigint)%1000000)::text,6,'0');
     v_hash:=encode(digest(v_code,'sha256'),'hex');
     insert into public.crew_otps(event_id,member_id,code_hash,expires_at)
     values(v_event_id,v_uid,v_hash,now()+interval '5 minutes') returning * into v_otp;

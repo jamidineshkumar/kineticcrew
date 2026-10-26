@@ -45,7 +45,7 @@ In this repository, go to Settings → Pages and set Build and deployment → So
 
 ### 4. Claim Super Admin
 
-After deployment and migration, sign in with the email you want to use as crew owner. The first account provisioned in the new crew_profiles table becomes Super Admin; all later accounts are Members. Keep the URL shared only with the crew while claiming the first account.
+After deployment and migration, sign in with the intended owner email. New accounts start as Members by design; this prevents a random visitor from claiming the first-admin role. Once you have signed in and loaded Crew HQ at least once, open the Supabase SQL Editor and run this query after replacing the sample email with your exact account email:\n\n    update public.crew_profiles set role = 'super_admin' where lower(email) = lower('YOUR_EMAIL@example.com') returning email, role;\n\nConfirm the returned email is yours, then refresh Crew HQ. Only the project owner can run this promotion. Admins can later promote Members from Crew Directory.
 
 ## Configuration
 
@@ -66,4 +66,4 @@ The app base path is configured as /kineticcrew/, which matches the GitHub Pages
 - The browser key is the Supabase publishable key, not a secret.
 - Crew tables have direct privileges revoked for anon and authenticated roles.
 - Client data operations run through crew_api, which checks the current Supabase user and role on the server.
-- The first account becomes Super Admin; do not open registration broadly before the intended crew owner claims that role.
+- New accounts start as Members. The project owner must explicitly promote the intended owner account using the SQL command above; this prevents first-visitor admin takeover.
