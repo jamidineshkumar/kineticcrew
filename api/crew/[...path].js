@@ -23,7 +23,7 @@ export default async function(req,res){
   const action=parts[0]||"bootstrap";
   const profile=await profileFor(req);
   if(profile.role==="super_admin"){
-   const existingUpdates=await query("SELECT count(*)::int AS n FROM crew_announcements");
+   const existingUpdates=await query("SELECT count(*)::int AS n FROM crew_announcements a JOIN crew_profiles p ON p.auth_id=a.author_id");
    if(Number(existingUpdates.rows[0]?.n||0)===0) await query("INSERT INTO crew_announcements(title,body,audience,author_id) VALUES($1,$2,'all',$3)",["Welcome to Kinetic Crew","Your Crew HQ is ready. Explore events, register for the next session and use attendance OTP on event day.",profile.auth_id]);
   }
   if(action==="bootstrap"&&req.method==="GET"){
