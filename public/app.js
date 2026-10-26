@@ -39,5 +39,10 @@ $('#updatesTop').addEventListener('click',()=>go('updates'));
 $('#menuToggle').addEventListener('click',()=>{$('#sidebar').classList.toggle('open');$('#navShade').classList.toggle('open');});
 $('#navShade').addEventListener('click',()=>{$('#sidebar').classList.remove('open');$('#navShade').classList.remove('open');});
 async function boot(){if(!auth){$('#app').innerHTML=empty('Sign-in unavailable','Refresh the page and try again.');return;}try{let session=await window.hatchable.auth.getSession();if(!session||!session.user){location.replace('/login?next='+encodeURIComponent('/'));return;}await refresh();}catch(e){$('#app').innerHTML=empty('Could not load Crew HQ',esc(e.message||'Refresh the page and sign in again.'));}}
+let installPrompt=null;
+window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;const b=$('#installApp');if(b)b.hidden=false;});
+window.addEventListener('appinstalled',()=>{installPrompt=null;const b=$('#installApp');if(b)b.hidden=true;notice('Kinetic Crew is on your home screen.');});
+$('#installApp').addEventListener('click',async()=>{if(!installPrompt){notice('On Android, open Chrome menu and choose Install app or Add to Home screen.');return;}try{await installPrompt.prompt();const result=await installPrompt.userChoice;if(result?.outcome==='accepted')notice('Kinetic Crew is ready on your home screen.');}catch{}installPrompt=null;$('#installApp').hidden=true;});
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
 boot();
 })();
