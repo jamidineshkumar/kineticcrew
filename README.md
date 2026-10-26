@@ -45,7 +45,11 @@ In this repository, go to Settings → Pages and set Build and deployment → So
 
 ### 4. Claim Super Admin
 
-After deployment and migration, sign in with the intended owner email. New accounts start as Members by design; this prevents a random visitor from claiming the first-admin role. Once you have signed in and loaded Crew HQ at least once, open the Supabase SQL Editor and run this query after replacing the sample email with your exact account email:\n\n    update public.crew_profiles set role = 'super_admin' where lower(email) = lower('YOUR_EMAIL@example.com') returning email, role;\n\nConfirm the returned email is yours, then refresh Crew HQ. Only the project owner can run this promotion. Admins can later promote Members from Crew Directory.
+After deployment and migration, sign in with the intended owner email. New accounts start as Members by design; this prevents a random visitor from claiming the first-admin role. Once you have signed in and loaded Crew HQ at least once, open the Supabase SQL Editor and run this query after replacing the sample email with your exact account email:
+
+    update public.crew_profiles set role = 'super_admin' where lower(email) = lower('YOUR_EMAIL@example.com') returning email, role;
+
+Confirm the returned email is yours, then refresh Crew HQ. Only the project owner can run this promotion. Admins can later promote Members from Crew Directory.
 
 ## Configuration
 
