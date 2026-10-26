@@ -1,18 +1,34 @@
-# Kinetic Crew — Crew HQ
+# Kinetic Crew HQ
 
-Unified crew management application for Kinetic Crew.
+Unified management app for Kinetic Crew: one responsive web/PWA experience for Super Admin, Admin and Member roles.
 
-## Planned architecture
-- `client/`: responsive React web/mobile UI
-- `server/`: authenticated API and persistent database
-- Role-based Super Admin, Admin, and Member access
-- Events, registrations, announcements, and one-time attendance OTP verification
+## Live preview
+Hosted preview: https://kinetic-crew-hq.hatchable.site
 
-## Development
-See the project setup instructions in the packaged starter ZIP. The backend and frontend run separately during local development.
+The project currently has **private visibility**. A temporary preview link can be used to view it during testing; to allow all members to sign up permanently, the owner must switch project visibility to public in Hatchable Settings.
 
-## Security
-Never commit `.env`, API keys, production credentials, database files, or real member data. Configure strong production secrets and HTTPS before deployment.
+## Features
+- Email one-time-code sign-in backed by the host's auth service
+- Separate role-aware dashboards
+- Event creation and member registrations
+- Crew announcements with audience filters
+- Attendance OTPs: six digits, five-minute expiry, single use
+- Crew directory and super-admin role changes
+- Mobile responsive layout and installable PWA manifest
+- PostgreSQL schema migrations
 
-## Status
-Repository initialized. Application source and runtime verification are the next implementation steps.
+## Repository structure
+- `public/`: hosted app HTML, CSS, JavaScript, manifest and custom login page
+- `api/crew/[...path].js`: hosted API with role checks
+- `migrations/`: database schema and initial demo event
+- `hatchable.toml`: hosted auth and row access policy
+- `client/` and `server/`: local development starter files
+
+## First sign-in and role setup
+On an empty database, the first person to sign in is provisioned as Super Admin. Later accounts start as Members; the Super Admin can promote them to Admin using Crew Directory. Only share the preview with the intended initial owner until first sign-in is complete.
+
+## Mobile
+The app is mobile-first and has a PWA manifest. It can be opened in Android Chrome and added to the home screen. A signed Android APK/AAB has not been built in this repository yet.
+
+## Deployment and privacy
+The preview uses hosted PostgreSQL and hosted email-code auth. App push notifications while closed are not configured. Before public launch, review privacy/visibility, validate role assignment with actual member accounts, and configure push delivery if needed. Do not commit credentials or real member records.
