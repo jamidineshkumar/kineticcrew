@@ -56,7 +56,7 @@ where not exists(select 1 from public.crew_events);
 create or replace function public.crew_api(
   p_action text, p_method text default 'GET', p_payload jsonb default '{}'::jsonb
 ) returns jsonb language plpgsql security definer
-set search_path = pg_catalog, public, extensions, auth, pg_temp
+set search_path = pg_catalog, extensions, auth, pg_temp
 as $$
 declare
   v_uid text; v_email text; v_name text; v_role text; v_random bytea;
@@ -240,3 +240,6 @@ $$;
 revoke all on function public.crew_api(text,text,jsonb) from public, anon;
 grant execute on function public.crew_api(text,text,jsonb) to authenticated;
 comment on function public.crew_api(text,text,jsonb) is 'Kinetic Crew HQ API. Requires Supabase Auth and performs server-side role checks.';
+
+-- Make the new RPC available through Supabase PostgREST without waiting for a schema cache refresh.
+notify pgrst, 'reload schema';
