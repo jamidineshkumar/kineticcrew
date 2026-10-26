@@ -1,0 +1,8 @@
+[auth]
+enabled = true
+providers = ["email"]
+
+[db.tables.crew_announcements]
+read = "public"
+write = "own"
+owner_column = "author_id"
