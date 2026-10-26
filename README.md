@@ -1,41 +1,69 @@
 # Kinetic Crew HQ
 
-Unified management app for Kinetic Crew: a responsive, installable web/PWA experience for Super Admin, Admin and Member roles.
+A responsive, installable Crew HQ for Kinetic Crew. The GitHub Pages build uses static HTML/CSS/JavaScript, Supabase Auth, and a role-checked PostgreSQL RPC backend.
 
-## Live preview
-**App:** https://kinetic-crew-hq.hatchable.site  
-**Project console:** https://hatchable.com/console/projects/kinetic-crew-hq
+## GitHub Pages URL
 
-The hosted project is currently **private**. Its permanent URL shows the host's sign-in wall to non-collaborators until the owner changes visibility in Hatchable Settings. A temporary stranger-view preview link can be shared for a short review window.
+After enabling Pages with GitHub Actions as the source, the site will be published at:
 
-## Features
-- Email one-time-code sign-in through the hosting platform
-- Role-aware Super Admin, Admin and Member dashboards
-- Event creation, member registrations and capacity counts
+https://jamidineshkumar.github.io/kineticcrew/
+
+Every push to main runs the deployment workflow.
+
+## Included features
+
+- Email OTP sign-in through Supabase Auth
+- Super Admin, Admin and Member roles
+- Create events, register members, and enforce event capacity
 - Crew announcements with audience selection
-- Attendance OTPs: six digits, five-minute expiry and single-use verification
+- Six-digit attendance OTPs with five-minute expiry, hashed in the database and single-use verification
+- Attendance desk and roster
 - Crew directory and Super Admin role assignment
-- Responsive dark/neon interface and installable PWA manifest
-- Hosted PostgreSQL schema and migrations
-- Backend access gating and role checks
+- Dark neon UI, responsive mobile layout, and installable PWA shell
 
-## Source structure
-- `public/`: app shell, custom sign-in page, client JavaScript, CSS and PWA manifest
-- `api/crew/[...path].js`: backend endpoints for roles, events, announcements, registrations and attendance
-- `migrations/`: persistent PostgreSQL tables and an initial demo event
-- `hatchable.toml`: hosted authentication and announcement row-access policy
+## One-time setup
 
-This repository is the source for the hosted app. The server APIs use the hosting platform's database/auth SDK, so they are not intended to run with a plain `npm install` or a local Express server.
+### 1. Apply the database migration
 
-## First account and role setup — important
-On an empty crew database, the **first person to sign in** is provisioned as Super Admin. Later sign-ins start as Members. Keep the project private and open the preview yourself first so you claim Super Admin before you make the app publicly accessible. After that, Super Admin can promote a signed-in member to Admin from Crew Directory.
+Open supabase/migrations/202610260001_kinetic_crew_hq.sql in this repository, copy its entire contents, then open your Supabase SQL Editor:
 
-## Mobile
-The app is responsive and includes a PWA manifest. On Android, open it in Chrome and use **Install app** / **Add to Home screen**. A native signed Android APK/AAB has **not** been built yet.
+https://supabase.com/dashboard/project/hmkbukpudlvyihgntaju/sql/new
 
-## Not yet configured
-- Push notifications that arrive while the app is closed
-- Native Android APK/AAB packaging
-- Permanent public visibility (the owner must change this in Hatchable Settings)
+Paste the SQL and click Run. It creates only crew_* objects, enables RLS, revokes direct table access from browser roles, and grants authenticated users access only through a permission-checked RPC. It does not change KhetMitra tables.
 
-Never commit production secrets or real member records. Configure and validate account permissions before inviting the full crew.
+### 2. Set up email sign-in
+
+In Supabase Dashboard → Authentication → URL Configuration, add this Redirect URL:
+
+https://jamidineshkumar.github.io/kineticcrew/**
+
+In Authentication → Email Templates, ensure the sign-in email contains the one-time token placeholder {{ .Token }} if users should type the six-digit code into the app. If the template is link-based, the confirmation URL must redirect to the GitHub Pages app.
+
+### 3. Enable GitHub Pages
+
+In this repository, go to Settings → Pages and set Build and deployment → Source to GitHub Actions. The workflow publishes only public/.
+
+### 4. Claim Super Admin
+
+After deployment and migration, sign in with the email you want to use as crew owner. The first account provisioned in the new crew_profiles table becomes Super Admin; all later accounts are Members. Keep the URL shared only with the crew while claiming the first account.
+
+## Configuration
+
+public/config.js contains only the Supabase URL and publishable client key. These are browser-visible public values; never replace the key with a service_role or secret key. The current config uses the existing Supabase project URL from KhetMitra, but all Crew data is isolated in crew_* tables. For cleaner production separation, create a dedicated Supabase project and update the two config values before applying the migration.
+
+The app base path is configured as /kineticcrew/, which matches the GitHub Pages project URL. If the repository is renamed, update basePath in public/config.js.
+
+## Mobile and remaining limits
+
+- On Android Chrome, open the app and select Install app / Add to Home screen.
+- A native Android APK/AAB has not been built.
+- Push notifications delivered while the app is closed are not configured.
+- GitHub Pages hosts the static UI; Supabase provides authentication and database actions.
+- A starter event is seeded into an empty crew_events table; event deletion/editing is not part of this version.
+
+## Security notes
+
+- The browser key is the Supabase publishable key, not a secret.
+- Crew tables have direct privileges revoked for anon and authenticated roles.
+- Client data operations run through crew_api, which checks the current Supabase user and role on the server.
+- The first account becomes Super Admin; do not open registration broadly before the intended crew owner claims that role.

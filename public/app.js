@@ -1,6 +1,6 @@
 (() => {
 'use strict';
-const A=window.hatchable&&window.hatchable.auth, $=s=>document.querySelector(s);
+const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
 const S={user:null,view:'overview',events:[],announcements:[],members:[],roster:null,rosterEvent:'',error:''};
 const role=r=>({super_admin:'Super Admin',admin:'Admin',member:'Member'}[r]||'Member');
 const admin=()=>S.user&&S.user.role!=='member', superadmin=()=>S.user&&S.user.role==='super_admin';
@@ -8,7 +8,16 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const initials=s=>String(s||'KC').trim().split(/\s+/).map(p=>p[0]||'').join('').slice(0,2).toUpperCase()||'KC';
 const dt=s=>{let d=new Date(s);return Number.isNaN(+d)?'Date TBA':d.toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});};
 const ds=s=>{let d=new Date(s);return Number.isNaN(+d)?'TBA':d.toLocaleDateString([],{month:'short',day:'2-digit'});};
-async function api(path,method='GET',body){let r=await fetch('/api/crew/'+path,{method,credentials:'same-origin',headers:{'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});let d={};try{d=await r.json()}catch{}if(!r.ok)throw Error(d.error||'Request failed.');return d;}
+async function api(path,method='GET',body){
+ if(!client)throw Error(window.KC_CONFIG_ERROR||'Supabase is not configured.');
+ const url=new URL(path,location.href);
+ const action=url.pathname.split('/').filter(Boolean).pop();
+ const payload={...(body||{})};
+ if(action==='attendance'&&url.searchParams.has('eventId'))payload.eventId=url.searchParams.get('eventId');
+ const {data,error}=await client.rpc('crew_api',{p_action:action,p_method:method,p_payload:payload});
+ if(error)throw Error(error.message||error.details||'Crew service request failed.');
+ return data;
+}
 function notice(text){let t=$('#toast');t.textContent=text;t.classList.add('show');clearTimeout(notice.timer);notice.timer=setTimeout(()=>t.classList.remove('show'),3000);}
 async function refresh(){let d=await api('bootstrap');S.user=d.user;S.events=d.events||[];S.announcements=d.announcements||[];S.members=d.members||[];$('#profileName').textContent=S.user.name||S.user.email;$('#profileRole').textContent=role(S.user.role);$('#avatar').textContent=initials(S.user.name||S.user.email);$('#topAvatar').textContent=initials(S.user.name||S.user.email);paint();}
 function button(label,view){return '<button class="primary" data-view="'+view+'">'+label+'</button>';}
@@ -34,15 +43,15 @@ function showOtp(code,expires,title){$('#modalRoot').innerHTML='<div class="moda
 document.addEventListener('click',async e=>{const v=e.target.closest('[data-view]');if(v){go(v.dataset.view);return;}const r=e.target.closest('[data-register]');if(r){await action(async()=>{let d=await api('register','POST',{eventId:r.dataset.register});notice(d.message);await refresh();});return;}const o=e.target.closest('[data-otp]');if(o){await action(async()=>{let e0=S.events.find(x=>String(x.id)===String(o.dataset.otp));let d=await api('otp','POST',{eventId:o.dataset.otp});showOtp(d.code,d.expiresAt,e0?.title||'Crew event');notice(d.message);});return;}const s=e.target.closest('[data-scroll]');if(s){$('#'+s.dataset.scroll)?.scrollIntoView({behavior:'smooth'});return;}if(e.target.closest('[data-clear]')){S.error='';paint();}});
 document.addEventListener('submit',async e=>{let f=e.target;if(f.id==='eventForm'){e.preventDefault();let d=new FormData(f);await action(async()=>{let a=await api('events','POST',{title:d.get('title'),location:d.get('location'),description:d.get('description'),starts_at:new Date(d.get('starts_at')).toISOString(),capacity:Number(d.get('capacity'))});S.view='events';notice(a.message);await refresh();});}else if(f.id==='updateForm'){e.preventDefault();let d=new FormData(f);await action(async()=>{let a=await api('announcements','POST',{title:d.get('title'),body:d.get('body'),audience:d.get('audience')});S.view='updates';notice(a.message);await refresh();});}else if(f.id==='verifyForm'){e.preventDefault();let d=new FormData(f);await action(async()=>{let a=await api('verify','POST',{eventId:d.get('eventId'),memberEmail:d.get('memberEmail'),code:d.get('code')});S.rosterEvent=d.get('eventId');S.roster=await api('attendance?eventId='+encodeURIComponent(S.rosterEvent));S.view='attendance';notice(a.message);await refresh();});}});
 document.addEventListener('change',async e=>{if(e.target.id==='rosterSelect'){S.rosterEvent=e.target.value;if(!S.rosterEvent){S.roster=null;paint();return;}await action(async()=>{S.roster=await api('attendance?eventId='+encodeURIComponent(S.rosterEvent));paint();});}else if(e.target.matches('.role-select')){await action(async()=>{let d=await api('role','PATCH',{authId:e.target.dataset.id,role:e.target.value});notice(d.message);await refresh();});}});
-$('#logout').addEventListener('click',async()=>{try{await auth.signOut();}catch{}location.replace('/login');});
+$('#logout').addEventListener('click',async()=>{try{await auth.signOut();}catch{}location.replace(window.kcPath('login.html'));});
 $('#updatesTop').addEventListener('click',()=>go('updates'));
 $('#menuToggle').addEventListener('click',()=>{$('#sidebar').classList.toggle('open');$('#navShade').classList.toggle('open');});
 $('#navShade').addEventListener('click',()=>{$('#sidebar').classList.remove('open');$('#navShade').classList.remove('open');});
-async function boot(){if(!auth){$('#app').innerHTML=empty('Sign-in unavailable','Refresh the page and try again.');return;}try{let session=await window.hatchable.auth.getSession();if(!session||!session.user){location.replace('/login?next='+encodeURIComponent('/'));return;}await refresh();}catch(e){$('#app').innerHTML=empty('Could not load Crew HQ',esc(e.message||'Refresh the page and sign in again.'));}}
+async function boot(){if(!auth){$('#app').innerHTML=empty('Sign-in unavailable',esc(window.KC_CONFIG_ERROR||'Refresh the page and try again.'));return;}try{let result=await auth.getSession();let session=result?.data?.session;if(!session||!session.user){location.replace(window.kcPath('login.html'));return;}await refresh();}catch(e){$('#app').innerHTML=empty('Could not load Crew HQ',esc(e.message||'Refresh the page and sign in again.'));}}
 let installPrompt=null;
 window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;const b=$('#installApp');if(b)b.hidden=false;});
 window.addEventListener('appinstalled',()=>{installPrompt=null;const b=$('#installApp');if(b)b.hidden=true;notice('Kinetic Crew is on your home screen.');});
 $('#installApp').addEventListener('click',async()=>{if(!installPrompt){notice('On Android, open Chrome menu and choose Install app or Add to Home screen.');return;}try{await installPrompt.prompt();const result=await installPrompt.userChoice;if(result?.outcome==='accepted')notice('Kinetic Crew is ready on your home screen.');}catch{}installPrompt=null;$('#installApp').hidden=true;});
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register(window.kcPath('sw.js'),{scope:window.kcPath('')}).catch(()=>{}));
 boot();
 })();

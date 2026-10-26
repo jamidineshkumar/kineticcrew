@@ -1,22 +1,7 @@
 {
-  "name": "Kinetic Crew HQ",
-  "short_name": "Kinetic Crew",
-  "start_url": "/",
-  "scope": "/",
-  "display": "standalone",
-  "display_override": [
-    "standalone",
-    "minimal-ui"
-  ],
-  "background_color": "#0b0d13",
-  "theme_color": "#0b0d13",
-  "description": "Crew events, updates and attendance",
-  "icons": [
-    {
-      "src": "/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ]
+  "name":"Kinetic Crew HQ","short_name":"Kinetic Crew","start_url":"./","scope":"./",
+  "display":"standalone","display_override":["standalone","minimal-ui"],
+  "background_color":"#0b0d13","theme_color":"#0b0d13",
+  "description":"Crew events, updates and attendance",
+  "icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
 }
