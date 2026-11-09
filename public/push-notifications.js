@@ -33,7 +33,32 @@ async function invoke(action, extra = {}) {
   if (!response.ok) throw new Error(result.error || "Push notification request failed.");
   return result;
 }
+let nativePushReady = false;
+async function enableNativePush() {
+  const { PushNotifications } = await import("https://esm.sh/@capacitor/push-notifications@7.0.2?external=@capacitor/core");
+  let permission = await PushNotifications.checkPermissions();
+  if (permission.receive !== "granted") permission = await PushNotifications.requestPermissions();
+  if (permission.receive !== "granted") throw new Error("Allow notification permission for Kinetic Crew in Android settings.");
+  if (!nativePushReady) {
+    nativePushReady = true;
+    await PushNotifications.addListener("registration", async token => {
+      try { const result = await invoke("register", { token: token.value, platform: "android" }); console.info(result.message); }
+      catch (error) { console.error("Could not register Android push token:", error); }
+    });
+    await PushNotifications.addListener("registrationError", error => console.error("FCM registration failed:", error));
+    await PushNotifications.addListener("pushNotificationReceived", notification => {
+      console.info("Crew push received:", notification.title || "Kinetic Crew");
+    });
+    await PushNotifications.addListener("pushNotificationActionPerformed", action => {
+      const target = action.notification?.data?.url || "/";
+      window.location.href = window.kcPath(target.replace(/^\//, ""));
+    });
+  }
+  await PushNotifications.register();
+  return { ok: true, message: "Android push registration started. This device will receive crew alerts after Firebase registration completes." };
+}
 async function enable() {
+  if (window.Capacitor?.isNativePlatform?.()) return enableNativePush();
   if (!("Notification" in window) || !("serviceWorker" in navigator)) throw new Error("Push notifications are not supported in this browser.");
   if (!window.isSecureContext) throw new Error("Push notifications require HTTPS.");
   const permission = await Notification.requestPermission();
