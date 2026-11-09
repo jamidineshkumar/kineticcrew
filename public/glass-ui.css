@@ -62,3 +62,44 @@ footer{border-color:#d9d6e8;color:#88839d}footer b{color:#5d5877}
 @media(prefers-reduced-motion:no-preference){.stat,.event,.announcement,.surface{animation:kcGlassRise .42s ease both}.stat:nth-child(2){animation-delay:.04s}.stat:nth-child(3){animation-delay:.08s}.stat:nth-child(4){animation-delay:.12s}}
 @keyframes kcGlassRise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Dark appearance variant: same lavender glass surfaces, translated to deep ink/navy. */
+:root[data-theme="dark"]{color-scheme:dark;--g-ink:#f0eef9;--g-muted:#aaa6bd;--g-purple:#c2afff;--g-line:#37334d}
+:root[data-theme="dark"] html,:root[data-theme="dark"] body,:root[data-theme="dark"]{background:radial-gradient(ellipse at 8% 0%,#3a3158 0,transparent 34%),radial-gradient(ellipse at 95% 20%,#173b4b 0,transparent 30%),linear-gradient(145deg,#11111d,#171827 60%,#111a25)!important;color:#f0eef9}
+:root[data-theme="dark"] .side,:root[data-theme="dark"] .topbar{background:#171725df;border-color:#35324a;color:#f0eef9}
+:root[data-theme="dark"] .brand b,:root[data-theme="dark"] .mobilebrand b,:root[data-theme="dark"] .workspace b,:root[data-theme="dark"] .motto b,:root[data-theme="dark"] .profile b,:root[data-theme="dark"] .crumb b,:root[data-theme="dark"] .welcome h1,:root[data-theme="dark"] .sectionhead h2,:root[data-theme="dark"] .sectionhead h3,:root[data-theme="dark"] .event h3,:root[data-theme="dark"] .announcement h3,:root[data-theme="dark"] .formtitle h3,:root[data-theme="dark"] .attendanceintro h3,:root[data-theme="dark"] .rosterhead h3,:root[data-theme="dark"] .directoryhead h3,:root[data-theme="dark"] .rosterperson b,:root[data-theme="dark"] .signform h2,:root[data-theme="dark"] .signhero h1{color:#f0eef9}
+:root[data-theme="dark"] .workspace,:root[data-theme="dark"] .motto,:root[data-theme="dark"] .stat,:root[data-theme="dark"] .peopleStat,:root[data-theme="dark"] .event,:root[data-theme="dark"] .announcement,:root[data-theme="dark"] .surface,:root[data-theme="dark"] .demos{background:linear-gradient(145deg,#25243aeb,#1b2030e8);border-color:#44405c;color:#f0eef9;box-shadow:0 12px 32px #05050b45}
+:root[data-theme="dark"] .navitem{color:#b6b1ca}:root[data-theme="dark"] .navitem.active{background:linear-gradient(100deg,#393153,#27263b);border-color:#62567f;color:#d5c7ff}
+:root[data-theme="dark"] .navitem:hover,:root[data-theme="dark"] .profile button,:root[data-theme="dark"] .topright .iconbutton{background:#29283d;border-color:#4a4662;color:#e3def5}
+:root[data-theme="dark"] .workspace small,:root[data-theme="dark"] .motto p,:root[data-theme="dark"] .profile small,:root[data-theme="dark"] .crumb,:root[data-theme="dark"] .welcome p,:root[data-theme="dark"] .sectionhead p,:root[data-theme="dark"] .eventdesc,:root[data-theme="dark"] .eventmeta span,:root[data-theme="dark"] .announcement p,:root[data-theme="dark"] .formtitle p,:root[data-theme="dark"] .attendanceintro p,:root[data-theme="dark"] .rosterhead p,:root[data-theme="dark"] .directoryhead p,:root[data-theme="dark"] .author,:root[data-theme="dark"] .capacity,:root[data-theme="dark"] .signform>p,:root[data-theme="dark"] .signhero p{color:#aaa6bd}
+:root[data-theme="dark"] .banner{background:linear-gradient(120deg,#17182b,#25243f 52%,#34304f);border-color:#51496c}
+:root[data-theme="dark"] .cover{background:linear-gradient(135deg,#34304f,#293a52 55%,#244553);border-color:#4a4565}
+:root[data-theme="dark"] .coversymbol,:root[data-theme="dark"] .datechip,:root[data-theme="dark"] .announceicon,:root[data-theme="dark"] .formicon{background:#38334f;border-color:#5c527b;color:#d2c5ff}
+:root[data-theme="dark"] .field{color:#d4d0e2}
+:root[data-theme="dark"] .field input,:root[data-theme="dark"] .field textarea,:root[data-theme="dark"] .field select,:root[data-theme="dark"] .select,:root[data-theme="dark"] .signform .field input{background:#171827;border-color:#45415d;color:#f0eef9}
+:root[data-theme="dark"] .field input::placeholder,:root[data-theme="dark"] .field textarea::placeholder,:root[data-theme="dark"] .signform .field input::placeholder{color:#85819a}
+:root[data-theme="dark"] .secondary,:root[data-theme="dark"] .outline,:root[data-theme="dark"] .signform .tabs{background:#29283e;border-color:#49445f;color:#e4def5}
+:root[data-theme="dark"] .signform .tabs .secondary{background:transparent;color:#c2bdd3}
+:root[data-theme="dark"] .notice{background:#29243b;border-color:#55486f;color:#d0c5e8}
+:root[data-theme="dark"] .attendanceintro{background:linear-gradient(110deg,#25243a,#1c2535);border-color:#45405b}
+:root[data-theme="dark"] th{background:#27263b;color:#c1bad4;border-color:#44405a}
+:root[data-theme="dark"] td{color:#ded9eb;border-color:#39364e}
+:root[data-theme="dark"] .rosterrow,:root[data-theme="dark"] .eventmeta,:root[data-theme="dark"] .eventbottom,:root[data-theme="dark"] footer,:root[data-theme="dark"] .profile{border-color:#3a374e}
+:root[data-theme="dark"] .pill,:root[data-theme="dark"] .status.pending,:root[data-theme="dark"] .roletag.super_admin{background:#39304f;color:#d4c5ff}
+:root[data-theme="dark"] .status.present,:root[data-theme="dark"] .roletag.member{background:#203c35;color:#a9e0c3}
+:root[data-theme="dark"] .roletag.admin{background:#20364a;color:#a9d6f5}
+:root[data-theme="dark"] .empty,:root[data-theme="dark"] .empty b{color:#bdb7d0}
+:root[data-theme="dark"] .empty .emptyicon{background:#302b45;border-color:#4b4263;color:#c7b7f4}
+:root[data-theme="dark"] .modal{background:linear-gradient(145deg,#29273e,#1b1d2c);border-color:#51496a;color:#f0eef9}
+:root[data-theme="dark"] .modal h2{color:#f0eef9}:root[data-theme="dark"] .modal p,:root[data-theme="dark"] .modalhint{color:#b5aec9}
+:root[data-theme="dark"] .code span{background:#38324e;border-color:#5b5078;color:#e1d4ff}
+:root[data-theme="dark"] .toast{background:#29263d;border-color:#5c5278;color:#fff}
+:root[data-theme="dark"] .signinscreen{background:radial-gradient(ellipse at 10% 0%,#3a3158,transparent 34%),radial-gradient(ellipse at 95% 20%,#173b4b,transparent 30%),#11111d}
+:root[data-theme="dark"] .signart{background:radial-gradient(ellipse at 72% 65%,#383052,transparent 48%),radial-gradient(ellipse at 5% 90%,#173b4b,transparent 35%),#171725}
+:root[data-theme="dark"] .signhero h1 em{color:#c6b4ff}:root[data-theme="dark"] .signstats b{color:#f0eef9}
+:root[data-theme="dark"] .primary{background:linear-gradient(135deg,#d0c2ff,#9d88e2);border-color:#b6a3f2;color:#211b35}
+:root[data-theme="dark"] .eyebrow,:root[data-theme="dark"] .textlink{color:#c1adff}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:34px;padding:0 11px;border:1px solid #fff;border-radius:11px;background:#ffffffb8;color:#514b70;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 7px 22px #6d659018}
+:root[data-theme="dark"] .theme-toggle{background:#29283e;border-color:#49445f;color:#e4def5}
+.theme-toggle .theme-icon{font-size:15px;line-height:1}
+@media(max-width:520px){.theme-toggle{width:35px;padding:0;font-size:0;gap:0}.theme-toggle .theme-icon{font-size:16px}}
