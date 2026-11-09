@@ -47,7 +47,7 @@ begin
   select role into v_role from public.crew_profiles where auth_id=v_uid;
   if v_role is null then raise exception 'Crew profile not found.'; end if;
   v_feature:=coalesce(p_feature,p_payload->>'feature','');
-  if v_feature not in ('rehearsals','leave','expenses','memories','auditions','polls','chat','achievements') then
+  if p_action<>'leaderboard' and v_feature not in ('rehearsals','leave','expenses','memories','auditions','polls','chat','achievements') then
     raise exception 'Unknown Kinetic Crew feature.';
   end if;
 
@@ -61,7 +61,7 @@ begin
       ) order by i.created_at desc),'[]'::jsonb) into v_rows
       from public.crew_feature_items i join public.crew_profiles p on p.auth_id=i.author_id
       where i.feature=v_feature and (i.status in ('open','selected','closed') or i.author_id=v_uid);
-    elsif v_feature='leave' and v_role='member' then
+    elsif v_feature in ('leave','auditions') and v_role='member' then
       select coalesce(jsonb_agg(jsonb_build_object(
         'id',i.id,'feature',i.feature,'title',i.title,'body',i.body,'data',i.data,
         'status',i.status,'author_id',i.author_id,'created_at',i.created_at,
