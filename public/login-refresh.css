@@ -1,0 +1,28 @@
+/* Premium login-only treatment. Dashboard styles remain unchanged. */
+.signinscreen{min-height:100svh;background:radial-gradient(ellipse at 20% 20%,#38303a 0,transparent 38%),radial-gradient(ellipse at 85% 80%,#29212b 0,transparent 38%),#09090b!important;color:#f4efed!important}
+.signart{position:relative;overflow:hidden;background:linear-gradient(150deg,rgba(255,255,255,.035),rgba(255,255,255,0))!important;border-right:1px solid rgba(255,255,255,.1)!important}
+.signart:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 65% 55%,rgba(226,210,196,.13),transparent 42%),linear-gradient(115deg,transparent 45%,rgba(255,255,255,.025))}
+.signart .brand,.signhero,.signfoot{position:relative;z-index:1}
+.signart .brand-logo{width:54px!important;height:54px!important;object-fit:contain;background:transparent!important}
+.signart .brand b{letter-spacing:.16em!important}
+.signhero h1{font-size:clamp(42px,6vw,76px)!important;line-height:1.02!important;letter-spacing:-.07em!important}
+.signhero h1 em{color:#d6bda9!important;font-style:normal}
+.signhero p{max-width:390px;color:#b9b1ad!important;line-height:1.8}
+.signstats{border-top:1px solid rgba(255,255,255,.12)!important}
+.signstats b{color:#f4e8df!important;font-size:24px!important}
+.signstats span{color:#9f9692!important}
+.signfoot{color:#817a78!important;letter-spacing:.16em!important}
+.signinpanel{position:relative;background:rgba(13,12,14,.78)!important;backdrop-filter:blur(26px)!important}
+.signinpanel:before{content:"";position:absolute;inset:9% 8%;border:1px solid rgba(255,255,255,.07);border-radius:30px;pointer-events:none}
+.signform{position:relative;z-index:1;width:min(100%,410px)!important}
+.signform h2{font-size:clamp(29px,4vw,39px)!important;letter-spacing:-.055em!important;color:#f6f0ec!important}
+.signform>p{color:#a49b98!important}
+.signform .field{color:#c9c0bc!important}
+.signform .field input{background:rgba(255,255,255,.055)!important;border:1px solid rgba(255,255,255,.13)!important;border-radius:15px!important;color:#fff!important;min-height:49px!important}
+.signform .field input:focus{border-color:#d6bda9!important;box-shadow:0 0 0 4px rgba(214,189,169,.12)!important}
+.signform .primary{background:linear-gradient(110deg,#e8d5c6,#b99d8b)!important;border:0!important;border-radius:999px!important;color:#211a17!important;min-height:50px!important;box-shadow:0 10px 28px rgba(214,189,169,.16)!important}
+.signform .secondary{background:rgba(255,255,255,.055)!important;border:1px solid rgba(255,255,255,.12)!important;color:#ddd3ce!important;border-radius:999px!important}
+.signform .tabs{gap:10px!important}
+.signform .msg{color:#928985!important}
+.auth-theme-toggle{border-radius:999px!important;background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.12)!important;color:#ddd!important}
+@media(max-width:760px){.signinscreen{background:#09090b!important}.signart{min-height:220px!important;padding:24px!important}.signhero{padding:28px 0 18px!important}.signhero h1{font-size:42px!important}.signstats{display:none!important}.signfoot{display:none!important}.signinpanel{padding:30px 22px!important}.signinpanel:before{inset:12px;border-radius:24px}}
