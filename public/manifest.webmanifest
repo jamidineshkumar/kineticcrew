@@ -8,8 +8,8 @@
     "standalone",
     "minimal-ui"
   ],
-  "background_color": "#eeedf7",
-  "theme_color": "#eeedf7",
+  "background_color": "#100d0c",
+  "theme_color": "#100d0c",
   "description": "Kinetic Crew — crew events, updates and attendance",
   "icons": [
     {
