@@ -71,7 +71,29 @@ async function enable() {
   onMessage(messaging, payload => {
     const title = payload.notification?.title || "Kinetic Crew";
     const body = payload.notification?.body || "You have a new crew update.";
-    if (Notification.permission === "granted") new Notification(title, { body, icon: window.kcPath("kinetic-crew-logo.jpg") });
+    if (Notification.permission === "granted") new Notification(title, { body, icon: window.kcPath("kinetic-crew-logo.jpg"), tag: payload.data?.id || "kinetic-crew-update" });
+    try {
+      const session = client.auth.getSession();
+      session.then(({data}) => {
+        const userId = data?.session?.user?.id || "guest";
+        const prefs = JSON.parse(localStorage.getItem("kc-notification-prefs:" + userId) || "{}");
+        if (prefs.sound !== false) {
+          const Audio = window.AudioContext || window.webkitAudioContext;
+          if (!Audio) return;
+          const ctx = new Audio(), now = ctx.currentTime;
+          [660, 880].forEach((hz, i) => {
+            const osc = ctx.createOscillator(), gain = ctx.createGain();
+            osc.type = "sine"; osc.frequency.value = hz;
+            gain.gain.setValueAtTime(.0001, now + i * .12);
+            gain.gain.exponentialRampToValueAtTime(.09, now + i * .12 + .025);
+            gain.gain.exponentialRampToValueAtTime(.0001, now + i * .12 + .2);
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.start(now + i * .12); osc.stop(now + i * .12 + .22);
+          });
+          setTimeout(() => ctx.close(), 700);
+        }
+      }).catch(() => {});
+    } catch {}
   });
   localStorage.setItem("kc-push-enabled", "yes");
   return result;
