@@ -1,0 +1,10 @@
+[build]
+  publish = "public"
+
+# Kinetic Crew is a static multi-page app. Keep the root homepage available
+# and serve the app shell for client-side routes if they are added later.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
