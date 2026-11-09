@@ -54,7 +54,7 @@ function stat(title,value,foot,ico){return '<div class="stat"><div class="statla
 function profilePage(){return welcome('My profile','Manage your crew identity and account.')+'<div class="profile-layout"><form id="profileForm" class="surface profile-edit">'+formTitle('✎','Edit profile','Update the name shown to your crew.')+'<label class="field">Full name<input name="name" maxlength="100" required value="'+esc(S.user.name||'')+'"></label><label class="field">Email address<input value="'+esc(S.user.email||'')+'" disabled></label><label class="field">Username<input value="'+esc(S.user.username||'Not set')+'" disabled></label><button class="primary full">Save changes</button><button type="button" class="outline full" id="logoutProfile">Sign out ↗</button></form></div>';}
 function readKey(){return 'kc-read-notices:'+String(S.user?.id||S.user?.auth_id||'guest');}
 function prefsKey(){return 'kc-notification-prefs:'+String(S.user?.id||S.user?.auth_id||'guest');}
-function notificationPrefs(){try{return {sound:true,push:false,...JSON.parse(localStorage.getItem(prefsKey())||'{}')}}catch{return {sound:true,push:false}}}
+function notificationPrefs(){try{return {sound:true,push:localStorage.getItem('kc-push-enabled')==='yes',...JSON.parse(localStorage.getItem(prefsKey())||'{}')}}catch{return {sound:true,push:false}}}
 function saveNotificationPrefs(patch){const next={...notificationPrefs(),...patch};localStorage.setItem(prefsKey(),JSON.stringify(next));return next;}
 function isRead(id){try{return JSON.parse(localStorage.getItem(readKey())||'[]').includes(id)}catch{return false}}
 function markRead(id){const ids=new Set(JSON.parse(localStorage.getItem(readKey())||'[]'));ids.add(id);localStorage.setItem(readKey(),JSON.stringify([...ids]));}
