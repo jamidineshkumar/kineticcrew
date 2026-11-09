@@ -1,0 +1,23 @@
+{
+  "name": "kinetic-crew-hq",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kinetic Crew HQ web and native mobile app",
+  "scripts": {
+    "start": "npx serve public",
+    "cap:sync": "cap sync",
+    "android:add": "cap add android",
+    "ios:add": "cap add ios",
+    "android:open": "cap open android",
+    "ios:open": "cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/core": "^7.4.3",
+    "@capacitor/ios": "^7.4.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.3",
+    "serve": "^14.2.4"
+  }
+}
