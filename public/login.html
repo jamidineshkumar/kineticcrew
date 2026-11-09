@@ -16,7 +16,7 @@ const busy=(id,on)=>$(id).disabled=on;
 const go=()=>location.replace(window.kcPath('index.html'));
 function show(next){mode=next;loginForm.hidden=next!=='login';signupForm.hidden=next!=='signup';verifyForm.hidden=next!=='verify';$('authTabs').hidden=next==='verify';$('title').textContent=next==='login'?'Welcome to the crew.':next==='signup'?'Create your crew account.':'Verify your email.';$('subtitle').textContent=next==='login'?'Sign in with your username and password.':next==='signup'?'Your email will be verified before your account is activated.':'Enter the six-digit code sent to '+pending.email+'.';$('loginTab').className=next==='login'?'primary':'secondary';$('signupTab').className=next==='signup'?'primary':'secondary';say('');}
 if(!A){say(window.KC_CONFIG_ERROR||'Authentication service unavailable.',true);$('loginSubmit').disabled=$('signupSubmit').disabled=true;return;}
-A.auth.getSession().then(({data})=>{if(data?.session)go();}).catch(()=>{});
+// Do not auto-redirect an existing browser session: shared-device users must be able to choose their own account.
 $('loginTab').onclick=()=>show('login');$('signupTab').onclick=()=>show('signup');
 loginForm.addEventListener('submit',async e=>{e.preventDefault();busy('loginSubmit',true);say('');try{
  const username=$('loginUsername').value.trim().toLowerCase(),password=$('loginPassword').value;
