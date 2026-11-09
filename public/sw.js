@@ -2,6 +2,8 @@ const BASE=new URL(self.registration.scope).pathname.replace(/\/?$/,'/');
 const CACHE='kinetic-crew-shell-v8';
 const CORE=['','index.html','login.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','icon.svg','glass-ui.css','kinetic-ui.css','theme.js','push-notifications.js','kinetic-crew-logo.jpg'];
 const ASSETS=CORE.map(path=>BASE+path);
+const CDN_ASSETS=["https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2","https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js","https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"];
+const CDN_CACHE="kinetic-crew-cdn-v1";
 
 importScripts("https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js");
@@ -35,7 +37,7 @@ self.addEventListener("install",event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE);
     await Promise.all(ASSETS.map(async url=>{try{const response=await fetch(url,{cache:"reload"});if(response.ok)await cache.put(url,response);}catch(error){console.warn("Offline asset not cached:",url);}}));
-    await self.skipWaiting();
+    const cdn=await caches.open(CDN_CACHE);\n    await Promise.all(CDN_ASSETS.map(async url=>{try{const response=await fetch(url,{mode:"no-cors",cache:"reload"});await cdn.put(url,response);}catch(error){console.warn("Optional library not cached:",url);}}));\n    await self.skipWaiting();
   })());
 });
 self.addEventListener("activate",event=>{
@@ -45,7 +47,7 @@ self.addEventListener("fetch",event=>{
   const request=event.request;
   if(request.method!=="GET")return;
   const url=new URL(request.url);
-  if(url.origin!==self.location.origin||!url.pathname.startsWith(BASE))return;
+  if(url.origin!==self.location.origin){if(CDN_ASSETS.includes(url.href)){event.respondWith((async()=>{const cache=await caches.open(CDN_CACHE);const cached=await cache.match(url.href);if(cached)return cached;const response=await fetch(request);if(response)await cache.put(url.href,response.clone());return response;})());}return;}\n  if(!url.pathname.startsWith(BASE))return;
   if(request.mode==="navigate"){
     event.respondWith((async()=>{
       try{const response=await fetch(request);if(response.ok){const cache=await caches.open(CACHE);await cache.put(request,response.clone());}return response;}
