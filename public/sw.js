@@ -1,10 +1,12 @@
 const BASE=new URL(self.registration.scope).pathname.replace(/\/?$/,'/');
-const CACHE='kinetic-crew-shell-v10';
+const CACHE='kinetic-crew-shell-v11';
 const CORE=['','index.html','login.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','icon.svg','glass-ui.css','kinetic-ui.css','reference-ui.css','theme-overrides.css','theme.js','push-notifications.js','kinetic-crew-logo.jpg'];
 const ASSETS=CORE.map(path=>BASE+path);
 const CDN_ASSETS=["https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2","https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js","https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"];
 const CDN_CACHE="kinetic-crew-cdn-v1";
 
+let messaging=null;
+try{
 importScripts("https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js");
 firebase.initializeApp({
@@ -15,8 +17,9 @@ firebase.initializeApp({
   messagingSenderId: "797058143037",
   appId: "1:797058143037:web:f39507213d6e53dd082b54"
 });
-let messaging=null;
-try{messaging=firebase.messaging();}catch(error){console.warn("Push messaging unavailable:",error);}
+messaging=firebase.messaging();
+}catch(error){console.warn("Push messaging unavailable in this session:",error);}
+try{
 if(messaging)messaging.onBackgroundMessage(payload=>{
   const title=payload.notification?.title||"Kinetic Crew";
   self.registration.showNotification(title,{
@@ -25,6 +28,7 @@ if(messaging)messaging.onBackgroundMessage(payload=>{
     data:{url:payload.data?.url||BASE}
   });
 });
+}catch(error){console.warn("Background notifications disabled:",error);}
 self.addEventListener("notificationclick",event=>{
   event.notification.close();
   const target=new URL(event.notification.data?.url||BASE,self.location.origin).href;
