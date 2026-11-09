@@ -1,0 +1,7 @@
+/* Small finishing details for the compact navigation */
+#updatesTop em{display:block!important}
+#updatesTop{flex:0 0 44px}
+.kc-motion-off *, .kc-motion-off *::before, .kc-motion-off *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+.kc-chat-feed{overscroll-behavior:contain}
+.kc-chat-compose button{flex:0 0 46px;cursor:pointer}
+@media(max-width:900px){.mobile-bottom-nav{position:fixed!important;left:50%!important;bottom:max(8px,env(safe-area-inset-bottom))!important;transform:translateX(-50%)!important;margin:0!important}.content{padding-bottom:92px!important}}
