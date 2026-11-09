@@ -14,7 +14,7 @@ async function api(path,method='GET',body){
  const action=url.pathname.split('/').filter(Boolean).pop();
  const payload={...(body||{})};
  if(action==='attendance'&&url.searchParams.has('eventId'))payload.eventId=url.searchParams.get('eventId');
- const {data,error}=await client.rpc('crew_api',{p_action:action,p_method:method,p_payload:payload});
+ if(action==='profile'&&method==='PATCH'){const {data,error}=await client.rpc('crew_update_profile',{p_name:payload.name});if(error)throw Error(error.message||'Profile update failed.');return data;}const {data,error}=await client.rpc('crew_api',{p_action:action,p_method:method,p_payload:payload});
  if(error)throw Error(error.message||error.details||'Crew service request failed.');
  return data;
 }
