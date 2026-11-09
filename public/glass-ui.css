@@ -139,3 +139,7 @@ footer{border-color:#d9d6e8;color:#88839d}footer b{color:#5d5877}
 :root[data-theme="dark"] .notification-item{background:linear-gradient(145deg,#25243aeb,#1b2030e8);border-color:#44405c}
 :root[data-theme="dark"] .notification-item p,:root[data-theme="dark"] .notification-item small{color:#aaa6bd}
 :root[data-theme="dark"] .qr-scanner{background:#171827;border-color:#45415d}
+
+.mobile-bottom-nav{display:none}
+@media(max-width:900px){.mobile-bottom-nav{position:fixed;z-index:40;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:9px 8px;border:1px solid #ffffffd9;border-radius:23px;background:#f8f7f2d9;box-shadow:0 14px 38px #37304c26;backdrop-filter:blur(22px)}.mobile-bottom-nav button{display:grid;place-items:center;gap:3px;border:0;border-radius:15px;background:transparent;color:#655b89;font-size:19px;padding:5px 2px}.mobile-bottom-nav button small{font-size:9px;font-weight:700;letter-spacing:.02em}.mobile-bottom-nav button:active{background:#e8e2fb}.content{padding-bottom:100px}footer{padding-bottom:100px}}
+@media(max-width:900px){:root[data-theme="dark"] .mobile-bottom-nav{background:#1d1c2ce8;border-color:#48415f;box-shadow:0 14px 38px #05050b80}:root[data-theme="dark"] .mobile-bottom-nav button{color:#d1c6f1}:root[data-theme="dark"] .mobile-bottom-nav button:active{background:#393153}}
