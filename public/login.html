@@ -1,36 +1,46 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b0d13"><meta name="robots" content="noindex,nofollow"><link rel="stylesheet" href="styles.css"><title>Kinetic Crew · Sign in</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="supabase-client.js"></script></head>
-<body><div class="signinscreen"><section class="signart"><div class="brand"><span class="flame">✳</span><div><b>KINETIC <i>CREW</i></b><small>CREW HQ / 01</small></div></div><div class="signhero"><div class="eyebrow"><span class="eyedot"></span> YOUR CREW. IN SYNC.</div><h1>Move as one.<br><em>Make it kinetic.</em></h1><p>One home for the people, performances, and moments that make the crew.</p><div class="signstats"><div><b>01</b><span>One crew</span></div><div><b>∞</b><span>Big energy</span></div><div><b>100%</b><span>In sync</span></div></div></div><div class="signfoot">BUILT FOR THE BEAT ✳ SINCE DAY ONE</div></section><section class="signinpanel"><div class="signform"><div class="eyebrow"><span class="eyedot"></span> SECURE ACCESS</div><h2 id="title">Good to see you.</h2><p id="subtitle">Sign in with your email. We'll send a one-time code.</p><form id="signForm"><label class="field">Email address<input id="email" type="email" autocomplete="username webauthn" placeholder="you@example.com" required></label><label class="field" id="codeWrap" hidden>Six-digit code<input id="code" autocomplete="one-time-code" inputmode="numeric" maxlength="6" placeholder="000000"></label><button class="primary full" id="submit" type="submit">Continue →</button><button class="secondary full" id="back" type="button" hidden>Use a different email</button></form><div id="passkeyOffer" class="demos" hidden><div>MAKE NEXT TIME EASIER</div><p style="color:#9da2b2;font-size:11px;line-height:1.65">Add a passkey to sign in with your fingerprint, face, or device screen lock.</p><button class="primary full" id="passkeyAdd">Add a passkey</button><button class="secondary full" id="passkeySkip">Not now</button></div><p id="message" class="msg" role="status" aria-live="polite"></p><p class="msg">Authorized Kinetic Crew members only · Email verification</p></div></section></div>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b0d13"><meta name="robots" content="noindex,nofollow"><link rel="stylesheet" href="styles.css"><title>Kinetic Crew · Account</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="supabase-client.js"></script></head>
+<body><div class="signinscreen"><section class="signart"><div class="brand"><span class="flame">✳</span><div><b>KINETIC <i>CREW</i></b><small>CREW HQ / 01</small></div></div><div class="signhero"><div class="eyebrow"><span class="eyedot"></span> YOUR CREW. IN SYNC.</div><h1>Move as one.<br><em>Make it kinetic.</em></h1><p>One home for the people, performances, and moments that make the crew.</p><div class="signstats"><div><b>01</b><span>One crew</span></div><div><b>∞</b><span>Big energy</span></div><div><b>100%</b><span>In sync</span></div></div></div><div class="signfoot">BUILT FOR THE BEAT ✳ SINCE DAY ONE</div></section><section class="signinpanel"><div class="signform"><div class="eyebrow"><span class="eyedot"></span> SECURE ACCESS</div><h2 id="title">Welcome to the crew.</h2><p id="subtitle">Sign in with your username and password.</p>
+<div class="tabs"><button type="button" class="primary" id="loginTab">Sign in</button><button type="button" class="secondary" id="signupTab">Create account</button></div>
+<form id="loginForm"><label class="field">Username<input id="loginUsername" autocomplete="username" minlength="3" maxlength="24" required placeholder="yourusername"></label><label class="field">Password<input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Your password"></label><button class="primary full" id="loginSubmit">Sign in →</button></form>
+<form id="signupForm" hidden><label class="field">Full name<input id="fullName" autocomplete="name" maxlength="100" required placeholder="Your full name"></label><label class="field">Username<input id="newUsername" autocomplete="username" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]+" required placeholder="letters, numbers, underscore"></label><label class="field">Email address<input id="newEmail" type="email" autocomplete="email" required placeholder="you@example.com"></label><label class="field">Password<input id="newPassword" type="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"></label><label class="field">Confirm password<input id="confirmPassword" type="password" autocomplete="new-password" minlength="8" required placeholder="Re-enter password"></label><button class="primary full" id="signupSubmit">Send verification code →</button></form>
+<form id="verifyForm" hidden><label class="field">Email verification code<input id="verifyCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required placeholder="000000"></label><button class="primary full" id="verifySubmit">Verify email & create account →</button><button class="secondary full" type="button" id="resendCode">Resend code</button></form>
+<p id="message" class="msg" role="status" aria-live="polite"></p><p class="msg">Email verification required · New accounts start as Members</p></div></section></div>
 <script>
-(function(){
-const A=window.kcSupabase,form=document.getElementById('signForm'),email=document.getElementById('email'),code=document.getElementById('code'),codeWrap=document.getElementById('codeWrap'),submit=document.getElementById('submit'),back=document.getElementById('back'),message=document.getElementById('message'),title=document.getElementById('title'),subtitle=document.getElementById('subtitle');
-let step='email';
-const say=(s,err=false)=>{message.textContent=s||'';message.className=err?'error':'msg';};
-const next=()=>location.replace(window.kcPath('index.html'));
-if(!A){say(window.KC_CONFIG_ERROR||'Sign-in service is not available. Refresh and try again.',true);submit.disabled=true;return;}
-A.auth.getSession().then(({data})=>{if(data&&data.session)next();}).catch(()=>{});
-form.addEventListener('submit',async e=>{
- e.preventDefault();submit.disabled=true;say('');
- try{
-  if(step==='email'){
-   const clean=email.value.trim().toLowerCase();
-   if(!clean)throw new Error('Enter your email address.');
-   const {error}=await A.auth.signInWithOtp({email:clean,options:{shouldCreateUser:true,emailRedirectTo:new URL(window.kcPath('index.html'),location.origin).href}});
-   if(error)throw error;
-   step='code';codeWrap.hidden=false;back.hidden=false;email.readOnly=true;code.required=true;
-   submit.textContent='Verify and enter →';title.textContent='Check your inbox.';
-   subtitle.textContent='Enter the one-time code sent to '+clean+'.';code.focus();
-   say('Verification email sent. Check your inbox and spam folder.');
-  }else{
-   const token=code.value.trim();
-   if(!/^[0-9]{6}$/.test(token))throw new Error('Enter the six-digit email code.');
-   const {data,error}=await A.auth.verifyOtp({email:email.value.trim().toLowerCase(),token,type:'email'});
-   if(error)throw error;
-   if(data&&data.session)next();else throw new Error('The code was not accepted. Request a new one.');
-  }
- }catch(err){say(err&&err.message?err.message:'Could not complete sign-in. Please try again.',true);}
- finally{submit.disabled=false;}
-});
-back.addEventListener('click',()=>{step='email';codeWrap.hidden=true;back.hidden=true;email.readOnly=false;code.required=false;code.value='';submit.textContent='Continue →';title.textContent='Good to see you.';subtitle.textContent="Sign in with your email. We'll send a one-time code.";say('');email.focus();});
+(()=>{'use strict';
+const A=window.kcSupabase,$=id=>document.getElementById(id);
+const loginForm=$('loginForm'),signupForm=$('signupForm'),verifyForm=$('verifyForm');
+let mode='login',pending={email:'',password:'',name:'',username:''};
+const say=(s,err=false)=>{$('message').textContent=s||'';$('message').className=err?'error':'msg';};
+const busy=(id,on)=>$(id).disabled=on;
+const go=()=>location.replace(window.kcPath('index.html'));
+function show(next){mode=next;loginForm.hidden=next!=='login';signupForm.hidden=next!=='signup';verifyForm.hidden=next!=='verify';$('loginTab').hidden=next==='verify';$('signupTab').hidden=next==='verify';$('loginTab').className=next==='login'?'primary':'secondary';$('signupTab').className=next==='signup'?'primary':'secondary';$('title').textContent=next==='login'?'Welcome back.':next==='signup'?'Create your crew account.':'Verify your email.';$('subtitle').textContent=next==='login'?'Sign in with your username and password.':next==='signup'?'Your email will be verified before your account is activated.':'Enter the six-digit code sent to '+pending.email+'.';say('');}
+if(!A){say(window.KC_CONFIG_ERROR||'Authentication service unavailable.',true);$('loginSubmit').disabled=$('signupSubmit').disabled=true;return;}
+A.auth.getSession().then(({data})=>{if(data?.session)go();}).catch(()=>{});
+$('loginTab').onclick=()=>show('login');$('signupTab').onclick=()=>show('signup');
+loginForm.addEventListener('submit',async e=>{e.preventDefault();busy('loginSubmit',true);say('');try{
+ const username=$('loginUsername').value.trim().toLowerCase(),password=$('loginPassword').value;
+ if(!/^[a-z0-9_]{3,24}$/.test(username))throw Error('Enter a valid username (3–24 letters, numbers or underscores).');
+ const response=await fetch(A.supabaseUrl+'/functions/v1/username-login',{method:'POST',headers:{'Content-Type':'application/json','apikey':A.supabaseKey},body:JSON.stringify({username,password})});
+ const result=await response.json();if(!response.ok)throw Error(result.error||'Username or password is incorrect.');
+ const {error}=await A.auth.setSession({access_token:result.session.access_token,refresh_token:result.session.refresh_token});if(error)throw error;go();
+ }catch(err){say(err.message||'Could not sign in.',true);}finally{busy('loginSubmit',false);}});
+signupForm.addEventListener('submit',async e=>{e.preventDefault();busy('signupSubmit',true);say('');try{
+ const name=$('fullName').value.trim(),username=$('newUsername').value.trim().toLowerCase(),email=$('newEmail').value.trim().toLowerCase(),password=$('newPassword').value;
+ if(!/^[a-z0-9_]{3,24}$/.test(username))throw Error('Username must be 3–24 characters using letters, numbers or underscores.');
+ if(password.length<8)throw Error('Use a password with at least 8 characters.');
+ if(password!==$('confirmPassword').value)throw Error('Passwords do not match.');
+ pending={name,username,email,password};
+ const {error}=await A.auth.signUp({email,password,options:{data:{full_name:name,username},emailRedirectTo:new URL(window.kcPath('login.html'),location.origin).href}});
+ if(error)throw error;show('verify');say('Verification code sent. Check your inbox and spam folder.');
+ }catch(err){say(err.message||'Could not start registration.',true);}finally{busy('signupSubmit',false);}});
+verifyForm.addEventListener('submit',async e=>{e.preventDefault();busy('verifySubmit',true);say('');try{
+ const token=$('verifyCode').value.trim();if(!/^\d{6}$/.test(token))throw Error('Enter the six-digit code.');
+ const {data,error}=await A.auth.verifyOtp({email:pending.email,token,type:'signup'});if(error)throw error;
+ if(!data.session)throw Error('Email verified. Please sign in with your username and password.');
+ go();
+ }catch(err){say(err.message||'Verification failed.',true);}finally{busy('verifySubmit',false);}});
+$('resendCode').onclick=async()=>{try{const {error}=await A.auth.resend({type:'signup',email:pending.email});if(error)throw error;say('A new verification code has been sent.');}catch(err){say(err.message||'Could not resend code.',true);}};
+show('login');
 })();
 </script></body></html>
