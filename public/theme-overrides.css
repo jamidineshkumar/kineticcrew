@@ -1,0 +1,30 @@
+/* Explicit theme tokens and components. Loaded after all legacy styles. */
+:root[data-theme="dark"]{color-scheme:dark;--bg:#100d0c;--panel:rgba(42,32,28,.82);--panel2:rgba(54,40,34,.82);--line:rgba(255,224,204,.16);--muted:#b5a49b;--text:#fff5ee;--lime:#ff9b68;--purple:#e9b39a}
+:root[data-theme="light"]{color-scheme:light;--bg:#f3eee9;--panel:rgba(255,252,248,.94);--panel2:rgba(247,239,231,.96);--line:rgba(105,75,59,.16);--muted:#77675f;--text:#2a211d;--lime:#b85d37;--purple:#93634f}
+:root[data-theme="light"] html,:root[data-theme="light"] body{background:#f3eee9!important;color:#2a211d!important}
+:root[data-theme="light"] body{background:radial-gradient(ellipse at 80% 5%,#f0d9c9 0,transparent 35%),linear-gradient(135deg,#f8f4ef,#eee5dc)!important}
+:root[data-theme="light"] .side{background:linear-gradient(165deg,#fffaf5,#eee4db)!important;border-color:#e4d7cd!important;box-shadow:12px 0 40px #70503a12!important}
+:root[data-theme="light"] .brand b,:root[data-theme="light"] .mobilebrand b,:root[data-theme="light"] .workspace b,:root[data-theme="light"] .motto b,:root[data-theme="light"] .profile b,:root[data-theme="light"] .welcome h1,:root[data-theme="light"] .sectionhead h2,:root[data-theme="light"] .sectionhead h3,:root[data-theme="light"] .event h3,:root[data-theme="light"] .announcement h3{color:#2a211d!important}
+:root[data-theme="light"] .brand small,:root[data-theme="light"] .workspace small,:root[data-theme="light"] .motto p,:root[data-theme="light"] .profile small,:root[data-theme="light"] .navtitle,:root[data-theme="light"] .welcome p,:root[data-theme="light"] .sectionhead p,:root[data-theme="light"] .eventdesc,:root[data-theme="light"] .eventmeta span,:root[data-theme="light"] .stat small{color:#77675f!important}
+:root[data-theme="light"] .topbar{background:rgba(255,250,245,.88)!important;border-color:#e5d8ce!important}
+:root[data-theme="light"] .crumb,:root[data-theme="light"] .online{color:#77675f!important}
+:root[data-theme="light"] .crumb b{color:#2a211d!important}
+:root[data-theme="light"] .navitem{color:#67564d!important}
+:root[data-theme="light"] .navitem.active{background:linear-gradient(105deg,#f3dfd2,#fffaf6)!important;color:#9d4d2d!important;border-color:#e7cabb!important}
+:root[data-theme="light"] .workspace,:root[data-theme="light"] .motto,:root[data-theme="light"] .profile,:root[data-theme="light"] .surface,:root[data-theme="light"] .event,:root[data-theme="light"] .announcement,:root[data-theme="light"] .stat,:root[data-theme="light"] .peopleStat,:root[data-theme="light"] .feature-card,:root[data-theme="light"] .feature-form,:root[data-theme="light"] .directory,:root[data-theme="light"] .leaderboard-list,:root[data-theme="light"] .calendar-month,:root[data-theme="light"] .detail-main,:root[data-theme="light"] .detail-action,:root[data-theme="light"] .verifyform,:root[data-theme="light"] .notification-item{background:linear-gradient(145deg,rgba(255,253,250,.97),rgba(244,235,227,.96))!important;border:1px solid #e7d9cf!important;box-shadow:0 12px 32px #6b4c3810!important;color:#2a211d!important}
+:root[data-theme="light"] .field,:root[data-theme="light"] .field label{color:#59483f!important}
+:root[data-theme="light"] .field input,:root[data-theme="light"] .field textarea,:root[data-theme="light"] .field select,:root[data-theme="light"] .select{background:#fffdfa!important;border:1px solid #dfd0c6!important;color:#2a211d!important}
+:root[data-theme="light"] .secondary,:root[data-theme="light"] .outline,:root[data-theme="light"] .theme-toggle,:root[data-theme="light"] .profile button,:root[data-theme="light"] .topright .iconbutton,:root[data-theme="light"] .hamburger{background:#fffaf6!important;border:1px solid #e3d3c8!important;color:#634d41!important}
+:root[data-theme="light"] .primary{background:linear-gradient(135deg,#f3b28e,#d77a55)!important;color:#2c1710!important;border:1px solid #e4a17f!important}
+:root[data-theme="light"] .signinscreen{background:radial-gradient(ellipse at 75% 15%,#f0d8c8,transparent 36%),#f3eee9!important}
+:root[data-theme="light"] .signinpanel{background:rgba(255,252,248,.94)!important;border-color:#e5d8ce!important}
+:root[data-theme="light"] .signform h2,:root[data-theme="light"] .signform p{color:#2a211d!important}
+:root[data-theme="light"] .signform .field{color:#59483f!important}
+:root[data-theme="dark"] html,:root[data-theme="dark"] body{background:#100d0c!important;color:#fff5ee!important}
+:root[data-theme="dark"] .signinscreen{background:#100d0c!important}
+:root[data-theme="dark"] .signinpanel{background:rgba(30,23,20,.82)!important}
+.brand-logo,.mobile-logo{background:rgba(255,255,255,.08)!important;object-fit:contain!important}
+.load-error{max-width:760px;margin:36px auto;padding:34px;border:1px solid var(--line);border-radius:24px;background:var(--panel);text-align:center}
+.load-error h2{margin:0 0 10px}.load-error p{color:var(--muted);line-height:1.6}
+.load-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:20px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
