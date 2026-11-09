@@ -1,5 +1,5 @@
 const BASE=new URL(self.registration.scope).pathname.replace(/\/?$/,'/');
-const CACHE='kinetic-crew-shell-v8';
+const CACHE='kinetic-crew-shell-v9';
 const CORE=['','index.html','login.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','icon.svg','glass-ui.css','kinetic-ui.css','reference-ui.css','theme.js','push-notifications.js','kinetic-crew-logo.jpg'];
 const ASSETS=CORE.map(path=>BASE+path);
 const CDN_ASSETS=["https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2","https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js","https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"];
@@ -15,8 +15,9 @@ firebase.initializeApp({
   messagingSenderId: "797058143037",
   appId: "1:797058143037:web:f39507213d6e53dd082b54"
 });
-const messaging=firebase.messaging();
-messaging.onBackgroundMessage(payload=>{
+let messaging=null;
+try{messaging=firebase.messaging();}catch(error){console.warn("Push messaging unavailable:",error);}
+if(messaging)messaging.onBackgroundMessage(payload=>{
   const title=payload.notification?.title||"Kinetic Crew";
   self.registration.showNotification(title,{
     body:payload.notification?.body||"You have a new crew update.",
