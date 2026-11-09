@@ -1,1 +1,111 @@
-@media(max-width:900px){.side{display:none}.side.open{display:flex;position:fixed;inset:0 auto 0 0;width:min(84vw,285px);z-index:30;box-shadow:18px 0 50px #0009}.navshade{display:none;position:fixed;inset:0;z-index:25;background:#0009;backdrop-filter:blur(3px)}.navshade.open{display:block}.mobilebrand{gap:7px}.hamburger{display:inline-grid;margin-right:3px;background:#151822;border:1px solid #292d3a;color:#bfc3d0;border-radius:8px;width:31px;height:31px}.topbar .mobilebrand{display:flex;align-items:center}.topbar .mobilebrand .flame{flex-shrink:0}.topbar .mobilebrand b{white-space:nowrap}.crumb{display:none}}@media(min-width:901px){.hamburger{display:none}}
+/* Kinetic Crew mobile glass interface — inspired by the supplied lavender/navy reference. */
+@media(max-width:900px){
+ :root{--bg:#e9e8f4;--panel:#f5f4fb;--panel2:#eeedf7;--line:#d8d6e7;--muted:#77768d;--text:#20233b;--lime:#b7a4ff;--purple:#7665c9}
+ body{background:radial-gradient(ellipse at 10% 0%,#d9d2f7 0,transparent 38%),radial-gradient(ellipse at 100% 30%,#d4e9f1 0,transparent 36%),#eeedf7;color:#252740}
+ main{background:transparent}
+ .topbar{height:70px;padding:0 17px;background:#f7f6fcce;border-bottom:1px solid #ffffffb8;box-shadow:0 8px 28px #66618a0b}
+ .mobilebrand b{color:#25243d;font-family:var(--display);letter-spacing:.025em}
+ .mobilebrand i{color:#8a65ce}
+ .mobilebrand .flame{background:linear-gradient(145deg,#fff,#dcd4fa);color:#7059b7;box-shadow:0 5px 18px #8876c32c;border:1px solid #ffffff}
+ .hamburger{background:#ffffffa8;border:1px solid #ffffff;color:#4c4969}
+ .topright .iconbutton{background:#ffffffa8;border-color:#fff;color:#55516f}
+ .online{color:#696782}
+ .content{padding:22px 16px 24px}
+ .welcome h1{color:#25243e;font-size:29px;letter-spacing:-.045em}
+ .welcome p,.sectionhead p{color:#77758e}
+ .eyebrow{color:#7865c5}
+ .eyedot,.online i{background:#8d78d4;box-shadow:0 0 0 4px #9a88df20}
+ .primary{background:linear-gradient(135deg,#c8baff,#a997ef);border-color:#b8a7f4;color:#292344;box-shadow:0 8px 22px #8d7bc52c}
+ .primary:hover{box-shadow:0 12px 28px #8d7bc53d}
+ .secondary,.outline{background:#ffffffa8;border:1px solid #fff;color:#514c70;box-shadow:0 7px 22px #6d659018}
+ .outline{color:#705cb7;border-color:#c9c0eb}
+ .banner{border:1px solid #ffffffd9;border-radius:26px;padding:26px 22px 48px;min-height:255px;background:linear-gradient(135deg,#252440 0%,#343253 48%,#4b4776 100%);box-shadow:0 18px 42px #68618f2b}
+ .banner:before{background-image:linear-gradient(#ffffff0b 1px,transparent 1px),linear-gradient(90deg,#ffffff0b 1px,transparent 1px);background-size:27px 27px;mask-image:linear-gradient(90deg,#000,transparent 95%)}
+ .bannerlabel,.bannerfoot{color:#d9d5ef}
+ .banner h2{color:#fff;font-size:30px}
+ .banner h2 em{color:#d5caff}
+ .banner p{color:#d2cee5}
+ .bannerart{opacity:.78}
+ .ring.r1{border-color:#d6cbff70}
+ .ring.r2{border-color:#d6eaff50}
+ .ring.r3{border-color:#ffffff35}
+ .core{background:linear-gradient(145deg,#ffffff42,#cfc6ff24);border:1px solid #ffffff80;color:#eeeaff;backdrop-filter:blur(12px);box-shadow:0 0 45px #cfc3ff45}
+ .bannerfoot{border-color:#ffffff24}
+ .stats{gap:10px}
+ .stat,.peopleStat{background:linear-gradient(145deg,#ffffffd9,#f1effaaf);border:1px solid #ffffff;box-shadow:0 10px 28px #68618f12;border-radius:19px;color:#292744}
+ .statlabel{color:#77748f}
+ .statlabel span:last-child{color:#8b78ca}
+ .statvalue{color:#292744}
+ .stat small{color:#85819c}
+ .sectionhead h2,.sectionhead h3{color:#302d4c}
+ .surface,.event,.announcement{background:linear-gradient(145deg,#ffffffdc,#f5f3fbcc);border:1px solid #ffffff;border-radius:20px;box-shadow:0 12px 32px #69628f12;color:#292744;backdrop-filter:blur(14px)}
+ .eventbody{color:#292744}
+ .event h3,.announcement h3,.formtitle h3,.attendanceintro h3,.rosterhead h3,.directoryhead h3{color:#302d4c}
+ .eventdesc,.eventmeta,.announcement p,.formtitle p,.attendanceintro p,.rosterhead p,.directoryhead p{color:#77758f}
+ .cover{background:linear-gradient(135deg,#d8d0f5,#b9c8e8 55%,#c9dff0);border-bottom:1px solid #ffffff}
+ .coversymbol{color:#7565b9}
+ .covercode{color:#5e5883}
+ .datechip{background:#ffffffb8;color:#4f4779;border:1px solid #fff}
+ .eventtype{color:#8872c9}
+ .eventbottom{border-color:#e4e0f0}
+ .capacity{color:#77748d}
+ .registered{color:#6d5db0}
+ .announcement{padding:17px}
+ .announceicon,.formicon{background:linear-gradient(145deg,#e4ddff,#c9c1ef);color:#6e5bb7;border:1px solid #fff}
+ .announce-meta{color:#837da0}
+ .author{color:#85809a}
+ .field{color:#55516f}
+ .field input,.field textarea,.field select,.select{background:#ffffffd9;border:1px solid #dedbed;color:#282641;border-radius:13px;box-shadow:inset 0 1px 2px #4d477009}
+ .field input::placeholder,.field textarea::placeholder{color:#a19db3}
+ .field input:focus,.field textarea:focus,.field select:focus{border-color:#9a86dc;box-shadow:0 0 0 4px #9a86dc20}
+ .notice{background:#eeeafb;border-color:#ddd6f3;color:#686184}
+ .attendanceintro{background:linear-gradient(110deg,#ffffffd9,#e9e5f7);border-color:#fff;border-radius:18px}
+ .rosterrow{border-color:#e5e1ef}
+ .rosterperson b{color:#37334f}
+ .rosterperson small{color:#85809a}
+ .status.present{background:#e4f3e9;color:#3d8059}
+ .status.pending{background:#eee9fb;color:#7664b9}
+ .tablewrap{border-radius:0 0 18px 18px}
+ th{background:#efedf8;color:#77718f;border-color:#e2deef}
+ td{color:#45415f;border-color:#e9e6f1}
+ .empty{color:#817d98}
+ .empty b{color:#36324f}
+ .empty .emptyicon{background:#eeeafb;border-color:#fff;color:#806dc5}
+ .modalback{background:#25223bb8}
+ .modal{background:linear-gradient(145deg,#fff,#f0edf9);border:1px solid #fff;color:#292744;box-shadow:0 28px 80px #27213d38}
+ .modal h2{color:#292744}.modal p,.modalhint{color:#77738e}
+ .code span{background:#f4f1fb;border-color:#ddd6f0;color:#7864c4}
+ .toast{background:#292644;border-color:#62588b;color:#fff;box-shadow:0 15px 50px #29213d40}
+ footer{border-color:#d9d6e8;color:#88839d}
+ footer b{color:#5d5877}
+ .side.open{background:#f2f0fa;border-right:1px solid #fff;box-shadow:18px 0 50px #39324c35}
+ .side.open .brand b{color:#302c4d}.side.open .brand i{color:#806bc4}
+ .side.open .workspace{background:#fff;border-color:#e2def0}
+ .side.open .workspace b{color:#34304f}
+ .side.open .navtitle{color:#9690a8}
+ .side.open .navitem{color:#716d87}
+ .side.open .navitem.active{background:#e9e4fb;border-color:#d9d0f5;color:#6e5ab9}
+ .side.open .motto{background:linear-gradient(145deg,#fff,#eeeafb);border-color:#fff}
+ .side.open .motto b{color:#35314e}.side.open .motto p{color:#817c96}
+ .side.open .profile{border-color:#e0dced}.side.open .profile b{color:#34304d}
+ .side.open .profile small{color:#827d96}
+ .navshade.open{background:#302a4b55;backdrop-filter:blur(5px)}
+}
+@media(max-width:600px){
+ .content{padding:18px 13px 22px}
+ .topbar{height:64px}
+ .banner{min-height:250px;padding:23px 19px 46px;border-radius:23px}
+ .banner h2{font-size:28px}
+ .bannerart{right:-86px;top:55px;opacity:.38;transform:scale(.72)}
+ .stat{min-height:105px;padding:13px;border-radius:17px}
+ .statvalue{font-size:26px}
+ .event{overflow:hidden;border-radius:20px}
+ .surface{border-radius:18px}
+ .welcome h1{font-size:27px}
+ footer{font-size:8px}
+}
+@media(prefers-reduced-motion:no-preference) and (max-width:900px){
+ .stat,.event,.announcement,.surface{animation:glassRise .45s ease both}
+ .stat:nth-child(2){animation-delay:.04s}.stat:nth-child(3){animation-delay:.08s}.stat:nth-child(4){animation-delay:.12s}
+}
+@keyframes glassRise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
