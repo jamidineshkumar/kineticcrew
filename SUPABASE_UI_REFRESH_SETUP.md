@@ -22,3 +22,17 @@ Apply the existing migrations first, in filename order, through `202611090006_pu
 ## Deployment note
 
 This branch is prepared for review and mobile build testing. It has not been merged to `main` or deployed to the live website. Merge only after the preview and Supabase migration have been checked.
+
+
+## App release notifications (new)
+
+Apply `supabase/migrations/202611090008_app_releases.sql` after migration 007.
+
+- Only a **Super Admin** can publish an app release.
+- Publishing creates a permanent versioned release record and one unread in-app notification for every existing crew account.
+- Members see a release popup the next time they open the app; active sessions check for new releases every 30 seconds.
+- The notification includes the version, title, summary, feature list, fixes and publish date.
+- Members can revisit all releases in Notifications > App updates.
+- Notification preferences (signature tone, soft chime, double pulse, minimal pop, silent, volume and vibration) are stored per device.
+
+The custom tone is an in-app sound. Browsers and mobile operating systems control sound for notifications delivered while the app is fully closed; the app cannot override those system-level sounds. Push delivery also requires notification permission and working Firebase configuration.
