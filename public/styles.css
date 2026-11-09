@@ -50,3 +50,5 @@
   .signform h2 { font-size: 29px; }
   .signform .tabs { margin-bottom: 18px; }
 }
+
+.offline-strip{margin:0 0 16px;padding:9px 12px;border:1px solid #d69b3d55;border-radius:9px;background:#d69b3d14;color:#d9a64f;font:10px 'DM Mono',monospace;letter-spacing:.06em}
