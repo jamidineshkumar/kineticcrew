@@ -21,7 +21,7 @@ $('loginTab').onclick=()=>show('login');$('signupTab').onclick=()=>show('signup'
 loginForm.addEventListener('submit',async e=>{e.preventDefault();busy('loginSubmit',true);say('');try{
  const username=$('loginUsername').value.trim().toLowerCase(),password=$('loginPassword').value;
  if(!/^[a-z0-9_]{3,24}$/.test(username))throw Error('Enter a valid username (3–24 letters, numbers or underscores).');
- const response=await fetch(A.supabaseUrl+'/functions/v1/username-login',{method:'POST',headers:{'Content-Type':'application/json','apikey':A.supabaseKey},body:JSON.stringify({username,password})});
+ const response=await fetch(window.KC_CONFIG.supabaseUrl+'/functions/v1/username-login',{method:'POST',headers:{'Content-Type':'application/json','apikey':window.KC_CONFIG.supabaseAnonKey},body:JSON.stringify({username,password})});
  const result=await response.json();if(!response.ok)throw Error(result.error||'Username or password is incorrect.');
  const {error}=await A.auth.setSession({access_token:result.session.access_token,refresh_token:result.session.refresh_token});if(error)throw error;go();
  }catch(err){say(err.message||'Could not sign in.',true);}finally{busy('loginSubmit',false);}});
