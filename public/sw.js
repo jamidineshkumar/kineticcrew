@@ -37,7 +37,9 @@ self.addEventListener("install",event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE);
     await Promise.all(ASSETS.map(async url=>{try{const response=await fetch(url,{cache:"reload"});if(response.ok)await cache.put(url,response);}catch(error){console.warn("Offline asset not cached:",url);}}));
-    const cdn=await caches.open(CDN_CACHE);\n    await Promise.all(CDN_ASSETS.map(async url=>{try{const response=await fetch(url,{mode:"no-cors",cache:"reload"});await cdn.put(url,response);}catch(error){console.warn("Optional library not cached:",url);}}));\n    await self.skipWaiting();
+    const cdn=await caches.open(CDN_CACHE); 
+    await Promise.all(CDN_ASSETS.map(async url=>{try{const response=await fetch(url,{mode:"no-cors",cache:"reload"});await cdn.put(url,response);}catch(error){console.warn("Optional library not cached:",url);}})); 
+    await self.skipWaiting();
   })());
 });
 self.addEventListener("activate",event=>{
@@ -47,7 +49,8 @@ self.addEventListener("fetch",event=>{
   const request=event.request;
   if(request.method!=="GET")return;
   const url=new URL(request.url);
-  if(url.origin!==self.location.origin){if(CDN_ASSETS.includes(url.href)){event.respondWith((async()=>{const cache=await caches.open(CDN_CACHE);const cached=await cache.match(url.href);if(cached)return cached;const response=await fetch(request);if(response)await cache.put(url.href,response.clone());return response;})());}return;}\n  if(!url.pathname.startsWith(BASE))return;
+  if(url.origin!==self.location.origin){if(CDN_ASSETS.includes(url.href)){event.respondWith((async()=>{const cache=await caches.open(CDN_CACHE);const cached=await cache.match(url.href);if(cached)return cached;const response=await fetch(request);if(response)await cache.put(url.href,response.clone());return response;})());}return;} 
+  if(!url.pathname.startsWith(BASE))return;
   if(request.mode==="navigate"){
     event.respondWith((async()=>{
       try{const response=await fetch(request);if(response.ok){const cache=await caches.open(CACHE);await cache.put(request,response.clone());}return response;}
