@@ -1,0 +1,12 @@
+{
+  "appId": "com.kineticcrew.hq",
+  "appName": "Kinetic Crew",
+  "webDir": "public",
+  "backgroundColor": "#eeedf7",
+  "ios": {
+    "contentInset": "automatic"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}
