@@ -35,7 +35,7 @@ async function invoke(action, extra = {}) {
 }
 let nativePushReady = false;
 async function enableNativePush() {
-  const { PushNotifications } = await import("https://esm.sh/@capacitor/push-notifications@7.0.2?external=@capacitor/core");
+  const { PushNotifications } = await import("https://esm.sh/@capacitor/push-notifications@7.0.2");
   let permission = await PushNotifications.checkPermissions();
   if (permission.receive !== "granted") permission = await PushNotifications.requestPermissions();
   if (permission.receive !== "granted") throw new Error("Allow notification permission for Kinetic Crew in Android settings.");
