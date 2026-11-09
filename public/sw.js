@@ -1,6 +1,6 @@
 const BASE=new URL(self.registration.scope).pathname.replace(/\/?$/,'/');
-const CACHE='kinetic-crew-shell-v15';
-const CORE=['','index.html','login.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','kinetic-crew-logo.svg','glass-ui.css','kinetic-ui.css','reference-ui.css','theme-overrides.css','theme.js','push-notifications.js','kinetic-crew-logo.jpg'];
+const CACHE='kinetic-crew-shell-v16';
+const CORE=['','index.html','login.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','kinetic-crew-logo.svg','theme.js','push-notifications.js','kinetic-crew-logo.jpg'];
 const ASSETS=CORE.map(path=>BASE+path);
 const CDN_ASSETS=["https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2","https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js","https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"];
 const CDN_CACHE="kinetic-crew-cdn-v1";
@@ -60,6 +60,14 @@ self.addEventListener("fetch",event=>{
     event.respondWith((async()=>{
       try{const response=await fetch(request);if(response.ok){const cache=await caches.open(CACHE);await cache.put(request,response.clone());}return response;}
       catch(error){return (await caches.match(request))||(await caches.match(BASE+"index.html"))||(await caches.match(BASE+"login.html"));}
+    })());
+    return;
+  }
+  if(url.pathname===BASE+'app.js'){
+    event.respondWith((async()=>{
+      const cache=await caches.open(CACHE);
+      try{const response=await fetch(request,{cache:'no-store'});if(response.ok)await cache.put(BASE+'app.js',response.clone());return response;}
+      catch(error){return (await cache.match(BASE+'app.js'))||Response.error();}
     })());
     return;
   }
