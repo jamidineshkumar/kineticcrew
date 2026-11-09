@@ -27,6 +27,8 @@ jobs:
           distribution: temurin
           java-version: '21'
       - run: npm install
+      - run: npm run brand:assets
+      - run: npx capacitor-assets generate --android --ios --iconBackgroundColor '#eeedf7' --splashBackgroundColor '#eeedf7'
       - run: npx cap add android
       - run: npx cap sync android
       - name: Build debug APK
@@ -46,6 +48,8 @@ jobs:
         with:
           node-version: 22
       - run: npm install
+      - run: npm run brand:assets
+      - run: npx capacitor-assets generate --android --ios --iconBackgroundColor '#eeedf7' --splashBackgroundColor '#eeedf7'
       - run: npx cap add ios
       - run: npx cap sync ios
       - name: Build iOS Simulator app
