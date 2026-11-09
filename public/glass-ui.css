@@ -146,3 +146,8 @@ footer{border-color:#d9d6e8;color:#88839d}footer b{color:#5d5877}
 
 .brand-logo,.mobile-logo{background:#070812;border-radius:15px;padding:3px;object-fit:contain;box-shadow:0 7px 18px #30274420}
 @media(max-width:900px){.mobile-logo{border-radius:12px;padding:2px}}
+
+.status.absent{background:#ffe6e9;color:#b42336;border:1px solid #ffc8d0}
+.attendance-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.danger-link{color:#b42336;margin-top:12px}
+button:disabled{opacity:.5;cursor:not-allowed}
