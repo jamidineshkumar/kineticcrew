@@ -32,7 +32,7 @@ async function refresh(){
  const d=await api('bootstrap');
  S.user=d.user;S.events=d.events||[];S.announcements=d.announcements||[];S.members=d.members||[];
  S.offline=false;S.error='';
- try{localStorage.setItem(cacheKey(S.user.id||S.user.auth_id),JSON.stringify({savedAt:Date.now(),user:S.user,events:S.events,announcements:S.announcements}));}catch{}
+ try{const sessionResult=await auth.getSession();const cacheUserId=sessionResult?.data?.session?.user?.id||S.user.auth_id||S.user.id;if(cacheUserId)localStorage.setItem(cacheKey(cacheUserId),JSON.stringify({savedAt:Date.now(),user:S.user,events:S.events,announcements:S.announcements}));}catch{}
  paintUser();paint();
 }
 function restoreOffline(user){
