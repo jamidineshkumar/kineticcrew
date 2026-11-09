@@ -70,3 +70,11 @@ footer{border-color:#e2deec;color:#85809a}footer b{color:#514b70}
 @media(max-width:900px){body{background-attachment:scroll}.side.open{background:#f5f3fbeF;border-color:#ffffffed;box-shadow:20px 0 60px #3d355c25;backdrop-filter:blur(28px)}.side.open .profile b{color:#34304d}.side.open .profile small{color:#827d96}.navshade.open{background:#302a4b55;backdrop-filter:blur(8px)}.topbar{background:#f8f7fccc}.content{padding-bottom:110px}.mobile-bottom-nav{bottom:calc(10px + env(safe-area-inset-bottom))}}
 @media(max-width:600px){.content{padding:18px 13px 22px}.topbar{height:64px}.banner{min-height:250px;padding:23px 19px 46px;border-radius:23px}.banner h2{font-size:28px}.bannerart{right:-86px;top:55px;opacity:.38;transform:scale(.72)}.stat{min-height:105px;padding:13px;border-radius:17px}.statvalue{font-size:26px}.event,.surface{border-radius:18px}.welcome h1{font-size:27px}footer{font-size:8px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Official Kinetic Crew artwork: keep the supplied logo intact and visible. */
+.brand-logo,.mobile-logo{display:block;object-fit:contain;object-position:center;background:transparent!important;border:1px solid #ffffffd9;border-radius:14px;padding:3px;box-shadow:0 8px 22px #665a9620;filter:none;flex:0 0 auto}
+.brand-logo{width:72px;height:64px;max-width:72px}
+.mobile-logo{width:43px;height:43px;max-width:43px}
+.brand{display:flex;align-items:center;gap:11px}
+.mobilebrand{display:flex;align-items:center;gap:9px}
+@media(max-width:900px){.brand-logo{width:58px;height:52px}.mobile-logo{width:40px;height:40px}}
