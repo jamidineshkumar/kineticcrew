@@ -38,7 +38,7 @@ async function enable() {
   if (!window.isSecureContext) throw new Error("Push notifications require HTTPS.");
   const permission = await Notification.requestPermission();
   if (permission !== "granted") throw new Error("Notification permission was not granted.");
-  const registration = await navigator.serviceWorker.register(window.kcPath("firebase-messaging-sw.js"), { scope: window.kcPath("") });
+  const registration = await navigator.serviceWorker.register(window.kcPath("sw.js"), { scope: window.kcPath("") });
   const { messaging, getToken, onMessage } = await getMessaging();
   const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: registration });
   if (!token) throw new Error("Firebase did not return a device token. Check the Firebase Web Push certificate.");
