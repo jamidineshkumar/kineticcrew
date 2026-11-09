@@ -103,3 +103,40 @@ footer{border-color:rgba(255,226,207,.12)!important;color:#9f8b80!important}foot
 }
 @media(max-width:600px){.content{padding:17px 12px 108px!important}.welcome h1{font-size:27px}.banner{padding:23px 19px 46px;min-height:235px}.bannerart{opacity:.35}.stat{border-radius:16px!important}.event,.surface{border-radius:18px!important}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Dashboard composition and brand placement refinements */
+@media(min-width:901px){
+ .shell{background:transparent}
+ .side{width:260px!important;padding:24px 16px!important}
+ main{margin-left:260px!important}
+ .topbar{width:calc(100% - 36px)!important;margin:12px 18px 0!important;padding:0 24px!important}
+ .content{max-width:1540px!important;padding:28px 34px 26px!important}
+ .welcome{margin-bottom:24px!important;align-items:center}
+ .welcome h1{font-size:clamp(30px,3vw,42px)!important}
+ .home-hero{min-height:245px!important;padding:34px 38px!important}
+ .home-hero-copy{max-width:58%!important}
+ .home-hero h2{font-size:clamp(34px,3.2vw,48px)!important;line-height:1.04!important}
+ .home-hero-mark{font-size:190px!important;right:8%!important;color:rgba(255,190,155,.12)!important}
+ .home-shortcuts{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:15px!important;margin:0 0 30px!important}
+ .home-shortcuts button{min-height:118px!important;padding:19px!important;border:1px solid rgba(255,226,207,.15)!important;border-radius:20px!important;background:linear-gradient(145deg,rgba(64,47,40,.68),rgba(31,24,22,.76))!important;color:#fff2e9!important;box-shadow:0 16px 40px rgba(0,0,0,.18)!important}
+ .home-shortcuts button>span{width:38px!important;height:38px!important;border-radius:13px!important;background:rgba(255,155,104,.13)!important;color:#ffad80!important}
+ .home-shortcuts button b{color:#fff2e9!important;font-size:14px!important}
+ .home-shortcuts button small{color:#b6a49a!important}
+ .stats{gap:16px!important}
+ .eventgrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:17px!important}
+ .eventgrid.single-event{grid-template-columns:minmax(0,560px)!important}
+ .twoCol,.attendancegrid{gap:18px!important}
+}
+.brand{gap:12px!important}
+.brand-logo{width:62px!important;height:62px!important;padding:7px!important;border-radius:17px!important;object-fit:contain!important;background:rgba(255,255,255,.08)!important}
+.mobile-logo{width:39px!important;height:39px!important;padding:5px!important;border-radius:12px!important;object-fit:contain!important;background:rgba(255,255,255,.08)!important}
+.mobilebrand{gap:8px!important}
+.mobilebrand b{white-space:nowrap!important}
+@media(max-width:900px){
+ .brand-logo{width:54px!important;height:54px!important}
+ .mobile-logo{width:35px!important;height:35px!important}
+ .home-hero{min-height:220px!important}
+ .home-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .eventgrid{grid-template-columns:1fr!important}
+}
+@media(max-width:420px){.mobilebrand b{font-size:10px!important}.mobile-logo{width:31px!important;height:31px!important}}
