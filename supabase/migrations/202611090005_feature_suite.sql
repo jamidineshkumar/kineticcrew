@@ -81,8 +81,14 @@ begin
     return v_rows;
   end if;
 
+  if p_action='leaderboard' then
+    select coalesce(jsonb_agg(jsonb_build_object('name',p.name,'role',p.role,'event_count',(select count(*)::int from public.crew_registrations r where r.member_id=p.auth_id),'attendance_count',(select count(*)::int from public.crew_attendance a where a.member_id=p.auth_id)) order by (select count(*) from public.crew_attendance a where a.member_id=p.auth_id) desc,(select count(*) from public.crew_registrations r where r.member_id=p.auth_id) desc,p.name),'[]'::jsonb)
+    into v_rows from public.crew_profiles p;
+    return v_rows;
+  end if;
+
   if p_action='create' then
-    if v_feature in ('expenses','auditions','achievements') and v_role='member' then
+    if v_feature in ('expenses','achievements') and v_role='member' then
       raise exception 'Admin access required for this action.';
     end if;
     v_title:=left(trim(coalesce(p_payload->>'title','')),160);
