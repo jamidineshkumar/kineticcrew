@@ -71,7 +71,7 @@ async function enable() {
   onMessage(messaging, payload => {
     const title = payload.notification?.title || "Kinetic Crew";
     const body = payload.notification?.body || "You have a new crew update.";
-    if (Notification.permission === "granted") new Notification(title, { body, icon: window.kcPath("kinetic-crew-logo.jpg") });
+    if (Notification.permission === "granted") new Notification(title, { body, icon: window.kcPath("kinetic-crew-logo.svg") });
   });
   localStorage.setItem("kc-push-enabled", "yes");
   return result;
