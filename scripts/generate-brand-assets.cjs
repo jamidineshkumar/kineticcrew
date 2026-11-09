@@ -4,7 +4,7 @@ const sharp = require('sharp');
 
 async function main() {
   const root = path.resolve(__dirname, '..');
-  const source = path.join(root, 'public', 'kinetic-crew-logo.jpg');
+  const source = path.join(root, 'public', 'kinetic-crew-logo.svg');
   const out = path.join(root, 'assets');
   if (!fs.existsSync(source)) throw new Error('Official Kinetic Crew logo missing: ' + source);
   fs.mkdirSync(out, { recursive: true });

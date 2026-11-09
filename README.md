@@ -24,8 +24,13 @@ Run these SQL migrations in order in the new project's SQL Editor:
 
 1. `supabase/migrations/202610260001_kinetic_crew_hq.sql`
 2. `supabase/migrations/202611090001_crew_usernames.sql`
+3. `supabase/migrations/202611090002_profile_edit.sql`
+4. `supabase/migrations/202611090003_attendance_events.sql`
+5. `supabase/migrations/202611090004_initial_operator_roles.sql`
+6. `supabase/migrations/202611090005_feature_suite.sql`
+7. `supabase/migrations/202611090006_push_notifications.sql`
 
-The first migration creates the crew tables and permission-checked API. The second adds unique usernames and a trigger that creates a Member profile for each newly registered Auth user. All application tables are prefixed `crew_`.
+The migrations must be applied in the listed order. They create the crew tables and permission-checked APIs, add unique usernames and profile editing, implement QR/OTP attendance and event finalization, seed the initial operator role, add the feature suite (rehearsals, leave, expenses, memories, auditions, polls, chat and achievements), and add push-subscription storage. All application tables are prefixed `crew_`.
 
 ## Deploy username login Edge Function
 
@@ -72,6 +77,12 @@ The Super Admin can then promote the intended Admin account from Crew Directory.
 ## Existing features
 
 - Events and event registrations with capacity enforcement
+- Crew calendar and participation leaderboard
+- Rehearsal scheduling, leave requests and admin approvals
+- Audition submissions and selection workflow
+- Crew polls with voting and results
+- Shared memories, crew chat and achievement awards
+- Expense records for admins
 - Crew announcements with audience selection
 - Six-digit attendance OTPs with five-minute expiry and single-use verification
 - Attendance desk and roster
