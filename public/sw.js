@@ -1,6 +1,6 @@
 const BASE=new URL(self.registration.scope).pathname.replace(/\/?$/,'/');
-const CACHE='kinetic-crew-shell-v25';
-const CORE=['','index.html','login.html','styles.css','mobile.css','orange-ui.css','app-features.css','login-refresh.css','aesthetic.css','aesthetic-fixes.css','app.js','app-extras.js','router-override.js','avatar-sync.js','release-notifications.js','config.js','supabase-client.js','manifest.webmanifest','kinetic-crew-logo.svg','theme.js','push-notifications.js'];
+const CACHE='kinetic-crew-shell-v26';
+const CORE=['','index.html','login.html','styles.css','mobile.css','rebuild.css','app-features.css','login-refresh.css','aesthetic.css','aesthetic-fixes.css','app.js','app-extras.js','router-override.js','avatar-sync.js','release-notifications.js','config.js','supabase-client.js','manifest.webmanifest','kinetic-crew-logo.svg','theme.js','push-notifications.js'];
 const ASSETS=CORE.map(path=>BASE+path);
 const CDN_ASSETS=["https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2","https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js","https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"];
 const CDN_CACHE="kinetic-crew-cdn-v1";let messaging=null;
