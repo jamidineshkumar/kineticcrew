@@ -26,3 +26,11 @@
 .signform .msg{color:#928985!important}
 .auth-theme-toggle{border-radius:999px!important;background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.12)!important;color:#ddd!important}
 @media(max-width:760px){.signinscreen{background:#09090b!important}.signart{min-height:220px!important;padding:24px!important}.signhero{padding:28px 0 18px!important}.signhero h1{font-size:42px!important}.signstats{display:none!important}.signfoot{display:none!important}.signinpanel{padding:30px 22px!important}.signinpanel:before{inset:12px;border-radius:24px}}
+
+/* Warm orange signature accents for the login-only design. */
+.signinscreen{background:radial-gradient(ellipse at 18% 18%,rgba(255,122,26,.22),transparent 38%),radial-gradient(ellipse at 85% 82%,rgba(255,177,92,.12),transparent 40%),#0b0b0d!important}
+.signart:after{background:radial-gradient(ellipse at 65% 55%,rgba(255,138,50,.2),transparent 42%),linear-gradient(115deg,transparent 45%,rgba(255,255,255,.025))}
+.signhero h1 em{color:#ff9a4a!important}.signstats b{color:#ffd0a6!important}
+.signform .field input:focus{border-color:#ff923d!important;box-shadow:0 0 0 4px rgba(255,138,50,.15)!important}
+.signform .primary{background:linear-gradient(110deg,#ffbd78,#ff7a1a)!important;color:#241307!important;box-shadow:0 10px 28px rgba(255,122,26,.2)!important}
+.signform .tabs .primary{background:linear-gradient(110deg,#ffbd78,#ff7a1a)!important}
