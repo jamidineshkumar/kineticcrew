@@ -1,0 +1,39 @@
+/* Kinetic Crew signature orange UI layer — accents only; preserves layout and theme modes. */
+:root{--lime:#ff8a32;--purple:#ffb15c;--kc-orange:#ff7a1a;--kc-orange-soft:#ffb15c;--kc-orange-glow:rgba(255,122,26,.22)}
+html[data-theme="dark"],:root:not([data-theme="light"]){--lime:#ff8a32;--purple:#ffb15c}
+html[data-theme="light"]{--lime:#e96b16;--purple:#f39a3e}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline-color:var(--lime)}
+.brand i,.mobilebrand i,.eyebrow,.textlink,.navitem.active,.navitem .count{color:var(--lime)}
+.flame,.primary,.kc-chat-compose button{background:linear-gradient(135deg,#ffb15c,#ff781b)!important;border-color:#ff9a42!important;color:#21140c!important;box-shadow:0 8px 26px rgba(255,122,26,.2)}
+.primary:hover{box-shadow:0 12px 32px rgba(255,122,26,.3)}
+.navitem.active{background:linear-gradient(105deg,rgba(255,138,50,.16),rgba(255,177,92,.07));border-color:rgba(255,138,50,.24)}
+.navitem.active:before,.online i,.eyedot{background:var(--lime);box-shadow:0 0 0 4px rgba(255,138,50,.13)}
+.installbutton,.outline{border-color:rgba(255,138,50,.4);color:var(--lime);background:rgba(255,138,50,.08)}
+.motto>span,.announceicon,.formicon,.empty .emptyicon,.notification-icon{background:rgba(255,138,50,.13);color:var(--lime);border-color:rgba(255,138,50,.2)}
+.meter i,.stat:after{background:linear-gradient(90deg,#ff781b,#ffc078,transparent)}
+.statlabel span:last-child,.eventtype,.announce-meta b,.kc-release-version,.kc-release-kicker,.kc-release-list>b{color:var(--lime)}
+.eventtype i{background:var(--lime)}
+.cover{background:radial-gradient(ellipse at 78% 20%,rgba(255,178,91,.5),transparent 38%),linear-gradient(135deg,#4a2416,#201713 65%,#3b2117)}
+.coversymbol{color:#ffad62;border-color:rgba(255,177,92,.38);background:rgba(255,138,50,.13)}
+.datechip{border-color:rgba(255,177,92,.35)}
+.pill{background:rgba(255,138,50,.12);color:var(--lime)}
+.notification-item.unread{border-left-color:var(--lime)}
+.kc-bubble.mine{background:color-mix(in srgb,var(--lime) 17%,var(--panel))}
+.kc-avatar-preview{border-color:var(--lime)}
+.kc-release-mark{background:rgba(255,138,50,.15);color:#ff9b4c}
+.kc-release-modal{border-color:rgba(255,154,66,.3);background:radial-gradient(ellipse at 90% 0,rgba(255,122,26,.15),transparent 42%),linear-gradient(150deg,#211812,#111116)}
+.kc-release-card{border-color:rgba(255,154,66,.2);background:rgba(255,138,50,.055)}
+.kc-release-list>b{color:#ffad62}
+.kc-notification-settings{border-color:rgba(255,138,50,.2)}
+.kc-switch input{accent-color:var(--lime)}
+/* Light mode keeps warm glass surfaces while retaining readable contrast. */
+html[data-theme="light"] body{background:radial-gradient(ellipse at 8% 2%,#ffe0c4 0,transparent 35%),radial-gradient(ellipse at 94% 12%,#f8e4d3 0,transparent 32%),#f7f3ef}
+html[data-theme="light"] .side{background:linear-gradient(165deg,#fffaf5ed,#f8eee4d9);border-right-color:#f0d8c4}
+html[data-theme="light"] .topbar{background:#fffaf2dc;border-color:#f0ddca}
+html[data-theme="light"] .surface,html[data-theme="light"] .stat,html[data-theme="light"] .event,html[data-theme="light"] .announcement{background:linear-gradient(145deg,#fffdfb,#fff6ef);border-color:#f2dfce}
+html[data-theme="light"] .navitem.active{background:linear-gradient(105deg,#ffe8d5,#fff8f1);border-color:#f5d4b8;color:#b84e0c}
+html[data-theme="light"] .primary{color:#2b170a!important}
+html[data-theme="light"] .kc-release-modal{background:linear-gradient(150deg,#fff9f3,#fff0e3);color:#2d211a;border-color:#f0c9a8}
+html[data-theme="light"] .kc-release-intro,html[data-theme="light"] .kc-release-card p,html[data-theme="light"] .kc-release-list ul{color:#57463b}
+html[data-theme="light"] .kc-release-card{background:#fff8f1;border-color:#f0d6c1}
+@media(prefers-reduced-motion:no-preference){.primary,.navitem,.event,.surface{transition:background .2s,border-color .2s,box-shadow .2s,transform .2s}}
