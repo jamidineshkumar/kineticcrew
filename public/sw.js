@@ -1,6 +1,6 @@
 const BASE=new URL(self.registration.scope).pathname.replace(/\/?$/,'/');
-const CACHE='kinetic-crew-shell-v9';
-const CORE=['','index.html','login.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','icon.svg','glass-ui.css','kinetic-ui.css','reference-ui.css','theme.js','push-notifications.js','kinetic-crew-logo.jpg'];
+const CACHE='kinetic-crew-shell-v10';
+const CORE=['','index.html','login.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','icon.svg','glass-ui.css','kinetic-ui.css','reference-ui.css','theme-overrides.css','theme.js','push-notifications.js','kinetic-crew-logo.jpg'];
 const ASSETS=CORE.map(path=>BASE+path);
 const CDN_ASSETS=["https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2","https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js","https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"];
 const CDN_CACHE="kinetic-crew-cdn-v1";
