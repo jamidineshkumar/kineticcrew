@@ -151,3 +151,5 @@ footer{border-color:#d9d6e8;color:#88839d}footer b{color:#5d5877}
 .attendance-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
 .danger-link{color:#b42336;margin-top:12px}
 button:disabled{opacity:.5;cursor:not-allowed}
+
+.event-pass-actions{display:flex;gap:8px;flex-wrap:wrap}.event-pass-actions button{flex:1;min-width:105px}.or-divider{display:flex;align-items:center;gap:12px;color:var(--muted,#8b86a5);font-size:11px;letter-spacing:.16em;margin:14px 0}.or-divider:before,.or-divider:after{content:"";height:1px;background:var(--line,#ddd8ed);flex:1}
