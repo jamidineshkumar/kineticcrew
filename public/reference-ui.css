@@ -1,0 +1,105 @@
+/* Kinetic Crew — warm dark glass visual refresh. Visual-only layer; all existing app behavior is preserved. */
+:root{
+ color-scheme:dark;
+ --bg:#100d0c;--panel:rgba(36,29,27,.72);--panel2:rgba(49,38,34,.72);--line:rgba(255,224,204,.15);
+ --muted:#b5a49b;--text:#fff5ee;--lime:#ff9b68;--purple:#e9b39a;
+ --display:Inter,ui-sans-serif,system-ui,sans-serif;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;
+ --kc-ink:#fff5ee;--kc-muted:#b5a49b;--kc-glass:rgba(45,34,30,.58);--kc-edge:rgba(255,232,216,.17);
+}
+html,body{min-height:100%;background:#100d0c!important;color:#fff5ee!important}
+body{
+ background:
+ radial-gradient(ellipse at 78% 12%,rgba(182,91,52,.28),transparent 32%),
+ radial-gradient(ellipse at 12% 78%,rgba(109,48,34,.25),transparent 36%),
+ radial-gradient(ellipse at 50% -12%,rgba(255,170,112,.14),transparent 38%),
+ linear-gradient(135deg,#100d0c 0%,#191210 48%,#100d0c 100%)!important;
+ background-attachment:fixed;
+}
+body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.12;background-image:radial-gradient(#fff 0.55px,transparent .65px);background-size:5px 5px;mask-image:linear-gradient(120deg,#000,transparent 85%)}
+#appRoot{background:transparent}
+.side{background:linear-gradient(165deg,rgba(30,24,22,.88),rgba(19,15,14,.76))!important;border-right:1px solid rgba(255,226,209,.12)!important;box-shadow:16px 0 55px rgba(0,0,0,.24)!important;backdrop-filter:blur(28px) saturate(130%)!important;-webkit-backdrop-filter:blur(28px) saturate(130%)!important}
+.brand b,.mobilebrand b,.workspace b,.motto b,.profile b{color:#fff2e9!important}
+.brand i,.mobilebrand i{color:#ff9b68!important}
+.brand small,.workspace small,.motto p,.profile small,.navtitle{color:#aa978d!important}
+.brand-logo,.mobile-logo{background:rgba(255,255,255,.07)!important;border:1px solid rgba(255,230,214,.2)!important;box-shadow:0 8px 28px rgba(0,0,0,.25)!important}
+.workspace,.motto,.profile,.surface,.event,.announcement,.stat,.peopleStat,.feature-card,.feature-form,.directory,.leaderboard-list,.calendar-month,.detail-main,.detail-action,.verifyform,.publish,.notification-item{
+ background:linear-gradient(145deg,rgba(64,47,40,.66),rgba(31,24,22,.72))!important;
+ border:1px solid rgba(255,226,207,.15)!important;
+ box-shadow:0 18px 48px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,244,235,.07)!important;
+ backdrop-filter:blur(24px) saturate(135%)!important;-webkit-backdrop-filter:blur(24px) saturate(135%)!important;
+ color:#fff2e9!important;
+}
+.workspace,.motto{border-radius:18px!important}
+.workspace>span:first-child,.motto>span,.formicon,.announceicon{background:rgba(255,145,94,.13)!important;color:#ffad80!important;border:1px solid rgba(255,173,128,.2)!important}
+.meter{background:#49352e!important}.meter i{background:linear-gradient(90deg,#ff8659,#ffc08d)!important}
+.profile{border-top-color:rgba(255,226,207,.13)!important}
+.profile button,.topright .iconbutton,.hamburger,.theme-toggle{background:rgba(255,244,235,.07)!important;border:1px solid rgba(255,232,216,.16)!important;color:#f8dfd1!important;box-shadow:0 8px 24px rgba(0,0,0,.16)!important}
+.avatar{background:linear-gradient(135deg,#ff9b68,#9d4b38)!important;color:#fff!important;box-shadow:0 8px 24px rgba(196,92,54,.25)!important}
+.topbar{background:rgba(24,19,17,.68)!important;border:1px solid rgba(255,226,207,.12)!important;border-radius:18px!important;box-shadow:0 12px 36px rgba(0,0,0,.2)!important;backdrop-filter:blur(26px) saturate(140%)!important;-webkit-backdrop-filter:blur(26px) saturate(140%)!important}
+.crumb,.online{color:#b9a69c!important}.crumb b{color:#fff1e7!important}.crumb span{color:#79665d!important}
+.online i,.eyedot,.eyebrow .eyedot{background:#ff9b68!important;box-shadow:0 0 0 4px rgba(255,155,104,.14)!important}
+.eyebrow,.textlink,.eventtype{color:#ffad80!important}
+.welcome h1,.sectionhead h2,.sectionhead h3,.event h3,.announcement h3,.formtitle h3,.attendanceintro h3,.rosterhead h3,.directoryhead h3,.feature-card h3,.calendar-month h2{color:#fff2e9!important}
+.welcome p,.sectionhead p,.eventdesc,.eventmeta span,.announcement p,.formtitle p,.attendanceintro p,.rosterhead p,.directoryhead p,.feature-card p,.feature-card-top small,.feature-card-foot,.feature-meta,.feature-status,.capacity,.author,.stat small{color:#b6a49a!important}
+.primary{background:linear-gradient(135deg,#ffad7e,#ef744f)!important;border:1px solid rgba(255,218,196,.35)!important;color:#24130e!important;box-shadow:0 10px 28px rgba(227,104,65,.2),inset 0 1px rgba(255,255,255,.35)!important}
+.primary:hover{filter:brightness(1.08);box-shadow:0 14px 34px rgba(227,104,65,.28)!important}
+.secondary,.outline{background:rgba(255,242,232,.07)!important;border:1px solid rgba(255,226,207,.17)!important;color:#ffe5d6!important;box-shadow:0 8px 22px rgba(0,0,0,.12)!important}
+.outline{color:#ffb18a!important;border-color:rgba(255,161,116,.32)!important}
+.installbutton{background:rgba(255,155,104,.12)!important;border-color:rgba(255,155,104,.3)!important;color:#ffb18a!important}
+.banner,.home-hero,.event-detail-hero{border:1px solid rgba(255,226,207,.2)!important;border-radius:24px!important;background:radial-gradient(ellipse at 78% 35%,rgba(232,121,76,.34),transparent 42%),linear-gradient(120deg,rgba(63,39,31,.96),rgba(34,25,23,.94) 62%,rgba(76,39,29,.9))!important;box-shadow:0 24px 65px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.08)!important;backdrop-filter:blur(22px)!important}
+.banner:before{background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px)!important}
+.bannerlabel,.bannerfoot{color:#e4c8b8!important}.banner h2,.home-hero h2,.event-detail-hero h1{color:#fff4ec!important}.banner h2 em,.home-hero h2 em,.signhero h1 em{color:#ffad80!important}.banner p,.home-hero p,.event-detail-hero p{color:#d2bdb1!important}
+.ring{border-color:rgba(255,166,119,.28)!important}.core{background:rgba(255,183,140,.1)!important;border-color:rgba(255,213,185,.3)!important;color:#ffb18a!important;backdrop-filter:blur(18px)!important;box-shadow:0 0 48px rgba(231,111,67,.17)!important}
+.stat,.peopleStat{border-radius:18px!important}.statlabel{color:#b8a69c!important}.statlabel span:last-child{color:#ffad80!important}.statvalue{color:#fff4ec!important}.stat:after{background:linear-gradient(90deg,#ff8c5c,transparent)!important}
+.event,.announcement,.surface,.feature-card,.feature-form{border-radius:20px!important;transition:transform .24s,border-color .24s,box-shadow .24s!important}
+.event:hover,.feature-card:hover,.announcement:hover,.surface:hover{transform:translateY(-3px);border-color:rgba(255,173,128,.35)!important;box-shadow:0 22px 55px rgba(0,0,0,.3)!important}
+.cover{background:radial-gradient(ellipse at 70% 15%,rgba(235,120,73,.34),transparent 45%),linear-gradient(135deg,#382a26,#211a18)!important;border-bottom:1px solid rgba(255,226,207,.12)!important}
+.cover:before{background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px)!important}
+.coversymbol{background:rgba(255,170,128,.1)!important;border-color:rgba(255,190,158,.3)!important;color:#ffad80!important;box-shadow:0 8px 24px rgba(0,0,0,.2)!important}
+.datechip{background:rgba(20,15,13,.65)!important;border:1px solid rgba(255,226,207,.2)!important;color:#ffe4d5!important;backdrop-filter:blur(12px)}
+.covercode{color:#d5b6a5!important}.eventtype i{background:#ff9b68!important}.eventmeta,.eventbottom,.rosterrow{border-color:rgba(255,226,207,.13)!important}
+.pill,.status,.roletag{border-radius:999px!important}.pill{background:rgba(255,155,104,.13)!important;color:#ffb18a!important}.registered{color:#ffb18a!important}
+.announce-meta{color:#b9a69b!important}.announce-meta b{color:#ffad80!important}.author b{color:#ffe6d9!important}
+.field{color:#f1d9cb!important}.field input,.field textarea,.field select,.select{background:rgba(18,14,13,.52)!important;border:1px solid rgba(255,226,207,.17)!important;color:#fff3eb!important;border-radius:13px!important;box-shadow:inset 0 1px 5px rgba(0,0,0,.18)!important}
+.field input::placeholder,.field textarea::placeholder{color:#927d72!important}.field input:focus,.field textarea:focus,.field select:focus{border-color:#ff9b68!important;box-shadow:0 0 0 4px rgba(255,155,104,.13)!important}
+.notice{background:rgba(255,155,104,.08)!important;border-color:rgba(255,155,104,.2)!important;color:#f2c7ae!important}
+.attendanceintro{background:linear-gradient(110deg,rgba(82,51,39,.7),rgba(35,26,23,.72))!important;border-color:rgba(255,226,207,.16)!important}
+.rosterperson b{color:#fff0e6!important}.rosterperson small{color:#b29e93!important}
+.status.present{background:rgba(121,190,129,.15)!important;color:#a7e2a9!important}.status.pending{background:rgba(255,174,128,.13)!important;color:#ffc19e!important}
+th{background:rgba(255,235,222,.07)!important;color:#c4aea2!important;border-color:rgba(255,226,207,.13)!important}td{color:#ead8ce!important;border-color:rgba(255,226,207,.1)!important}
+.empty{color:#b9a69b!important}.empty b{color:#fff0e6!important}.empty .emptyicon{background:rgba(255,155,104,.1)!important;border-color:rgba(255,226,207,.18)!important;color:#ffad80!important}
+.notification-item{border-radius:18px!important}.notification-item.unread{border-left:4px solid #ff9b68!important}.notification-item h3{color:#fff0e6!important}.notification-item p,.notification-item small{color:#b9a69b!important}.notification-icon{background:rgba(255,155,104,.13)!important;color:#ffad80!important}
+.modalback{background:rgba(9,7,6,.72)!important;backdrop-filter:blur(12px)!important}.modal{background:linear-gradient(145deg,rgba(57,42,35,.97),rgba(28,21,19,.98))!important;border:1px solid rgba(255,226,207,.2)!important;border-radius:22px!important;color:#fff0e6!important;box-shadow:0 30px 100px rgba(0,0,0,.55)!important;backdrop-filter:blur(28px)!important}.modal h2{color:#fff0e6!important}.modal p,.modalhint{color:#c0aa9e!important}
+.toast{background:rgba(44,32,27,.94)!important;border:1px solid rgba(255,226,207,.2)!important;color:#fff1e8!important;box-shadow:0 18px 50px rgba(0,0,0,.38)!important;backdrop-filter:blur(22px)!important}
+.signinscreen{background:radial-gradient(ellipse at 75% 15%,rgba(192,93,54,.26),transparent 36%),radial-gradient(ellipse at 10% 90%,rgba(103,48,34,.24),transparent 36%),#100d0c!important}
+.signart{background:radial-gradient(ellipse at 72% 65%,rgba(231,116,72,.28),transparent 48%),linear-gradient(135deg,#35241f,#191312)!important;border-right:1px solid rgba(255,226,207,.13)!important}
+.signart .brand b{color:#fff1e8!important}.signart .brand i{color:#ffad80!important}.signart .brand small{color:#bca398!important}
+.signhero h1{color:#fff3eb!important}.signhero h1 em{color:#ffad80!important}.signhero p{color:#cbb5a8!important}.signstats b{color:#fff1e8!important}
+.signinpanel{background:rgba(30,23,20,.68)!important;border:1px solid rgba(255,226,207,.14)!important;backdrop-filter:blur(28px)!important}
+.signform h2{color:#fff2e9!important}.signform>p{color:#bba69b!important}.signform .tabs{background:rgba(255,244,235,.06)!important;border-color:rgba(255,226,207,.13)!important}.signform .tabs .secondary{color:#e2cbbd!important}
+footer{border-color:rgba(255,226,207,.12)!important;color:#9f8b80!important}footer b{color:#e4c4b2!important}
+.navitem{color:#b7a49a!important;border-radius:13px!important}.navitem:hover{background:rgba(255,244,235,.06)!important;color:#fff2e9!important}.navitem.active{background:linear-gradient(100deg,rgba(255,155,104,.16),rgba(255,244,235,.045))!important;border-color:rgba(255,173,128,.2)!important;color:#ffb18a!important;box-shadow:inset 3px 0 #ff9b68,0 8px 24px rgba(0,0,0,.12)!important}.navitem.active:before{background:#ff9b68!important}
+#navShade.open,.navshade.open{background:rgba(7,5,4,.68)!important;backdrop-filter:blur(8px)}
+@media(max-width:900px){
+ body{background-attachment:scroll}
+ .side.open{background:linear-gradient(160deg,rgba(42,31,27,.98),rgba(20,15,13,.98))!important;border-right:1px solid rgba(255,226,207,.16)!important;box-shadow:24px 0 70px rgba(0,0,0,.55)!important}
+ .side.open .brand b,.side.open .workspace b,.side.open .motto b,.side.open .profile b{color:#fff2e9!important}
+ .side.open .brand i{color:#ffad80!important}.side.open .navitem{color:#b7a49a!important}
+ .topbar{width:calc(100% - 18px);margin:9px 9px 0;min-height:60px;border-radius:17px!important;padding:0 12px!important}
+ .content{padding:20px 14px 110px!important}
+ .home-hero,.event-detail-hero{border-radius:21px!important}
+ .home-shortcuts button{background:linear-gradient(145deg,rgba(64,47,40,.8),rgba(31,24,22,.84))!important;border:1px solid rgba(255,226,207,.16)!important;color:#fff2e9!important;box-shadow:0 12px 30px rgba(0,0,0,.2)!important}
+ .home-shortcuts button>span{background:rgba(255,155,104,.13)!important;color:#ffad80!important}
+ .detail-facts>div{background:rgba(255,244,235,.06)!important;border:1px solid rgba(255,226,207,.12)!important}
+ .detail-facts small{color:#b9a69b!important}.detail-facts b{color:#fff0e6!important}
+ .detail-main h2,.detail-action h2,.detail-main h3{color:#fff0e6!important}.detail-description,.detail-action p{color:#b9a69b!important}
+ .backlink{color:#ffad80!important}
+ .mobile-bottom-nav{background:rgba(34,25,22,.9)!important;border:1px solid rgba(255,226,207,.17)!important;box-shadow:0 14px 40px rgba(0,0,0,.4)!important;backdrop-filter:blur(26px)!important}
+ .mobile-bottom-nav button{color:#c9b3a7!important}.mobile-bottom-nav button.active{color:#ffad80!important}
+ .signinscreen{padding:12px!important;background:#100d0c!important}
+ .signart{background:linear-gradient(125deg,#35241f,#191312)!important;border:1px solid rgba(255,226,207,.16)!important;border-radius:20px!important}
+ .signinpanel{background:linear-gradient(145deg,rgba(55,40,33,.94),rgba(29,22,20,.96))!important;border:1px solid rgba(255,226,207,.16)!important;border-radius:20px!important}
+ .signart .brand b{color:#fff1e8!important}.signart .brand i{color:#ffad80!important}
+}
+@media(max-width:600px){.content{padding:17px 12px 108px!important}.welcome h1{font-size:27px}.banner{padding:23px 19px 46px;min-height:235px}.bannerart{opacity:.35}.stat{border-radius:16px!important}.event,.surface{border-radius:18px!important}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
