@@ -166,3 +166,33 @@
 @keyframes kcPageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes kcMarkFloat{0%,100%{transform:translateY(0) rotate(-12deg)}50%{transform:translateY(-10px) rotate(-7deg)}}
 @media(prefers-reduced-motion:reduce){.home-hero-mark,.detail-symbol{animation:none!important}}
+
+
+/* Feature suite: consistent native-feeling cards, forms and action states. */
+.feature-form{display:grid;gap:12px;margin:0 0 22px;padding:20px}
+.feature-form .formtitle{margin-bottom:2px}
+.feature-form .primary{justify-self:start;min-width:170px}
+.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.feature-card{padding:18px;min-width:0;animation:kcPageIn .3s ease both}
+.feature-card h3{margin:12px 0 7px;font:600 17px var(--display);color:var(--text)}
+.feature-card p{font-size:12px;line-height:1.65;color:var(--muted);overflow-wrap:anywhere}
+.feature-card-top,.feature-card-foot,.feature-actions{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.feature-card-top small,.feature-card-foot,.feature-meta,.feature-status{font-size:10px;color:var(--muted)}
+.feature-card-foot{padding-top:12px;margin-top:13px;border-top:1px solid var(--line)}
+.feature-actions{justify-content:flex-start;margin-top:12px;flex-wrap:wrap}
+.feature-actions button,.poll-options button{font-size:11px}
+.feature-link{color:#7965c6;font-size:12px;font-weight:700}
+.poll-options{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.poll-options .outline{padding:9px 12px}
+.calendar-month{margin:0 0 26px}
+.calendar-month h2{font:600 19px var(--display);margin:0 0 12px}
+.leaderboard-list{padding:8px 18px}
+.leader-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+.leader-row:last-child{border-bottom:0}
+.leader-rank{width:32px;color:#8872c9;font:600 14px var(--mono)}
+.leader-person{flex:1;min-width:0}
+.leader-person b,.leader-person small{display:block}
+.leader-person b{font-size:12px}.leader-person small{font-size:10px;color:var(--muted);margin-top:3px}
+.leader-row>strong{font:600 13px var(--display)}
+.leader-row>strong small{font:10px 'DM Sans',sans-serif;color:var(--muted)}
+@media(max-width:700px){.feature-grid{grid-template-columns:1fr}.feature-form{padding:15px}.feature-form .primary{width:100%}}
