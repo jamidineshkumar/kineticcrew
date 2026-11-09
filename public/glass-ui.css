@@ -110,3 +110,32 @@ footer{border-color:#d9d6e8;color:#88839d}footer b{color:#5d5877}
 
 .fieldhint{display:block;margin-top:7px;color:#88839d;font-size:11px;line-height:1.5}
 :root[data-theme="dark"] .fieldhint{color:#aaa6bd}
+
+/* Kinetic Crew app polish: official brand, compact glass app navigation, account tools. */
+.brand-logo{width:76px;height:58px;object-fit:contain;flex:0 0 auto;filter:drop-shadow(0 5px 12px #5d49a32a)}
+.mobile-logo{width:42px;height:42px;object-fit:contain;flex:0 0 auto}
+.brand{gap:10px}.mobilebrand{gap:9px}
+.profile-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,.8fr);gap:16px;align-items:start}
+.profile-edit,.member-pass{padding:22px;display:grid;gap:14px}
+.member-pass{justify-items:center;text-align:center}
+.member-pass .formtitle{justify-self:stretch;text-align:left}
+.member-qr{display:grid;place-items:center;padding:15px;background:#fff;border:1px solid #e5e0f1;border-radius:20px;min-width:220px;min-height:220px}
+.member-qr img{max-width:190px;height:auto}
+.member-pass>b{color:#302d4c;font-size:16px}.member-pass>small{color:#77748f}
+.notification-toolbar{display:flex;justify-content:space-between;align-items:center;margin:14px 0}
+.notification-list{display:grid;gap:12px}
+.notification-item{display:flex;gap:14px;padding:18px;border:1px solid #fff;border-radius:18px;background:linear-gradient(145deg,#ffffffdc,#f5f3fbcc);box-shadow:0 10px 28px #69628f12}
+.notification-item.unread{border-left:4px solid #8e79d1}
+.notification-item.read{opacity:.76}
+.notification-item h3{margin:7px 0;color:#302d4c}.notification-item p{margin:0 0 8px;color:#77758f;line-height:1.6}.notification-item small{color:#85809a}
+.notification-icon{display:grid;place-items:center;flex:0 0 38px;height:38px;border-radius:13px;background:#e9e3fb;color:#806bc4}
+.qr-scanner{padding:12px;margin:8px 0;border:1px solid #dedbed;border-radius:16px;background:#f8f7fc}
+.qr-scanner video{display:block;width:100%;max-height:280px;object-fit:cover;border-radius:12px;background:#151522}
+.qr-scanner[hidden]{display:none}
+.fieldhint{display:block;margin-top:7px;color:#85809a;font-size:11px;line-height:1.5}
+@media(max-width:900px){.profile-layout{grid-template-columns:1fr}.brand-logo{width:58px;height:48px}.mobile-logo{width:39px;height:39px}.notification-item{padding:15px}}
+@media(max-width:600px){.profile-edit,.member-pass{padding:17px}.member-qr{min-width:210px;min-height:210px}.notification-toolbar{gap:8px}.notification-item{gap:10px}}
+:root[data-theme="dark"] .member-pass>b,:root[data-theme="dark"] .notification-item h3{color:#f0eef9}
+:root[data-theme="dark"] .notification-item{background:linear-gradient(145deg,#25243aeb,#1b2030e8);border-color:#44405c}
+:root[data-theme="dark"] .notification-item p,:root[data-theme="dark"] .notification-item small{color:#aaa6bd}
+:root[data-theme="dark"] .qr-scanner{background:#171827;border-color:#45415d}
