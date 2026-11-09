@@ -60,7 +60,7 @@ self.addEventListener("fetch",event=>{
       const cache=await caches.open(CACHE);
       const cached=await cache.match(request);
       const network=fetch(request).then(response=>{if(response.ok)cache.put(request,response.clone());return response;}).catch(()=>null);
-      if(cached){event.waitUntil(network.then(()=>{}));return cached;}
+      if(cached){network.catch(()=>{});return cached;}
       return (await network)||Response.error();
     })());
   }
