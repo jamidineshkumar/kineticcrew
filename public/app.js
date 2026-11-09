@@ -152,11 +152,29 @@ $('#logout').addEventListener('click',async()=>{try{await auth.signOut();}finall
 $('#updatesTop').addEventListener('click',()=>go('notifications'));
 $('#menuToggle').addEventListener('click',()=>{$('#sidebar').classList.toggle('open');$('#navShade').classList.toggle('open');});
 $('#navShade').addEventListener('click',()=>{$('#sidebar').classList.remove('open');$('#navShade').classList.remove('open');});
-async function boot(){if(!auth){$('#app').innerHTML='<div class="load-error"><h2>Sign-in unavailable</h2><p>'+esc(window.KC_CONFIG_ERROR||'Refresh the page and try again.')+'</p><button class="primary" onclick="location.reload()">Retry</button></div>';return;}try{const result=await withTimeout(auth.getSession(),10000,'Authentication is taking too long. Reload the page or sign in again.');const session=result?.data?.session;if(!session||!session.user){location.replace(window.kcPath('login.html'));return;}try{await refresh();}catch(error){if(!restoreOffline(session.user)){throw error;}}}catch(e){S.error=e.message||'Could not load your crew.';$('#app').innerHTML='<div class="load-error"><div class="emptyicon">!</div><h2>Could not load Kinetic Crew</h2><p>'+esc(S.error)+'</p><div class="load-actions"><button class="primary" id="retryBoot">Try again</button><button class="outline" id="switchAccount">Use another account</button></div></div>';$('#retryBoot')?.addEventListener('click',()=>location.reload());$('#switchAccount')?.addEventListener('click',async()=>{try{await auth.signOut();}finally{location.replace(window.kcPath('login.html'));}});}}
+async function boot(){const loadingStarted=Date.now();const loadingWatch=setTimeout(()=>{const el=$('#app');if(el&&el.textContent.includes('Opening Kinetic Crew')){el.innerHTML='<div class="load-error"><div class="emptyicon">!</div><h2>Still loading your crew</h2><p>The dashboard has not finished loading. Check your connection, then retry.</p><div class="load-actions"><button class="primary" onclick="location.reload()">Reload app</button><button class="outline" id="loadingSignout">Switch account</button></div></div>';$('#loadingSignout')?.addEventListener('click',async()=>{try{await auth?.signOut();}finally{location.replace(window.kcPath('login.html'));}});}},18000);if(!auth){clearTimeout(loadingWatch);$('#app').innerHTML='<div class="load-error"><h2>Sign-in unavailable</h2><p>'+esc(window.KC_CONFIG_ERROR||'Refresh the page and try again.')+'</p><button class="primary" onclick="location.reload()">Retry</button></div>';return;}try{const result=await withTimeout(auth.getSession(),10000,'Authentication is taking too long. Reload the page or sign in again.');const session=result?.data?.session;if(!session||!session.user){location.replace(window.kcPath('login.html'));return;}try{await refresh();}catch(error){if(!restoreOffline(session.user)){throw error;}}}catch(e){S.error=e.message||'Could not load your crew.';$('#app').innerHTML='<div class="load-error"><div class="emptyicon">!</div><h2>Could not load Kinetic Crew</h2><p>'+esc(S.error)+'</p><div class="load-actions"><button class="primary" id="retryBoot">Try again</button><button class="outline" id="switchAccount">Use another account</button></div></div>';$('#retryBoot')?.addEventListener('click',()=>location.reload());$('#switchAccount')?.addEventListener('click',async()=>{try{await auth.signOut();}finally{location.replace(window.kcPath('login.html'));}});}}
+
+// Reliable app reload: refresh live data first; offer a hard reload only if startup is unrecoverable.
+const reloadButton=$('#reloadApp');
+if(reloadButton)reloadButton.addEventListener('click',async()=>{
+ const original=reloadButton.innerHTML;reloadButton.disabled=true;reloadButton.textContent='…';
+ try{
+  if(!navigator.onLine)throw Error('You are offline. Reconnect to refresh live crew data.');
+  const result=await withTimeout(auth.getSession(),10000,'Authentication timed out. Please retry.');
+  if(!result?.data?.session?.user){location.replace(window.kcPath('login.html'));return;}
+  await refresh();notice('Kinetic Crew refreshed.');
+ }catch(error){notice(error.message||'Refresh failed.');}
+ finally{reloadButton.disabled=false;reloadButton.innerHTML=original;}
+});
+window.addEventListener('online',()=>{if(S.user)refresh().then(()=>notice('Connection restored. Crew data refreshed.')).catch(e=>{S.error=e.message||'Could not refresh crew data.';paint();});});
+window.addEventListener('offline',()=>{if(S.user){S.offline=true;S.error='You are offline. Showing the last available crew information.';paint();}});
+window.addEventListener('error',event=>{console.error('Kinetic Crew runtime error:',event.error||event.message);});
+window.addEventListener('unhandledrejection',event=>{console.error('Kinetic Crew async error:',event.reason);});
+
 let installPrompt=null;
 window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;const b=$('#installApp');if(b)b.hidden=false;});
 window.addEventListener('appinstalled',()=>{installPrompt=null;const b=$('#installApp');if(b)b.hidden=true;notice('Kinetic Crew is on your home screen.');});
 $('#installApp').addEventListener('click',async()=>{if(!installPrompt){notice('On Android, open Chrome menu and choose Install app or Add to Home screen.');return;}try{await installPrompt.prompt();const result=await installPrompt.userChoice;if(result?.outcome==='accepted')notice('Kinetic Crew is ready on your home screen.');}catch{}installPrompt=null;$('#installApp').hidden=true;});
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register(window.kcPath('sw.js'),{scope:window.kcPath('')}).catch(()=>{}));
-boot();
+boot().finally(()=>{});
 })();
