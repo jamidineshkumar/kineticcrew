@@ -107,3 +107,6 @@ footer{border-color:#d9d6e8;color:#88839d}footer b{color:#5d5877}
 .signinpanel{position:relative}
 .auth-theme-toggle{position:absolute;top:24px;right:28px;z-index:5}
 @media(max-width:600px){.auth-theme-toggle{top:12px;right:14px}}
+
+.fieldhint{display:block;margin-top:7px;color:#88839d;font-size:11px;line-height:1.5}
+:root[data-theme="dark"] .fieldhint{color:#aaa6bd}
