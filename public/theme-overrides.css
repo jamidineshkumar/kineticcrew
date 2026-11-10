@@ -496,3 +496,69 @@ footer{border-color:var(--line)!important;color:var(--muted)!important}
  .notification-item{margin:5px!important;padding:11px!important}
 }
 @media(prefers-reduced-motion:reduce){.home-hero-mark{animation:none!important}}
+
+
+/* KINETIC CREW — full-app frosted glass + pebble button system */
+:root{--kc-glass:color-mix(in srgb,var(--panel) 76%,transparent);--kc-glass-line:color-mix(in srgb,var(--line) 72%,transparent);--kc-pebble:0 7px 0 color-mix(in srgb,var(--text) 9%,transparent),0 13px 24px #00000012,inset 0 1px 0 #ffffff8a;--kc-glass-blur:blur(22px) saturate(155%)}
+:root[data-theme="light"]{--kc-glass:rgba(255,255,255,.58);--kc-glass-line:rgba(255,255,255,.72)}
+:root[data-theme="dark"]{--kc-glass:rgba(42,42,54,.62);--kc-glass-line:rgba(255,255,255,.12);--kc-pebble:0 7px 0 #00000050,0 13px 26px #00000035,inset 0 1px 0 #ffffff1a}
+body{background-attachment:fixed!important}
+.side,.topbar,.workspace,.motto,.stat,.peopleStat,.surface,.event,.announcement,.profile-edit,.chat-pane,.chat-panel,.settings-card,.notice-feed,.notice-settings,.modal,.signinpanel,.tabs,.notice-tabs,.detail-main,.detail-action,.attendanceintro,.rosterwrap,.tablewrap,.notification-item{
+ background:var(--kc-glass)!important;border:1px solid var(--kc-glass-line)!important;
+ backdrop-filter:var(--kc-glass-blur)!important;-webkit-backdrop-filter:var(--kc-glass-blur)!important;
+ box-shadow:0 12px 34px #0000000b,inset 0 1px 0 #ffffff38!important;
+}
+.side{background:var(--kc-glass)!important}
+.topbar{position:sticky;top:0;z-index:20}
+.workspace,.motto,.stat,.peopleStat,.surface,.event,.announcement,.profile-edit,.chat-pane,.chat-panel,.settings-card,.notice-feed,.notice-settings,.detail-main,.detail-action,.attendanceintro{border-radius:22px!important}
+.event{overflow:hidden}
+.event .cover{border-radius:20px 20px 0 0}
+input,select,textarea,.field input,.field textarea,.field select,.select,.notice-actions input{
+ background:color-mix(in srgb,var(--panel2) 72%,transparent)!important;border:1px solid var(--kc-glass-line)!important;
+ backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:15px!important;
+}
+button,.primary,.secondary,.outline,.iconbutton,.theme-toggle,.installbutton,.notice-tabs button,.notice-read-button,.home-shortcuts button,.backlink,.textlink{
+ transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease!important;
+}
+button.primary,.primary,.home-hero .primary,.detail-action .primary,.signform .primary{
+ border:1px solid color-mix(in srgb,var(--text) 15%,transparent)!important;border-radius:17px!important;
+ box-shadow:var(--kc-pebble)!important;transform:translateY(0);
+}
+button.primary:hover,.primary:hover,.home-hero .primary:hover,.detail-action .primary:hover,.signform .primary:hover{
+ transform:translateY(-2px)!important;box-shadow:0 9px 0 color-mix(in srgb,var(--text) 9%,transparent),0 17px 28px #0000001b,inset 0 1px 0 #ffffffa8!important;
+}
+button.primary:active,.primary:active,.home-hero .primary:active{transform:translateY(4px)!important;box-shadow:0 2px 0 color-mix(in srgb,var(--text) 9%,transparent),0 5px 10px #00000018!important}
+.secondary,.outline,.iconbutton,.theme-toggle,.installbutton,.notice-read-button{
+ background:var(--kc-glass)!important;border:1px solid var(--kc-glass-line)!important;border-radius:15px!important;
+ box-shadow:0 5px 0 color-mix(in srgb,var(--text) 7%,transparent),0 9px 20px #0000000c,inset 0 1px 0 #ffffff80!important;
+ backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);
+}
+.secondary:hover,.outline:hover,.iconbutton:hover,.theme-toggle:hover,.installbutton:hover,.notice-read-button:hover{transform:translateY(-2px)!important}
+.secondary:active,.outline:active,.iconbutton:active,.theme-toggle:active{transform:translateY(3px)!important;box-shadow:0 2px 0 #00000018!important}
+.home-shortcuts button{background:var(--kc-glass)!important;border:1px solid var(--kc-glass-line)!important;border-radius:22px!important;box-shadow:var(--kc-pebble)!important;backdrop-filter:var(--kc-glass-blur)!important}
+.home-shortcuts button:hover{transform:translateY(-3px)!important}
+.home-shortcuts button:active{transform:translateY(3px)!important;box-shadow:0 2px 0 #00000018!important}
+.event,.stat,.surface,.announcement,.profile-edit,.chat-pane,.chat-panel,.settings-card{box-shadow:0 12px 34px #00000010,inset 0 1px 0 #ffffff48!important}
+.modalback,.navshade.open{backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+.toast{backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important}
+.brand-logo,.mobile-logo,.hero-brand-logo,.footer-brand-logo,.detail-brand-logo{
+ display:block!important;object-fit:contain!important;object-position:center!important;
+ background:#fff!important;border:1px solid #ffffffd9!important;border-radius:14px!important;
+ padding:3px!important;box-shadow:0 7px 20px #00000018!important;opacity:1!important;visibility:visible!important;
+}
+.brand-logo{width:48px!important;height:48px!important;min-width:48px!important;max-width:48px!important;flex:0 0 48px!important}
+.mobile-logo{width:38px!important;height:38px!important;min-width:38px!important;max-width:38px!important;flex:0 0 38px!important}
+.mobilebrand{display:flex!important;align-items:center!important;gap:9px!important}
+.hero-brand-logo{position:absolute;right:18%;top:50%;transform:translateY(-50%);width:clamp(116px,17vw,220px);height:clamp(116px,17vw,220px);border-radius:30px!important;padding:9px!important;opacity:.96!important;z-index:1}
+.home-hero-mark{display:none!important}
+.detail-brand-logo{width:68px;height:68px;border-radius:20px!important;margin:0 0 15px}
+.footer-brand-logo{width:27px;height:27px;border-radius:9px!important;display:inline-block!important;vertical-align:middle;margin-right:8px}
+.brand small{display:block}
+:root[data-theme="dark"] .brand-logo,:root[data-theme="dark"] .mobile-logo,:root[data-theme="dark"] .hero-brand-logo,:root[data-theme="dark"] .footer-brand-logo,:root[data-theme="dark"] .detail-brand-logo{background:#fff!important}
+@media(max-width:900px){
+ .side.open{backdrop-filter:blur(28px) saturate(155%)!important;-webkit-backdrop-filter:blur(28px) saturate(155%)!important}
+ .hero-brand-logo{width:110px;height:110px;right:5%;top:24%;transform:none;opacity:.9!important}
+ .mobile-logo{width:35px!important;height:35px!important;min-width:35px!important;max-width:35px!important;flex-basis:35px!important}
+}
+@media(max-width:560px){.hero-brand-logo{width:92px;height:92px;right:4%;top:20%}.brand-logo{width:43px!important;height:43px!important;min-width:43px!important;max-width:43px!important;flex-basis:43px!important}}
+@media(prefers-reduced-motion:reduce){button,.primary,.secondary,.outline{transition:none!important}}
