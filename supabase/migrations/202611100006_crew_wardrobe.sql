@@ -13,6 +13,19 @@ create table if not exists public.crew_wardrobe_items (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+create or replace function public.crew_wardrobe_is_member() returns boolean
+language sql stable security definer set search_path=pg_catalog,public,auth as $
+  select auth.uid() is not null and public.crew_wardrobe_is_member();
+$;
+create or replace function public.crew_wardrobe_is_admin() returns boolean
+language sql stable security definer set search_path=pg_catalog,public,auth as $
+  select auth.uid() is not null and public.crew_wardrobe_is_admin();
+$;
+revoke all on function public.crew_wardrobe_is_member() from public,anon;
+revoke all on function public.crew_wardrobe_is_admin() from public,anon;
+grant execute on function public.crew_wardrobe_is_member() to authenticated;
+grant execute on function public.crew_wardrobe_is_admin() to authenticated;
+
 create index if not exists crew_wardrobe_items_created_idx on public.crew_wardrobe_items(created_at desc);
 alter table public.crew_wardrobe_items enable row level security;
 revoke all on public.crew_wardrobe_items from public, anon, authenticated;
@@ -31,8 +44,8 @@ create policy "Crew admins delete wardrobe" on public.crew_wardrobe_items for de
 using (exists(select 1 from public.crew_profiles p where p.auth_id=auth.uid()::text and p.role in ('admin','super_admin')));
 grant select,insert,update,delete on public.crew_wardrobe_items to authenticated;
 insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types)
-values('crew-wardrobe','crew-wardrobe',true,41943040,array['image/png','image/jpeg','image/webp','model/gltf-binary','application/octet-stream'])
-on conflict(id) do update set public=true,file_size_limit=41943040,allowed_mime_types=excluded.allowed_mime_types;
+values('crew-wardrobe','crew-wardrobe',false,41943040,array['image/png','image/jpeg','image/webp','model/gltf-binary','application/octet-stream'])
+on conflict(id) do update set public=false,file_size_limit=41943040,allowed_mime_types=excluded.allowed_mime_types;
 drop policy if exists "Crew members view wardrobe media" on storage.objects;
 create policy "Crew members view wardrobe media" on storage.objects for select to authenticated using(bucket_id='crew-wardrobe');
 drop policy if exists "Crew admins upload wardrobe media" on storage.objects;
