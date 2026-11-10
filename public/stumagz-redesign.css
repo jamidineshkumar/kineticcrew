@@ -483,3 +483,12 @@ body{background:var(--bg,#f3f1f8)}
  #app.content{padding-bottom:calc(112px + env(safe-area-inset-bottom))!important}
 }
 @media(min-width:901px){#kcMobileDock{display:none!important}}
+
+/* Event hero brand slot: use the real Kinetic Crew artwork at full visibility. */
+.event-detail-hero .detail-brand-logo{
+ position:absolute!important;right:20px!important;top:22px!important;
+ display:block!important;width:88px!important;height:88px!important;
+ object-fit:contain!important;opacity:1!important;visibility:visible!important;
+ background:transparent!important;border:0!important;border-radius:20px!important;
+ box-shadow:0 10px 28px #0003!important;z-index:2!important
+}
