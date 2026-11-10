@@ -587,3 +587,7 @@ button.primary:active,.primary:active,.home-hero .primary:active{transform:trans
 .member-edit .field{display:block;margin:8px 0}
 @media(max-width:850px){.profile-layout{grid-template-columns:1fr}.profile-card{max-width:520px;width:100%;margin:auto}}
 @media(prefers-reduced-motion:reduce){.content>*{animation:none!important}*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+
+.profile-shortcut{cursor:pointer;border:1px solid var(--kc-glass-line)!important;display:grid;place-items:center;padding:0!important;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease!important}
+.profile-shortcut:hover{transform:translateY(-2px) scale(1.04)!important;box-shadow:0 8px 20px #00000020!important}
+.profile-shortcut .avatar-photo{width:100%;height:100%;border-radius:50%;object-fit:cover}
