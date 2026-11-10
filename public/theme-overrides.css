@@ -754,3 +754,18 @@ button.primary:active,.primary:active,.home-hero .primary:active{transform:trans
 .notice-delete-button{width:29px;height:29px;flex:0 0 29px;border:1px solid #f8717140;border-radius:9px;background:#f8717112;color:#ff8f85;font-size:18px}
 .notification-item{align-items:center}
 @media(max-width:600px){.crop-modal{padding:22px 15px}.crop-actions>*{flex:1}.nav-root{font-size:12px!important}}
+
+
+/* Sidebar owns a bounded scroll area; bottom account panel stays visible */
+.side{height:100dvh!important;min-height:0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important}
+#nav{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;scrollbar-gutter:stable!important;padding:4px 4px 18px!important;display:flex!important;flex-direction:column!important;gap:9px!important;-webkit-overflow-scrolling:touch!important}
+.sidebottom{flex:0 0 auto!important;margin-top:10px!important}
+.nav-group{flex:0 0 auto!important}
+.nav-group-items{max-height:min(52vh,440px)!important;overflow-y:auto!important;overscroll-behavior:contain!important}
+.nav-group-label{min-width:0!important;flex:1!important}
+@media(max-height:760px){.side{padding-top:14px!important}.brand{padding-bottom:15px!important}.workspace{margin-bottom:16px!important}.motto{display:none!important}}
+@media(max-width:680px){.side{height:100dvh!important;overflow:hidden!important}.side.open #nav{overflow-y:auto!important;min-height:0!important}.side.open .sidebottom{position:sticky!important;bottom:0!important;background:var(--panel)!important;padding-bottom:env(safe-area-inset-bottom)!important}}
+.crop-backdrop{z-index:10000!important;padding:18px!important}.crop-modal{width:min(620px,96vw)!important;max-height:92dvh!important;overflow:auto!important}
+#cropCanvas{display:block;width:min(100%,520px)!important;height:auto!important;max-height:52dvh!important;object-fit:contain;touch-action:none;cursor:grab;background:#171514;border-radius:12px}
+#cropCanvas:active{cursor:grabbing}.crop-zoom{display:flex;align-items:center;gap:14px;margin:18px 0;font:10px var(--mono);letter-spacing:.1em}.crop-zoom input{flex:1;min-width:0}
+.crop-actions{display:flex;justify-content:flex-end;gap:10px}.settings-card{margin-bottom:14px}
