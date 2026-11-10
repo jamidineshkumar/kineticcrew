@@ -227,7 +227,7 @@ function leaderboardPage(){
 }
 
 
-function settingsPage(){return profilePage()+'<section class="surface app-settings-panel"><div class="formtitle"><div class="formicon">☼</div><div><h3>Appearance</h3><p>Choose how Kinetic Crew looks on this device.</p></div></div><div class="settings-choice"><button type="button" class="outline" data-set-theme="dark">☾ Dark mode</button><button type="button" class="outline" data-set-theme="light">☀ Light mode</button></div></section>';}
+function legacySettingsPage(){return profilePage()+'<section class="surface app-settings-panel"><div class="formtitle"><div class="formicon">☼</div><div><h3>Appearance</h3><p>Choose how Kinetic Crew looks on this device.</p></div></div><div class="settings-choice"><button type="button" class="outline" data-set-theme="dark">☾ Dark mode</button><button type="button" class="outline" data-set-theme="light">☀ Light mode</button></div></section>';}
 function crewManagementPage(){if(!admin())return empty('Crew management is restricted','Only crew admins can manage members and access.');const rows=(S.members||[]).map(m=>'<article class="crew-manage-row"><div class="crew-manage-person">'+avatarMarkup(m)+'<span><b>'+esc(m.name)+'</b><small>'+esc(m.email)+'</small></span></div><span class="roletag '+esc(m.role)+'">'+esc(role(m.role))+'</span>'+(superadmin()&&m.auth_id!==S.user.auth_id?'<select class="select role-select" data-id="'+esc(m.auth_id)+'"><option value="member" '+(m.role==='member'?'selected':'')+'>Member</option><option value="admin" '+(m.role==='admin'?'selected':'')+'>Admin</option></select>':'')+'</article>').join('');return welcome('Crew management','Manage the people and permissions behind Kinetic Crew.')+'<div class="crew-manage-summary"><div><b>'+S.members.length+'</b><small>CREW ACCOUNTS</small></div><div><b>'+S.members.filter(m=>m.role!=='member').length+'</b><small>ADMINS</small></div><div><b>'+S.members.filter(m=>m.role==='member').length+'</b><small>MEMBERS</small></div></div><section class="surface crew-manage-list"><div class="directoryhead"><div><h3>Members & access</h3><p>Manage crew roles from one place.</p></div></div>'+(rows||empty('No members yet','New crew accounts will appear here.'))+'</section><button class="outline" data-view="attendance">Open attendance desk ↗</button>';}
 function chatMessagesMarkup(items){const rows=(items||[]).slice().sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));return rows.length?rows.map(m=>{const own=String(m.author_id)===String(S.user.auth_id);return '<article class="wa-message '+(own?'own':'')+'"><small>'+esc(own?'You':m.author_name||'Crew member')+'</small><p>'+esc(m.body||m.title)+'</p><time>'+esc(dt(m.created_at))+'</time></article>';}).join(''):'<div class="wa-empty"><b>Start the crew conversation</b><small>Messages from your crew will appear here.</small></div>';}
 function whatsAppChatPage(){const items=S.featureItems.chat||[];return welcome('Crew Chat','One crew conversation. Share plans, quick updates and moments.')+'<section class="wa-shell"><aside class="wa-rail"><div class="wa-rail-head"><b>KC MESSAGES</b><span>● ONLINE</span></div><div class="wa-room active"><span class="wa-room-avatar">KC</span><span><b>Main Crew</b><small>Everyone in Kinetic Crew</small></span></div></aside><div class="wa-conversation"><header class="wa-chat-head"><span class="wa-room-avatar">KC</span><span><b>Main Crew</b><small>Kinetic Crew group conversation · '+items.length+' messages</small></span></header><div class="wa-messages" id="waMessages">'+chatMessagesMarkup(items)+'</div><form class="wa-composer" data-feature-form="chat"><input type="hidden" name="title" value="Crew message"><textarea name="body" rows="1" maxlength="5000" required placeholder="Message the crew…"></textarea><button type="submit" aria-label="Send message">➤</button></form></div></section>';}
@@ -284,7 +284,38 @@ function openImageCrop(file,isBanner){
 }
 function drawImageCrop(){const c=$('#cropCanvas'),p=S.crop;if(!c||!p)return;const ctx=c.getContext('2d'),w=p.w,h=p.h,scale=Math.max(w/p.img.naturalWidth,h/p.img.naturalHeight)*p.zoom,iw=p.img.naturalWidth*scale,ih=p.img.naturalHeight*scale;ctx.clearRect(0,0,w,h);ctx.fillStyle='#171514';ctx.fillRect(0,0,w,h);ctx.drawImage(p.img,(w-iw)/2+p.x,(h-ih)/2+p.y,iw,ih);ctx.strokeStyle='#ffffffaa';ctx.lineWidth=2;ctx.strokeRect(1,1,w-2,h-2);}
 function closeImageCrop(){if(S.crop?.url)URL.revokeObjectURL(S.crop.url);S.crop=null;$('#modalRoot').innerHTML='';}
-async function saveCroppedImage(){const p=S.crop;if(!p)return;const source=$('#cropCanvas'),out=document.createElement('canvas');out.width=p.isBanner?1200:720;out.height=p.isBanner?400:720;out.getContext('2d').drawImage(source,0,0,out.width,out.height);const blob=await new Promise(resolve=>out.toBlob(resolve,'image/jpeg',.9));if(!blob){notice('Could not process this image.');return;}const button=$('#cropSave');button.disabled=true;button.textContent='Uploading…';try{const path=(S.user.auth_id||S.user.id)+'/'+(p.isBanner?'banner-':'avatar-')+Date.now()+'.jpg';const {data,error}=await client.storage.from('crew-avatars').upload(path,blob,{upsert:true,contentType:'image/jpeg'});if(error)throw error;const publicUrl=client.storage.from('crew-avatars').getPublicUrl(data.path).data.publicUrl+'?v='+Date.now();const previewUrl=URL.createObjectURL(blob);if(p.isBanner){S.pendingBannerUrl=publicUrl;const cover=document.querySelector('.profile-cover');if(cover){cover.style.backgroundImage='url('+JSON.stringify(previewUrl)+')';cover.classList.add('has-banner');}}else{S.pendingAvatarUrl=publicUrl;const preview=$('#profilePhotoPreview');if(preview?.tagName==='IMG')preview.src=previewUrl;else if(preview){const img=document.createElement('img');img.id='profilePhotoPreview';img.className='profile-photo';img.alt='Profile photo';img.src=previewUrl;preview.replaceWith(img);}}closeImageCrop();notice('Image uploaded. Save your profile to publish it.');celebrateSave();}catch(err){button.disabled=false;button.textContent='Use this image →';notice(err.message||'Image upload failed.');}}
+async function saveCroppedImage(){
+ const p=S.crop;if(!p)return;
+ const source=$('#cropCanvas'),out=document.createElement('canvas');
+ out.width=p.isBanner?1200:720;out.height=p.isBanner?400:720;
+ out.getContext('2d').drawImage(source,0,0,out.width,out.height);
+ let blob=await new Promise(resolve=>out.toBlob(resolve,'image/jpeg',.84));
+ if(!blob){notice('Could not process this image.');return;}
+ if(blob.size>4.8*1024*1024){out.width=p.isBanner?900:560;out.height=p.isBanner?300:560;out.getContext('2d').drawImage(source,0,0,out.width,out.height);blob=await new Promise(resolve=>out.toBlob(resolve,'image/jpeg',.72));}
+ if(!blob||blob.size>4.8*1024*1024){notice('Image is still too large. Choose a smaller image.');return;}
+ const button=$('#cropSave');button.disabled=true;button.textContent='Uploading & saving…';
+ try{
+  const userId=S.user.auth_id||S.user.id;if(!userId)throw Error('Your crew session expired. Sign in again.');
+  const path=userId+'/'+(p.isBanner?'banner-':'avatar-')+crypto.randomUUID()+'.jpg';
+  const uploaded=await client.storage.from('crew-avatars').upload(path,blob,{upsert:false,contentType:'image/jpeg',cacheControl:'3600'});
+  if(uploaded.error)throw uploaded.error;
+  const publicUrl=client.storage.from('crew-avatars').getPublicUrl(uploaded.data.path).data.publicUrl+'?v='+Date.now();
+  const saved=await api('profile','PATCH',{
+   name:S.user.name||S.user.email,
+   username:S.user.username||String(S.user.email||'crew_member').split('@')[0],
+   bio:S.user.bio||'',
+   avatar_url:p.isBanner?(S.user.avatar_url||null):publicUrl,
+   banner_url:p.isBanner?publicUrl:(S.user.banner_url||null)
+  });
+  S.user={...S.user,...saved};
+  if(p.isBanner)S.pendingBannerUrl=null;else S.pendingAvatarUrl=null;
+  try{S.profileSocial=await rpc('crew_profile_social',{p_auth_id:S.user.auth_id});}catch{}
+  const previewUrl=URL.createObjectURL(blob);
+  if(p.isBanner){const cover=document.querySelector('.profile-cover');if(cover){cover.style.backgroundImage='url('+JSON.stringify(previewUrl)+')';cover.classList.add('has-banner');}}
+  else{const preview=$('#profilePhotoPreview');if(preview?.tagName==='IMG')preview.src=previewUrl;else if(preview){const img=document.createElement('img');img.id='profilePhotoPreview';img.className='profile-photo';img.alt='Profile photo';img.src=previewUrl;preview.replaceWith(img);}}
+  closeImageCrop();notice(p.isBanner?'Profile banner saved.':'Profile photo saved.');celebrateSave();paintUser();paint();
+ }catch(err){button.disabled=false;button.textContent='Use this image →';notice(err.message||'Image upload failed.');}
+}
 let usernameCheckTimer=null,usernameCheckSequence=0;
 async function updateUsernameHint(input,hint){
  const value=String(input.value||'').trim().toLowerCase(),seq=++usernameCheckSequence;
