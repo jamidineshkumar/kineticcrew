@@ -831,3 +831,27 @@ button.kc-reference-hero{cursor:pointer}
 .kc-feed-page .social-post-caption{padding:0 15px 10px;font-size:13px;line-height:1.55}
 .kc-feed-page .social-post-stats,.kc-feed-page .social-post-actions{margin-left:14px;margin-right:14px}
 @media(max-width:600px){.kc-feed-page{gap:13px}.kc-feed-stories{border-radius:17px}.kc-feed-composer{padding:12px!important}.kc-feed-composer .social-composer-foot small{max-width:55%}}
+
+
+/* Final mobile navigation override: keep the drawer above all app layers. */
+@media(max-width:900px){
+ #appRoot .shell>aside#sidebar{
+  display:flex!important;position:fixed!important;top:0!important;bottom:0!important;left:0!important;
+  width:min(320px,84vw)!important;height:100dvh!important;max-height:100dvh!important;
+  z-index:1200!important;overflow-y:auto!important;overflow-x:hidden!important;
+  transform:translate3d(-110%,0,0)!important;visibility:hidden!important;pointer-events:none!important;
+  transition:transform .28s cubic-bezier(.2,.8,.2,1),visibility .28s!important;
+ }
+ #appRoot .shell>aside#sidebar.open{
+  transform:translate3d(0,0,0)!important;visibility:visible!important;pointer-events:auto!important;
+ }
+ #appRoot #navShade{
+  display:block!important;position:fixed!important;inset:0!important;z-index:1190!important;
+  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+ }
+ #appRoot #navShade.open{
+  opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+ }
+ #appRoot .topbar{position:relative;z-index:70}
+ #appRoot #menuToggle{position:relative;z-index:80;display:inline-grid!important;place-items:center!important;pointer-events:auto!important}
+}
