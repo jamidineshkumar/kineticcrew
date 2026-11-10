@@ -385,6 +385,7 @@ $('#app').addEventListener('change',e=>{if(e.target.id==='profilePhotoInput'&&e.
 $('#logout').addEventListener('click',async()=>{try{await auth.signOut();}finally{S.user=null;S.events=[];S.announcements=[];S.members=[];location.replace(window.kcPath('login.html'));}});
 $('#updatesTop').addEventListener('click',()=>go('notifications'));
 $('#menuToggle').addEventListener('click',()=>{$('#sidebar').classList.toggle('open');$('#navShade').classList.toggle('open');});
+document.addEventListener('kc:navigate',event=>{const view=event.detail?.view;if(view)go(view);});
 $('#navShade').addEventListener('click',()=>{$('#sidebar').classList.remove('open');$('#navShade').classList.remove('open');});
 async function showCrewIntro(force){
  const id=String(S.user?.auth_id||S.user?.id||'guest'),key='kc-intro-seen:'+id;
