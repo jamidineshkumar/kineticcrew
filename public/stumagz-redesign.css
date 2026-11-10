@@ -971,3 +971,18 @@ body{background:var(--bg);color:var(--text)}
 .kc-install-dialog .primary{width:100%;min-height:44px;border:0;border-radius:13px;background:#f20a91;color:#fff;font-weight:800}
 .kc-install-icon{display:grid;place-items:center;width:43px;height:43px;border-radius:14px;background:#491a36;color:#ff8ac7;font-size:25px}
 .kc-install-close{position:absolute;right:13px;top:12px;width:34px;height:34px;border:1px solid #48414a;border-radius:50%;background:#242129;color:#fff;font-size:22px}
+
+
+/* Compact crew member profile: no social-follow layout or oversized empty cover. */
+.kc-public-member-card{max-width:820px;margin:22px auto;padding:24px!important;border:1px solid var(--line,#393941)!important;border-radius:20px!important;background:var(--surface,#202025)!important;color:var(--text,#f5f3f4)!important}
+.kc-public-member-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.kc-public-member-avatar{display:grid;place-items:center;width:76px;height:76px;flex:0 0 76px;object-fit:cover;border-radius:50%;border:2px solid #777;background:#303039;color:#fff;font-size:24px;font-weight:800}
+.kc-public-member-name{min-width:0;flex:1}
+.kc-public-member-name h2{margin:0 0 5px;color:inherit;font-size:clamp(20px,3vw,27px);line-height:1.2}
+.kc-public-member-name p{margin:0;color:var(--muted,#aaa5ad);font-size:13px}
+.kc-public-member-role{padding:7px 10px;border-radius:8px;background:#3b3034;color:#f0b6b0;font-size:10px;font-weight:800;letter-spacing:.04em}
+.kc-public-member-body{margin:20px 0 0;padding-top:17px;border-top:1px solid var(--line,#393941)}
+.kc-public-member-body p{margin:0 0 16px;color:var(--muted,#c1bbc2);line-height:1.6}
+.kc-member-directory-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
+.kc-member-directory-footer button{min-height:36px}
+@media(max-width:600px){.kc-public-member-card{margin:14px 0;padding:18px!important}.kc-public-member-head{gap:12px}.kc-public-member-avatar{width:62px;height:62px;flex-basis:62px}.kc-public-member-role{margin-left:74px}}
