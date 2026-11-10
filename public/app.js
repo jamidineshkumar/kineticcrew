@@ -1,6 +1,7 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
+window.KC_APP_VERSION='1.1.0';
 const S={user:null,view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],featureItems:{},roster:null,rosterEvent:'',error:''};
 function withTimeout(promise,ms,label){let timer;return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(label||'Request timed out. Check your connection and retry.')),ms);})]).finally(()=>clearTimeout(timer));}
 async function rpc(name,args){return withTimeout(client.rpc(name,args),12000,'The crew service is taking too long. Check your connection and retry.');}
@@ -150,6 +151,13 @@ function featureCard(key,item){
  if(key==='achievements'&&data.recipient)extra+='<p class="feature-meta">Awarded to '+esc(data.recipient)+'</p>';
  return '<article class="surface feature-card"><div class="feature-card-top"><span class="pill">'+esc(status)+'</span><small>'+esc(dt(item.created_at))+'</small></div><h3>'+esc(item.title)+'</h3><p>'+esc(item.body||'')+'</p>'+extra+'<div class="feature-card-foot"><span>By '+esc(item.author_name||'Crew member')+'</span>'+(admin()||item.author_id===S.user.auth_id?'<button class="textlink" data-feature-delete="'+esc(item.id)+'" data-feature="'+key+'">Delete</button>':'')+'</div></article>';
 }
+function featurePage(key){
+ const items=(S.featureItems[key]||[]).slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+ const canCreate=key==='polls'||key==='memories'||key==='leave'||admin();
+ const title=featureLabels[key]||'Crew feature';
+ const descriptions={polls:'Your voice matters. Vote on the next crew decision.',memories:'Relive performances, rehearsals and the moments in between.',leave:'Send a leave request to the crew admins.',rehearsals:'Practice plans and rehearsal details.',auditions:'Audition announcements and submissions.',expenses:'Crew expenses and event budgets.',achievements:'Celebrate the people moving the crew forward.'};
+ return welcome(title,descriptions[key]||'Everything happening across Kinetic Crew.')+(canCreate?featureForm(key):'')+'<div class="feature-feed">'+(items.map(item=>featureCard(key,item)).join('')||empty('Nothing here yet','New '+title.toLowerCase()+' will appear here.'))+'</div>';
+}
 function chatPage(){
  const items=(S.featureItems.chat||[]).slice().sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
  const messages=items.map(item=>'<article class="wa-message '+(item.author_id===S.user.auth_id?'mine':'theirs')+'"><small>'+esc(item.author_name||'Crew member')+'</small><p>'+esc(item.body||item.title)+'</p><time>'+esc(new Date(item.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}))+'</time></article>').join('');
@@ -177,7 +185,7 @@ function paint(){
 const groups=[
 ['overview','OVERVIEW','Your crew at a glance',[['overview','⌂','Overview']]],
 ['events','EVENTS','Performances & sessions',[['events','▦','Events']]],
-['chat','CREW CHAT','Talk like a crew',[['chat','✉','Crew chat']]],
+['chat','CREW CHAT','Talk like a crew',[['chat','✉','Crew chat'],['polls','◉','Polls & voting'],['memories','▧','KC Memories'],['leave','↗','Leave requests'],['updates','↗','Crew updates'],['people','♙','Discover crew']]],
 ['notifications','NOTIFICATIONS','Updates & alerts',[['notifications','♧','Notifications']]],
 ['management','CREW MANAGEMENT','Members & operations',[['crew-management','♙','Members'],...(admin()?[['attendance','◎','Attendance']]:[])]],
 ['settings','APP SETTINGS','Your account & preferences',[['settings','⚙','App settings']]]
