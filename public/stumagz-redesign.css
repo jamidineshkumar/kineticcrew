@@ -629,3 +629,33 @@ main{background:transparent!important}
 #app .eventmeta,#app .eventdesc,#app .feature-card p,#app .crew-profile-tile p{color:#aaa5a5!important}
 #app .profile-cover{background-color:#29292e!important}
 @media(max-width:900px){.side.open{background:#171719f7!important}.side.open .workspace,.side.open .motto,.side.open .profile{background:#242428!important}}
+
+
+/* Mobile chat: keep the composer above the floating tab bar and reduce dead space. */
+@media(max-width:680px){
+ #app .wa-chat-shell{
+  height:clamp(340px,54dvh,620px)!important;
+  min-height:340px!important;
+  max-height:620px!important;
+  margin-bottom:calc(104px + env(safe-area-inset-bottom))!important;
+  border-radius:16px!important;
+ }
+ #app .wa-chat-messages{min-height:0!important;overscroll-behavior:contain}
+ #app .wa-chat-compose{position:relative;z-index:2;flex:0 0 auto;padding:10px!important;padding-bottom:calc(10px + env(safe-area-inset-bottom))!important}
+ #app .wa-chat-compose textarea{min-height:44px!important;max-height:100px!important}
+ #app .wa-send{width:44px!important;height:44px!important;flex-basis:44px!important}
+ #app.content{padding-bottom:calc(112px + env(safe-area-inset-bottom))!important}
+}
+/* Compact mobile header: retain navigation, theme, notifications and profile. */
+@media(max-width:680px){
+ .topbar{height:66px!important;min-height:66px!important;padding:0 12px!important;gap:8px!important}
+ .mobilebrand{gap:7px!important;flex:1 1 auto!important;min-width:0!important}
+ .mobilebrand .hamburger{width:42px!important;height:42px!important;flex:0 0 42px!important}
+ .mobilebrand .brand-logo{width:40px!important;height:40px!important;flex:0 0 40px!important}
+ .mobilebrand>b{font-size:clamp(10px,2.8vw,12px)!important;white-space:nowrap!important;letter-spacing:.01em!important}
+ .topright{flex:0 0 auto!important;gap:7px!important}
+ .topright .theme-toggle{display:grid!important;place-items:center!important;width:42px!important;height:42px!important;min-width:42px!important;padding:0!important}
+ .topright .theme-toggle .theme-label{display:none!important}
+ .topright .online{display:none!important}
+ .topright #updatesTop,.topright #topAvatar{width:40px!important;height:40px!important;min-width:40px!important;flex:0 0 40px!important}
+}
