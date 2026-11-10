@@ -253,7 +253,7 @@ body{background:var(--bg,#f3f1f8)}
  .social-post-card{border-radius:18px;overflow:hidden}
  .profile-social-layout{display:flex;flex-direction:column;gap:14px}
  .profile-social-card{position:relative;overflow:hidden;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
- .profile-cover{height:clamp(390px,112vw,540px)!important;min-height:390px!important;border:0!important;border-radius:0 0 26px 26px!important;background-color:#29243e!important;background-image:linear-gradient(180deg,#0002 0%,#0000 35%,#17151be6 100%),var(--profile-cover-image)!important;background-position:center!important;background-size:cover!important}
+ .profile-cover{height:clamp(390px,112vw,540px)!important;min-height:390px!important;border:0!important;border-radius:0 0 26px 26px!important;background-color:#29243e!important;background-image:none!important;background-position:center!important;background-size:cover!important}
  .profile-cover:not(.has-banner){background-image:radial-gradient(ellipse at 70% 25%,#7b679e 0,transparent 42%),linear-gradient(145deg,#3d315c,#18171f 78%)!important}
  .profile-cover-label{display:none!important}
  .banner-edit{top:16px!important;right:16px!important;padding:9px 13px!important;border:1px solid #ffffff4d!important;border-radius:999px!important;background:#1119!important;color:#fff!important;backdrop-filter:blur(12px)}
