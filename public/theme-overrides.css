@@ -669,3 +669,5 @@ button.primary:active,.primary:active,.home-hero .primary:active{transform:trans
 @media(max-width:1000px){.kc-stage{padding:32px 28px;min-height:360px}.kc-stage-copy{max-width:62%}.kc-stage-art{width:42%}.kc-stage-monogram{width:90px;height:90px;font-size:38px}.kc-rolling-track{grid-auto-columns:38%}}
 @media(max-width:650px){.kc-stage{min-height:440px;padding:28px 23px;align-items:flex-start}.kc-stage-copy{max-width:100%}.kc-stage h2{font-size:52px}.kc-stage-art{width:100%;height:42%;top:auto;bottom:0;opacity:.7}.kc-stage-monogram{width:76px;height:76px;font-size:32px}.kc-stage-index{left:23px;bottom:17px}.kc-pulse-grid{grid-template-columns:1fr 1fr}.kc-pulse-card:last-child{grid-column:span 2}.kc-rolling-track{grid-auto-columns:72%}.kc-bottom-grid{grid-template-columns:1fr}.kc-next-card{flex-wrap:wrap}.kc-next-info{min-width:calc(100% - 100px)}.kc-next-card .primary{width:100%}.kc-pulse-head h2,.kc-section-head h2{font-size:21px}}
 @media(prefers-reduced-motion:reduce){.kc-marquee-track,.kc-orbit,.kc-stage-monogram,.kc-live i,.kc-pulse-live i{animation:none!important}}
+
+
