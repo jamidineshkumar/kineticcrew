@@ -1011,3 +1011,71 @@ body{background:var(--bg);color:var(--text)}
  main{padding-bottom:calc(112px + env(safe-area-inset-bottom))!important}
 }
 @media(max-width:420px){.kc-app-header{padding-inline:12px}.kc-mobile-dock{left:12px!important;right:12px!important}}
+
+
+/* Kinetic Crew bottom dock — approved floating pill reference */
+@media(max-width:900px){
+  .kc-mobile-dock{
+    position:fixed!important;z-index:1000!important;
+    left:4.5vw!important;right:4.5vw!important;
+    bottom:max(12px,env(safe-area-inset-bottom))!important;
+    display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    align-items:center!important;gap:5px!important;
+    min-height:98px!important;padding:9px 10px!important;
+    border:1px solid rgba(255,255,255,.035)!important;
+    border-radius:999px!important;
+    background:rgba(34,35,39,.96)!important;
+    box-shadow:0 12px 38px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.035)!important;
+    backdrop-filter:blur(24px) saturate(135%)!important;
+    -webkit-backdrop-filter:blur(24px) saturate(135%)!important;
+  }
+  .kc-mobile-dock button{
+    display:flex!important;min-width:0!important;min-height:78px!important;
+    flex-direction:column!important;align-items:center!important;justify-content:center!important;
+    gap:5px!important;padding:7px 2px!important;border:0!important;
+    border-radius:50%!important;background:transparent!important;
+    color:#f1f0f2!important;font-size:clamp(9px,2.8vw,12px)!important;
+    font-weight:600!important;line-height:1.15!important;letter-spacing:0!important;
+    white-space:normal!important;box-shadow:none!important;
+  }
+  .kc-mobile-dock button .dock-icon{
+    display:grid!important;place-items:center!important;
+    width:34px!important;height:32px!important;
+    color:inherit!important;font-size:29px!important;line-height:1!important;
+  }
+  .kc-mobile-dock button.active{
+    width:78px!important;height:78px!important;min-height:78px!important;
+    justify-self:center!important;border-radius:50%!important;
+    background:#fff!important;color:#171719!important;
+    box-shadow:0 0 0 9px rgba(255,255,255,.055)!important;
+  }
+  .kc-mobile-dock button.active .dock-icon{color:#171719!important}
+  .kc-mobile-dock button:focus-visible{outline:2px solid #12c8d4!important;outline-offset:3px!important}
+  main{padding-bottom:calc(145px + env(safe-area-inset-bottom))!important}
+  main>.content{padding-bottom:28px!important}
+  main>footer{
+    position:relative!important;display:grid!important;place-items:center!important;
+    min-height:210px!important;margin:20px -13px 0!important;padding:35px 20px 28px!important;
+    overflow:hidden!important;border:0!important;border-top:1px solid rgba(255,255,255,.055)!important;
+    background:linear-gradient(180deg,rgba(8,8,14,0),rgba(30,20,24,.82))!important;
+    text-align:center!important;
+  }
+  main>footer:before{
+    content:"KINETIC"!important;position:absolute!important;left:50%!important;top:45%!important;
+    transform:translate(-50%,-50%)!important;white-space:nowrap!important;
+    color:rgba(18,200,212,.055)!important;font-size:clamp(100px,25vw,190px)!important;
+    line-height:1!important;font-weight:950!important;letter-spacing:-.09em!important;
+    pointer-events:none!important;
+  }
+  main>footer:after{
+    content:"Made with  ♥  For Students"!important;position:relative!important;z-index:1!important;
+    display:block!important;color:#f0edef!important;font-size:clamp(19px,5vw,29px)!important;
+    font-weight:500!important;letter-spacing:-.035em!important;
+  }
+  main>footer span{display:none!important}
+}
+@media(max-width:360px){
+  .kc-mobile-dock{left:3vw!important;right:3vw!important;padding-inline:6px!important;gap:2px!important}
+  .kc-mobile-dock button.active{width:70px!important;height:70px!important;min-height:70px!important}
+  .kc-mobile-dock button{min-height:70px!important}
+}
