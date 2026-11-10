@@ -790,3 +790,44 @@ button.kc-reference-hero{cursor:pointer}
  .kc-reference-tile>small{font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){.kc-reference-tile{transition:none}}
+
+/* Kinetic Crew Feed — social-first mobile layout */
+.kc-feed-page{max-width:760px;margin:0 auto;display:grid;gap:16px;padding-bottom:24px}
+.kc-feed-top{display:flex;align-items:center;justify-content:space-between;padding:4px 2px 0}
+.kc-feed-kicker{font:700 9px var(--mono);letter-spacing:.15em;color:var(--muted,#9693a1)}
+.kc-feed-top h1{font:700 clamp(27px,5vw,36px) var(--display);margin:5px 0 0;letter-spacing:-.04em}
+.kc-feed-inbox{position:relative;width:42px;height:42px;border:1px solid var(--line,#393940);border-radius:15px;background:var(--panel,#222226);color:var(--text,#f5f3f2);font-size:21px}
+.kc-feed-inbox i{position:absolute;width:7px;height:7px;right:8px;top:8px;border-radius:50%;background:#f05a6d}
+.kc-feed-tabs{display:flex;gap:24px;border-bottom:1px solid var(--line,#393940);padding:0 3px}
+.kc-feed-tabs span{padding:10px 1px;color:var(--muted,#aaa);font-size:12px;font-weight:700}
+.kc-feed-tabs span.active{color:var(--text,#fff);border-bottom:2px solid #f05a6d}
+.kc-feed-stories{padding:14px 13px 12px;border:1px solid var(--line,#393940);border-radius:19px;background:var(--panel,#202124);overflow:hidden}
+.kc-feed-stories-head,.kc-feed-section-head{display:flex;align-items:center;justify-content:space-between}
+.kc-feed-stories-head b,.kc-feed-section-head b{font-size:13px}
+.kc-feed-stories-head>span,.kc-feed-section-head>span{font:700 8px var(--mono);letter-spacing:.12em;color:var(--muted,#999)}
+.kc-feed-story-rail{display:flex;gap:15px;overflow-x:auto;padding:13px 1px 2px;scrollbar-width:none}
+.kc-feed-story-rail::-webkit-scrollbar{display:none}
+.kc-feed-story{flex:0 0 57px;display:grid;justify-items:center;gap:6px;padding:0;border:0;background:none;color:inherit}
+.kc-story-ring{position:relative;width:53px;height:53px;padding:3px;border:2px solid #55515e;border-radius:50%;display:grid;place-items:center}
+.kc-story-ring.fresh{border-color:#f05a6d}
+.kc-story-avatar,.kc-story-avatar img,.kc-story-avatar .avatar-fallback{width:41px;height:41px;border-radius:50%;display:grid;place-items:center;object-fit:cover}
+.kc-story-ring i{position:absolute;right:-2px;bottom:-1px;width:19px;height:19px;display:grid;place-items:center;border:2px solid var(--panel,#202124);border-radius:50%;background:#f05a6d;color:white;font-style:normal;font-size:15px}
+.kc-feed-story small{max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px;color:var(--text,#eee)}
+.kc-feed-composer{display:grid;grid-template-columns:39px minmax(0,1fr);gap:11px;padding:14px!important;border-radius:19px!important}
+.kc-feed-compose-avatar,.kc-feed-compose-avatar img,.kc-feed-compose-avatar .avatar-fallback{width:39px;height:39px;border-radius:50%;object-fit:cover;display:grid;place-items:center}
+.kc-feed-compose-main{min-width:0}
+.kc-feed-compose-main .field{margin:0}
+.kc-feed-compose-main textarea{min-height:44px;resize:vertical;border:0!important;background:transparent!important;padding:7px 2px!important;box-shadow:none!important}
+.kc-feed-link-field{display:flex;align-items:center;gap:9px;padding:9px 11px;border:1px solid var(--line,#393940);border-radius:12px;margin-top:7px}
+.kc-feed-link-field>span{color:#f05a6d}
+.kc-feed-link-field input{width:100%;min-width:0;border:0!important;background:transparent!important;outline:0!important;color:var(--text,#fff);font-size:11px}
+.kc-feed-composer .social-composer-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}
+.kc-feed-composer .social-composer-foot small{font-size:9px}
+.kc-feed-composer .social-composer-foot button{padding:9px 15px;border-radius:999px}
+.kc-feed-section-head{padding:3px 3px 0}
+.kc-feed-page .social-feed-list{display:grid;gap:14px}
+.kc-feed-page .social-post-card{border-radius:19px!important;overflow:hidden}
+.kc-feed-page .social-post-head{padding:14px 15px}
+.kc-feed-page .social-post-caption{padding:0 15px 10px;font-size:13px;line-height:1.55}
+.kc-feed-page .social-post-stats,.kc-feed-page .social-post-actions{margin-left:14px;margin-right:14px}
+@media(max-width:600px){.kc-feed-page{gap:13px}.kc-feed-stories{border-radius:17px}.kc-feed-composer{padding:12px!important}.kc-feed-composer .social-composer-foot small{max-width:55%}}
