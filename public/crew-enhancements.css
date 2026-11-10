@@ -110,3 +110,62 @@ img.brand-logo{display:block!important;visibility:visible!important;opacity:1!im
  #app .welcome,#app .surface,#app .stat,#app .kc-pulse-card,#app .event-card,#app .crew-profile-tile,#app .notification-item,#app .feature-card{animation:none!important}
  #app button,#app a,.navitem,.nav-group-toggle,.theme-toggle,.iconbutton{transition:none!important}
 }
+
+
+/* Dynamic-island style in-app notices */
+#toast.toast{
+ position:fixed!important;top:calc(env(safe-area-inset-top,0px) + 12px)!important;bottom:auto!important;
+ left:50%!important;right:auto!important;z-index:30000!important;
+ width:max-content!important;max-width:min( calc(100vw - 28px), 420px)!important;
+ min-height:46px;padding:12px 19px 12px 43px!important;
+ display:flex;align-items:center;justify-content:center;
+ border:1px solid #ffffff24!important;border-radius:999px!important;
+ color:#fff!important;background:linear-gradient(145deg,#242126f5,#111014f5)!important;
+ box-shadow:0 12px 38px #0009, inset 0 1px 0 #ffffff18,0 0 22px #ed713c20!important;
+ -webkit-backdrop-filter:blur(22px) saturate(1.35)!important;backdrop-filter:blur(22px) saturate(1.35)!important;
+ font-size:13px!important;font-weight:600!important;line-height:1.35!important;
+ opacity:0;visibility:hidden;pointer-events:none;
+ transform:translate(-50%,-18px) scale(.94)!important;
+ transition:opacity .24s ease,transform .28s cubic-bezier(.2,.85,.25,1),visibility .24s!important;
+}
+#toast.toast:before{
+ content:"";position:absolute;left:17px;top:50%;width:9px;height:9px;border-radius:50%;
+ transform:translateY(-50%);background:#ff9a58;box-shadow:0 0 8px #ff8a45,0 0 16px #ff8a4577;
+}
+#toast.toast.show{
+ opacity:1!important;visibility:visible!important;
+ transform:translate(-50%,0) scale(1)!important;
+}
+@media(max-width:600px){
+ #toast.toast{top:calc(env(safe-area-inset-top,0px) + 9px)!important;min-height:42px;padding:10px 16px 10px 38px!important;font-size:12px!important}
+ #toast.toast:before{left:14px}
+}
+/* Restrained warm edge lighting on high-value surfaces */
+@keyframes kc-edge-breathe{
+ 0%,100%{box-shadow:0 0 0 1px #ff9a5810,inset 0 1px 0 #ffffff10,0 12px 34px #00000018}
+ 50%{box-shadow:0 0 0 1px #ff9a5830,inset 0 1px 0 #ffffff20,0 14px 38px #00000028,0 0 22px #f0783b12}
+}
+.kc-profile-hero,.kc-profile-metrics article,.kc-profile-shortcuts>button{
+ position:relative;isolation:isolate;
+ border-color:#ffffff26!important;
+ animation:kc-edge-breathe 5.5s ease-in-out infinite;
+}
+.kc-profile-shortcuts>button:nth-child(2n){animation-delay:1.1s}
+.kc-profile-shortcuts>button:nth-child(3n){animation-delay:2s}
+#app .surface,#app .event,#app .announcement,#app .settings-card{
+ transition:border-color .25s ease,box-shadow .3s ease,transform .25s ease!important;
+}
+#app .surface:hover,#app .event:hover,#app .announcement:hover,#app .settings-card:hover{
+ border-color:#f39a654d!important;
+ box-shadow:0 0 0 1px #f39a6522,inset 0 1px 0 #ffffff18,0 16px 42px #00000030,0 0 24px #f0783b12!important;
+}
+#app button:not(.kc-profile-back):not(.kc-profile-edit-button):hover{
+ border-color:#f39a6570;
+}
+@media(hover:none){
+ #app .surface:hover,#app .event:hover,#app .announcement:hover,#app .settings-card:hover{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+ #toast.toast,#toast.toast.show{transition:none!important}
+ .kc-profile-hero,.kc-profile-metrics article,.kc-profile-shortcuts>button{animation:none!important}
+}
