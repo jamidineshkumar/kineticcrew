@@ -228,3 +228,87 @@ body{background:var(--bg,#f3f1f8)}
  .tribe-feature,.tribe-shortcuts button,.tribe-event,.tribe-stats article{transition:transform .2s ease,box-shadow .2s ease}
  .tribe-shortcuts button:active,.tribe-event:active{transform:scale(.98)}
 }
+
+
+/* Full Student Tribe-inspired app surfaces: feed, event details and member profile */
+@media(max-width:900px){
+ .tribe-home{gap:22px}
+ .tribe-welcome{padding:3px 1px}
+ .tribe-welcome h1{font-size:26px}
+ .tribe-feature{min-height:255px;align-items:flex-end;padding:22px 19px 24px;background:radial-gradient(ellipse at 80% 8%,#a99be8 0,transparent 40%),linear-gradient(145deg,#221c3b,#46366d 64%,#7864b7);overflow:hidden}
+ .tribe-feature-copy{max-width:100%;z-index:2}
+ .tribe-feature-mark{right:10px;top:25%;width:150px;height:150px;opacity:.14}
+ .tribe-feature-desc{max-width:285px}
+ .tribe-shortcuts button{min-height:88px}
+ .tribe-shortcuts button span{font-size:19px}
+ .tribe-section-head{align-items:center}
+ .tribe-section-head h2{font-size:20px}
+ .tribe-event{min-height:86px}
+ .tribe-stats article{min-height:102px;align-content:center}
+ .tribe-home .announcement{padding:15px}
+ .welcome{margin:0 0 15px}
+ .welcome h1{font-size:25px}
+ .social-share-composer{border-radius:18px;padding:16px}
+ .social-feed-list{gap:14px}
+ .social-post-card{border-radius:18px;overflow:hidden}
+ .profile-social-layout{display:flex;flex-direction:column;gap:14px}
+ .profile-social-card{position:relative;overflow:hidden;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+ .profile-cover{height:clamp(390px,112vw,540px)!important;min-height:390px!important;border:0!important;border-radius:0 0 26px 26px!important;background-color:#29243e!important;background-image:linear-gradient(180deg,#0002 0%,#0000 35%,#17151be6 100%),var(--profile-cover-image)!important;background-position:center!important;background-size:cover!important}
+ .profile-cover:not(.has-banner){background-image:radial-gradient(ellipse at 70% 25%,#7b679e 0,transparent 42%),linear-gradient(145deg,#3d315c,#18171f 78%)!important}
+ .profile-cover-label{display:none!important}
+ .banner-edit{top:16px!important;right:16px!important;padding:9px 13px!important;border:1px solid #ffffff4d!important;border-radius:999px!important;background:#1119!important;color:#fff!important;backdrop-filter:blur(12px)}
+ .profile-avatar-wrap{position:absolute!important;left:20px!important;top:auto!important;bottom:94px!important;margin:0!important;width:82px!important;height:82px!important}
+ .profile-photo,.profile-photo-placeholder{width:82px!important;height:82px!important;border:3px solid #fff!important;box-shadow:0 5px 18px #0005}
+ .photo-edit{display:none!important}
+ .profile-identity{position:absolute!important;left:20px!important;right:16px!important;bottom:18px!important;padding:0!important;color:#fff!important}
+ .profile-identity h2{color:#fff!important;font-size:25px!important;letter-spacing:-.035em}
+ .profile-identity p{color:#e2dfea!important}
+ .profile-identity .profile-bio{max-width:340px}
+ .profile-social-counts{color:#fff!important}
+ .profile-social-counts b{color:#fff!important}
+ .profile-identity .pill,.founder-badge{background:#8064cf!important;color:#fff!important;border:0!important}
+ .profile-identity .outline{background:#ffffff20!important;border-color:#ffffff55!important;color:#fff!important}
+ .profile-edit{border-radius:18px!important}
+ .public-profile-card .profile-cover{height:clamp(390px,112vw,540px)!important}
+ .event-detail{display:flex!important;flex-direction:column!important;gap:0!important;margin:0 -14px!important}
+ .event-detail>.backlink{margin:0 14px 12px!important}
+ .event-detail-hero{position:relative!important;display:flex!important;min-height:390px!important;flex-direction:column!important;justify-content:flex-end!important;align-items:flex-start!important;padding:24px 20px!important;border:0!important;border-radius:0 0 24px 24px!important;background:radial-gradient(ellipse at 80% 15%,#7863b9 0,transparent 40%),linear-gradient(145deg,#26203c,#17151e 78%)!important;overflow:hidden}
+ .event-detail-hero:after{content:"KINETIC CREW";position:absolute;right:-12px;top:50px;font:900 62px/1 var(--display);letter-spacing:-.07em;color:#ffffff0c;transform:rotate(-90deg);transform-origin:right top}
+ .event-detail-hero .detail-brand-logo{position:absolute!important;right:20px!important;top:22px!important;width:88px!important;height:88px!important;opacity:.55}
+ .event-detail-hero .eventtype{position:relative;z-index:1;color:#e2d9ff}
+ .event-detail-hero h1{position:relative;z-index:1;font-size:31px!important;line-height:1.08!important;max-width:95%;margin:13px 0 8px!important;color:#fff!important}
+ .event-detail-hero p{position:relative;z-index:1;color:#e0dbea!important;font-size:13px!important;line-height:1.6!important}
+ .event-detail-grid{display:flex!important;flex-direction:column!important;gap:12px!important;padding:16px 14px 120px}
+ .event-detail-grid .surface{border-radius:18px!important}
+ .detail-main h2,.detail-main h3{color:#292642}
+ .detail-facts{display:grid!important;grid-template-columns:1fr 1fr!important;gap:14px!important}
+ .detail-facts>div{padding:12px!important;border-radius:13px!important;background:#f5f3fb!important}
+ .detail-facts small{color:#8a849f!important}
+ .detail-facts b{color:#302d49!important;font-size:13px!important}
+ .detail-action{position:fixed!important;z-index:24!important;left:0!important;right:0!important;bottom:0!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:13px 16px calc(13px + env(safe-area-inset-bottom))!important;border-radius:0!important;border:0!important;border-top:1px solid #ffffff10!important;background:#202127!important;box-shadow:0 -8px 28px #0003!important}
+ .detail-action h2{display:none!important}
+ .detail-action p{display:none!important}
+ .detail-action .primary,.detail-action .event-pass-actions{margin:0!important}
+ .detail-action .primary{min-width:150px}
+ .detail-action:before{content:"EVENT";color:#aaa8b6;font:700 9px var(--mono);letter-spacing:.15em}
+ .detail-admin{padding:0 14px 110px}
+ .eventgrid{gap:13px!important}
+ .event .cover{height:175px!important;border-radius:17px 17px 0 0!important}
+ .event .eventbody{padding:15px!important}
+ .event h3{font-size:17px!important}
+ .kc-mobile-dock{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+ .kc-mobile-dock button{font-size:9px!important;gap:4px!important}
+ .kc-mobile-dock button .dock-icon{font-size:20px!important;width:30px!important}
+}
+@media(max-width:390px){
+ .profile-cover{height:410px!important;min-height:410px!important}
+ .profile-identity h2{font-size:22px!important}
+ .event-detail-hero{min-height:360px!important}
+ .event-detail-hero h1{font-size:27px!important}
+ .detail-action .primary{min-width:132px}
+ .kc-mobile-dock button{font-size:8px!important}
+}
+@media(min-width:901px){
+ .tribe-home{max-width:1100px}
+ .event-detail{max-width:1050px;margin:0 auto}
+}
