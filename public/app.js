@@ -189,7 +189,7 @@ function socialFeedPage(){
  '<div class="social-feed-list">'+(posts.map(socialPostCard).join('')||empty('The feed is ready','Be the first to share a video, reel or useful link with the crew.'))+'</div>';
 }
 
-const featureLabels={rehearsals:'Rehearsals',leave:'Leave requests',memories:'KC Memories',auditions:'Audition portal',polls:'Polls & voting',chat:'Crew chat',achievements:'Achievements'};
+const featureLabels={rehearsals:'Rehearsals',leave:'Leave requests',memories:'KC Memories',auditions:'Audition portal',polls:'Polls & voting',chat:'Crew chat'};
 const featureMeta={
  rehearsals:['Plan a practice session','Create rehearsals, assign a choreographer and share the venue.','Session title','Practice details','Create session'],
  leave:['Request time away','Send a leave request to the crew admins.','Leave request','Reason and dates','Submit request'],
