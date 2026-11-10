@@ -95,7 +95,7 @@ function profileCover(url){return url?' style="background-image:url(&quot;'+esc(
 function profilePage(){
 const u=S.user||{},social=S.profileSocial||{},photo=u.avatar_url||'',banner=u.banner_url||photo,founder=admin();
 const followers=Number(social.followers_count||0),following=Number(social.following_count||0);
-const editForm='<details class="kc-profile-editor" id="profileEditor"><summary>Edit profile details</summary><form id="profileForm" class="kc-profile-form">'+
+const editForm='<details class="kc-profile-editor" id="profileEditor"><form id="profileForm" class="kc-profile-form">'+
 '<label class="field">Full name<input name="name" maxlength="100" required value="'+esc(u.name||'')+'"></label>'+
 '<label class="field">About you<textarea name="bio" maxlength="500" rows="3">'+esc(u.bio||'')+'</textarea></label>'+
 '<label class="field">Email address<input value="'+esc(u.email||'')+'" disabled></label>'+
