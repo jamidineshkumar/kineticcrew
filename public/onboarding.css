@@ -59,3 +59,26 @@ body.kc-auth-open #kcAuthScreen{display:block;min-height:100svh;background:#0303
 @keyframes kcLogoPulse{0%,100%{transform:scale(.96);opacity:.85}50%{transform:scale(1.04);opacity:1}}
 @media(min-width:760px){.kc-entry-welcome{padding:48px max(7vw,60px) 34px}.kc-welcome-copy{margin-bottom:5vh}.kc-welcome-actions{display:flex;max-width:420px}.kc-glow-button,.kc-quiet-button{min-width:0}.kc-entry-welcome:before{width:80vw;height:35vw;top:-16%}#kcAuthScreen .signinpanel{padding-top:110px}}
 @media(max-height:700px){.kc-entry-welcome{gap:15px}.kc-welcome-copy{margin-bottom:2vh}.kc-welcome-copy h1{font-size:42px}.kc-welcome-copy p{font-size:12px}.kc-entry-welcome:before{top:-20%}}
+
+/* Reference match: centered mobile onboarding with twin amber eclipse arcs. */
+.kc-entry-welcome{align-items:center;text-align:center;padding:calc(26px + env(safe-area-inset-top)) 25px calc(22px + env(safe-area-inset-bottom))}
+.kc-entry-welcome:before{top:7%;left:50%;width:min(92vw,520px);height:min(92vw,520px);min-height:0;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse at 50% 50%,#ffad65 0,#a94d18 13%,#49200d 30%,#0b0705 51%,transparent 68%);filter:blur(12px);opacity:.92}
+.kc-entry-welcome:after{background:linear-gradient(180deg,#03030300 0%,#03030300 27%,#030303 62%,#030303 100%)}
+.kc-welcome-orb{top:9%;width:min(78vw,410px);border-color:#ffb06b35;box-shadow:0 0 0 22px #ff9b4b0b,0 0 0 50px #ff9b4b08,0 0 85px #f77b2b25}
+.kc-welcome-brand{align-self:flex-start}
+.kc-welcome-copy{display:flex;flex-direction:column;align-items:center;max-width:520px;margin:auto 0 3vh;padding-top:36vh}
+.kc-welcome-kicker{justify-content:center}
+.kc-welcome-copy h1{font-size:clamp(38px,9vw,58px);line-height:1.08;margin:18px 0 12px}
+.kc-welcome-copy p{max-width:360px;font-size:13px}
+.kc-welcome-actions{max-width:360px}
+.kc-welcome-footer{width:100%;max-width:520px}
+#kcAuthScreen .signinpanel{padding-top:calc(270px + env(safe-area-inset-top));}
+#kcAuthScreen .signinpanel:before{top:-30px;width:min(100vw,560px);height:280px;border-radius:0 0 50% 50%;background:radial-gradient(ellipse at 50% 100%,#ffb16b 0,#b85b20 12%,#56250f 33%,#160a04 59%,transparent 76%)}
+#kcAuthScreen .signinpanel:after{top:20px;width:min(84vw,420px);height:205px;border-radius:50%;box-shadow:0 0 0 20px #ff9a4c08,0 0 65px #ff8c3a16}
+#kcAuthScreen .signform{margin:0 auto auto}
+#kcAuthScreen .signform h2{text-align:center;font-size:27px}
+#kcAuthScreen .signform>p:not(.msg){text-align:center}
+#kcAuthScreen .signform>.eyebrow{text-align:center}
+#kcAuthScreen .auth-choice-label{text-align:center}
+@media(min-width:760px){.kc-welcome-copy{padding-top:30vh;margin-bottom:4vh}#kcAuthScreen .signinpanel{padding-top:300px}}
+@media(max-height:760px){.kc-welcome-copy{padding-top:25vh;margin-bottom:1vh}#kcAuthScreen .signinpanel{padding-top:220px}}
