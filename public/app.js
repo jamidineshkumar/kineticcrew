@@ -46,9 +46,9 @@ async function featureApi(action,feature,payload){
  if(error){const m=error.message||'Feature request failed.';if(/could not find the function|schema cache/i.test(m))throw Error('The crew feature service is not ready. Reload the app; if this continues, contact the Super Admin.');throw Error(m);}
  return data;
 }
-function notice(text){let t=$('#toast');t.textContent=text;t.classList.add('show');clearTimeout(notice.timer);notice.timer=setTimeout(()=>t.classList.remove('show'),3000);}
+function notice(text){const t=$('#toast');if(!t){console.warn('Kinetic Crew toast container is missing:',text);return;}t.textContent=String(text??'');t.classList.add('show');clearTimeout(notice.timer);notice.timer=setTimeout(()=>t.classList.remove('show'),3000);}
 function cacheKey(userId){return 'kc-bootstrap-v2:'+userId;}
-function paintUser(){if(!S.user)return;$('#profileName').textContent=S.user.name||S.user.email;$('#profileRole').textContent=role(S.user.role);$('#avatar').innerHTML=avatarMarkup(S.user);$('#topAvatar').innerHTML=avatarMarkup(S.user,'small');}
+function paintUser(){if(!S.user)return;const name=$('#profileName'),userRole=$('#profileRole'),avatar=$('#avatar'),topAvatar=$('#topAvatar');if(name)name.textContent=S.user.name||S.user.email||'Crew Member';if(userRole)userRole.textContent=role(S.user.role);if(avatar)avatar.innerHTML=avatarMarkup(S.user);if(topAvatar)topAvatar.innerHTML=avatarMarkup(S.user,'small');}
 async function refresh(){
  const results=await Promise.all([api('bootstrap'),rpc('crew_get_app_settings',{}).catch(error=>({error}))]);
  const d=results[0],cfg=results[1];
