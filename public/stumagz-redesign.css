@@ -1,0 +1,88 @@
+/* Kinetic Crew mobile-first community app refresh — Stumagz-inspired, KC-branded. */
+:root{--kc-accent:#8b70dc;--kc-accent-strong:#7559c8;--kc-accent-soft:#eee9fb;--kc-ink:#27243d;--kc-muted:#77748c;--kc-card:#fff;--kc-border:#e8e4f1;--kc-shadow:0 10px 30px rgba(48,39,83,.07)}
+body{background:var(--bg,#f3f1f8)}
+.topbar{position:sticky;top:0;z-index:20;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.brand-logo{border-radius:12px}
+.mobilebrand b{font-weight:800;letter-spacing:.015em}
+.content{max-width:1440px;margin-inline:auto}
+.welcome{margin-bottom:22px}
+.welcome h1{letter-spacing:-.045em}
+.surface,.event,.announcement,.stat,.feature-card,.social-post-card{border-radius:20px;box-shadow:var(--kc-shadow)}
+.primary{border-radius:13px;font-weight:750}
+.outline,.secondary{border-radius:13px}
+.field input,.field textarea,.field select,.select{min-height:46px;border-radius:12px}
+#app .sectionhead{margin:28px 0 15px}
+#app .eventgrid,#app .feature-feed,#app .social-feed-list{gap:14px}
+#app .event-clickable:hover{transform:translateY(-3px);box-shadow:0 18px 36px rgba(48,39,83,.12)}
+#app .event .cover{border-radius:18px 18px 0 0}
+#app .profile-directory{gap:14px}
+#app .crew-profile-tile,#app .social-post-card,#app .feature-card{transition:transform .22s ease,box-shadow .22s ease}
+#app .crew-profile-tile:hover,#app .feature-card:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(48,39,83,.11)}
+#app .welcome>.primary{white-space:nowrap}
+.kc-mobile-dock{display:none}
+@media(max-width:900px){
+ :root{--bg:#f4f2f9;--panel:#fff;--panel2:#f8f6fc;--line:#e7e2f0;--muted:#77748c;--text:#29263f;--lime:#a58ce9;--purple:#8066cf}
+ body{background:linear-gradient(180deg,#eeebf8 0,#f7f6fb 240px,#f4f2f9 100%);color:#29263f}
+ main{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+ .topbar{height:66px;padding:0 15px;background:rgba(250,249,253,.88);border-bottom:1px solid rgba(255,255,255,.9);box-shadow:0 6px 22px rgba(50,42,79,.05)}
+ .mobilebrand{gap:8px}
+ .mobilebrand .brand-logo{width:32px;height:32px;flex-basis:32px}
+ .mobilebrand b{font-size:12px;color:#28243f}
+ .mobilebrand i{color:#8064cd}
+ .hamburger,.topright .iconbutton{background:#fff;border:1px solid #e9e4f2;color:#5c527b;border-radius:12px}
+ .topright{gap:7px}
+ .topright .online,.topright .theme-toggle{display:none}
+ .content{padding:19px 16px 28px}
+ .welcome{gap:12px;margin:3px 0 19px}
+ .welcome h1{font-size:clamp(25px,6vw,32px);line-height:1.08;color:#29263f}
+ .welcome p,.sectionhead p{font-size:12px;line-height:1.6;color:#77748c}
+ .eyebrow{color:#8068c8;letter-spacing:.12em}
+ .eyedot,.online i{background:#8c73d3;box-shadow:0 0 0 4px #8c73d31c}
+ .primary{background:linear-gradient(135deg,#a991e8,#8067cf);border:1px solid #9a83df;color:#fff;box-shadow:0 8px 18px #8268ce2b}
+ .outline,.secondary{background:#fff;border:1px solid #e4def0;color:#66558f;box-shadow:0 5px 16px #5144770c}
+ .surface,.event,.announcement,.stat,.feature-card,.social-post-card{background:#fff;border:1px solid #ebe7f2;border-radius:19px;box-shadow:0 8px 24px rgba(50,42,79,.055);color:#29263f}
+ .stat,.peopleStat{background:linear-gradient(145deg,#fff,#f7f4fc);border-color:#ebe6f3}
+ .statvalue,.statlabel,.event h3,.announcement h3,.formtitle h3,.sectionhead h2,.sectionhead h3{color:#29263f}
+ .stat small,.eventdesc,.eventmeta,.announcement p,.formtitle p,.sectionhead p{color:#79758d}
+ .banner,.home-hero,.event-detail-hero,.role-command-panel,.kc-stage{border-radius:22px;box-shadow:0 14px 34px rgba(49,39,82,.12)}
+ .field input,.field textarea,.field select,.select,.social-comment-form input{background:#faf9fd;border:1px solid #e6e1ef;color:#29263f;border-radius:12px}
+ .field input:focus,.field textarea:focus,.field select:focus{border-color:#9b83df;box-shadow:0 0 0 4px #9b83df20}
+ .formgrid,.feature-form{gap:14px}
+ .side.open{background:#fbfaff;border-right:1px solid #e9e4f2;box-shadow:20px 0 55px #29213d2b}
+ .side.open .brand b{color:#29263f}.side.open .brand i{color:#8064cd}
+ .side.open .workspace{background:#f4f1fa;border-color:#e8e2f1}
+ .side.open .workspace b{color:#302b48}
+ .side.open .navitem{border-radius:12px;color:#706b83}
+ .side.open .navitem.active{background:#eee9fa;border-color:#ded5f2;color:#7056c0}
+ .side.open .motto{background:linear-gradient(145deg,#fff,#f2effa);border-color:#e9e4f2}
+ .side.open .profile{border-color:#e8e3ef}
+ .navshade.open{background:#29213d55;backdrop-filter:blur(5px)}
+ .kc-mobile-dock{position:fixed;z-index:25;left:12px;right:12px;bottom:max(9px,env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:7px 6px calc(7px + env(safe-area-inset-bottom));border:1px solid rgba(255,255,255,.88);border-radius:20px;background:rgba(255,255,255,.9);box-shadow:0 12px 38px rgba(42,34,69,.16);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+ .kc-mobile-dock button{display:flex;min-width:0;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px 3px;border:0;border-radius:13px;background:transparent;color:#89849b;font-size:9px;font-weight:700;letter-spacing:.01em}
+ .kc-mobile-dock button .dock-icon{display:grid;place-items:center;width:27px;height:25px;font-size:18px;line-height:1}
+ .kc-mobile-dock button.active{background:#eee9fa;color:#7259c3}
+ .kc-mobile-dock button:active{transform:scale(.96)}
+ footer{display:none}
+}
+@media(max-width:600px){
+ .content{padding:17px 13px 26px}
+ .welcome h1{font-size:26px}
+ .welcome p{max-width:340px}
+ .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .stat{min-height:100px;padding:12px}
+ .eventgrid{grid-template-columns:minmax(0,1fr)}
+ .feature-grid,.feature-feed{grid-template-columns:minmax(0,1fr)}
+ .surface,.event,.announcement,.feature-card{border-radius:17px}
+ .formgrid{grid-template-columns:minmax(0,1fr)}
+ .formgrid .formtitle,.formgrid .span2{grid-column:1}
+ .profile-directory{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .kc-mobile-dock{left:9px;right:9px;border-radius:18px}
+ .kc-mobile-dock button{font-size:8px}
+}
+@media(max-width:380px){
+ .topbar{padding-inline:10px}
+ .mobilebrand b{font-size:10px}
+ .content{padding-inline:11px}
+ .profile-directory{grid-template-columns:minmax(0,1fr)}
+}
+@media(prefers-reduced-motion:reduce){.kc-mobile-dock button,.event-clickable,.crew-profile-tile,.feature-card{transition:none!important}}
