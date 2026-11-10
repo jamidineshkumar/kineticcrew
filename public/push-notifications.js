@@ -48,6 +48,7 @@ async function enableNativePush() {
     await PushNotifications.addListener("registrationError", error => console.error("FCM registration failed:", error));
     await PushNotifications.addListener("pushNotificationReceived", notification => {
       console.info("Crew push received:", notification.title || "Kinetic Crew");
+      window.dispatchEvent(new CustomEvent("kc:notification", { detail: { title: notification.title || "Kinetic Crew", body: notification.body || "You have a new crew update.", target: notification.data?.url?.includes("chat") ? "chat" : "notifications" } }));
     });
     await PushNotifications.addListener("pushNotificationActionPerformed", action => {
       const target = action.notification?.data?.url || "/";
@@ -71,6 +72,7 @@ async function enable() {
   onMessage(messaging, payload => {
     const title = payload.notification?.title || "Kinetic Crew";
     const body = payload.notification?.body || "You have a new crew update.";
+    window.dispatchEvent(new CustomEvent("kc:notification", { detail: { title, body, target: payload.data?.url?.includes("chat") ? "chat" : "notifications" } }));
     if (Notification.permission === "granted") new Notification(title, { body, icon: window.kcPath("kinetic-crew-logo.svg"), tag: payload.data?.id || "kinetic-crew-update" });
     try {
       const session = window.kcSupabase.auth.getSession();
