@@ -1035,3 +1035,32 @@ body{background:var(--bg);color:var(--text)}
 #sidebar .navitem.active .nicon{background:#f20a91;color:#fff}
 #sidebar .nav-group-toggle{border:1px solid #39353f;border-radius:14px;background:#1b1a21;color:#f3eef5}
 #sidebar .nav-group-toggle .nav-group-symbol{color:#f20a91}
+
+
+/* Drawer visibility and install action: explicit stacking and visible content. */
+@media(max-width:900px){
+ #appRoot .shell>aside#sidebar{z-index:20000!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;background:#111116!important;color:#f7f4f8!important}
+ #appRoot .shell>aside#sidebar.open{z-index:20000!important;transform:translate3d(0,0,0)!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+ #appRoot #navShade{z-index:19990!important}
+ #appRoot #navShade.open{opacity:1!important;visibility:visible!important;pointer-events:auto!important;background:#000b!important}
+ #sidebar .brand,#sidebar .workspace,#sidebar .navtitle,#sidebar #nav,#sidebar .sidebottom{position:relative!important;z-index:1!important;visibility:visible!important;opacity:1!important}
+ #sidebar .brand{display:flex!important;min-height:62px!important}
+ #sidebar .workspace{display:flex!important}
+ #sidebar #nav{display:grid!important;min-height:100px!important}
+ #sidebar .nav-group{display:block!important;visibility:visible!important;opacity:1!important}
+ #sidebar .nav-group-toggle{display:flex!important;visibility:visible!important;color:#f5f3f2!important}
+ #sidebar .nav-group-items[hidden]{display:none!important}
+ #sidebar .navitem{visibility:visible!important;opacity:1!important;color:#f5f3f2!important}
+}
+.kc-install-button{display:flex!important;align-items:center!important;justify-content:center!important;gap:9px!important;width:100%!important;min-height:46px!important;margin:0 0 19px!important;padding:10px 15px!important;border:1px solid #f20a91!important;border-radius:999px!important;background:linear-gradient(105deg,#501532,#291823)!important;color:#fff!important;font-size:12px!important;font-weight:800!important;letter-spacing:.025em!important;box-shadow:0 8px 22px #f20a9120!important}
+.kc-install-button:active{transform:scale(.98)}
+.kc-install-button:disabled{opacity:.75!important;border-color:#3f9b7b!important;background:#17352c!important}
+.kc-install-backdrop{position:fixed;inset:0;z-index:30000;display:grid;place-items:center;padding:22px;background:#000b;backdrop-filter:blur(8px)}
+.kc-install-dialog{position:relative;width:min(100%,390px);padding:25px;border:1px solid #51414f;border-radius:24px;background:#19171e;color:#f8f5f8;box-shadow:0 25px 80px #0009}
+.kc-install-dialog h2{margin:13px 0 8px;font-size:23px;color:#fff}
+.kc-install-dialog p,.kc-install-dialog li{color:#c6bec8;font-size:13px;line-height:1.55}
+.kc-install-dialog ol{padding-left:22px;margin:15px 0 20px}
+.kc-install-dialog li{padding:4px 0}
+.kc-install-dialog .primary{width:100%;min-height:44px;border:0;border-radius:13px;background:#f20a91;color:#fff;font-weight:800}
+.kc-install-icon{display:grid;place-items:center;width:43px;height:43px;border-radius:14px;background:#491a36;color:#ff8ac7;font-size:25px}
+.kc-install-close{position:absolute;right:13px;top:12px;width:34px;height:34px;border:1px solid #48414a;border-radius:50%;background:#242129;color:#fff;font-size:22px}
