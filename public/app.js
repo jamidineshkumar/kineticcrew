@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
-window.KC_APP_VERSION='1.2.3';
+window.KC_APP_VERSION='1.2.4';
 const S={user:null,view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],publicMembers:[],featureItems:{},socialPosts:[],socialLikes:[],socialComments:[],roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',error:'',peopleQuery:''};
 if('scrollRestoration'in history)history.scrollRestoration='manual';
 const PAGE_STATE_KEY='kinetic-crew-page-state-v1';
