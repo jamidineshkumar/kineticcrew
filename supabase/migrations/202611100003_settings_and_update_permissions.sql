@@ -52,3 +52,14 @@ end $$;
 revoke all on function public.crew_delete_announcement(uuid) from public,anon;
 grant execute on function public.crew_delete_announcement(uuid) to authenticated;
 notify pgrst,'reload schema';
+
+-- Ensure the image bucket and owner-only upload policies exist for profile and banner crops.
+insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types)
+values('crew-avatars','crew-avatars',true,8388608,array['image/jpeg','image/png','image/webp'])
+on conflict(id) do update set public=true,file_size_limit=8388608,allowed_mime_types=array['image/jpeg','image/png','image/webp'];
+drop policy if exists "Crew avatar images are public" on storage.objects;
+create policy "Crew avatar images are public" on storage.objects for select using(bucket_id='crew-avatars');
+drop policy if exists "Members upload own crew avatar" on storage.objects;
+create policy "Members upload own crew avatar" on storage.objects for insert to authenticated with check(bucket_id='crew-avatars' and (storage.foldername(name))[1]=auth.uid()::text);
+drop policy if exists "Members update own crew avatar" on storage.objects;
+create policy "Members update own crew avatar" on storage.objects for update to authenticated using(bucket_id='crew-avatars' and (storage.foldername(name))[1]=auth.uid()::text) with check(bucket_id='crew-avatars' and (storage.foldername(name))[1]=auth.uid()::text);
