@@ -508,7 +508,7 @@ function setMobileMenu(open){
  if(toggle){toggle.setAttribute('aria-expanded',open?'true':'false');toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');}
  document.body.classList.toggle('kc-menu-open',!!open);
 }
-$('#menuToggle')?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();if(window.matchMedia('(max-width:900px)').matches){go('more');}else{setMobileMenu(!$('#sidebar')?.classList.contains('open'));}});
+$('#menuToggle')?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();go('more');});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('#sidebar')?.classList.contains('open'))setMobileMenu(false);});
 window.addEventListener('popstate',()=>{if($('#sidebar')?.classList.contains('open'))setMobileMenu(false);});
 $('#nav')?.addEventListener('click',event=>{if(event.target.closest('[data-view]'))setMobileMenu(false);});
