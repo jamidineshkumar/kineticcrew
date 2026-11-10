@@ -274,7 +274,7 @@ function funZonePage(){
 }
 function creditsPage(){
  return welcome('Credits','The people, tools and community behind Kinetic Crew.')+
- '<section class="surface credits-hero"><span class="settings-kicker">BUILT FOR THE BEAT</span><h2>KINETIC CREW</h2><p>A private student community for dance, events, rehearsals and shared memories.</p><div class="credits-version">KINETIC CREW · v1.2.3</div></section>'+
+ '<section class="surface credits-hero"><span class="settings-kicker">BUILT FOR THE BEAT</span><h2>KINETIC CREW</h2><p>A private student community for dance, events, rehearsals and shared memories.</p><div class="credits-version">KINETIC CREW · v1.2.5</div></section>'+
  '<div class="settings-grid credits-grid"><section class="surface settings-card"><span class="settings-kicker">COMMUNITY</span><h3>Made by the crew</h3><p>Designed around the people who rehearse, perform, organize and create together.</p></section><section class="surface settings-card"><span class="settings-kicker">PLATFORM</span><h3>Technology</h3><p>Built with web technologies, Supabase services and an installable progressive web app experience.</p></section><section class="surface settings-card"><span class="settings-kicker">SUPPORT</span><h3>Keep it respectful</h3><p>Use crew features responsibly. Report access or content issues to a Kinetic Crew Admin.</p><button class="outline" data-view="settings">App settings →</button></section></div>';
 }
 function calendarPage(){
@@ -305,9 +305,8 @@ const groups=[
  ...(admin()?[['management',superadmin()?'SUPER ADMIN CONTROLS':'ADMIN TOOLS',superadmin()?'Roles and platform settings':'Member administration',[['crew-management','♙',superadmin()?'Roles & members':'Crew members'],['attendance','◎','Attendance'],]]]:[]),
  ['settings','MY ACCOUNT','Your preferences',[['profile','◉','My profile'],['settings','⚙','App settings'],['credits','✧','Credits']]]
 ]
-const activeGroup=groups.find(g=>g[3].some(n=>n[0]===S.view))?.[0]||'overview';
 $('#nav').innerHTML=groups.map(([id,label,sub,items])=>{
-const expanded=S.navOpen===id||activeGroup===id;
+const expanded=S.navOpen===id;
 return '<section class="nav-group '+(expanded?'expanded':'')+'" data-nav-group-panel="'+id+'"><button type="button" class="nav-group-toggle '+(expanded?'expanded':'')+'" data-nav-group="'+id+'" aria-expanded="'+expanded+'"><span class="nav-group-symbol">'+({overview:'⌂',events:'▦',chat:'✉',notifications:'♧',management:'♙',settings:'⚙'}[id])+'</span><span class="nav-group-label"><b>'+label+'</b><small>'+sub+'</small></span><span class="nav-group-chevron">⌄</span></button><div class="nav-group-items" '+(expanded?'':'hidden')+'>'+items.map(n=>'<button class="navitem '+(S.view===n[0]?'active':'')+'" data-view="'+n[0]+'"><span class="nicon">'+n[1]+'</span><span>'+n[2]+'</span>'+(n[0]==='notifications'&&unread()?'<span class="count">'+unread()+'</span>':'')+'</button>').join('')+'</div></section>';
 }).join('');
 $('#crumb').textContent=({overview:'Overview',events:'Events',chat:'Crew chat',feed:'Crew Feed',notifications:'Notifications',people:'Discover crew','fun-zone':'Fun Zone',credits:'Credits','public-profile':'Crew profile','crew-management':'Crew management',attendance:'Attendance',profile:'My profile',settings:'App settings',calendar:'Calendar',rehearsals:'Rehearsals',auditions:'Auditions',leaderboard:'Leaderboard'}[S.view]||'Crew management');
