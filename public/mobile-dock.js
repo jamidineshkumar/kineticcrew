@@ -1,11 +1,12 @@
-/* Native-feeling mobile navigation dock for the Kinetic Crew PWA. */
+/* Student-community style persistent bottom navigation. */
 (() => {
   'use strict';
   if (document.getElementById('kcMobileDock')) return;
   const items = [
     {view:'overview',icon:'⌂',label:'Home'},
     {view:'events',icon:'▦',label:'Events'},
-    {view:'feed',icon:'◉',label:'Crew Feed'},
+    {view:'feed',icon:'◉',label:'Crew'},
+    {view:'memories',icon:'▧',label:'Memories'},
     {view:'profile',icon:'♙',label:'Profile'}
   ];
   const dock = document.createElement('nav');
@@ -18,9 +19,12 @@
   document.body.appendChild(dock);
   const sync = () => {
     const active = document.querySelector('#nav .navitem.active[data-view],#nav [data-view].active');
-    const current = active?.dataset.view || (document.querySelector('#crumb')?.textContent.trim().toLowerCase()==='overview'?'overview':'');
+    const crumb = document.querySelector('#crumb')?.textContent.trim().toLowerCase();
+    const current = active?.dataset.view || (crumb==='overview'?'overview':'');
+    const aliases = {'public-profile':'people','event-detail':'events'};
+    const view = aliases[current] || current;
     dock.querySelectorAll('button').forEach(button => {
-      const selected = button.dataset.view===current;
+      const selected = button.dataset.view===view;
       button.classList.toggle('active',selected);
       if(selected) button.setAttribute('aria-current','page'); else button.removeAttribute('aria-current');
     });
