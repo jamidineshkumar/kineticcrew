@@ -71,7 +71,7 @@ async function enable() {
   onMessage(messaging, payload => {
     const title = payload.notification?.title || "Kinetic Crew";
     const body = payload.notification?.body || "You have a new crew update.";
-    if (Notification.permission === "granted") new Notification(title, { body, icon: window.kcPath("kinetic-crew-logo.jpg"), tag: payload.data?.id || "kinetic-crew-update" });
+    if (Notification.permission === "granted") new Notification(title, { body, icon: window.kcPath("kinetic-crew-logo.svg"), tag: payload.data?.id || "kinetic-crew-update" });
     try {
       const session = window.kcSupabase.auth.getSession();
       session.then(({data}) => {
