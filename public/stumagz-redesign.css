@@ -855,3 +855,26 @@ button.kc-reference-hero{cursor:pointer}
  #appRoot .topbar{position:relative;z-index:70}
  #appRoot #menuToggle{position:relative;z-index:80;display:inline-grid!important;place-items:center!important;pointer-events:auto!important}
 }
+
+
+/* More-menu controls inspired by the supplied dark pill-button reference. */
+#sidebar #nav{display:grid;gap:17px;padding:4px 0 18px}
+#sidebar .nav-group{border:0!important;background:transparent!important;padding:0!important;margin:0!important}
+#sidebar .nav-group-toggle{display:flex!important;align-items:center;gap:10px;width:100%;min-height:48px;padding:8px 4px!important;border:0!important;border-radius:0!important;background:transparent!important;color:#f5f3f2!important;text-align:left}
+#sidebar .nav-group-symbol{width:35px!important;height:35px!important;flex:0 0 35px!important;display:grid!important;place-items:center!important;border:1px solid #55545a!important;border-radius:50%!important;background:transparent!important;color:#f5f3f2!important;font-size:17px!important}
+#sidebar .nav-group-label b{font-size:12px!important;letter-spacing:.08em!important;color:#aaa8ad!important}
+#sidebar .nav-group-label small{font-size:10px!important;color:#77747a!important}
+#sidebar .nav-group-chevron{margin-left:auto;color:#aaa8ad!important}
+#sidebar .nav-group-items{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px!important;padding:7px 0 0!important}
+#sidebar .nav-group-items[hidden]{display:none!important}
+#sidebar .navitem{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:9px!important;min-width:0!important;min-height:49px!important;padding:8px 11px!important;border:1px solid #55545a!important;border-radius:999px!important;background:transparent!important;color:#f5f3f2!important;font-size:12px!important;font-weight:500!important;line-height:1.2!important;white-space:normal!important;text-align:left!important;transition:background .2s,border-color .2s,transform .2s!important}
+#sidebar .navitem .nicon{width:25px!important;height:25px!important;flex:0 0 25px!important;display:grid!important;place-items:center!important;border:1px solid #68666c!important;border-radius:50%!important;background:transparent!important;color:#f5f3f2!important;font-size:14px!important}
+#sidebar .navitem.active{border-color:#f05a6d!important;background:#3a2026!important;color:#ff9ba5!important}
+#sidebar .navitem.active .nicon{border-color:#f05a6d!important;color:#ff9ba5!important}
+#sidebar .navitem:active{transform:scale(.97)}
+#sidebar .navitem .count{margin-left:auto!important}
+@media(max-width:900px){
+ #sidebar .nav-group-items{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+ #sidebar .navitem{min-height:48px!important;padding:8px 10px!important;font-size:11px!important}
+}
+@media(max-width:360px){#sidebar .nav-group-items{grid-template-columns:1fr!important}}
