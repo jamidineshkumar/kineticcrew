@@ -29,6 +29,20 @@ Run these SQL migrations in order in the new project's SQL Editor:
 5. `supabase/migrations/202611090004_initial_operator_roles.sql`
 6. `supabase/migrations/202611090005_feature_suite.sql`
 7. `supabase/migrations/202611090006_push_notifications.sql`
+8. `supabase/migrations/202611100001_profile_photos_admin.sql`
+9. `supabase/migrations/202611100002_social_profiles.sql`
+10. `supabase/migrations/202611100003_profile_username_updates.sql`
+11. `supabase/migrations/202611100003_settings_and_update_permissions.sql`
+12. `supabase/migrations/202611100004_app_settings_intro.sql`
+13. `supabase/migrations/202611100006_crew_wardrobe.sql`
+14. `supabase/migrations/202611100007_crew_wardrobe_private_media.sql`
+15. `supabase/migrations/202611100008_crew_intro_once.sql`
+16. `supabase/migrations/202611100009_intro_backfill_release_121.sql`
+17. `supabase/migrations/202611100010_social_feed_and_usernames.sql`
+18. `supabase/migrations/202611100011_directory_follow_status_release_122.sql`
+19. `supabase/migrations/202611100013_normalize_feature_rpc.sql`
+20. `supabase/migrations/202611100014_release_123.sql`
+21. `supabase/migrations/202611100015_profile_image_rpc.sql`
 
 The migrations must be applied in the listed order. They create the crew tables and permission-checked APIs, add unique usernames and profile editing, implement QR/OTP attendance and event finalization, seed the initial operator role, add the feature suite (rehearsals, leave, expenses, memories, auditions, polls, chat and achievements), and add push-subscription storage. All application tables are prefixed `crew_`.
 
