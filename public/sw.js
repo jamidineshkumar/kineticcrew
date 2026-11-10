@@ -1,5 +1,5 @@
 const BASE=new URL(self.registration.scope).pathname.replace(/\/?$/,'/');
-const CACHE='kinetic-crew-shell-v48';
+const CACHE='kinetic-crew-shell-v49';
 const CORE=['','index.html','login.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','icon.svg','kinetic-crew-logo.svg','kinetic-crew-logo.jpg','theme.js','theme-overrides.css','stumagz-redesign.css','mobile-dock.js','push-notifications.js','crew-enhancements.js','crew-enhancements.css','app-version.json','icon.svg','founder-crown.svg','onboarding.css'];
 const ASSETS=CORE.map(path=>BASE+path);
 const CDN_ASSETS=["https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2","https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js","https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"];
@@ -74,7 +74,7 @@ self.addEventListener("fetch",event=>{
   if(ASSETS.includes(url.pathname)){
     event.respondWith((async()=>{
       const cache=await caches.open(CACHE);
-      const cached=await cache.match(request);
+      const cached=await cache.match(request,{ignoreSearch:true});
       const network=fetch(request).then(response=>{if(response.ok)cache.put(request,response.clone());return response;}).catch(()=>null);
       if(cached){network.catch(()=>{});return cached;}
       return (await network)||Response.error();
