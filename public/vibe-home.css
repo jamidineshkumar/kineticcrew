@@ -75,3 +75,8 @@
  .kc-more-shortcut small{font-size:9px}
  .kc-more-row{min-height:72px}
 }
+
+.kc-more-open .kc-compact-topbar,.kc-more-open footer,.kc-more-open .kc-mobile-dock{display:none!important}
+.kc-more-open main{min-height:100dvh}
+.kc-more-open .content{padding-top:0!important}
+.kc-more-open .kc-more-page{min-height:calc(100dvh - 32px)}
