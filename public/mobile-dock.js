@@ -5,7 +5,8 @@
   const items=[
     {view:'overview',icon:'⌂',label:'Home'},
     {view:'events',icon:'▦',label:'Events'},
-    {view:'people',icon:'♙',label:'Network'},
+    {view:'chat',icon:'◎',label:'Crew'},
+    {view:'memories',icon:'▧',label:'Memories'},
     {view:'profile',icon:'♙',label:'Profile'}
   ];
   const dock=document.createElement('nav');
