@@ -610,3 +610,22 @@ main{background:transparent!important}
  .kc-profile-shortcuts button>b{font-size:11px}
 }
 @media(prefers-reduced-motion:reduce){.kc-reference-hero-glow{animation:none!important}.kc-reference-hero,.kc-reference-tile,.kc-profile-shortcuts button,.kc-reference-head-actions button{transition:none!important}}
+
+
+/* Keep the navigation drawer and remaining screens on the same dark visual system. */
+.side,.side.open{background:#171719!important;color:#f4f1ef!important;border-color:#343439!important}
+.side .brand b,.side.open .brand b,.side .workspace b,.side.open .workspace b{color:#f4f1ef!important}
+.side .brand i,.side.open .brand i{color:#ed4052!important}
+.side .workspace,.side.open .workspace,.side .motto,.side.open .motto,.side .profile,.side.open .profile{background:#222226!important;border-color:#37373d!important;color:#f4f1ef!important}
+.side .workspace small,.side.open .workspace small,.side .motto p,.side.open .motto p,.side .profile small,.side.open .profile small{color:#aaa5a5!important}
+.side .navtitle,.side.open .navtitle{color:#898489!important}
+.side .navitem,.side.open .navitem{color:#c0bbbd!important;border-color:transparent!important}
+.side .navitem.active,.side.open .navitem.active{background:#3a2026!important;border-color:#63323a!important;color:#ff8d7d!important}
+.side .nav-group-toggle,.side.open .nav-group-toggle{color:#f1eeee!important}
+.side .nav-group-label small,.side.open .nav-group-label small{color:#9b9597!important}
+#app .pill,#app .role-pill{background:#33252a!important;color:#ff9b8c!important;border-color:#68404a!important}
+#app .empty{color:#aaa5a5!important}
+#app .empty b,#app .event h3,#app .feature-card h3,#app .crew-profile-tile h3{color:#f4f1ef!important}
+#app .eventmeta,#app .eventdesc,#app .feature-card p,#app .crew-profile-tile p{color:#aaa5a5!important}
+#app .profile-cover{background-color:#29292e!important}
+@media(max-width:900px){.side.open{background:#171719f7!important}.side.open .workspace,.side.open .motto,.side.open .profile{background:#242428!important}}
