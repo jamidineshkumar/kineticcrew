@@ -179,7 +179,7 @@ const groups=[
 ['events','EVENTS','Performances & sessions',[['events','▦','Events']]],
 ['chat','CREW CHAT','Talk like a crew',[['chat','✉','Crew chat']]],
 ['notifications','NOTIFICATIONS','Updates & alerts',[['notifications','♧','Notifications']]],
-['management','CREW MANAGEMENT','Members & operations',[['crew-management','♙','Crew management'],...(admin()?[['attendance','◎','Attendance'],['rehearsals','◷','Rehearsals'],['calendar','▦','Calendar'],['polls','◉','Polls & voting'],['memories','▧','KC Memories'],['leave','↗','Leave requests'],['auditions','☆','Auditions'],['expenses','₹','Expenses'],['achievements','✦','Achievements'],['leaderboard','♜','Leaderboard']]:[])]],
+['management','CREW MANAGEMENT','Members & operations',[['crew-management','♙','Members'],...(admin()?[['attendance','◎','Attendance']]:[])]],
 ['settings','APP SETTINGS','Your account & preferences',[['settings','⚙','App settings']]]
 ];
 const activeGroup=groups.find(g=>g[3].some(n=>n[0]===S.view))?.[0]||'overview';
