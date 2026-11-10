@@ -86,3 +86,64 @@ body{background:var(--bg,#f3f1f8)}
  .profile-directory{grid-template-columns:minmax(0,1fr)}
 }
 @media(prefers-reduced-motion:reduce){.kc-mobile-dock button,.event-clickable,.crew-profile-tile,.feature-card{transition:none!important}}
+
+
+/* Kinetic Crew — community-first home refresh */
+.tribe-home{display:grid;gap:24px;max-width:1080px;margin:0 auto;color:#f5f3f0}
+.tribe-welcome{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.tribe-kicker{display:block;color:#ff956b;font:700 9px var(--mono);letter-spacing:.16em}
+.tribe-welcome h1{margin:8px 0 4px;font:700 clamp(25px,4vw,34px)/1.08 var(--display);letter-spacing:-.045em}
+.tribe-welcome h1 span{color:#ff956b}
+.tribe-welcome p,.tribe-control p{margin:0;color:#a7a2a0;font-size:12px;line-height:1.6}
+.tribe-avatar-button{width:44px;height:44px;flex:0 0 44px;border:1px solid #ff956b55;border-radius:50%;background:#2b211d;color:#ffb18f;font-weight:800}
+.tribe-feature{position:relative;display:flex;align-items:center;justify-content:space-between;min-height:245px;overflow:hidden;padding:28px 30px;border:1px solid #70412f;border-radius:20px;background:radial-gradient(ellipse at 82% 45%,#753a27 0,transparent 42%),linear-gradient(115deg,#241b18,#171514 70%);box-shadow:0 16px 40px #0005}
+.tribe-feature:after{content:"";position:absolute;inset:0;background-image:linear-gradient(#ffffff09 1px,transparent 1px),linear-gradient(90deg,#ffffff09 1px,transparent 1px);background-size:26px 26px;mask-image:linear-gradient(90deg,#000,transparent 90%);pointer-events:none}
+.tribe-feature-copy{position:relative;z-index:1;max-width:520px}
+.tribe-live,.tribe-live-text{display:inline-flex;align-items:center;gap:7px;color:#f4b294;font:700 9px var(--mono);letter-spacing:.12em}
+.tribe-live i,.tribe-live-text i{width:6px;height:6px;border-radius:50%;background:#ff956b;box-shadow:0 0 0 4px #ff956b20}
+.tribe-overline{margin:22px 0 7px;color:#d8a18a;font:700 9px var(--mono);letter-spacing:.2em}
+.tribe-feature h2{margin:0;font:700 clamp(29px,4.5vw,44px)/.98 var(--display);letter-spacing:-.055em;color:#fff}
+.tribe-feature h2 em{color:#ff956b;font-style:normal}
+.tribe-feature-desc{max-width:420px;color:#c0b4ae;font-size:12px;line-height:1.7}
+.tribe-primary,.tribe-action{display:inline-flex;align-items:center;justify-content:center;gap:14px;padding:11px 15px;border:1px solid #ff956b;border-radius:10px;background:#ff956b;color:#21140e;font-size:11px;font-weight:800}
+.tribe-primary span{font-size:15px}
+.tribe-feature-mark{position:absolute;right:9%;top:50%;width:150px;height:150px;transform:translateY(-50%);opacity:.23;filter:drop-shadow(0 0 35px #ff956b55)}
+.tribe-feature-mark img{width:100%;height:100%;object-fit:contain}
+.tribe-shortcuts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.tribe-shortcuts button{display:flex;align-items:center;gap:11px;min-width:0;padding:13px;border:1px solid #34302e;border-radius:13px;background:#1a1918;color:#f4f0ed;text-align:left;transition:transform .2s,border-color .2s}
+.tribe-shortcuts button:hover{transform:translateY(-2px);border-color:#ff956b88}
+.tribe-shortcuts button span{display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:#ff956b18;color:#ffad8a;font-size:17px}
+.tribe-shortcuts button b{font-size:11px}
+.tribe-control{display:flex;align-items:center;gap:10px;padding:17px 18px;border:1px solid #553b30;border-radius:15px;background:linear-gradient(110deg,#2a1e19,#1b1918)}
+.tribe-control>div{flex:1;min-width:0}
+.tribe-control h2{margin:5px 0;font:700 17px var(--display);color:#fff}
+.tribe-action{white-space:nowrap}
+.tribe-action.secondary-action{border-color:#514039;background:#282321;color:#e7d5ca}
+.tribe-section{display:grid;gap:13px}
+.tribe-section-head{display:flex;align-items:end;justify-content:space-between;gap:12px}
+.tribe-section-head h2{margin:5px 0 0;font:700 20px var(--display);letter-spacing:-.03em;color:#f6f2ef}
+.tribe-live-text{color:#8cbd8c;font-size:8px}
+.tribe-live-text i{background:#79cb87;box-shadow:0 0 0 4px #79cb871b}
+.tribe-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.tribe-stats article{display:grid;gap:7px;padding:16px;border:1px solid #34302e;border-radius:14px;background:#1a1918}
+.tribe-stats article span{color:#a9a09b;font:700 8px var(--mono);letter-spacing:.1em}
+.tribe-stats article b{font:700 27px var(--display);color:#ffad8a}
+.tribe-stats article small{color:#8d8782;font-size:10px}
+.tribe-text-action{border:0;background:none;color:#ffad8a;font-size:11px;font-weight:700}
+.tribe-event{display:flex;align-items:center;gap:14px;padding:15px;border:1px solid #34302e;border-radius:14px;background:#1a1918}
+.tribe-event-date{display:grid;place-items:center;min-width:58px;padding:9px 6px;border-radius:11px;background:#ff956b18;color:#ffad8a}
+.tribe-event-date b{font:700 15px var(--display)}.tribe-event-date span{font-size:9px;text-transform:uppercase}
+.tribe-event-info{flex:1;min-width:0}.tribe-event-info h3{margin:0 0 5px;color:#f5f0ec;font-size:14px}.tribe-event-info p{margin:0;color:#9f9690;font-size:11px}
+.tribe-event-open{width:34px;height:34px;border:1px solid #514039;border-radius:10px;background:#29211d;color:#ffad8a}
+.tribe-updates{display:grid;gap:10px}.tribe-updates .announcement{margin:0}
+@media(max-width:900px){
+ .tribe-home{gap:20px}.tribe-welcome h1{font-size:27px;color:#f5f3f0}.tribe-welcome p{color:#aaa29d}
+ .tribe-feature{min-height:225px;padding:22px 20px;border-radius:18px}.tribe-feature-mark{right:-8px;width:125px;height:125px;opacity:.16}
+ .tribe-feature-copy{max-width:100%}.tribe-feature-desc{max-width:310px}
+ .tribe-shortcuts{gap:7px}.tribe-shortcuts button{flex-direction:column;align-items:flex-start;gap:7px;padding:10px 8px}
+ .tribe-shortcuts button span{width:30px;height:30px;flex-basis:30px}.tribe-shortcuts button b{font-size:9px}
+ .tribe-control{align-items:flex-start;flex-wrap:wrap}.tribe-control>div{flex:1 0 100%}.tribe-action{flex:1}
+ .tribe-stats{gap:8px}.tribe-stats article{padding:12px 10px}.tribe-stats article span{font-size:7px;letter-spacing:.05em}.tribe-stats article b{font-size:23px}
+}
+@media(max-width:390px){.tribe-feature{padding:20px 16px}.tribe-feature h2{font-size:31px}.tribe-stats article{padding:10px 8px}.tribe-stats article span{font-size:6.5px}}
+@media(prefers-reduced-motion:reduce){.tribe-shortcuts button{transition:none}}
