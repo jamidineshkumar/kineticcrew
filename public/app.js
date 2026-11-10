@@ -205,7 +205,7 @@ const fn={overview:home,events:eventsPage,chat:whatsAppChatPage,notifications:no
 $('#app').innerHTML=(S.error?'<div class="alert"><span>'+esc(S.error)+'</span><button data-clear>×</button></div>':'')+(S.offline?'<div class="offline-strip">OFFLINE · LAST SAVED DATA</div>':'')+fn();
 }
 function settingsPage(){
- const prefs=notificationPrefs(),settings=S.appSettings||{},version=window.KC_APP_VERSION||'1.1.0',latest=settings.latest_version||version;
+ const prefs=notificationPrefs(),settings=S.appSettings||{},version=window.KC_APP_VERSION||'1.2.0',latest=settings.latest_version||version;
  const updateAvailable=latest!==version;
  return welcome('App settings','Your Kinetic Crew app, account and device preferences.')+
  '<div class="settings-grid">'+
