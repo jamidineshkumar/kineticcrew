@@ -334,3 +334,9 @@ body.kc-auth-open #kcAuthScreen .msg,body.kc-auth-open #kcAuthScreen .error{max-
  body.kc-auth-open #kcAuthScreen .signinpanel .field{margin:3px 0!important}
  body.kc-auth-open #kcAuthScreen .signinpanel .field input{height:30px!important;min-height:30px!important}
 }
+
+/* Compact audition prompt beneath the two primary welcome actions. */
+.kc-welcome-audition{position:relative!important;z-index:3!important;margin:0 auto 16px!important;color:#a99b90!important;text-align:center!important;font:10px/1.5 Arial,Helvetica,sans-serif!important;letter-spacing:.01em!important}
+.kc-welcome-audition a{color:#ffad70!important;text-decoration:none!important;font-weight:700!important;border-bottom:1px solid #ffad7070!important;padding-bottom:2px!important}
+.kc-welcome-audition a:focus-visible{outline:2px solid #ffad70!important;outline-offset:4px!important;border-radius:3px!important}
+.kc-welcome-actions{margin-bottom:12px!important}
