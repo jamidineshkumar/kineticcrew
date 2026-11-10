@@ -986,3 +986,28 @@ body{background:var(--bg);color:var(--text)}
 .kc-member-directory-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
 .kc-member-directory-footer button{min-height:36px}
 @media(max-width:600px){.kc-public-member-card{margin:14px 0;padding:18px!important}.kc-public-member-head{gap:12px}.kc-public-member-avatar{width:62px;height:62px;flex-basis:62px}.kc-public-member-role{margin-left:74px}}
+
+
+/* Correct app chrome: one fixed header menu, no duplicate controls in home */
+.kc-app-header{display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50;height:72px;padding:0 18px;background:rgba(8,8,14,.94);border-bottom:1px solid rgba(255,255,255,.1);box-shadow:none;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+.kc-header-spacer{flex:1}
+.kc-app-header .kc-header-menu{display:grid;place-items:center;width:54px;height:54px;border:1px solid rgba(0,207,218,.35);border-radius:18px;background:rgba(20,23,33,.92);color:#08cbd5;font-size:24px;box-shadow:inset 0 0 0 1px rgba(0,207,218,.04)}
+.kc-app-header .kc-header-actions{display:flex;align-items:center;gap:10px}
+.kc-app-header .kc-header-actions .iconbutton{display:grid;place-items:center;width:54px;height:54px;border:1px solid rgba(0,207,218,.28);border-radius:18px;background:rgba(20,23,33,.9);color:#09cbd5;font-size:24px}
+.kc-app-header .kc-header-actions .kc-header-profile{width:54px;height:54px;border-radius:50%;border-color:rgba(255,255,255,.14);color:#f8f7fa;font-size:14px;font-weight:900;background:#171720}
+.kc-app-header .kc-header-bell{position:relative}.kc-app-header .kc-header-bell i{position:absolute;right:8px;top:7px;width:9px;height:9px;border-radius:50%;background:#ec1687;box-shadow:0 0 0 4px #fff}
+.kc-home-top .kc-vibe-actions{display:none!important}
+.kc-home-top{margin-top:6px}
+@media(max-width:900px){
+ .kc-app-header{height:72px;padding:0 14px;background:rgba(8,8,14,.96);border-bottom:1px solid rgba(255,255,255,.12)}
+ .kc-app-header .kc-header-menu,.kc-app-header .kc-header-actions .iconbutton{width:52px;height:52px;border-radius:17px}
+ .kc-app-header .kc-header-actions .kc-header-profile{border-radius:50%}
+ .kc-mobile-dock{position:fixed!important;z-index:100!important;left:16px!important;right:16px!important;bottom:max(12px,env(safe-area-inset-bottom))!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px!important;padding:9px 8px calc(9px + env(safe-area-inset-bottom))!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:28px!important;background:rgba(34,33,40,.88)!important;box-shadow:0 16px 42px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.08)!important;backdrop-filter:blur(28px) saturate(150%)!important;-webkit-backdrop-filter:blur(28px) saturate(150%)!important}
+ .kc-mobile-dock button{display:flex!important;min-width:0;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:8px 3px!important;border:0!important;border-radius:18px!important;background:transparent!important;color:#aaa7b2!important;font-size:10px!important;font-weight:600!important;letter-spacing:0!important}
+ .kc-mobile-dock button .dock-icon{width:28px!important;height:27px!important;font-size:22px!important;line-height:1}
+ .kc-mobile-dock button.active{background:transparent!important;color:#fff!important;box-shadow:none!important}
+ .kc-mobile-dock button.active .dock-icon{color:#fff!important}
+ .kc-mobile-dock button:active{transform:scale(.96)}
+ main{padding-bottom:calc(112px + env(safe-area-inset-bottom))!important}
+}
+@media(max-width:420px){.kc-app-header{padding-inline:12px}.kc-mobile-dock{left:12px!important;right:12px!important}}
