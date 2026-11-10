@@ -1,6 +1,6 @@
 {
-  "version": "1.2.3",
-  "minimum_version": "1.2.3",
+  "version": "1.2.4",
+  "minimum_version": "1.2.4",
   "updated_at": "2026-11-10T08:10:00Z",
   "release_notes": "Normalized feature routes, separated role navigation, private profile image-save RPC, vector logo fallback, PWA cache refresh and responsive motion."
 }
