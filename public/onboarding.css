@@ -233,3 +233,66 @@ body.kc-auth-open #kcAuthScreen{display:block;min-height:100svh;background:#0303
  .kc-welcome-copy{padding-top:29vh}
  #kcAuthScreen .signinpanel{padding-top:200px}
 }
+
+/* FINAL VISUAL OVERRIDE — three-screen amber eclipse onboarding reference */
+html:has(.kc-entry-splash),body:has(.kc-entry-splash){background:#020202!important;color:#f7f4f1!important}
+.kc-entry-splash{position:fixed!important;inset:0!important;z-index:10000!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:0!important;background:#020202!important;overflow:hidden!important}
+.kc-entry-splash[hidden]{display:none!important}
+.kc-entry-splash .kc-splash-logo{position:relative!important;width:84px!important;height:84px!important;object-fit:contain!important;filter:sepia(1) saturate(7) hue-rotate(340deg) drop-shadow(0 0 15px #ff7d29)!important;animation:kcMarkFloat 2.8s ease-in-out infinite!important}
+.kc-entry-splash .kc-splash-wordmark{position:absolute!important;bottom:7vh!important;top:auto!important;color:#eee!important;font:500 24px/1 Arial,sans-serif!important;letter-spacing:-.04em!important}
+.kc-entry-splash .kc-splash-glow{inset:0!important;background:radial-gradient(ellipse at 8% 10%,#a94a1280 0,transparent 25%),radial-gradient(ellipse at 95% 100%,#a94a1280 0,transparent 28%)!important;filter:blur(26px)!important;animation:kcLightSweep 6s ease-in-out infinite alternate!important}
+.kc-splash-streak{position:absolute!important;width:72vw!important;height:34vh!important;opacity:.75!important;filter:blur(18px)!important;pointer-events:none!important}
+.kc-streak-top{top:-10%!important;left:-22%!important;transform:rotate(34deg)!important;background:linear-gradient(115deg,transparent 8%,#8d390e88 35%,#ff9d4a30 47%,transparent 68%)!important;clip-path:polygon(0 0,100% 0,70% 100%,0 65%)!important}
+.kc-streak-bottom{right:-22%!important;bottom:-10%!important;transform:rotate(34deg)!important;background:linear-gradient(115deg,transparent 8%,#8d390e99 35%,#ff9d4a35 47%,transparent 68%)!important;clip-path:polygon(0 0,100% 20%,80% 100%,0 80%)!important}
+.kc-entry-welcome{position:relative!important;isolation:isolate!important;display:flex!important;min-height:100svh!important;min-height:100dvh!important;box-sizing:border-box!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:0!important;overflow:hidden!important;padding:0 25px calc(28px + env(safe-area-inset-bottom))!important;background:#020202!important;text-align:center!important}
+.kc-entry-welcome[hidden]{display:none!important}
+.kc-entry-welcome:before{content:""!important;position:absolute!important;z-index:-2!important;top:5%!important;left:50%!important;width:min(100vw,590px)!important;height:min(100vw,590px)!important;min-height:0!important;transform:translateX(-50%)!important;border-radius:50%!important;background:radial-gradient(ellipse at 50% 50%,#ffbd80 0%,#ff9d50 2.5%,#bd5b20 7%,#57240d 18%,#140904 34%,#030303 54%,transparent 68%)!important;filter:blur(9px)!important;opacity:1!important;animation:kcEclipsePulse 6s ease-in-out infinite alternate!important;pointer-events:none!important}
+.kc-entry-welcome:after{content:""!important;position:absolute!important;z-index:-1!important;inset:0!important;background:linear-gradient(180deg,transparent 0%,transparent 42%,#020202 66%,#020202 100%)!important;pointer-events:none!important}
+.kc-welcome-orb{position:absolute!important;z-index:-1!important;top:7%!important;left:50%!important;width:min(86vw,450px)!important;height:min(86vw,450px)!important;aspect-ratio:1!important;transform:translateX(-50%)!important;border:0!important;border-radius:50%!important;background:transparent!important;box-shadow:none!important;transform-style:preserve-3d!important;animation:kcEclipseFloat 8s ease-in-out infinite!important}
+.kc-welcome-orb:before,.kc-welcome-orb:after{content:""!important;position:absolute!important;left:7%!important;width:86%!important;height:36%!important;border:0!important;border-radius:50%!important;box-shadow:0 0 12px #ff9a4c88,0 0 30px #ff8b3b44!important;transform:rotateX(70deg)!important}
+.kc-welcome-orb:before{top:9%!important;border-bottom:2px solid #ffd09c!important;background:radial-gradient(ellipse at 50% 100%,#ffb56a55,transparent 65%)!important;filter:drop-shadow(0 0 8px #ff9848)!important}
+.kc-welcome-orb:after{bottom:9%!important;border-top:2px solid #ffd09c!important;background:radial-gradient(ellipse at 50% 0%,#ffb56a55,transparent 65%)!important;filter:drop-shadow(0 0 8px #ff9848)!important}
+.kc-welcome-brand{display:none!important}
+.kc-welcome-copy{position:relative!important;z-index:2!important;display:flex!important;flex-direction:column!important;align-items:center!important;width:100%!important;max-width:390px!important;margin:auto 0 2.5vh!important;padding:0!important;text-shadow:0 3px 24px #000!important}
+.kc-welcome-kicker{display:none!important}
+.kc-welcome-copy h1{margin:0 0 14px!important;color:#fff!important;font-family:Arial,Helvetica,sans-serif!important;font-size:clamp(36px,8.8vw,49px)!important;font-weight:750!important;line-height:1.1!important;letter-spacing:-.045em!important}
+.kc-welcome-copy h1 em{color:#fff!important;font-family:Arial,Helvetica,sans-serif!important;font-style:normal!important;font-weight:750!important}
+.kc-welcome-copy p{max-width:300px!important;margin:0 auto!important;color:#aaa19b!important;font-size:11px!important;line-height:1.55!important}
+.kc-welcome-actions{position:relative!important;z-index:3!important;display:grid!important;gap:10px!important;width:100%!important;max-width:300px!important;margin:0 auto 3vh!important}
+.kc-glow-button,.kc-quiet-button{position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-height:48px!important;border-radius:999px!important;font-size:12px!important;font-weight:700!important;overflow:hidden!important}
+.kc-glow-button{border:1px solid #a75c2d!important;background:radial-gradient(ellipse at 50% 45%,#d77b35 0,#71340f 42%,#130a05 100%)!important;color:#fff!important;box-shadow:0 0 20px #d4773155,inset 0 1px #fff8!important}
+.kc-quiet-button{border:1px solid #59371f!important;background:linear-gradient(90deg,#0b0705,#1a0e07,#0b0705)!important;color:#c9b8aa!important}
+.kc-welcome-footer{position:relative!important;z-index:2!important;display:flex!important;width:100%!important;max-width:380px!important;justify-content:space-between!important;color:#685345!important;font:7px var(--mono)!important;letter-spacing:.15em!important}
+body.kc-auth-open{background:#020202!important}
+#kcAuthScreen{display:none!important}
+body.kc-auth-open #kcAuthScreen{display:block!important;min-height:100svh!important;background:#020202!important}
+#kcAuthScreen .signart{display:none!important}
+#kcAuthScreen .signinpanel{position:relative!important;isolation:isolate!important;display:flex!important;min-height:100svh!important;min-height:100dvh!important;box-sizing:border-box!important;align-items:flex-start!important;justify-content:center!important;overflow-x:hidden!important;overflow-y:auto!important;padding:calc(235px + env(safe-area-inset-top)) 24px calc(34px + env(safe-area-inset-bottom))!important;border:0!important;background:#020202!important;perspective:1000px!important}
+#kcAuthScreen .signinpanel:before{content:""!important;position:absolute!important;z-index:-2!important;top:-28px!important;left:50%!important;width:min(100vw,540px)!important;height:260px!important;transform:translateX(-50%) rotateX(58deg)!important;border-radius:50%!important;background:radial-gradient(ellipse at 50% 50%,#ffbd80 0%,#ff9d50 2.5%,#bd5b20 7%,#57240d 18%,#140904 34%,#030303 54%,transparent 68%)!important;filter:blur(9px)!important;animation:kcEclipsePulse 6s ease-in-out infinite alternate!important}
+#kcAuthScreen .signinpanel:after{content:""!important;position:absolute!important;z-index:-1!important;top:4px!important;left:50%!important;width:min(80vw,400px)!important;height:190px!important;transform:translateX(-50%) rotateX(68deg)!important;border:0!important;border-radius:50%!important;background:linear-gradient(180deg,transparent 47%,#ffd09c 49%,#ff8b3b 50%,transparent 53%)!important;filter:blur(3px)!important;animation:kcArcTilt 8s ease-in-out infinite alternate!important}
+#kcAuthScreen .signform{position:relative!important;z-index:2!important;width:min(100%,370px)!important;margin:0 auto!important;padding:0!important;transform:none!important}
+#kcAuthScreen .signform>.eyebrow,#kcAuthScreen .auth-choice-label{display:none!important}
+#kcAuthScreen .signform h2{margin:0 0 9px!important;color:#fff!important;text-align:center!important;font:700 23px/1.2 Arial,sans-serif!important;letter-spacing:-.03em!important}
+#kcAuthScreen .signform>p:not(.msg){max-width:300px!important;margin:0 auto 22px!important;color:#aaa19b!important;text-align:center!important;font-size:10px!important;line-height:1.5!important}
+#kcAuthScreen .tabs{display:none!important}
+#kcAuthScreen .signup-guidance{display:none!important}
+#kcAuthScreen .signinpanel .field{display:grid!important;gap:6px!important;margin:12px 0!important;color:#f0e8e2!important;font-size:10px!important;font-weight:650!important}
+#kcAuthScreen .signinpanel .field input{width:100%!important;min-height:44px!important;box-sizing:border-box!important;padding:0 15px!important;border:1px solid #4a2b18!important;border-radius:999px!important;background:linear-gradient(100deg,#0c0806,#1b1009 52%,#0b0705)!important;color:#fff!important;font-size:11px!important;box-shadow:inset 0 2px 10px #0009,0 0 14px #ff9a4c0d!important}
+#kcAuthScreen .signinpanel .field input::placeholder{color:#78675a!important}
+#kcAuthScreen .signinpanel .field input:focus{border-color:#e9904e!important;outline:2px solid #ff9d5328!important}
+#kcAuthScreen .signinpanel .full{width:100%!important;min-height:46px!important;margin-top:12px!important;border-radius:999px!important;font-size:11px!important}
+#kcAuthScreen .signinpanel .primary{border:1px solid #b66a36!important;background:radial-gradient(ellipse at 50% 45%,#d47731 0,#70340f 45%,#140b06 100%)!important;color:#fff!important;box-shadow:0 0 20px #d4773144,inset 0 1px #fff8!important}
+#kcAuthScreen .signinpanel .secondary{border:1px solid #54321e!important;background:#100a06!important;color:#d7c6b8!important}
+#kcAuthScreen .kc-auth-switch{display:block!important;margin:19px 0 0!important;color:#8f8279!important;text-align:center!important;font-size:10px!important}
+#kcAuthScreen .kc-auth-switch button{padding:0!important;border:0!important;background:none!important;color:#f3eee9!important;font-size:10px!important;font-weight:700!important}
+#kcAuthScreen .audition-divider,#kcAuthScreen .audition-redirect,#kcAuthScreen .auth-footnote{display:none!important}
+#kcAuthScreen .kc-auth-back,#kcAuthScreen .auth-theme-toggle{display:none!important}
+#kcAuthScreen .msg,#kcAuthScreen .error{display:block!important;text-align:center!important;font-size:10px!important}
+@keyframes kcMarkFloat{0%,100%{transform:translateY(0) scale(.97)}50%{transform:translateY(-7px) scale(1.04)}}
+@keyframes kcLightSweep{0%{opacity:.65;transform:scale(1)}100%{opacity:1;transform:scale(1.08)}}
+@keyframes kcEclipsePulse{0%{filter:blur(11px) brightness(.82);opacity:.78}100%{filter:blur(7px) brightness(1.18);opacity:1}}
+@keyframes kcEclipseFloat{0%,100%{transform:translateX(-50%) translateY(0) rotateX(0)}50%{transform:translateX(-50%) translateY(9px) rotateX(6deg)}}
+@keyframes kcArcTilt{0%{transform:translateX(-50%) rotateX(62deg) rotateZ(-5deg) scale(.96)}100%{transform:translateX(-50%) rotateX(73deg) rotateZ(5deg) scale(1.04)}}
+@media(min-width:760px){.kc-entry-welcome{padding-left:28px!important;padding-right:28px!important}.kc-welcome-copy{margin-bottom:2vh!important}#kcAuthScreen .signinpanel{padding-top:235px!important}}
+@media(max-height:700px){.kc-welcome-copy{margin-bottom:1vh!important}.kc-welcome-actions{margin-bottom:1.5vh!important}#kcAuthScreen .signinpanel{padding-top:190px!important}}
+@media(prefers-reduced-motion:reduce){.kc-splash-logo,.kc-splash-glow,.kc-entry-welcome:before,.kc-welcome-orb,#kcAuthScreen .signinpanel:before,#kcAuthScreen .signinpanel:after{animation:none!important}}
