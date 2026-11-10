@@ -13,9 +13,9 @@
   "description": "Kinetic Crew — crew events, updates and attendance",
   "icons": [
     {
-      "src": "kinetic-crew-logo.jpg",
-      "sizes": "150x150",
-      "type": "image/jpeg",
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
       "purpose": "any"
     }
   ]
