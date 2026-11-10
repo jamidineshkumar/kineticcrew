@@ -170,3 +170,6 @@
  .kc-founder-tools button{grid-template-columns:34px minmax(0,1fr);padding:10px;min-height:72px}
  .kc-founder-tools button>span{width:32px;height:32px}
 }
+
+/* Remove the global notification/profile toolbar entirely; page-level navigation remains. */
+.shell>main>header.kc-compact-topbar{display:none!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;visibility:hidden!important;pointer-events:none!important}
