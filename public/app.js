@@ -295,7 +295,7 @@ function settingsPage(){
  '<section class="surface settings-card"><span class="settings-kicker">DEVICE</span><h3>App maintenance</h3><p>Clear temporary cached files without signing you out.</p><button class="outline" id="clearAppCache">Clear app cache</button><button class="outline" data-view="notifications">Notification settings</button></section>'+
  '<section class="surface settings-card settings-danger"><span class="settings-kicker">SESSION</span><h3>Sign out</h3><p>Sign out of this device. Your crew account remains active.</p><button class="outline" id="settingsSignOut">Sign out ↗</button></section></div>';
 }
-async function go(v){S.view=v;S.error='';S.navOpen=({overview:'overview',events:'events','event-detail':'events',chat:'chat',notifications:'notifications',people:'chat',feed:'chat','public-profile':'chat','crew-management':'management',attendance:'management',profile:'settings',settings:superadmin()?'management':'settings',rehearsals:'chat',calendar:'events',polls:'chat',memories:'chat',leave:'chat',auditions:'chat'}[v]||'overview');if(S.chatPoll){clearInterval(S.chatPoll);S.chatPoll=null;}if(v==='crew-management'&&admin()){try{S.members=await api('members');}catch(e){S.error=e.message||'Could not load crew members.';}}if(v==='people'||v==='feed'){try{const {data,error}=await rpc('crew_profile_directory',{});if(error)throw error;S.publicMembers=Array.isArray(data)?data:[];}catch(e){S.publicMembers=[];S.error=e.message||'Could not load crew profiles.';}}if(v==='feed'){try{await loadSocialFeed();}catch(e){S.error=e.message||'Could not load the crew feed.';}}if(v==='profile'||v==='public-profile'||v==='settings'){try{const {data,error}=await rpc('crew_profile_social',{p_auth_id:v==='public-profile'?S.selectedProfileId:S.user.auth_id});if(error)throw error;S.profileSocial=data||null;if(v!=='public-profile'&&S.profileSocial?.profile)S.user={...S.user,...S.profileSocial.profile};}catch(e){S.profileSocial=null;S.error=e.message||'Could not load profile details.';}}$('#sidebar').classList.remove('open');$('#navShade').classList.remove('open');if(featureKeys.includes(v)){try{S.featureItems[v]=await featureApi('list',v,{});}catch(e){S.error=e.message||'Could not load this feature.';}}if(v==='leaderboard'){try{S.leaderboard=await featureApi('leaderboard',null,{});}catch(e){S.error=e.message||'Could not load leaderboard.';}}paint();if(v==='chat'){S.chatPoll=setInterval(async()=>{if(S.view!=='chat'||S.chatBusy)return;S.chatBusy=true;try{const rows=await featureApi('list','chat',{});const previous=S.featureItems.chat||[],previousIds=new Set(previous.map(m=>String(m.id)));const incoming=rows.filter(m=>!previousIds.has(String(m.id)));if(incoming.length){const latest=incoming[incoming.length-1];if(String(latest.author_id)!==String(S.user.auth_id)){notice('New crew message from '+(latest.author_name||'a crew member'));if(notificationPrefs().sound)playNoticeSound();if(document.hidden&&'Notification'in window&&Notification.permission==='granted')new Notification('Kinetic Crew · Crew chat',{body:(latest.author_name||'A crew member')+': '+(latest.body||'New message'),icon:window.kcPath('kinetic-crew-logo.jpg')});}}if(rows.length!==(S.featureItems.chat||[]).length||incoming.length){S.featureItems.chat=rows;const box=$('#waMessages');if(box){const atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;box.innerHTML=chatMessagesMarkup(rows);if(atBottom)box.scrollTop=box.scrollHeight;}}}catch{}finally{S.chatBusy=false;}},5000);}window.scrollTo({top:0,behavior:'smooth'});}
+async function go(v){S.view=v;S.error='';S.navOpen=({overview:'overview',events:'events','event-detail':'events',chat:'chat',notifications:'notifications',people:'chat',feed:'chat','public-profile':'chat','crew-management':'management',attendance:'management',profile:'settings',settings:superadmin()?'management':'settings',rehearsals:'chat',calendar:'events',polls:'chat',memories:'chat',leave:'chat',auditions:'chat'}[v]||'overview');if(S.chatPoll){clearInterval(S.chatPoll);S.chatPoll=null;}if(v==='crew-management'&&admin()){try{S.members=await api('members');}catch(e){S.error=e.message||'Could not load crew members.';}}if(v==='people'||v==='feed'){try{const {data,error}=await rpc('crew_profile_directory',{});if(error)throw error;S.publicMembers=Array.isArray(data)?data:[];}catch(e){S.publicMembers=[];S.error=e.message||'Could not load crew profiles.';}}if(v==='feed'){try{await loadSocialFeed();}catch(e){S.error=e.message||'Could not load the crew feed.';}}if(v==='profile'||v==='public-profile'||v==='settings'){try{const {data,error}=await rpc('crew_profile_social',{p_auth_id:v==='public-profile'?S.selectedProfileId:S.user.auth_id});if(error)throw error;S.profileSocial=data||null;if(v!=='public-profile'&&S.profileSocial?.profile)S.user={...S.user,...S.profileSocial.profile};}catch(e){S.profileSocial=null;S.error=e.message||'Could not load profile details.';}}$('#sidebar').classList.remove('open');$('#navShade').classList.remove('open');if(featureKeys.includes(v)){try{S.featureItems[v]=await featureApi('list',v,{});}catch(e){S.error=e.message||'Could not load this feature.';}}if(v==='leaderboard'){try{S.leaderboard=await featureApi('leaderboard',null,{});}catch(e){S.error=e.message||'Could not load leaderboard.';}}paint();if(v==='chat'){S.chatPoll=setInterval(async()=>{if(S.view!=='chat'||S.chatBusy)return;S.chatBusy=true;try{const rows=await featureApi('list','chat',{});const previous=S.featureItems.chat||[],previousIds=new Set(previous.map(m=>String(m.id)));const incoming=rows.filter(m=>!previousIds.has(String(m.id)));if(incoming.length){const latest=incoming[incoming.length-1];if(String(latest.author_id)!==String(S.user.auth_id)){notice('New crew message from '+(latest.author_name||'a crew member'));if(notificationPrefs().sound)playNoticeSound();if(document.hidden&&'Notification'in window&&Notification.permission==='granted')new Notification('Kinetic Crew · Crew chat',{body:(latest.author_name||'A crew member')+': '+(latest.body||'New message'),icon:window.kcPath('kinetic-crew-logo.svg')});}}if(rows.length!==(S.featureItems.chat||[]).length||incoming.length){S.featureItems.chat=rows;const box=$('#waMessages');if(box){const atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;box.innerHTML=chatMessagesMarkup(rows);if(atBottom)box.scrollTop=box.scrollHeight;}}}catch{}finally{S.chatBusy=false;}},5000);}window.scrollTo({top:0,behavior:'smooth'});}
 async function exportAttendance(){if(!S.roster?.roster?.length){notice('No attendance rows to export.');return;}const rows=[['Member name','Email','Attendance status','Registered at'],...S.roster.roster.map(m=>[m.name,m.email,m.status||(m.attended?'present':'pending'),m.registered_at||''])];if(window.XLSX){const wb=XLSX.utils.book_new();const ws=XLSX.utils.aoa_to_sheet(rows);XLSX.utils.book_append_sheet(wb,ws,'Attendance');XLSX.writeFile(wb,'kinetic-crew-attendance-'+S.rosterEvent+'.xlsx');notice('Excel attendance workbook downloaded.');return;}const csv=rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='kinetic-crew-attendance-'+S.rosterEvent+'.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);notice('Attendance CSV downloaded. Open it in Excel.');}
 function celebrateSave(){if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;const canvas=document.createElement('canvas');canvas.className='kc-save-confetti';canvas.setAttribute('aria-hidden','true');Object.assign(canvas.style,{position:'fixed',inset:'0',width:'100vw',height:'100vh',pointerEvents:'none',zIndex:'25000'});document.body.appendChild(canvas);const ctx=canvas.getContext('2d');const ratio=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.floor(innerWidth*ratio);canvas.height=Math.floor(innerHeight*ratio);ctx.scale(ratio,ratio);const palette=['#f08cac','#ffd166','#7bdcb5','#86b7ff','#c7a5ff','#ffffff'];const particles=Array.from({length:96},()=>({x:innerWidth/2+(Math.random()-.5)*120,y:Math.max(80,innerHeight*.27)+(Math.random()-.5)*80,vx:(Math.random()-.5)*9,vy:-Math.random()*10-3,g:.22+Math.random()*.12,rot:Math.random()*6.28,vr:(Math.random()-.5)*.24,size:4+Math.random()*6,color:palette[Math.floor(Math.random()*palette.length)],life:85+Math.random()*30}));let frame=0;function draw(){ctx.clearRect(0,0,innerWidth,innerHeight);for(const p of particles){if(p.life<=0)continue;p.x+=p.vx;p.y+=p.vy;p.vy+=p.g;p.vx*=.992;p.rot+=p.vr;p.life--;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=Math.min(1,p.life/24);ctx.fillStyle=p.color;ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*.62);ctx.restore();}frame++;if(frame<125)requestAnimationFrame(draw);else canvas.remove();}requestAnimationFrame(draw);setTimeout(()=>canvas.remove(),2600);}
 window.kcCelebrateSave=celebrateSave;
@@ -318,48 +318,50 @@ async function saveCroppedImage(){
  const p=S.crop;if(!p)return;
  const source=$('#cropCanvas'),out=document.createElement('canvas');
  out.width=p.isBanner?1200:720;out.height=p.isBanner?400:720;
- out.getContext('2d').drawImage(source,0,0,out.width,out.height);
+ const outCtx=out.getContext('2d');
+ if(!outCtx)throw Error('Image editor could not start.');
+ outCtx.drawImage(source,0,0,out.width,out.height);
  let blob=await new Promise(resolve=>out.toBlob(resolve,'image/jpeg',.84));
  if(!blob){notice('Could not process this image.');return;}
- if(blob.size>4.8*1024*1024){out.width=p.isBanner?900:560;out.height=p.isBanner?300:560;out.getContext('2d').drawImage(source,0,0,out.width,out.height);blob=await new Promise(resolve=>out.toBlob(resolve,'image/jpeg',.72));}
+ if(blob.size>4.8*1024*1024){
+  out.width=p.isBanner?900:560;out.height=p.isBanner?300:560;
+  out.getContext('2d').drawImage(source,0,0,out.width,out.height);
+  blob=await new Promise(resolve=>out.toBlob(resolve,'image/jpeg',.72));
+ }
  if(!blob||blob.size>4.8*1024*1024){notice('Image is still too large. Choose a smaller image.');return;}
  const button=$('#cropSave');button.disabled=true;button.textContent='Uploading & saving…';
+ let uploadedPath=null;
  try{
-  const userId=S.user.auth_id||S.user.id;if(!userId)throw Error('Your crew session expired. Sign in again.');
+  const userId=S.user?.auth_id||S.user?.id;
+  if(!userId)throw Error('Your crew session expired. Sign in again.');
   const path=userId+'/'+(p.isBanner?'banner-':'avatar-')+crypto.randomUUID()+'.jpg';
   const uploaded=await client.storage.from('crew-avatars').upload(path,blob,{upsert:false,contentType:'image/jpeg',cacheControl:'3600'});
   if(uploaded.error)throw uploaded.error;
-  const publicUrl=client.storage.from('crew-avatars').getPublicUrl(uploaded.data.path).data.publicUrl+'?v='+Date.now();
-  const saved=await api('profile','PATCH',{
-   name:S.user.name||S.user.email,
-   username:($('#profileForm [name=username]')?.value||S.user.username||'').trim().toLowerCase(),
-   bio:S.user.bio||'',
-   avatar_url:p.isBanner?(S.user.avatar_url||null):publicUrl,
-   banner_url:p.isBanner?publicUrl:(S.user.banner_url||null)
+  uploadedPath=uploaded.data.path;
+  const publicUrl=client.storage.from('crew-avatars').getPublicUrl(uploadedPath).data.publicUrl+'?v='+Date.now();
+  const {data:saved,error:saveError}=await rpc('crew_update_profile_images',{
+   p_avatar_url:p.isBanner?null:publicUrl,
+   p_banner_url:p.isBanner?publicUrl:null
   });
+  if(saveError)throw saveError;
+  if(!saved?.auth_id)throw Error('The image uploaded, but the profile did not confirm the save. Please retry.');
   S.user={...S.user,...saved};
-  if(p.isBanner)S.pendingBannerUrl=null;else S.pendingAvatarUrl=null;
   try{const profileResult=await rpc('crew_profile_social',{p_auth_id:S.user.auth_id});if(!profileResult.error)S.profileSocial=profileResult.data;}catch{}
   const previewUrl=URL.createObjectURL(blob);
-  if(p.isBanner){const cover=document.querySelector('.profile-cover');if(cover){cover.style.backgroundImage='url('+JSON.stringify(previewUrl)+')';cover.classList.add('has-banner');}}
-  else{const preview=$('#profilePhotoPreview');if(preview?.tagName==='IMG')preview.src=previewUrl;else if(preview){const img=document.createElement('img');img.id='profilePhotoPreview';img.className='profile-photo';img.alt='Profile photo';img.src=previewUrl;preview.replaceWith(img);}}
-  closeImageCrop();notice(p.isBanner?'Profile banner saved.':'Profile photo saved.');celebrateSave();paintUser();paint();
- }catch(err){button.disabled=false;button.textContent='Use this image →';notice(err.message||'Image upload failed.');}
+  if(p.isBanner){
+   const cover=document.querySelector('.profile-cover');
+   if(cover){cover.style.backgroundImage='url('+JSON.stringify(previewUrl)+')';cover.classList.add('has-banner');}
+  }else{
+   const preview=$('#profilePhotoPreview');
+   if(preview?.tagName==='IMG')preview.src=previewUrl;
+   else if(preview){const img=document.createElement('img');img.id='profilePhotoPreview';img.className='profile-photo';img.alt='Profile photo';img.src=previewUrl;preview.replaceWith(img);}
+  }
+  closeImageCrop();paintUser();notice(p.isBanner?'Profile banner saved successfully.':'Profile photo saved successfully.');window.kcCelebrateSave?.();paint();
+ }catch(err){
+  if(uploadedPath){try{await client.storage.from('crew-avatars').remove([uploadedPath]);}catch{}}
+  button.disabled=false;button.textContent='Use this image →';notice(err.message||'Image upload failed.');
+ }
 }
-let usernameCheckTimer=null,usernameCheckSequence=0;
-async function updateUsernameHint(input,hint){
- const value=String(input.value||'').trim().toLowerCase(),seq=++usernameCheckSequence;
- if(!hint)return;
- if(!value){hint.textContent='Your username is visible to the crew.';hint.dataset.state='';return;}
- if(!/^[a-z0-9_]{3,24}$/.test(value)){hint.textContent='Use 3–24 letters, numbers or underscores.';hint.dataset.state='error';return;}
- hint.textContent='Checking username…';hint.dataset.state='checking';
- try{const {data,error}=await rpc('crew_check_username',{p_username:value});if(error)throw error;if(seq!==usernameCheckSequence||value!==input.value.trim().toLowerCase())return;hint.textContent=data?.message||'Could not check this username.';hint.dataset.state=data?.available?'available':'error';}
- catch(error){if(seq!==usernameCheckSequence)return;hint.textContent='Could not check right now. The save will still verify it.';hint.dataset.state='checking';}
-}
-document.addEventListener('input',e=>{
- if(e.target.id==='peopleSearch'){S.peopleQuery=e.target.value;const query=S.peopleQuery.trim().toLowerCase();let visible=0;document.querySelectorAll('[data-profile-search]').forEach(card=>{const show=card.dataset.profileSearch.toLowerCase().includes(query);card.hidden=!show;if(show)visible++;});const count=$('#peopleSearchCount');if(count)count.textContent=visible+' of '+(S.publicMembers||[]).length+' profiles';return;}
- if(e.target.id==='profileUsername'){clearTimeout(usernameCheckTimer);const input=e.target,hint=$('#profileUsernameHint');usernameCheckTimer=setTimeout(()=>updateUsernameHint(input,hint),300);}
-});
 document.addEventListener('change',async e=>{
  if(e.target.id==='settingsSound'){saveNotificationPrefs({sound:e.target.checked});if(e.target.checked)playNoticeSound();notice(e.target.checked?'In-app sounds enabled.':'In-app sounds muted.');}
  if(e.target.id==='introAudioUpload'){const file=e.target.files?.[0];if(!file)return;if(!admin()){notice('Admin access required.');return;}if(!file.type.startsWith('audio/')||file.size>15*1024*1024){notice('Choose an audio file under 15 MB.');return;}try{const path='admin/intro-'+Date.now()+'-'+file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const uploaded=await client.storage.from('crew-intro-audio').upload(path,file,{upsert:true,contentType:file.type});if(uploaded.error)throw uploaded.error;const url=client.storage.from('crew-intro-audio').getPublicUrl(uploaded.data.path).data.publicUrl;const saved=await rpc('crew_set_app_setting',{p_key:'intro_audio_url',p_value:JSON.stringify(url)});if(saved.error)throw saved.error;S.appSettings={...(S.appSettings||{}),intro_audio_url:url};notice('Crew intro soundtrack saved.');celebrateSave();}catch(err){notice(err.message||'Soundtrack upload failed.');}}
@@ -388,7 +390,7 @@ async function showCrewIntro(force){
  }
  if(document.getElementById('kcIntro'))return;
  const overlay=document.createElement('section');overlay.id='kcIntro';overlay.className='kc-intro';
- overlay.innerHTML='<div class="kc-intro-grain"></div><div class="kc-intro-orbit"></div><div class="kc-intro-content"><img src="'+window.kcPath('kinetic-crew-logo.jpg')+'" alt="Kinetic Crew" class="kc-intro-logo"><span class="kc-intro-overline">A CREW IS MORE THAN A NAME</span><h1>MOVE AS ONE.<br><em>MAKE IT KINETIC.</em></h1><p>Different styles. One rhythm. One crew.</p><button type="button" id="kcIntroEnter">ENTER THE CREW ↗</button><button type="button" id="kcIntroSkip">Skip intro</button></div>';
+ overlay.innerHTML='<div class="kc-intro-grain"></div><div class="kc-intro-orbit"></div><div class="kc-intro-content"><img src="'+window.kcPath('kinetic-crew-logo.svg')+'" alt="Kinetic Crew" class="kc-intro-logo"><span class="kc-intro-overline">A CREW IS MORE THAN A NAME</span><h1>MOVE AS ONE.<br><em>MAKE IT KINETIC.</em></h1><p>Different styles. One rhythm. One crew.</p><button type="button" id="kcIntroEnter">ENTER THE CREW ↗</button><button type="button" id="kcIntroSkip">Skip intro</button></div>';
  document.body.appendChild(overlay);
  const finish=async play=>{
    if(play&&S.appSettings?.intro_audio_url&&notificationPrefs().sound){try{const audio=new Audio(S.appSettings.intro_audio_url);audio.volume=.65;await audio.play();}catch(error){console.info('Intro soundtrack requires browser playback permission.',error);}}
