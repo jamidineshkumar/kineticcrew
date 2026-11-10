@@ -461,11 +461,21 @@ $('#updatesTop').addEventListener('click',()=>go('notifications'));
 function setMobileMenu(open){
  const sidebar=$('#sidebar'),shade=$('#navShade'),toggle=$('#menuToggle');
  if(!sidebar||!shade)return;
+ if(open&&$('#nav')&&!$('#nav').children.length&&typeof paint==='function')paint();
  sidebar.classList.toggle('open',!!open);shade.classList.toggle('open',!!open);
- if(toggle)toggle.setAttribute('aria-expanded',open?'true':'false');
+ sidebar.setAttribute('aria-hidden',open?'false':'true');
+ sidebar.style.transform=open?'translate3d(0,0,0)':'translate3d(-110%,0,0)';
+ sidebar.style.visibility=open?'visible':'hidden';
+ sidebar.style.opacity=open?'1':'0';
+ sidebar.style.pointerEvents=open?'auto':'none';
+ shade.style.zIndex='19990';sidebar.style.zIndex='20000';
+ if(toggle){toggle.setAttribute('aria-expanded',open?'true':'false');toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');}
  document.body.classList.toggle('kc-menu-open',!!open);
 }
 $('#menuToggle')?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();setMobileMenu(!$('#sidebar')?.classList.contains('open'));});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('#sidebar')?.classList.contains('open'))setMobileMenu(false);});
+window.addEventListener('popstate',()=>{if($('#sidebar')?.classList.contains('open'))setMobileMenu(false);});
+$('#nav')?.addEventListener('click',event=>{if(event.target.closest('[data-view]'))setMobileMenu(false);});
 
 document.addEventListener('kc:navigate',event=>{const view=event.detail?.view;if(view)go(view);});
 $('#navShade')?.addEventListener('click',()=>setMobileMenu(false));
@@ -507,9 +517,26 @@ window.addEventListener('error',event=>{console.error('Kinetic Crew runtime erro
 window.addEventListener('unhandledrejection',event=>{console.error('Kinetic Crew async error:',event.reason);});
 
 let installPrompt=null;
-window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;const b=$('#installApp');if(b)b.hidden=false;});
-window.addEventListener('appinstalled',()=>{installPrompt=null;const b=$('#installApp');if(b)b.hidden=true;notice('Kinetic Crew is on your home screen.');});
-const installButton=$('#installApp');if(installButton)installButton.addEventListener('click',async()=>{if(!installPrompt){notice('On Android, open Chrome menu and choose Install app or Add to Home screen.');return;}try{await installPrompt.prompt();const result=await installPrompt.userChoice;if(result?.outcome==='accepted')notice('Kinetic Crew is ready on your home screen.');}catch{}installPrompt=null;installButton.hidden=true;});
+let installCompleted=window.matchMedia?.('(display-mode: standalone)').matches||window.navigator.standalone===true;
+function syncInstallButtons(){document.querySelectorAll('[data-kc-install]').forEach(button=>{button.disabled=installCompleted;button.textContent=installCompleted?'✓ App installed':'↓ Install app';button.setAttribute('aria-label',installCompleted?'Kinetic Crew is installed':'Install Kinetic Crew');});}
+function showInstallHelp(){
+ const root=$('#modalRoot');if(!root)return;
+ root.innerHTML='<div class="kc-install-backdrop" data-install-close><section class="kc-install-dialog" role="dialog" aria-modal="true" aria-labelledby="kcInstallTitle"><button class="kc-install-close" type="button" data-install-close aria-label="Close">×</button><span class="kc-install-icon">↓</span><h2 id="kcInstallTitle">Install Kinetic Crew</h2><p>Chrome has not offered the one-tap install prompt yet. You can still install the app:</p><ol><li>Open the Chrome <b>⋮</b> menu.</li><li>Tap <b>Install app</b> or <b>Add to Home screen</b>.</li><li>Confirm <b>Install</b>.</li></ol><button type="button" class="primary" data-install-close>Got it</button></section></div>';
+}
+window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;syncInstallButtons();});
+window.addEventListener('appinstalled',()=>{installPrompt=null;installCompleted=true;syncInstallButtons();notice('Kinetic Crew is installed on your device.');});
+document.addEventListener('click',async event=>{
+ const button=event.target.closest('[data-kc-install]');if(!button)return;
+ event.preventDefault();event.stopPropagation();
+ if(installCompleted){notice('Kinetic Crew is already installed.');return;}
+ if(!installPrompt){showInstallHelp();return;}
+ const promptEvent=installPrompt;installPrompt=null;
+ try{await promptEvent.prompt();const choice=await promptEvent.userChoice;if(choice?.outcome==='accepted'){installCompleted=true;notice('Kinetic Crew installation started.');}else notice('Installation was cancelled. You can install it later from this menu.');}
+ catch(error){showInstallHelp();}
+ syncInstallButtons();
+});
+document.addEventListener('click',event=>{if(event.target.closest('[data-install-close]'))$('#modalRoot').innerHTML='';});
+syncInstallButtons();
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register(window.kcPath('sw.js'),{scope:window.kcPath('')}).catch(()=>{}));
 boot().finally(()=>{});
 })();
