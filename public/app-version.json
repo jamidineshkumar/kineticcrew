@@ -2,5 +2,5 @@
   "version": "1.2.3",
   "minimum_version": "1.2.3",
   "updated_at": "2026-11-10T08:10:00Z",
-  "release_notes": "Fixed feature routing by normalizing feature names. Simplified member options, removed Achievements, Leaderboard and Expenses from navigation, and refreshed mobile layout and page animations."
+  "release_notes": "Normalized feature routes, separated role navigation, private profile image-save RPC, vector logo fallback, PWA cache refresh and responsive motion."
 }
