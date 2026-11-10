@@ -878,3 +878,19 @@ button.kc-reference-hero{cursor:pointer}
  #sidebar .navitem{min-height:48px!important;padding:8px 10px!important;font-size:11px!important}
 }
 @media(max-width:360px){#sidebar .nav-group-items{grid-template-columns:1fr!important}}
+
+
+/* Compact navigation requested for the Kinetic Crew home screen. */
+.kc-compact-topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px;padding-inline:16px}
+.kc-compact-topbar .mobilebrand{display:flex;align-items:center;min-width:40px}
+.kc-compact-topbar .topright{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-left:auto}
+.kc-compact-topbar .kc-notification-button{position:relative;display:grid;place-items:center;width:40px;height:40px;border:1px solid var(--kc-border,#e8e4f1);border-radius:13px;background:var(--kc-card,#fff);color:var(--kc-ink,#27243d);cursor:pointer}
+.kc-compact-topbar .kc-notification-button em{position:absolute;right:7px;top:7px;width:7px;height:7px;border-radius:50%;background:#f04472;box-shadow:0 0 0 2px #fff}
+.kc-mobile-dock .dock-label{white-space:nowrap}
+@media(max-width:900px){
+ .kc-compact-topbar{height:58px;padding-inline:13px;background:rgba(250,249,253,.9)}
+ .kc-compact-topbar .hamburger{width:39px;height:39px}
+ .kc-compact-topbar .topright{gap:9px}
+ .kc-mobile-dock{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .kc-mobile-dock button{font-size:9px}
+}
