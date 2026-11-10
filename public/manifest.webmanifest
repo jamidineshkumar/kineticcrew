@@ -8,12 +8,12 @@
     "standalone",
     "minimal-ui"
   ],
-  "background_color": "#100d0c",
-  "theme_color": "#100d0c",
+  "background_color": "#05050b",
+  "theme_color": "#05050b",
   "description": "Kinetic Crew — crew events, updates and attendance",
   "icons": [
     {
-      "src": "kinetic-crew-logo.svg?v=20261110-home1",
+      "src": "kinetic-crew-logo.svg?v=20261110-brand2",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
