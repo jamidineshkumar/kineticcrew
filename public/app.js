@@ -339,10 +339,7 @@ async function saveCroppedImage(){
   if(uploaded.error)throw uploaded.error;
   uploadedPath=uploaded.data.path;
   const publicUrl=client.storage.from('crew-avatars').getPublicUrl(uploadedPath).data.publicUrl+'?v='+Date.now();
-  const {data:saved,error:saveError}=await rpc('crew_update_profile',{
-   p_name:S.user.name||'Crew member',
-   p_username:S.user.username||'',
-   p_bio:S.user.bio||'',
+  const {data:saved,error:saveError}=await rpc('crew_update_profile_images',{
    p_avatar_url:p.isBanner?null:publicUrl,
    p_banner_url:p.isBanner?publicUrl:null
   });
