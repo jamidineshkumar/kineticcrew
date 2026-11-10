@@ -631,7 +631,52 @@ async function showCrewIntro(force){
  overlay.querySelector('#kcIntroEnter').addEventListener('click',()=>finish(true));
  overlay.querySelector('#kcIntroSkip').addEventListener('click',()=>finish(false));
 }
-async function boot(){const loadingStarted=Date.now();const loadingWatch=setTimeout(()=>{const el=$('#app');if(el&&el.textContent.includes('Opening Kinetic Crew')){el.innerHTML='<div class="load-error"><div class="emptyicon">!</div><h2>Still loading your crew</h2><p>The dashboard has not finished loading. Check your connection, then retry.</p><div class="load-actions"><button class="primary" onclick="location.reload()">Reload app</button><button class="outline" id="loadingSignout">Switch account</button></div></div>';$('#loadingSignout')?.addEventListener('click',async()=>{try{await auth?.signOut();}finally{location.replace(window.kcPath('login.html'));}});}},18000);if(!auth){clearTimeout(loadingWatch);$('#app').innerHTML='<div class="load-error"><h2>Sign-in unavailable</h2><p>'+esc(window.KC_CONFIG_ERROR||'Refresh the page and try again.')+'</p><button class="primary" onclick="location.reload()">Retry</button></div>';return;}try{const result=await withTimeout(auth.getSession(),10000,'Authentication is taking too long. Reload the page or sign in again.');const session=result?.data?.session;if(!session||!session.user){location.replace(window.kcPath('login.html'));return;}try{const saved=readPageState();if(saved&&(!saved.userId||saved.userId===(session.user.id||session.user.auth_id))){S.view=saved.view||'overview';S.selectedEvent=saved.selectedEvent||null;S.selectedProfileId=saved.selectedProfileId||null;S.navOpen=saved.navOpen||'overview';}await refresh();await loadSocialFeed().catch(error=>console.warn('Home stories unavailable:',error));paint();seedAnnouncementNotifications();startCrewNotificationPolling();if(saved&&S.view!=='overview'){await go(S.view);}showCrewIntro(false);if(saved&&(!saved.userId||saved.userId===(session.user.id||session.user.auth_id)))restorePageScroll(saved);else savePageState();}catch(error){if(!restoreOffline(session.user)){throw error;}}}catch(e){S.error=e.message||'Could not load your crew.';$('#app').innerHTML='<div class="load-error"><div class="emptyicon">!</div><h2>Could not load Kinetic Crew</h2><p>'+esc(S.error)+'</p><div class="load-actions"><button class="primary" id="retryBoot">Try again</button><button class="outline" id="switchAccount">Use another account</button></div></div>';$('#retryBoot')?.addEventListener('click',()=>location.reload());$('#switchAccount')?.addEventListener('click',async()=>{try{await auth.signOut();}finally{location.replace(window.kcPath('login.html'));}});}}
+async function boot(){
+ const loadingWatch=setTimeout(()=>{
+  const el=$('#app');
+  if(el&&el.textContent.includes('Opening Kinetic Crew')){
+   el.innerHTML='<div class="load-error"><div class="emptyicon">!</div><h2>Still loading your crew</h2><p>The dashboard has not finished loading. Check your connection, then retry.</p><div class="load-actions"><button class="primary" onclick="location.reload()">Reload app</button><button class="outline" id="loadingSignout">Switch account</button></div></div>';
+   $('#loadingSignout')?.addEventListener('click',async()=>{try{await auth?.signOut();}finally{location.replace(window.kcPath('login.html'));}});
+  }
+ },18000);
+ try{
+  if(!auth){
+   $('#app').innerHTML='<div class="load-error"><h2>Sign-in unavailable</h2><p>'+esc(window.KC_CONFIG_ERROR||'Refresh the page and try again.')+'</p><button class="primary" onclick="location.reload()">Retry</button></div>';
+   return;
+  }
+  const result=await withTimeout(auth.getSession(),10000,'Authentication is taking too long. Reload the page or sign in again.');
+  const session=result?.data?.session;
+  if(!session||!session.user){location.replace(window.kcPath('login.html'));return;}
+  const saved=readPageState();
+  if(saved&&(!saved.userId||saved.userId===(session.user.id||session.user.auth_id))){
+   S.view=saved.view||'overview';S.selectedEvent=saved.selectedEvent||null;S.selectedProfileId=saved.selectedProfileId||null;S.navOpen=saved.navOpen||'overview';
+  }
+  try{
+   await withTimeout(refresh(),15000,'Crew data is taking too long to load. Please retry.');
+  }catch(error){
+   if(!restoreOffline(session.user))throw error;
+  }
+  // Render the authenticated shell before optional community queries. A slow feed must
+  // never hold the entire app on its launch screen.
+  paint();
+  seedAnnouncementNotifications();
+  startCrewNotificationPolling();
+  loadSocialFeed().then(()=>{if(S.view==='overview'||S.view==='feed'||S.view==='fun-zone'||S.view==='memes')paint();})
+   .catch(error=>console.warn('Home stories unavailable:',error));
+  if(saved&&S.view!=='overview'){
+   const target=S.view;
+   go(target).catch(error=>{console.warn('Saved page restore failed:',error);S.view='overview';paint();});
+  }
+  showCrewIntro(false);
+  if(saved&&(!saved.userId||saved.userId===(session.user.id||session.user.auth_id)))restorePageScroll(saved);
+  else savePageState();
+ }catch(e){
+  S.error=e.message||'Could not load your crew.';
+  $('#app').innerHTML='<div class="load-error"><div class="emptyicon">!</div><h2>Could not load Kinetic Crew</h2><p>'+esc(S.error)+'</p><div class="load-actions"><button class="primary" id="retryBoot">Try again</button><button class="outline" id="switchAccount">Use another account</button></div></div>';
+  $('#retryBoot')?.addEventListener('click',()=>location.reload());
+  $('#switchAccount')?.addEventListener('click',async()=>{try{await auth.signOut();}finally{location.replace(window.kcPath('login.html'));}});
+ }finally{clearTimeout(loadingWatch);}
+}
 
 // Reliable app reload: refresh live data first; offer a hard reload only if startup is unrecoverable.
 const reloadButton=$('#reloadApp');
