@@ -340,3 +340,108 @@ body.kc-auth-open #kcAuthScreen .msg,body.kc-auth-open #kcAuthScreen .error{max-
 .kc-welcome-audition a{color:#ffad70!important;text-decoration:none!important;font-weight:700!important;border-bottom:1px solid #ffad7070!important;padding-bottom:2px!important}
 .kc-welcome-audition a:focus-visible{outline:2px solid #ffad70!important;outline-offset:4px!important;border-radius:3px!important}
 .kc-welcome-actions{margin-bottom:12px!important}
+
+/* Authentication screens — recreate the supplied black/amber reference, not the old gray card. */
+body.kc-auth-open,html:has(body.kc-auth-open){background:#020202!important;color:#f8f5f1!important}
+body.kc-auth-open #kcAuthScreen{background:#020202!important}
+body.kc-auth-open #kcAuthScreen .signinpanel{
+ position:relative!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;
+ width:100%!important;height:100dvh!important;min-height:0!important;max-height:100dvh!important;
+ padding:clamp(205px,25vh,285px) 24px max(18px,env(safe-area-inset-bottom))!important;
+ overflow:hidden!important;border:0!important;border-radius:0!important;background:#020202!important;
+ box-shadow:none!important;box-sizing:border-box!important
+}
+body.kc-auth-open #kcAuthScreen .signinpanel:before{
+ content:""!important;position:absolute!important;z-index:0!important;top:-50px!important;left:50%!important;
+ width:min(112vw,560px)!important;height:330px!important;transform:translateX(-50%) rotateX(55deg)!important;
+ border:0!important;border-radius:50%!important;
+ background:radial-gradient(ellipse at 50% 50%,#ffc18b 0%,#ff9f59 2%,#d56d2c 7%,#873b13 17%,#351407 32%,#100704 48%,transparent 69%)!important;
+ filter:blur(9px)!important;opacity:1!important;animation:kcEclipsePulse 6s ease-in-out infinite alternate!important
+}
+body.kc-auth-open #kcAuthScreen .signinpanel:after{
+ content:""!important;position:absolute!important;z-index:1!important;top:8px!important;left:50%!important;
+ width:min(84vw,420px)!important;height:230px!important;transform:translateX(-50%) rotateX(69deg)!important;
+ border:0!important;border-radius:50%!important;
+ background:linear-gradient(180deg,transparent 47.5%,#ffd09e 49%,#ff9a50 50%,#ffd09e 51%,transparent 53%)!important;
+ filter:drop-shadow(0 0 8px #ff9c50)!important;animation:kcArcTilt 8s ease-in-out infinite alternate!important
+}
+body.kc-auth-open #kcAuthScreen .kc-auth-back,
+body.kc-auth-open #kcAuthScreen .auth-theme-toggle,
+body.kc-auth-open #kcAuthScreen .signform>.eyebrow,
+body.kc-auth-open #kcAuthScreen .auth-choice-label,
+body.kc-auth-open #kcAuthScreen .tabs,
+body.kc-auth-open #kcAuthScreen .signup-guidance,
+body.kc-auth-open #kcAuthScreen .auth-footnote{display:none!important}
+body.kc-auth-open #kcAuthScreen .signform{
+ position:relative!important;z-index:3!important;width:min(100%,370px)!important;max-width:370px!important;
+ max-height:100%!important;margin:0 auto!important;padding:0!important;overflow:visible!important;
+ text-align:left!important;transform:none!important
+}
+body.kc-auth-open #kcAuthScreen .signform h2{
+ margin:0 0 8px!important;color:#fff!important;text-align:center!important;
+ font:700 clamp(23px,6vw,28px)/1.15 Arial,Helvetica,sans-serif!important;letter-spacing:-.035em!important
+}
+body.kc-auth-open #kcAuthScreen #subtitle{
+ max-width:300px!important;margin:0 auto 24px!important;color:#aaa19b!important;
+ text-align:center!important;font:11px/1.5 Arial,Helvetica,sans-serif!important
+}
+body.kc-auth-open #kcAuthScreen .signform form{width:100%!important;margin:0!important}
+body.kc-auth-open #kcAuthScreen .signinpanel .field{
+ display:grid!important;gap:7px!important;margin:13px 0!important;
+ color:#f0e8e2!important;font:600 11px/1.25 Arial,Helvetica,sans-serif!important
+}
+body.kc-auth-open #kcAuthScreen .signinpanel .field input{
+ display:block!important;width:100%!important;height:45px!important;min-height:45px!important;box-sizing:border-box!important;
+ padding:0 16px!important;border:1px solid #4c2b17!important;border-radius:999px!important;
+ background:linear-gradient(100deg,#0a0705 0%,#1b1009 50%,#0a0705 100%)!important;
+ color:#fff!important;font:11px Arial,Helvetica,sans-serif!important;
+ box-shadow:inset 0 2px 12px #000b,0 0 14px #ff9a4c10!important
+}
+body.kc-auth-open #kcAuthScreen .signinpanel .field input::placeholder{color:#79695e!important}
+body.kc-auth-open #kcAuthScreen .signinpanel .field input:focus{border-color:#f3a064!important;outline:2px solid #ff9d5328!important}
+body.kc-auth-open #kcAuthScreen .signinpanel .full{
+ display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;
+ height:46px!important;min-height:46px!important;margin:17px 0 0!important;border-radius:999px!important;
+ font:700 11px Arial,Helvetica,sans-serif!important;letter-spacing:0!important
+}
+body.kc-auth-open #kcAuthScreen .signinpanel .primary{
+ border:1px solid #c57b45!important;
+ background:radial-gradient(ellipse at 50% 42%,#e88b43 0%,#a84f19 38%,#351407 76%,#100704 100%)!important;
+ color:#fff!important;box-shadow:0 0 22px #d4773155,inset 0 1px #fff9!important
+}
+body.kc-auth-open #kcAuthScreen .signinpanel .secondary{
+ border:1px solid #70401f!important;background:#110a06!important;color:#f2e5da!important
+}
+body.kc-auth-open #kcAuthScreen .kc-auth-switch{
+ display:block!important;margin:20px 0 0!important;color:#8e8279!important;
+ text-align:center!important;font:10px/1.5 Arial,Helvetica,sans-serif!important
+}
+body.kc-auth-open #kcAuthScreen .kc-auth-switch button{
+ display:inline!important;padding:0!important;border:0!important;background:transparent!important;
+ color:#fff!important;font:700 10px Arial,Helvetica,sans-serif!important;text-decoration:none!important
+}
+body.kc-auth-open #kcAuthScreen #message{
+ display:block!important;max-height:40px!important;margin:8px 0 0!important;overflow:hidden!important;
+ color:#cdb7a5!important;text-align:center!important;font:10px/1.35 Arial,sans-serif!important
+}
+body.kc-auth-open #kcAuthScreen #message.error{color:#ff8c83!important}
+/* Keep the longer member-registration form within the same single-screen visual system. */
+body.kc-auth-signup #kcAuthScreen .signinpanel{padding-top:clamp(165px,20vh,225px)!important}
+body.kc-auth-signup #kcAuthScreen #subtitle{margin-bottom:12px!important}
+body.kc-auth-signup #kcAuthScreen .signinpanel .field{gap:4px!important;margin:6px 0!important;font-size:10px!important}
+body.kc-auth-signup #kcAuthScreen .signinpanel .field input{height:35px!important;min-height:35px!important}
+body.kc-auth-signup #kcAuthScreen .signinpanel .full{height:39px!important;min-height:39px!important;margin-top:8px!important}
+body.kc-auth-signup #kcAuthScreen .kc-auth-switch{margin-top:10px!important}
+body.kc-auth-signup #kcAuthScreen .username-hint{margin:1px 0!important;font-size:9px!important;line-height:1.2!important}
+body.kc-auth-verify #kcAuthScreen .signinpanel{padding-top:clamp(210px,26vh,290px)!important}
+@media(max-height:720px){
+ body.kc-auth-open #kcAuthScreen .signinpanel{padding-top:clamp(165px,21vh,220px)!important}
+ body.kc-auth-open #kcAuthScreen #subtitle{margin-bottom:14px!important}
+ body.kc-auth-open #kcAuthScreen .signinpanel .field{margin:8px 0!important}
+ body.kc-auth-open #kcAuthScreen .signinpanel .field input{height:39px!important;min-height:39px!important}
+ body.kc-auth-open #kcAuthScreen .signinpanel .full{height:41px!important;min-height:41px!important;margin-top:12px!important}
+ body.kc-auth-signup #kcAuthScreen .signinpanel{padding-top:125px!important}
+ body.kc-auth-signup #kcAuthScreen .signinpanel .field{margin:4px 0!important}
+ body.kc-auth-signup #kcAuthScreen .signinpanel .field input{height:31px!important;min-height:31px!important}
+}
+@media(prefers-reduced-motion:reduce){body.kc-auth-open #kcAuthScreen .signinpanel:before,body.kc-auth-open #kcAuthScreen .signinpanel:after{animation:none!important}}
