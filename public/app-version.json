@@ -1,6 +1,6 @@
 {
-  "version": "1.2.2",
-  "minimum_version": "1.1.0",
-  "updated_at": "2026-11-10T00:00:00Z",
-  "release_notes": "Profile image auto-save, searchable all-role profiles, follow controls, social feed with likes/comments/sharing, role-specific dashboards, asset cache and mobile layout fixes."
+  "version": "1.2.3",
+  "minimum_version": "1.2.3",
+  "updated_at": "2026-11-10T08:10:00Z",
+  "release_notes": "Fixed feature routing by normalizing feature names. Simplified member options, removed Achievements, Leaderboard and Expenses from navigation, and refreshed mobile layout and page animations."
 }
