@@ -402,7 +402,48 @@ document.addEventListener('change',async e=>{
  if(e.target.id==='introAudioUpload'){const file=e.target.files?.[0];if(!file)return;if(!admin()){notice('Admin access required.');return;}if(!file.type.startsWith('audio/')||file.size>15*1024*1024){notice('Choose an audio file under 15 MB.');return;}try{const path='admin/intro-'+Date.now()+'-'+file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const uploaded=await client.storage.from('crew-intro-audio').upload(path,file,{upsert:true,contentType:file.type});if(uploaded.error)throw uploaded.error;const url=client.storage.from('crew-intro-audio').getPublicUrl(uploaded.data.path).data.publicUrl;const saved=await rpc('crew_set_app_setting',{p_key:'intro_audio_url',p_value:JSON.stringify(url)});if(saved.error)throw saved.error;S.appSettings={...(S.appSettings||{}),intro_audio_url:url};notice('Crew intro soundtrack saved.');}catch(err){notice(err.message||'Soundtrack upload failed.');}}
 });
 document.addEventListener('click',async e=>{
- if(e.target.closest('#applyAppUpdate')){const button=e.target.closest('#applyAppUpdate');const oldLabel=button.textContent;button.disabled=true;button.textContent='Updating…';try{const result=await rpc('crew_get_app_settings',{});if(result.error)throw result.error;S.appSettings=result.data||{};const current=window.KC_APP_VERSION||'1.2.5',latest=S.appSettings.latest_version||current;notice(latest===current?'Kinetic Crew is already up to date. Refreshing the app…':'Installing the latest Kinetic Crew update…');if('serviceWorker'in navigator){const registration=await navigator.serviceWorker.getRegistration(window.kcPath(''));if(registration){const changed=new Promise(resolve=>{const timer=setTimeout(()=>resolve(false),9000);navigator.serviceWorker.addEventListener('controllerchange',()=>{clearTimeout(timer);resolve(true);},{once:true});});await registration.update();if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});if(registration.installing){await new Promise(resolve=>{const worker=registration.installing;if(!worker||worker.state==='installed'||worker.state==='activated'){resolve();return;}worker.addEventListener('statechange',()=>{if(['installed','activated','redundant'].includes(worker.state))resolve();});});}if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});if(await changed){location.reload();return;}}}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('kinetic-crew-shell-')).map(key=>caches.delete(key)));}location.reload();}catch(err){notice(err.message||'Update could not be installed. Check your connection and retry.');button.disabled=false;button.textContent=oldLabel;}return;}
+ if(e.target.closest('#applyAppUpdate')){
+  const button=e.target.closest('#applyAppUpdate');
+  const oldLabel=button.textContent;
+  button.disabled=true;button.textContent='Refreshing…';
+  try{
+   try{const result=await rpc('crew_get_app_settings',{});if(!result.error)S.appSettings=result.data||S.appSettings||{};}catch{}
+   if('serviceWorker'in navigator){
+    const registration=await navigator.serviceWorker.getRegistration(window.kcPath(''));
+    if(registration){
+     await registration.update();
+     let worker=registration.installing||registration.waiting;
+     if(worker){
+      await new Promise(resolve=>{
+       if(['installed','activated','redundant'].includes(worker.state)){resolve();return;}
+       const timer=setTimeout(resolve,10000);
+       worker.addEventListener('statechange',()=>{if(['installed','activated','redundant'].includes(worker.state)){clearTimeout(timer);resolve();}});
+      });
+      if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});
+      if(registration.waiting||registration.installing){
+       await new Promise(resolve=>{
+        const timer=setTimeout(resolve,4000);
+        navigator.serviceWorker.addEventListener('controllerchange',()=>{clearTimeout(timer);resolve();},{once:true});
+       });
+      }
+     }
+    }
+   }
+   if('caches'in window){
+    const keys=await caches.keys();
+    await Promise.all(keys.filter(key=>key.startsWith('kinetic-crew-shell-')).map(key=>caches.delete(key)));
+   }
+   savePageState();
+   const refreshUrl=new URL(window.location.href);
+   refreshUrl.searchParams.set('kc_refresh',String(Date.now()));
+   notice('Refreshing Kinetic Crew with the latest files…');
+   window.location.replace(refreshUrl.toString());
+  }catch(err){
+   notice(err.message||'Could not refresh the app. Check your connection and try again.');
+   button.disabled=false;button.textContent=oldLabel;
+  }
+  return;
+ }
  if(e.target.closest('#replayIntro')){localStorage.removeItem('kc-intro-seen:'+String(S.user.auth_id||S.user.id));showCrewIntro(true);return;}
  if(e.target.closest('#clearAppCache')){try{if('caches'in window){const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith('kinetic-crew-')).map(k=>caches.delete(k)));}notice('Temporary cache cleared. Reloading fresh assets…');setTimeout(()=>location.reload(),500);}catch(err){notice('Could not clear app cache.');}return;}
  if(e.target.closest('#settingsSignOut')){try{await auth.signOut();}finally{location.replace(window.kcPath('login.html'));}return;}
