@@ -695,3 +695,38 @@ main{background:transparent!important}
 .attendance-audit-row>span:last-child{text-align:right}
 .attendance-audit-row small{display:block;margin-top:4px;color:var(--muted,#aaa)}
 @media(max-width:680px){.attendance-status-actions{width:100%;justify-content:flex-start}.attendance-status-btn{flex:1 1 calc(50% - 6px)}.attendance-audit-row{font-size:11px}}
+
+
+/* Approved Kinetic Crew reference: dark-first mobile community UI. */
+@media(max-width:900px){
+ :root{--bg:#111113;--panel:#202124;--panel2:#292a2e;--line:#393a40;--muted:#aaa8ad;--text:#f5f3f2;--lime:#ff8c63;--purple:#ff8c63;--kc-ink:#f5f3f2;--kc-muted:#aaa8ad;--kc-card:#202124;--kc-border:#393a40;--kc-shadow:0 10px 28px rgba(0,0,0,.22)}
+ html,body{background:#111113!important;color:#f5f3f2!important}
+ body{background:radial-gradient(ellipse at 85% 0,rgba(255,132,91,.09),transparent 38%),#111113!important;color:#f5f3f2!important}
+ main{width:100%;min-width:0;margin:0!important;background:transparent!important;padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+ .topbar{height:72px;padding:0 14px;background:rgba(25,25,28,.96)!important;border:1px solid #343439!important;border-radius:0!important;box-shadow:none!important}
+ .mobilebrand{gap:9px}.mobilebrand .brand-logo{width:42px;height:42px;flex-basis:42px;object-fit:contain;background:#171719!important;border:1px solid #555!important;border-radius:13px!important}
+ .mobilebrand b{font-size:12px;color:#f7f4f1!important;letter-spacing:.04em}.mobilebrand i{color:#ef5369!important}
+ .hamburger,.topright .iconbutton{width:42px;height:42px;border-radius:14px!important;background:#202125!important;border:1px solid #414148!important;color:#f5f3f2!important;box-shadow:0 3px 0 #09090a!important}
+ .topright{gap:7px}.topright .online,.topright .theme-toggle{display:none!important}
+ .content{padding:22px 16px calc(105px + env(safe-area-inset-bottom))!important;color:#f5f3f2!important}
+ .welcome h1,.sectionhead h2,.sectionhead h3,.event h3,.announcement h3,.formtitle h3,.feature-card h3{color:#f5f3f2!important}
+ .welcome p,.sectionhead p,.eventdesc,.eventmeta,.announcement p,.formtitle p,.feature-card p{color:#aaa8ad!important}
+ .eyebrow,.tribe-kicker{color:#ef8d68!important}.eyedot,.online i{background:#ef8d68!important;box-shadow:0 0 0 4px #ef8d6820!important}
+ .surface,.event,.announcement,.stat,.peopleStat,.feature-card,.social-post-card,.directory,.feature-form,.detail-main,.detail-action,.verifyform,.publish,.notification-item{background:#202124!important;color:#f5f3f2!important;border:1px solid #393a40!important;box-shadow:0 9px 26px #0005!important}
+ .statvalue,.statlabel,.rosterperson b,.event h3,.announcement h3{color:#f5f3f2!important}
+ .stat small,.rosterperson small,.author,.feature-meta,.feature-status{color:#aaa8ad!important}
+ .primary{background:linear-gradient(135deg,#ff9c70,#ed624d)!important;border:1px solid #ffb18b!important;color:#21130f!important;box-shadow:0 7px 22px #f0784a30!important}
+ .secondary,.outline{background:#292a2e!important;border:1px solid #494950!important;color:#f2efed!important}
+ .field input,.field textarea,.field select,.select,.social-comment-form input{background:#2a2928!important;border:1px solid #49474a!important;color:#f5f3f2!important}
+ .field input::placeholder,.field textarea::placeholder{color:#a29b98!important}
+ .side{display:flex!important;position:fixed!important;inset:0 auto 0 0!important;width:min(310px,84vw)!important;max-width:310px;z-index:60!important;transform:translateX(-105%);transition:transform .26s cubic-bezier(.2,.8,.2,1);overflow-y:auto;padding:22px 13px calc(20px + env(safe-area-inset-bottom));background:#1b1b1e!important;border-right:1px solid #39393e!important;box-shadow:20px 0 55px #0009!important}
+ .side.open{transform:translateX(0)!important;background:#1b1b1e!important}.side .brand b,.side .workspace b,.side .motto b,.side .profile b{color:#f5f3f2!important}.side .brand i{color:#ef5369!important}.side .workspace,.side .motto{background:#242427!important;border-color:#3a3a40!important}.side .navitem{color:#b8b5ba!important}.side .navitem.active{background:#38251f!important;border-color:#774832!important;color:#ffad85!important}.side .profile{border-color:#39393e!important}.side .profile small,.side .motto p{color:#aaa8ad!important}
+ .navshade{position:fixed;inset:0;z-index:55;opacity:0;visibility:hidden;transition:opacity .22s,visibility .22s}.navshade.open{opacity:1;visibility:visible;background:#0009!important;backdrop-filter:blur(4px)}
+ .kc-mobile-dock{position:fixed!important;z-index:65!important;left:14px!important;right:14px!important;bottom:max(9px,env(safe-area-inset-bottom))!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:3px!important;padding:8px 7px calc(8px + env(safe-area-inset-bottom))!important;border:1px solid #414148!important;border-radius:24px!important;background:rgba(34,35,39,.96)!important;box-shadow:0 12px 38px #0008!important;backdrop-filter:blur(22px)!important;-webkit-backdrop-filter:blur(22px)!important}
+ .kc-mobile-dock button{display:flex!important;min-width:0;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px 2px;border:0!important;border-radius:14px!important;background:transparent!important;color:#aaa8ad!important;font-size:10px!important;font-weight:600!important}
+ .kc-mobile-dock button .dock-icon{display:grid;place-items:center;width:28px;height:26px;font-size:20px;line-height:1;color:inherit}
+ .kc-mobile-dock button.active{background:#37383e!important;color:#fff!important}.kc-mobile-dock button:active{transform:scale(.96)}
+ footer{display:none!important}
+ .tribe-home{color:#f5f3f2!important}.tribe-welcome h1,.tribe-section-head h2{color:#f5f3f2!important}.tribe-welcome p{color:#aaa8ad!important}
+ .tribe-shortcuts button,.tribe-stats article,.tribe-event,.tribe-updates .announcement{background:#202124!important;border-color:#393a40!important;color:#f5f3f2!important}.tribe-shortcuts button b,.tribe-event-info h3{color:#f5f3f2!important}
+}
