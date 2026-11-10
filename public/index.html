@@ -50,7 +50,17 @@
 <script src="supabase-client.js" defer></script>
 <script src="theme.js" defer></script>
 <script type="module" src="push-notifications.js?v=20261110-dynamicisland1"></script>
-<script src="app.js?v=20261110-funhub1" defer></script>
+<script>
+window.addEventListener('error',function(e){
+ if(e.filename&&/app\\.js(?:\\?|$)/.test(e.filename)){
+  const root=document.getElementById('app');
+  if(root&&root.textContent.includes('Opening Kinetic Crew')){
+   root.innerHTML='<div class="kc-start-error" role="alert"><strong>Kinetic Crew could not start</strong><p>The app script failed to load. Please reload once. If this continues, contact the crew administrator.</p><button type="button" onclick="location.reload()">Reload app</button></div>';
+  }
+ }
+},true);
+</script>
+<script src="app.js?v=20261110-startupfix3" defer></script>
 <script src="crew-enhancements.js?v=20261110-autoupdate1" defer></script>
 <script src="mobile-dock.js?v=20261110-liquidslime1" defer></script>
 </body>
