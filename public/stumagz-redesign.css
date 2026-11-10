@@ -147,3 +147,8 @@ body{background:var(--bg,#f3f1f8)}
 }
 @media(max-width:390px){.tribe-feature{padding:20px 16px}.tribe-feature h2{font-size:31px}.tribe-stats article{padding:10px 8px}.tribe-stats article span{font-size:6.5px}}
 @media(prefers-reduced-motion:reduce){.tribe-shortcuts button{transition:none}}
+
+/* Attendance roster quick search */
+.attendance-search{display:block;margin:14px 0}
+.attendance-search input{width:100%;min-height:44px;padding:10px 13px;border:1px solid var(--kc-border,#e8e4f1);border-radius:12px;background:var(--kc-card,#fff);color:var(--kc-ink,#27243d)}
+.attendance-search input:focus{outline:2px solid #9b83df55;border-color:#9b83df}
