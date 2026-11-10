@@ -303,3 +303,34 @@ body.kc-welcome-open #kcAuthScreen{display:none!important;visibility:hidden!impo
 body.kc-welcome-open .kc-entry-welcome{display:flex!important;visibility:visible!important}
 body.kc-auth-open #kcAuthScreen{display:block!important;visibility:visible!important}
 body.kc-auth-open .kc-entry-splash,body.kc-welcome-open .kc-entry-splash{display:none!important;visibility:hidden!important}
+
+/* One-viewport authentication: no page-level or panel-level vertical scrolling. */
+html:has(body.kc-auth-open),body.kc-auth-open{height:100%!important;min-height:0!important;overflow:hidden!important;overscroll-behavior:none!important}
+body.kc-auth-open{position:fixed!important;inset:0!important;width:100%!important}
+body.kc-auth-open #kcAuthScreen{position:fixed!important;inset:0!important;width:100%!important;height:100vh!important;height:100dvh!important;min-height:0!important;overflow:hidden!important}
+body.kc-auth-open #kcAuthScreen .signinpanel{width:100%!important;height:100vh!important;height:100dvh!important;min-height:0!important;max-height:100vh!important;max-height:100dvh!important;overflow:hidden!important;overscroll-behavior:none!important;padding:clamp(118px,25dvh,190px) 20px max(12px,env(safe-area-inset-bottom))!important;box-sizing:border-box!important}
+body.kc-auth-open #kcAuthScreen .signform{width:min(100%,370px)!important;max-height:100%!important;overflow:hidden!important;margin:0 auto!important}
+body.kc-auth-open #kcAuthScreen .signform h2{font-size:clamp(19px,5.5vw,23px)!important;margin:0 0 5px!important}
+body.kc-auth-open #kcAuthScreen .signform>p:not(.msg){font-size:9px!important;line-height:1.35!important;margin:0 auto 10px!important}
+body.kc-auth-open #kcAuthScreen .signinpanel .field{gap:3px!important;margin:7px 0!important;font-size:9px!important;line-height:1.15!important}
+body.kc-auth-open #kcAuthScreen .signinpanel .field input{min-height:38px!important;height:38px!important;padding:0 13px!important;font-size:11px!important}
+body.kc-auth-open #kcAuthScreen .username-hint{margin:2px 0 4px!important;font-size:9px!important;line-height:1.2!important}
+body.kc-auth-open #kcAuthScreen .signinpanel .full{min-height:40px!important;height:40px!important;margin-top:7px!important}
+body.kc-auth-open #kcAuthScreen .kc-auth-switch{margin:9px 0 0!important;font-size:9px!important}
+body.kc-auth-open #kcAuthScreen .kc-auth-switch button{font-size:9px!important}
+body.kc-auth-open #kcAuthScreen .msg,body.kc-auth-open #kcAuthScreen .error{max-height:30px!important;margin:4px 0 0!important;overflow:hidden!important;font-size:9px!important;line-height:1.2!important}
+@media(max-height:690px){
+ body.kc-auth-open #kcAuthScreen .signinpanel{padding-top:105px!important}
+ body.kc-auth-open #kcAuthScreen .signinpanel:before{height:190px!important}
+ body.kc-auth-open #kcAuthScreen .signinpanel:after{height:130px!important}
+ body.kc-auth-open #kcAuthScreen .signform>p:not(.msg){margin-bottom:6px!important}
+ body.kc-auth-open #kcAuthScreen .signinpanel .field{margin:5px 0!important}
+ body.kc-auth-open #kcAuthScreen .signinpanel .field input{height:34px!important;min-height:34px!important}
+ body.kc-auth-open #kcAuthScreen .signinpanel .full{height:36px!important;min-height:36px!important}
+}
+@media(max-height:570px){
+ body.kc-auth-open #kcAuthScreen .signinpanel{padding-top:82px!important}
+ body.kc-auth-open #kcAuthScreen .signform h2{font-size:18px!important}
+ body.kc-auth-open #kcAuthScreen .signinpanel .field{margin:3px 0!important}
+ body.kc-auth-open #kcAuthScreen .signinpanel .field input{height:30px!important;min-height:30px!important}
+}
