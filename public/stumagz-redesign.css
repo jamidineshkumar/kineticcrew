@@ -1194,3 +1194,29 @@ button:hover,.event:hover {transform:none!important}
 @media(prefers-reduced-motion:reduce){
   *,*:before,*:after {scroll-behavior:auto!important;transition:none!important}
 }
+
+
+/* Compact floating mobile navigation dock */
+@media(max-width:900px){
+ #kcMobileDock.kc-mobile-dock{
+  position:fixed!important;left:50%!important;right:auto!important;
+  bottom:max(12px,env(safe-area-inset-bottom))!important;
+  width:min(460px,calc(100vw - 28px))!important;
+  min-height:68px!important;padding:8px 10px!important;
+  transform:translateX(-50%)!important;
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:5px!important;border:1px solid #44434b!important;
+  border-radius:22px!important;background:rgba(29,29,34,.97)!important;
+  box-shadow:0 8px 28px rgba(0,0,0,.38)!important;
+  backdrop-filter:blur(18px)!important;
+ }
+ #kcMobileDock button{min-height:50px!important;padding:5px 3px!important;border-radius:14px!important}
+ #kcMobileDock button.active{background:#f3f1ef!important;color:#171719!important}
+ #kcMobileDock button.active .dock-icon,#kcMobileDock button.active .dock-label{color:#171719!important}
+ #kcMobileDock .kc-dock-liquid{display:none!important}
+ #app.content{padding-bottom:calc(104px + env(safe-area-inset-bottom))!important}
+ main>footer{display:none!important}
+}
+.kc-start-error{min-height:45vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;color:var(--text)}
+.kc-start-error strong{font-size:18px}.kc-start-error p{max-width:320px;color:var(--muted);font-size:13px;line-height:1.6}
+.kc-start-error button{padding:11px 18px;border:1px solid #555;border-radius:10px;background:#24242a;color:#fff}
