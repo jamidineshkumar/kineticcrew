@@ -894,3 +894,52 @@ button.kc-reference-hero{cursor:pointer}
  .kc-mobile-dock{grid-template-columns:repeat(4,minmax(0,1fr))}
  .kc-mobile-dock button{font-size:9px}
 }
+
+
+/* Official Kinetic Crew identity: electric pink, cyan, signal yellow and ink black. */
+:root{--kc-brand-pink:#f20a91;--kc-brand-cyan:#12c8d4;--kc-brand-yellow:#ffc51b;--kc-brand-ink:#05050b;--lime:var(--kc-brand-pink);--purple:var(--kc-brand-cyan);--accent:var(--kc-brand-pink);--accent-soft:rgba(242,10,145,.12)}
+:root[data-theme="dark"]{--bg:#07070d;--panel:#101018;--panel2:#171721;--line:#30303b;--muted:#a5a3b0;--text:#f8f7fb}
+:root[data-theme="light"]{--bg:#f5f4f7;--panel:#fff;--panel2:#f0eef4;--line:#e3dfe9;--muted:#716d7c;--text:#17131d}
+body{background:var(--bg);color:var(--text)}
+.brand-logo{background:#05050b!important;border:1px solid rgba(255,197,27,.55);border-radius:12px!important;padding:2px!important;object-fit:contain!important}
+.brand i,.mobilebrand i,.eyebrow,.eyedot,.textlink,.backlink{color:var(--kc-brand-pink)}
+.primary{background:linear-gradient(110deg,#f20a91,#c90078)!important;border-color:#f20a91!important;color:#fff!important;box-shadow:0 7px 22px rgba(242,10,145,.2)!important}
+.primary:hover{background:linear-gradient(110deg,#ff36a9,#e10b8d)!important}
+.outline{background:rgba(242,10,145,.08)!important;border-color:rgba(242,10,145,.48)!important;color:var(--kc-brand-pink)!important}
+.secondary{border-color:rgba(18,200,212,.35)!important}
+.navitem.active{background:rgba(242,10,145,.11)!important;border-color:rgba(242,10,145,.35)!important;color:var(--kc-brand-pink)!important}
+.navitem.active:before{background:var(--kc-brand-pink)!important}
+.workspace>span:first-child,.motto>span{background:rgba(18,200,212,.12)!important;color:var(--kc-brand-cyan)!important}
+.meter i{background:linear-gradient(90deg,var(--kc-brand-pink),var(--kc-brand-cyan))!important}
+.stat:after{background:linear-gradient(90deg,var(--kc-brand-pink),var(--kc-brand-cyan),transparent)!important}
+.event:hover,.feature-card:hover,.crew-profile-tile:hover{border-color:rgba(18,200,212,.55)!important}
+.eventtype i,.online i{background:var(--kc-brand-cyan)!important}
+.kc-mobile-dock{background:rgba(8,8,15,.93)!important;border-color:rgba(255,255,255,.12)!important}
+.kc-mobile-dock button{color:#aaa7b7!important}
+.kc-mobile-dock button.active{background:rgba(242,10,145,.17)!important;color:#ff4db1!important}
+.kc-mobile-dock button.active .dock-icon{color:var(--kc-brand-cyan)!important}
+.kc-compact-topbar .kc-notification-button{background:var(--panel)!important;border-color:var(--line)!important;color:var(--kc-brand-cyan)!important}
+.kc-compact-topbar .kc-notification-button em{background:var(--kc-brand-pink)!important}
+#sidebar .navitem.active{background:rgba(242,10,145,.14)!important;border-color:rgba(242,10,145,.5)!important;color:#ff65bb!important}
+#sidebar .navitem.active .nicon{border-color:var(--kc-brand-cyan)!important;color:var(--kc-brand-cyan)!important}
+#sidebar .nav-group-symbol{border-color:rgba(18,200,212,.45)!important;color:var(--kc-brand-cyan)!important}
+#sidebar .navitem .nicon{border-color:rgba(18,200,212,.3)!important}
+.kc-vibe-greeting>span,.kc-vibe-footer>span,.kc-vibe-going{color:var(--kc-brand-cyan)!important}
+.kc-vibe-pink{background:linear-gradient(110deg,var(--kc-brand-pink),#c90078)!important}
+.kc-vibe-badge{background:var(--kc-brand-cyan)!important;color:#05050b!important}
+.kc-vibe-badge.is-live{background:var(--kc-brand-pink)!important;color:#fff!important}
+@media(max-width:900px){
+ :root{--bg:#090911;--panel:#11111a;--panel2:#191923;--line:#30303c;--muted:#aaa7b6;--text:#f8f7fb;--lime:var(--kc-brand-pink);--purple:var(--kc-brand-cyan)}
+ body{background:radial-gradient(ellipse at 95% 0,rgba(242,10,145,.12),transparent 36%),radial-gradient(ellipse at 0 28%,rgba(18,200,212,.1),transparent 32%),#090911!important;color:#f8f7fb!important}
+ .topbar{background:rgba(9,9,17,.92)!important;border-bottom-color:rgba(255,255,255,.1)!important}
+ .hamburger,.topright .iconbutton{background:#14141f!important;border-color:rgba(18,200,212,.32)!important;color:var(--kc-brand-cyan)!important}
+ .side.open{background:#101018!important}
+ .side.open .brand b{color:#fff!important}.side.open .brand i{color:var(--kc-brand-pink)!important}
+ .side.open .workspace{background:#171721!important;border-color:#30303b!important}
+ .side.open .workspace b{color:#fff!important}
+ .side.open .navitem{color:#cbc8d3!important}
+ .side.open .navitem.active{background:rgba(242,10,145,.14)!important;border-color:rgba(242,10,145,.42)!important;color:#ff65bb!important}
+ .side.open .motto{background:linear-gradient(145deg,rgba(18,200,212,.08),#11111a)!important;border-color:#30303b!important}
+ .side.open .profile{border-color:#30303b!important}
+ .kc-mobile-dock{background:rgba(8,8,15,.94)!important;border-color:rgba(18,200,212,.25)!important;box-shadow:0 12px 38px rgba(0,0,0,.42)!important}
+}
