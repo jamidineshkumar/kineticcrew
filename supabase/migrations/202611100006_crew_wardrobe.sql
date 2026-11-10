@@ -1,4 +1,7 @@
 -- Kinetic Crew wardrobe, published 3D model support and secure admin uploads.
+insert into public.crew_app_settings(setting_key,setting_value,updated_at)
+values('latest_version','"1.2.0"'::jsonb,now())
+on conflict(setting_key) do update set setting_value=excluded.setting_value,updated_at=now();
 create table if not exists public.crew_wardrobe_items (
   id uuid primary key default gen_random_uuid(),
   title text not null check (char_length(title) between 1 and 120),
