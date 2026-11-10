@@ -308,3 +308,18 @@
 .kc-fz-create{position:fixed;z-index:24;right:max(24px,calc((100vw - 760px)/2 + 24px));bottom:calc(100px + env(safe-area-inset-bottom));display:grid;place-items:center;width:56px;height:56px;border:1px solid rgba(255,255,255,.35);border-radius:50%;background:linear-gradient(145deg,#f5cb80,#df8d45);color:#1a120a;font-size:32px;line-height:1;box-shadow:0 9px 28px rgba(229,155,76,.38),inset 0 1px rgba(255,255,255,.65)}
 .kc-fz-footnote{padding:25px 0 5px;text-align:center;color:#746d79;font-size:8px;font-weight:800;letter-spacing:.2em}
 @media(max-width:600px){.kc-funzone{padding-top:5px}.kc-fz-header h1{font-size:24px}.kc-fz-post-wrap .social-post-card{border-radius:18px}.kc-fz-create{right:23px;bottom:calc(104px + env(safe-area-inset-bottom))}}
+
+
+/* Home reliability and responsive interaction fixes */
+.kc-home-story-ring{overflow:hidden}
+.kc-home-story-ring img,.kc-home-story-ring .avatar-photo,.kc-home-story-ring .avatar-fallback{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.kc-home-story.fresh .kc-home-story-ring{border-color:#e7a94e}
+.kc-home-story{cursor:pointer;min-width:0}
+.kc-home-event,.kc-home-featured-copy button,.kc-home-section-head button{cursor:pointer}
+.kc-home-event:focus-visible,.kc-home-story:focus-visible,.kc-home-featured button:focus-visible,.kc-home-section-head button:focus-visible{outline:2px solid #efbd72;outline-offset:3px}
+.kc-home-activity{align-items:flex-start;min-width:0}
+.kc-home-activity>div{flex:1;min-width:0;overflow-wrap:anywhere}
+.kc-home-activity>button{flex:0 0 auto;border:1px solid rgba(242,182,95,.28);border-radius:999px;padding:7px 11px;background:rgba(242,182,95,.08);color:#f0b45a;font-size:10px;font-weight:800}
+.kc-home-empty button{margin-top:10px;border:1px solid rgba(242,182,95,.3);border-radius:999px;padding:8px 12px;background:rgba(242,182,95,.08);color:#f0b45a;font-size:10px;font-weight:800}
+.kc-home-featured-copy button,.kc-home-event{touch-action:manipulation}
+@media(max-width:600px){.kc-home-section-head{align-items:center}.kc-home-section-head h2{font-size:19px}.kc-home-stories{gap:9px}.kc-home-story{flex-basis:88px;padding:10px 6px}.kc-home-activity{padding:12px;gap:9px}.kc-home-bottom b{font-size:20px}}
