@@ -678,3 +678,20 @@ main{background:transparent!important}
 .kc-audition-link{display:inline-flex;align-items:center;justify-content:center;margin:14px 0 0;padding:12px 16px;border:1px solid rgba(255,255,255,.22);border-radius:14px;color:inherit;text-decoration:none;font-weight:700}
 .kc-audition-link:hover{border-color:#ef6573;background:rgba(239,101,115,.1)}
 @media(prefers-reduced-motion:reduce){.fun-game-card,.kc-audition-link{transition:none!important}}
+
+
+/* Attendance status management and audit trail */
+.attendance-rosterrow{align-items:flex-start!important;gap:12px!important;flex-wrap:wrap!important;padding:14px 0!important}
+.attendance-rosterrow .rosterperson{flex:1 1 160px!important;min-width:130px}
+.attendance-rosterrow .rosterperson .status{display:inline-flex;margin-top:7px}
+.attendance-status-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:100%}
+.attendance-status-btn{border:1px solid var(--line,#444);border-radius:10px;background:var(--surface-2,#222);color:var(--text,#eee);padding:7px 9px;font-size:11px;font-weight:700;cursor:pointer}
+.attendance-status-btn.selected{border-color:#e75b6b;background:rgba(231,91,107,.16);color:#ff9ba6}
+.attendance-status-btn:disabled{opacity:.42;cursor:not-allowed}
+.status.not_attending{background:rgba(168,130,230,.16);color:#c8a8ff}
+.attendance-audit{margin-top:22px;padding-top:18px;border-top:1px solid var(--line,#444)}
+.attendance-audit h3{margin:0 0 12px}
+.attendance-audit-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line,#333);font-size:12px}
+.attendance-audit-row>span:last-child{text-align:right}
+.attendance-audit-row small{display:block;margin-top:4px;color:var(--muted,#aaa)}
+@media(max-width:680px){.attendance-status-actions{width:100%;justify-content:flex-start}.attendance-status-btn{flex:1 1 calc(50% - 6px)}.attendance-audit-row{font-size:11px}}
