@@ -531,7 +531,7 @@ document.addEventListener('click',async event=>{
  if(installCompleted){notice('Kinetic Crew is already installed.');return;}
  if(!installPrompt){showInstallHelp();return;}
  const promptEvent=installPrompt;installPrompt=null;
- try{await promptEvent.prompt();const choice=await promptEvent.userChoice;if(choice?.outcome==='accepted'){installCompleted=true;notice('Kinetic Crew installation started.');}else notice('Installation was cancelled. You can install it later from this menu.');}
+ try{const promptResult=promptEvent.prompt();setMobileMenu(false);await promptResult;const choice=await promptEvent.userChoice;if(choice?.outcome==='accepted'){installCompleted=true;notice('Kinetic Crew installation started.');}else notice('Installation was cancelled. You can install it later from this menu.');}
  catch(error){showInstallHelp();}
  syncInstallButtons();
 });
