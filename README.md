@@ -95,14 +95,16 @@ The Super Admin can then promote the intended Admin account from Crew Directory.
 - Events and event registrations with capacity enforcement
 - Crew calendar and participation leaderboard
 - Rehearsal scheduling, leave requests and admin approvals
-- Audition submissions and selection workflow
+- External audition portal link (applications are handled outside Crew HQ)
 - Crew polls with voting and results
 - Shared memories, crew chat and achievement awards
-- Expense records for admins
 - Crew announcements with audience selection
 - Six-digit attendance OTPs with five-minute expiry and single-use verification
 - Attendance desk and roster
 - Crew directory and Super Admin role assignment
+- Fun Zone mini-games (reaction test and random dance challenges)
+- Credits and app information page
+- Attendance status controls (present, absent, not attending), finalization lock, audit history and Super Admin reopening
 - Dark neon UI, responsive mobile layout, and installable PWA shell
 
 ## Remaining integrations
