@@ -56,3 +56,57 @@ img.avatar-photo,img.profile-photo,img.brand-logo{object-fit:cover;object-positi
 @media(max-width:700px){.profile-discovery-bar{align-items:stretch;flex-direction:column}.profile-search-count{white-space:normal}.profile-directory{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.crew-profile-tile{padding:12px}.profile-tile-actions{grid-template-columns:1fr}.social-share-composer{padding:13px}.social-post-card{padding:12px}.social-composer-foot{align-items:stretch}.social-composer-foot button{width:100%}.social-post-actions button{font-size:11px}}
 @media(max-width:420px){.profile-directory{grid-template-columns:1fr}.profile-tile-actions{grid-template-columns:1fr 1fr}.social-link-preview{padding:10px;gap:9px}.social-post-actions{gap:2px}}
 @media(prefers-reduced-motion:reduce){#app.kc-page-enter,.crew-profile-tile{animation:none!important}button,a,.surface,.navitem,.nav-group-toggle,.crew-profile-tile,.settings-card,.event-card{transition:none!important}}
+
+
+/* 1.2.3 shared layout guardrails and motion system */
+:root{scroll-behavior:smooth}
+#app,.content,main,.shell,.surface,.welcome,.settings-grid,.profile-social-layout,.feature-form,.feature-card,.eventgrid,.profile-directory,.social-feed-list{min-width:0;max-width:100%}
+#app h1,#app h2,#app h3,#app p,#app label,#app button,#app small{overflow-wrap:anywhere}
+#app img,header img,footer img{max-width:100%}
+#app input,#app textarea,#app select{min-width:0;max-width:100%}
+#app .welcome{animation:kc-page-fade .36s ease both}
+#app .surface,#app .stat,#app .kc-pulse-card,#app .event-card,#app .crew-profile-tile,#app .notification-item,#app .feature-card{animation:kc-card-rise .42s cubic-bezier(.2,.75,.25,1) both}
+#app .surface:nth-child(2),#app .event-card:nth-child(2),#app .crew-profile-tile:nth-child(2){animation-delay:.035s}
+#app .surface:nth-child(3),#app .event-card:nth-child(3),#app .crew-profile-tile:nth-child(3){animation-delay:.07s}
+#app .surface:nth-child(4),#app .event-card:nth-child(4),#app .crew-profile-tile:nth-child(4){animation-delay:.105s}
+#app button,#app a,.navitem,.nav-group-toggle,.theme-toggle,.iconbutton{transition:transform .18s ease,border-color .18s ease,background-color .18s ease,box-shadow .18s ease}
+#app button:active{transform:translateY(1px) scale(.985)}
+#app button:focus-visible,#app a:focus-visible,#app input:focus-visible,#app textarea:focus-visible,#app select:focus-visible{outline:2px solid #f2a1be;outline-offset:2px}
+.kc-brand-mark svg{display:block;width:100%;height:100%}
+img.brand-logo{display:block!important;visibility:visible!important;opacity:1!important;object-fit:contain!important;object-position:center!important;flex:0 0 auto!important;max-width:48px;max-height:48px}
+.username-hint[data-state=available]::before{content:'✓ ';font-weight:800}
+.username-hint[data-state=error]::before{content:'! ';font-weight:800}
+.profile-directory .crew-profile-tile{min-width:0;overflow:hidden}
+.crew-profile-open{min-width:0;max-width:100%;overflow:hidden}
+.crew-profile-open>span{min-width:0;overflow:hidden}
+.crew-profile-open small,.crew-profile-open b{overflow:hidden;text-overflow:ellipsis}
+.social-post-card,.social-share-composer,.social-link-preview{min-width:0;max-width:100%}
+.social-post-actions{display:flex;flex-wrap:wrap;gap:8px}
+.social-post-actions button{flex:1 1 90px;min-width:0}
+.social-embed{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:14px}
+.social-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+@keyframes kc-page-fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@keyframes kc-card-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:720px){
+ #app .welcome{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+ #app .settings-grid,#app .profile-social-layout{grid-template-columns:minmax(0,1fr)}
+ #app .feature-form,#app .social-share-composer{padding:14px}
+ #app .feature-form .field,#app .feature-form input,#app .feature-form textarea{width:100%;max-width:100%}
+ #app .profile-directory{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #app .social-link-preview{display:flex;flex-wrap:wrap;align-items:center}
+ #app .notice-layout{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:430px){
+ #app .profile-directory{grid-template-columns:minmax(0,1fr)}
+ #app .social-post-head{min-width:0}
+ #app .social-post-head>div{min-width:0}
+ #app .social-post-head small{white-space:normal}
+ #app .social-composer-foot{display:flex;flex-direction:column;align-items:stretch}
+ #app .social-composer-foot button{width:100%}
+ #app .profile-avatar-wrap{max-width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+ :root{scroll-behavior:auto}
+ #app .welcome,#app .surface,#app .stat,#app .kc-pulse-card,#app .event-card,#app .crew-profile-tile,#app .notification-item,#app .feature-card{animation:none!important}
+ #app button,#app a,.navitem,.nav-group-toggle,.theme-toggle,.iconbutton{transition:none!important}
+}
