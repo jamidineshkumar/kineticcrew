@@ -445,3 +445,8 @@ body.kc-auth-verify #kcAuthScreen .signinpanel{padding-top:clamp(210px,26vh,290p
  body.kc-auth-signup #kcAuthScreen .signinpanel .field input{height:31px!important;min-height:31px!important}
 }
 @media(prefers-reduced-motion:reduce){body.kc-auth-open #kcAuthScreen .signinpanel:before,body.kc-auth-open #kcAuthScreen .signinpanel:after{animation:none!important}}
+
+/* Hard visibility guard: auth must not appear beneath the welcome screen. */
+#kcAuthScreen[hidden]{display:none!important;visibility:hidden!important;pointer-events:none!important}
+body.kc-welcome-open #kcAuthScreen[hidden]{display:none!important}
+body.kc-auth-open #kcAuthScreen:not([hidden]){display:block!important;visibility:visible!important}
