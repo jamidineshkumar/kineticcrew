@@ -20,7 +20,7 @@ declare v_role text;v_uid text;
 begin
  v_uid:=auth.uid()::text;
  select role into v_role from public.crew_profiles where auth_id=v_uid;
- if v_role not in ('admin','super_admin') then raise exception 'Admin access required.'; end if;
+ if coalesce(v_role,'') not in ('admin','super_admin') then raise exception 'Admin access required.'; end if;
  update public.crew_profiles set name=left(trim(p_name),100),bio=left(coalesce(p_bio,''),500) where auth_id=p_auth_id;
  if not found then raise exception 'Crew member not found.'; end if;
  return (select jsonb_build_object('auth_id',auth_id,'name',name,'bio',bio) from public.crew_profiles where auth_id=p_auth_id);
