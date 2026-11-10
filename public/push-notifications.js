@@ -73,7 +73,7 @@ async function enable() {
     const body = payload.notification?.body || "You have a new crew update.";
     if (Notification.permission === "granted") new Notification(title, { body, icon: window.kcPath("kinetic-crew-logo.jpg"), tag: payload.data?.id || "kinetic-crew-update" });
     try {
-      const session = client.auth.getSession();
+      const session = window.kcSupabase.auth.getSession();
       session.then(({data}) => {
         const userId = data?.session?.user?.id || "guest";
         const prefs = JSON.parse(localStorage.getItem("kc-notification-prefs:" + userId) || "{}");
