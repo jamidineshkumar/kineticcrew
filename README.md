@@ -44,6 +44,7 @@ Run these SQL migrations in order in the new project's SQL Editor:
 20. `supabase/migrations/202611100014_release_123.sql`
 21. `supabase/migrations/202611100015_profile_image_rpc.sql`
 22. `supabase/migrations/202611100016_attendance_status_audit_reopen.sql`
+23. `supabase/migrations/202611100017_attendance_roster_ids_and_finalize_audit.sql`
 
 The migrations must be applied in the listed order. They create the crew tables and permission-checked APIs, add unique usernames and profile editing, implement QR/OTP attendance and event finalization, seed the initial operator role, add the feature suite (rehearsals, leave, expenses, memories, auditions, polls, chat and achievements), and add push-subscription storage. All application tables are prefixed `crew_`.
 
