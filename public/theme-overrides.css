@@ -739,3 +739,18 @@ button.primary:active,.primary:active,.home-hero .primary:active{transform:trans
 .announcement .danger-link{align-self:flex-start;color:#ff8b7d}
 .kc-all-updates{margin-top:30px}
 @media(max-width:760px){#nav{padding-bottom:10px!important}.sidebottom .motto{display:none}.wa-shell{grid-template-columns:1fr;max-height:none;min-height:70vh}.wa-rail{display:none}.wa-messages{min-height:45vh;padding:13px}.wa-message{max-width:88%}.crew-manage-summary{gap:7px}.crew-manage-summary>div{padding:12px}.crew-manage-row{flex-wrap:wrap}.crew-manage-person{flex-basis:100%}}
+
+
+/* Crop studio for profile and banner uploads */
+.crop-modal{position:relative;width:min(94vw,620px);max-height:92vh;overflow:auto;padding:28px;border:1px solid var(--line);border-radius:22px;background:var(--panel);box-shadow:0 30px 100px #0009;text-align:left}
+.crop-modal h2{margin:9px 0 5px;font:600 25px var(--display)}
+.crop-modal>p{margin:0 0 17px;color:var(--muted);font-size:12px}
+.crop-close{position:absolute;right:16px;top:16px}
+#cropCanvas{display:block;width:100%;max-height:48vh;object-fit:contain;border:1px solid var(--line);border-radius:13px;background:#171514;touch-action:none;cursor:grab}
+#cropCanvas:active{cursor:grabbing}
+.crop-zoom{display:flex;align-items:center;gap:15px;margin:17px 0;font:10px var(--mono);letter-spacing:.12em;color:var(--muted)}
+.crop-zoom input{flex:1;accent-color:var(--lime)}
+.crop-actions{display:flex;justify-content:flex-end;gap:10px}
+.notice-delete-button{width:29px;height:29px;flex:0 0 29px;border:1px solid #f8717140;border-radius:9px;background:#f8717112;color:#ff8f85;font-size:18px}
+.notification-item{align-items:center}
+@media(max-width:600px){.crop-modal{padding:22px 15px}.crop-actions>*{flex:1}.nav-root{font-size:12px!important}}
