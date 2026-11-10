@@ -1,6 +1,6 @@
 (() => {
 'use strict';
-const APP_VERSION='1.2.2';
+const APP_VERSION='1.2.3';
 window.KC_APP_VERSION=APP_VERSION;
 const client=()=>window.kcSupabase;
 const $=(s,root=document)=>root.querySelector(s);
