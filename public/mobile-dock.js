@@ -45,13 +45,12 @@
     const button = event.target.closest('button[data-view]');
     if (!button) return;
     const target = document.querySelector('#nav [data-view="' + button.dataset.view + '"]');
-    if (target) target.click();
-    else document.dispatchEvent(new CustomEvent('kc:navigate', { detail: { view: button.dataset.view } }));
+    document.dispatchEvent(new CustomEvent('kc:navigate', { detail: { view: button.dataset.view } }));
   });
 
   const nav = document.getElementById('nav');
   const app = document.getElementById('app');
-  if (nav) new MutationObserver(sync).observe(nav, { subtree: true, attributes: true, attributeFilter: ['class'] });
+  if (nav) new MutationObserver(sync).observe(nav, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] });
   if (app) new MutationObserver(sync).observe(app, { childList: true, subtree: true });
   sync();
 })();
