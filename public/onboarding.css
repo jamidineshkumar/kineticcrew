@@ -296,3 +296,10 @@ body.kc-auth-open #kcAuthScreen{display:block!important;min-height:100svh!import
 @media(min-width:760px){.kc-entry-welcome{padding-left:28px!important;padding-right:28px!important}.kc-welcome-copy{margin-bottom:2vh!important}#kcAuthScreen .signinpanel{padding-top:235px!important}}
 @media(max-height:700px){.kc-welcome-copy{margin-bottom:1vh!important}.kc-welcome-actions{margin-bottom:1.5vh!important}#kcAuthScreen .signinpanel{padding-top:190px!important}}
 @media(prefers-reduced-motion:reduce){.kc-splash-logo,.kc-splash-glow,.kc-entry-welcome:before,.kc-welcome-orb,#kcAuthScreen .signinpanel:before,#kcAuthScreen .signinpanel:after{animation:none!important}}
+
+/* Screen-state fix: never render the welcome and authentication screens together. */
+body.kc-auth-open .kc-entry-welcome{display:none!important;visibility:hidden!important;pointer-events:none!important}
+body.kc-welcome-open #kcAuthScreen{display:none!important;visibility:hidden!important;pointer-events:none!important}
+body.kc-welcome-open .kc-entry-welcome{display:flex!important;visibility:visible!important}
+body.kc-auth-open #kcAuthScreen{display:block!important;visibility:visible!important}
+body.kc-auth-open .kc-entry-splash,body.kc-welcome-open .kc-entry-splash{display:none!important;visibility:hidden!important}
