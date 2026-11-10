@@ -56,7 +56,7 @@ async function refresh(){
  S.offline=false;S.error='';
  S.appSettings=cfg.error?{}:(cfg.data||{});
  try{const sessionResult=await auth.getSession();const cacheUserId=sessionResult?.data?.session?.user?.id||S.user.auth_id||S.user.id;if(cacheUserId)localStorage.setItem(cacheKey(cacheUserId),JSON.stringify({savedAt:Date.now(),user:S.user,events:S.events,announcements:S.announcements}));}catch{}
- const keepX=window.scrollX||0,keepY=window.scrollY||0;paintUser();paint();requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({left:keepX,top:keepY,behavior:'instant'})));
+ const keepX=window.scrollX||0,keepY=window.scrollY||0;paintUser();paint();requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({left:keepX,top:keepY,behavior:'auto'})));
 }
 function restoreOffline(user){
  const id=user?.id||user?.auth_id;if(!id)return false;
