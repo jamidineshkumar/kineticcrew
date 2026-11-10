@@ -189,11 +189,11 @@ function paint(){
 const groups=[
 ['overview','OVERVIEW','Your crew at a glance',[['overview','⌂','Overview']]],
 ['events','EVENTS','Performances & sessions',[['events','▦','Events']]],
-['chat','CREW CHAT','Talk like a crew',[['chat','✉','Crew chat'],['polls','◉','Polls & voting'],['memories','▧','KC Memories'],['leave','↗','Leave requests'],['updates','↗','Crew updates'],['people','♙','Discover crew']]],
+['chat','CREW SPACE','Talk, vote and share',[['chat','✉','Crew chat'],['polls','◉','Polls & voting'],['memories','▧','KC Memories'],['leave','↗','Leave requests'],['updates','↗','Crew updates'],['people','♙','Discover crew']]],
 ['notifications','NOTIFICATIONS','Updates & alerts',[['notifications','♧','Notifications']]],
-['management','CREW MANAGEMENT','Members & operations',[['crew-management','♙','Members'],...(admin()?[['attendance','◎','Attendance']]:[])]],
+['management','CREW MANAGEMENT','Members & operations',[['crew-management','♙','Members'],...(admin()?[['attendance','◎','Attendance'],['rehearsals','◷','Rehearsals'],['calendar','▦','Calendar'],['auditions','☆','Auditions'],['expenses','₹','Expenses'],['achievements','✦','Achievements'],['leaderboard','♜','Leaderboard']]:[])]],
 ['settings','APP SETTINGS','Your account & preferences',[['settings','⚙','App settings']]]
-];
+]
 const activeGroup=groups.find(g=>g[3].some(n=>n[0]===S.view))?.[0]||'overview';
 $('#nav').innerHTML=groups.map(([id,label,sub,items])=>{
 const expanded=S.navOpen===id||activeGroup===id;
