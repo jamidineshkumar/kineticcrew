@@ -323,3 +323,48 @@
 .kc-home-empty button{margin-top:10px;border:1px solid rgba(242,182,95,.3);border-radius:999px;padding:8px 12px;background:rgba(242,182,95,.08);color:#f0b45a;font-size:10px;font-weight:800}
 .kc-home-featured-copy button,.kc-home-event{touch-action:manipulation}
 @media(max-width:600px){.kc-home-section-head{align-items:center}.kc-home-section-head h2{font-size:19px}.kc-home-stories{gap:9px}.kc-home-story{flex-basis:88px;padding:10px 6px}.kc-home-activity{padding:12px;gap:9px}.kc-home-bottom b{font-size:20px}}
+
+
+/* Glowing Kinetic Crew logo startup transition */
+.kc-loader-emblem{
+  position:relative;isolation:isolate;display:grid;place-items:center;
+  width:142px;height:142px;margin:0 0 8px;border-radius:50%;
+  background:radial-gradient(circle,rgba(10,205,218,.17) 0%,rgba(10,205,218,.07) 43%,transparent 72%);
+  animation:kc-logo-float 3s ease-in-out infinite;
+}
+.kc-loader-emblem:before,.kc-loader-emblem:after{
+  content:"";position:absolute;inset:8px;border-radius:50%;pointer-events:none;
+}
+.kc-loader-emblem:before{
+  border:1px solid rgba(0,218,229,.48);
+  box-shadow:0 0 18px rgba(0,218,229,.25),inset 0 0 20px rgba(0,218,229,.08);
+  animation:kc-logo-ring 4.5s linear infinite;
+}
+.kc-loader-emblem:after{
+  inset:-3px;border:1px solid rgba(236,54,148,.3);
+  box-shadow:0 0 24px rgba(236,54,148,.15);
+  animation:kc-logo-ring 7s linear infinite reverse;
+}
+.kc-loader-emblem img{
+  position:relative;z-index:1;display:block;width:92px;height:92px;
+  object-fit:contain;border:0!important;border-radius:26px!important;
+  padding:8px;background:rgba(15,18,27,.82)!important;
+  box-shadow:0 0 14px rgba(0,218,229,.3),0 0 34px rgba(0,218,229,.22),0 0 65px rgba(236,54,148,.12)!important;
+  animation:kc-logo-glow 2.3s ease-in-out infinite!important;
+}
+.kc-loader-emblem>span{
+  position:relative;z-index:1;place-items:center;width:92px;height:92px;
+  border:1px solid rgba(0,218,229,.65);border-radius:26px;
+  background:linear-gradient(145deg,#102b35,#201326);color:#fff;
+  font-size:32px;font-weight:950;letter-spacing:-.08em;
+  text-shadow:0 0 15px #00d2db,0 0 28px #ed3b91;
+  box-shadow:0 0 20px rgba(0,218,229,.45),0 0 48px rgba(236,54,148,.2);
+}
+.kc-loader-emblem>span[hidden]{display:none!important}
+@keyframes kc-logo-glow{
+  0%,100%{transform:scale(.96);filter:brightness(.94);box-shadow:0 0 12px rgba(0,218,229,.24),0 0 28px rgba(236,54,148,.1)}
+  50%{transform:scale(1.055);filter:brightness(1.28);box-shadow:0 0 22px rgba(0,218,229,.55),0 0 58px rgba(236,54,148,.28)}
+}
+@keyframes kc-logo-ring{to{transform:rotate(360deg)}}
+@keyframes kc-logo-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@media(prefers-reduced-motion:reduce){.kc-loader-emblem,.kc-loader-emblem:before,.kc-loader-emblem:after,.kc-loader-emblem img{animation:none!important}}
