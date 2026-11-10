@@ -1176,3 +1176,21 @@ body{background:var(--bg);color:var(--text)}
  .kc-dance-challenge{align-items:flex-start;flex-direction:column}.kc-dance-challenge button{width:100%}
 }
 @media(prefers-reduced-motion:reduce){.kc-fun-card,.kc-reaction-target{transition:none!important}}
+
+
+/* Professional motion policy: keep the interface calm and task-focused. */
+#app,#app *,.content,.content>*,.event,.stat,.announcement,.surface,.feature-card,
+.crew-profile-tile,.kc-reference-hero-glow,.home-hero-mark,.detail-symbol,
+.kc-live i,.kc-pulse-live i,.kc-orbit,.kc-stage-monogram,.kc-marquee-track,
+.founder-crown,.founder-badge,.kc-intro-orbit,.kc-intro-content,
+.kc-home-featured:after,.kc-edge-breathe,.kc-profile-hero,
+.kc-profile-metrics article,.kc-profile-shortcuts>button {
+  animation:none!important;
+}
+button,a,.surface,.navitem,.nav-group-toggle,.event,.announcement,.iconbutton {
+  transition:background-color .14s ease,border-color .14s ease,color .14s ease,opacity .14s ease!important;
+}
+button:hover,.event:hover {transform:none!important}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after {scroll-behavior:auto!important;transition:none!important}
+}
