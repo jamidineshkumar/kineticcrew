@@ -41,5 +41,5 @@ const initEnhancements=()=>{installObserver();applyStartupLock().then(()=>refres
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initEnhancements,{once:true});else initEnhancements();
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&sessionUser&&localStorage.getItem(lockKey(sessionUser.id))==='yes'&&!lockOverlay)lockMarkup();});
 window.addEventListener('beforeunload',()=>{if(viewerCleanup)viewerCleanup();});
-setInterval(()=>{checkUpdates(false);},10*60*1000);
+setInterval(()=>{if(document.visibilityState==='visible')refreshReleaseFeed();},2*60*1000);
 })();
