@@ -591,3 +591,26 @@ button.primary:active,.primary:active,.home-hero .primary:active{transform:trans
 .profile-shortcut{cursor:pointer;border:1px solid var(--kc-glass-line)!important;display:grid;place-items:center;padding:0!important;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease!important}
 .profile-shortcut:hover{transform:translateY(-2px) scale(1.04)!important;box-shadow:0 8px 20px #00000020!important}
 .profile-shortcut .avatar-photo{width:100%;height:100%;border-radius:50%;object-fit:cover}
+
+#nav{display:flex!important;flex-direction:column!important;gap:12px!important;padding:4px 0 22px!important}
+.navgroup-title{display:none!important}
+.nav-group{position:relative;margin:0 0 4px!important;padding:7px!important;border-radius:21px!important;background:color-mix(in srgb,var(--kc-glass) 72%,var(--panel2))!important;border:1px solid var(--kc-glass-line)!important;box-shadow:0 7px 22px #0000000a,inset 0 1px 0 #ffffff38!important;backdrop-filter:blur(17px) saturate(145%)!important;-webkit-backdrop-filter:blur(17px) saturate(145%)!important;transition:background .2s ease,border-color .2s ease,box-shadow .2s ease!important}
+.nav-group.expanded{background:color-mix(in srgb,var(--panel) 82%,transparent)!important;border-color:color-mix(in srgb,var(--text) 13%,var(--line))!important;box-shadow:0 12px 28px #00000012,inset 0 1px 0 #ffffff45!important}
+.nav-group-toggle{display:flex!important;align-items:center!important;gap:12px!important;width:100%!important;min-height:58px!important;padding:9px 12px!important;border:0!important;border-radius:15px!important;background:transparent!important;color:var(--text)!important;text-align:left!important;box-shadow:none!important;cursor:pointer!important}
+.nav-group-toggle:hover{background:var(--kc-glass)!important}
+.nav-group-symbol{display:grid;place-items:center;flex:0 0 37px;width:37px;height:37px;border-radius:12px;background:var(--panel2);border:1px solid var(--kc-glass-line);font-size:17px;color:var(--text)}
+.nav-group-label{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.nav-group-label b{font-size:11px;letter-spacing:.12em;color:var(--text)}
+.nav-group-label small{font-size:10px;color:var(--muted);letter-spacing:.02em}
+.nav-group-count{display:grid;place-items:center;min-width:23px;height:23px;padding:0 6px;border-radius:99px;background:var(--panel2);border:1px solid var(--kc-glass-line);font-size:10px;color:var(--muted)}
+.nav-group-chevron{font-size:18px;color:var(--muted);transition:transform .25s ease}
+.nav-group-toggle.expanded .nav-group-chevron{transform:rotate(180deg)}
+.nav-group-items{margin:4px 2px 2px 9px;padding:8px 7px 7px 12px;border-left:1px solid color-mix(in srgb,var(--muted) 35%,transparent);border-radius:0 0 14px 0;background:color-mix(in srgb,var(--panel2) 55%,transparent);display:flex;flex-direction:column;gap:5px;animation:kc-nav-expand .22s ease both}
+.nav-group-items[hidden]{display:none!important}
+.nav-group-items .navitem{min-height:42px!important;padding:9px 12px!important;margin:0!important;border-radius:12px!important;background:transparent!important;border:1px solid transparent!important;box-shadow:none!important;font-size:12px!important;color:var(--muted)!important}
+.nav-group-items .navitem .nicon{display:grid;place-items:center;width:25px;height:25px;border-radius:8px;background:color-mix(in srgb,var(--panel) 72%,transparent);font-size:13px}
+.nav-group-items .navitem:hover{transform:translateX(3px)!important;background:var(--kc-glass)!important;color:var(--text)!important}
+.nav-group-items .navitem.active{background:var(--panel)!important;border-color:var(--kc-glass-line)!important;color:var(--text)!important;box-shadow:0 4px 12px #00000010,inset 0 1px 0 #ffffff38!important}
+.nav-group-items .navitem.active:before{left:-13px!important;width:2px!important;border-radius:4px!important}
+@keyframes kc-nav-expand{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){#nav{gap:10px!important}.nav-group{border-radius:18px!important}.nav-group-toggle{min-height:54px!important}.nav-group-items{margin-left:7px}}
