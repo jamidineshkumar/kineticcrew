@@ -1,40 +1,50 @@
-/* Approved Kinetic Crew mobile shell: one bottom dock, no duplicate top navigation. */
+/* Reference mockup: top-left menu + bell, single compact floating five-icon dock. */
 @media(max-width:900px){
-  .kc-app-header,.topbar{display:none!important}
-  .side,.navshade{display:none!important}
-  main{padding-top:0!important;padding-bottom:calc(88px + env(safe-area-inset-bottom))!important}
-  .content{padding-top:14px!important}
+  .kc-mobile-topbar{
+    position:sticky!important;top:0!important;z-index:120!important;
+    display:flex!important;align-items:center!important;justify-content:space-between!important;
+    height:54px!important;padding:0 18px!important;margin:0 -13px 8px!important;
+    background:rgba(10,10,15,.88)!important;border-bottom:1px solid rgba(255,255,255,.08)!important;
+    backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;
+  }
+  .kc-menu-button,.kc-bell-button{
+    position:relative!important;display:grid!important;place-items:center!important;
+    width:42px!important;height:42px!important;padding:9px!important;
+    border:0!important;border-radius:50%!important;background:transparent!important;color:#f4f3fa!important;
+  }
+  .kc-menu-button{gap:4px!important;align-content:center!important}
+  .kc-menu-button span{display:block;width:21px;height:2px;border-radius:3px;background:#e8e7f1}
+  .kc-bell-button svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .kc-bell-button i{position:absolute;right:7px;top:6px;width:7px;height:7px;border-radius:50%;background:#ff4d7d;box-shadow:0 0 0 2px #101016}
+  .side:not(.open),.navshade:not(.open){display:none!important}
+  .side.open{display:flex!important;position:fixed!important;inset:0 auto 0 0!important;width:min(82vw,310px)!important;height:100dvh!important;z-index:20000!important}
+  .navshade.open{display:block!important;position:fixed!important;inset:0!important;z-index:19990!important}
+  main{padding-top:0!important;padding-bottom:calc(90px + env(safe-area-inset-bottom))!important}
+  .content{padding-top:12px!important}
   .kc-mobile-dock{
-    position:fixed!important;z-index:1000!important;left:16px!important;right:16px!important;
-    bottom:calc(10px + env(safe-area-inset-bottom))!important;
-    display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
-    grid-auto-flow:row!important;gap:5px!important;padding:9px!important;
-    border:1px solid rgba(255,255,255,.12)!important;border-radius:22px!important;
-    background:rgba(25,26,29,.94)!important;color:#f7f5f2!important;
-    box-shadow:0 14px 38px rgba(0,0,0,.42)!important;
-    backdrop-filter:blur(22px)!important;-webkit-backdrop-filter:blur(22px)!important;
+    position:fixed!important;z-index:1000!important;left:50%!important;right:auto!important;
+    bottom:calc(12px + env(safe-area-inset-bottom))!important;transform:translateX(-50%)!important;
+    width:min(92vw,520px)!important;min-height:76px!important;
+    display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    align-items:center!important;gap:8px!important;padding:9px 12px!important;
+    border:1px solid rgba(113,125,255,.35)!important;border-radius:28px!important;
+    background:rgba(12,12,20,.94)!important;color:#d7d6e2!important;
+    box-shadow:0 14px 40px rgba(0,0,0,.52),0 0 24px rgba(81,85,220,.12)!important;
+    backdrop-filter:blur(24px)!important;-webkit-backdrop-filter:blur(24px)!important;
   }
   .kc-mobile-dock button{
-    min-width:0!important;min-height:58px!important;display:flex!important;
-    flex-direction:column!important;align-items:center!important;justify-content:center!important;
-    gap:5px!important;padding:7px 3px!important;border:0!important;border-radius:15px!important;
-    background:transparent!important;color:#aaa9ad!important;font:inherit!important;
+    width:52px!important;height:52px!important;min-width:0!important;min-height:0!important;
+    justify-self:center!important;display:grid!important;place-items:center!important;
+    padding:0!important;border:0!important;border-radius:50%!important;
+    background:transparent!important;color:#aaa9bb!important;transition:background .2s,color .2s,box-shadow .2s!important;
   }
-  .kc-mobile-dock .dock-icon{font-size:21px!important;line-height:1!important}
-  .kc-mobile-dock .dock-label{display:block!important;font-size:10px!important;font-weight:650!important;white-space:nowrap!important}
-  .kc-mobile-dock button.active{background:rgba(239,145,62,.16)!important;color:#f3a45c!important}
-  .kc-vibe-home{--vibe-muted:#aaa9ad;color:#f7f5f2!important}
-  .kc-vibe-home:before{background:radial-gradient(ellipse at 85% 5%,rgba(232,135,56,.16),transparent 38%),radial-gradient(ellipse at 15% 38%,rgba(255,177,93,.08),transparent 40%)!important}
-  .kc-vibe-greeting>span,.kc-vibe-footer>span{color:#efa45f!important}
-  .kc-vibe-featured,.kc-vibe-event-card,.kc-vibe-friend,.kc-vibe-updates .announcement{
-    background:linear-gradient(145deg,rgba(42,43,47,.96),rgba(29,30,33,.96))!important;
-    border-color:rgba(255,255,255,.1)!important;color:#f7f5f2!important;
+  .kc-mobile-dock .dock-icon{display:grid!important;place-items:center!important;width:23px!important;height:23px!important;font-size:0!important;line-height:1!important}
+  .kc-mobile-dock .dock-icon svg{display:block!important;width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.7!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+  .kc-mobile-dock .dock-label{display:none!important}
+  .kc-mobile-dock button.active{
+    color:#fff!important;background:linear-gradient(145deg,#596bff,#3479f6)!important;
+    box-shadow:0 5px 18px rgba(66,103,255,.42)!important;
   }
-  .kc-vibe-pink{background:linear-gradient(110deg,#f0a05b,#c97835)!important;color:#171719!important;box-shadow:0 6px 20px rgba(220,133,62,.18)!important}
-  .kc-vibe-outline{border-color:rgba(239,164,95,.55)!important}
-  .kc-vibe-badge{background:#c97835!important;color:#171719!important}
-  .kc-vibe-heading h2{color:#f7f5f2!important}
-  .kc-vibe-heading>button{color:#efa45f!important}
-  .kc-vibe-empty{border-color:rgba(255,255,255,.16)!important;background:rgba(255,255,255,.025)!important;color:#aaa9ad!important}
 }
-@media(prefers-reduced-motion:reduce){.kc-mobile-dock *{transition:none!important}}
+@media(max-width:380px){.kc-mobile-dock{width:94vw!important;gap:3px!important;padding-inline:7px!important}.kc-mobile-dock button{width:48px!important;height:48px!important}}
+@media(prefers-reduced-motion:reduce){.kc-mobile-dock button{transition:none!important}}
