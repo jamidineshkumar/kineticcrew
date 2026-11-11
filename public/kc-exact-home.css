@@ -283,3 +283,20 @@
  body.kc-home-screen .kc-exact-home:after{content:"✦";position:absolute;right:2px;bottom:8px;font-size:38px;line-height:1;color:#f4edf8;pointer-events:none;text-shadow:0 0 18px rgba(255,255,255,.14)}
 }
 @media(max-width:390px){body.kc-home-screen .kc-exact-home{padding-top:58px!important}}
+
+
+/* Mobile screenshot fixes: keep the header controls in their own slots. */
+@media(max-width:900px){
+ body.kc-home-screen .kc-mobile-topbar{position:relative!important;display:flex!important;align-items:center!important;min-height:66px!important}
+ body.kc-home-screen .kc-menu-button{position:relative!important;inset:auto!important;flex-shrink:0!important;z-index:3!important}
+ body.kc-home-screen .kc-header-brand{flex:1 1 auto!important;min-width:0!important;overflow:hidden!important;white-space:nowrap!important;text-overflow:ellipsis!important}
+ body.kc-home-screen .kc-header-brand *{max-width:100%!important}
+ body.kc-home-screen .kc-header-avatar,body.kc-home-screen .kc-top-avatar{flex-shrink:0!important}
+ #app:has(.kc-exact-home){padding-bottom:calc(150px + env(safe-area-inset-bottom))!important}
+ .kc-reference-profile{padding-bottom:calc(150px + env(safe-area-inset-bottom))!important}
+ .kc-profile-hero{overflow:hidden!important}
+ .kc-profile-hero-actions{position:relative!important;z-index:4!important}
+ .kc-profile-identity{position:relative!important;z-index:3!important;max-width:100%!important;padding:0 16px!important;text-align:center!important}
+ .kc-profile-identity h1{font-size:clamp(22px,6vw,34px)!important;line-height:1.12!important;overflow-wrap:anywhere!important;white-space:normal!important}
+ .kc-profile-identity .kc-profile-role{display:inline-flex!important;max-width:100%!important;font-size:clamp(10px,2.8vw,14px)!important;letter-spacing:.1em!important;white-space:normal!important}
+}
