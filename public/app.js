@@ -240,18 +240,18 @@ const pill=(view,key,label,disabled=false)=>'<button type="button" class="kc-mor
 const other=(view,key,label,disabled=false)=>'<button type="button" class="kc-more-other '+(disabled?'is-disabled':'')+'" '+(disabled?'disabled':'data-view="'+view+'"')+'><span class="kc-more-other-icon">'+icon(key)+'</span><b>'+label+'</b></button>';
 return '<div class="kc-more-reference">'+
 '<header class="kc-more-reference-header"><button type="button" class="kc-more-back" data-view="overview" aria-label="Back to home"><svg viewBox="0 0 24 24"><path d="m15 4-8 8 8 8"/></svg></button><h1>More</h1><span class="kc-more-spacer"></span><button type="button" class="kc-more-profile" data-view="profile" aria-label="Open profile">'+avatarMarkup(u,'small')+'</button></header>'+
-'<div class="kc-more-logo-wrap">'+brandMarkMarkup('kc-more-reference-logo')+'</div>'+
-'<section class="kc-more-reference-group"><h2>My ONE</h2><div class="kc-more-reference-pills">'+
-pill('auditions','jobs','My Jobs')+pill('events','events','My Events')+
-pill('people','people','My Connections')+pill('achievements','gigs','My Gigs')+
-pill('memories','bookmark','My Bookmarks')+pill('','meetings','My Meetings',true)+
+'<div class="kc-more-logo-wrap"><img class="kc-more-reference-logo" src="'+window.kcPath('kinetic-crew-logo.svg')+'" alt="Kinetic Crew logo" onerror="this.style.display=\'none\';this.parentElement.textContent=\'KINETIC CREW\'" /></div>'+
+'<section class="kc-more-reference-group"><h2>My Crew</h2><div class="kc-more-reference-pills">'+
+pill('events','events','Events')+pill('auditions','jobs','Auditions')+
+pill('rehearsals','events','Rehearsals')+pill('attendance','events','Attendance')+
+pill('people','people','Crew Members')+pill('chat','people','Crew Chat')+
+pill('feed','bookmark','Crew Feed')+pill('memories','bookmark','Memories')+
 '</div></section>'+
-'<section class="kc-more-reference-group kc-more-reference-others"><h2>Others</h2><div class="kc-more-reference-others-grid">'+
-other('','bank','Bank Accounts',true)+other('settings','settings','Settings & Help')+
-other('','gift','Refer & Earn',true)+
-'<a class="kc-more-other" href="https://github.com/jamidineshkumar/kineticcrew/issues" target="_blank" rel="noopener"><span class="kc-more-other-icon">'+icon('bug')+'</span><b>Report A Bug</b></a>'+
+'<section class="kc-more-reference-group kc-more-reference-others"><h2>More</h2><div class="kc-more-reference-others-grid">'+
+other('updates','events','Announcements')+other('notifications','events','Notifications')+
+other('profile','people','My Profile')+other('settings','settings','Settings')+
 '</div></section>'+
-'<div class="kc-more-reference-footer">Made with <span>🤟</span> For Students</div>'+
+'<div class="kc-more-reference-footer">Made for <span>✦</span> Kinetic Crew</div>'+
 '<div class="kc-more-reference-watermark" aria-hidden="true">KC</div><div class="kc-more-reference-sparkle" aria-hidden="true">✦</div></div>';
 }
 function eventsPage(){return welcome('Events & registrations','The next moment is waiting. Find your event and lock in.',admin()?button('＋ New event','new-event'):'')+(admin()?eventForm():'')+section('Upcoming moments','Register once. Show up ready.','<span class="pill">'+S.events.length+' EVENTS</span>')+'<div class="eventgrid">'+(S.events.map(card).join('')||empty('No events yet','A crew admin can publish the first event here.'))+'</div>';}
