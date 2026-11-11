@@ -592,6 +592,7 @@ window.addEventListener('popstate',()=>{if($('#sidebar')?.classList.contains('op
 $('#nav')?.addEventListener('click',event=>{if(event.target.closest('[data-view]'))setMobileMenu(false);});
 
 document.addEventListener('kc:navigate',event=>{const view=event.detail?.view;if(view)go(view);});
+document.addEventListener('click',event=>{const headerAction=event.target.closest('.kc-header-actions [data-view],.kc-header-brand[data-view]');if(!headerAction)return;event.preventDefault();go(headerAction.dataset.view);});
 $('#navShade')?.addEventListener('click',()=>setMobileMenu(false));
 async function showCrewIntro(force){
  const id=String(S.user?.auth_id||S.user?.id||'guest'),key='kc-intro-seen:'+id;
