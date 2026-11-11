@@ -49,8 +49,18 @@ $('newUsername').addEventListener('input',()=>{
  },300);
 });
 if(!A){say(window.KC_CONFIG_ERROR||'Authentication service unavailable.',true);$('loginSubmit').disabled=$('signupSubmit').disabled=true;return;}
-// Do not auto-redirect an existing browser session: shared-device users must be able to choose their own account.
+// Restore an existing Supabase session on app launch. Explicit sign-out clears it,
+ // so users only see this screen when they actually need to authenticate.
 $('loginTab').onclick=()=>show('login');$('signupTab').onclick=()=>show('signup');
+(async()=>{
+ try{
+  const {data,error}=await A.auth.getSession();
+  if(error)throw error;
+  if(data?.session?.user){say('Welcome back. Restoring your session…');go();return;}
+ }catch(error){console.warn('Could not restore saved Kinetic Crew session:',error);}
+ show('login');
+})();
+
 loginForm.addEventListener('submit',async e=>{e.preventDefault();busy('loginSubmit',true);say('');try{
  const username=$('loginUsername').value.trim().toLowerCase(),password=$('loginPassword').value;
  if(!/^[a-z0-9_]{3,24}$/.test(username))throw Error('Enter a valid username (3–24 letters, numbers or underscores).');
