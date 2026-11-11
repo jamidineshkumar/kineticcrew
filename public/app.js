@@ -224,27 +224,32 @@ return '<div class="kc-exact-home">'+
 '</div>';
 }
 function morePage(){
-const u=S.user||{},coin='✦',isAdmin=admin();
-const shortcut=(view,icon,label,sub)=>'<button class="kc-more-shortcut" data-view="'+view+'"><span class="kc-more-icon">'+icon+'</span><b>'+label+'</b><small>'+sub+'</small><i>›</i></button>';
-return '<div class="kc-more-page"><header class="kc-more-header"><button class="kc-more-back" data-view="overview" aria-label="Back to home">‹</button><h1>More</h1><span class="kc-more-spacer"></span><button class="kc-more-profile" data-view="profile" aria-label="Open profile">'+avatarMarkup(u,'small')+'</button></header>'+
-'<section class="kc-more-banner"><div class="kc-more-banner-copy"><span>KINETIC CREW · '+esc(role(u.role).toUpperCase())+'</span><h2>One crew.<br>Many moments.</h2><p>Find events, connect with members, and keep your crew moving.</p><button data-view="events">Explore events ↗</button></div><div class="kc-more-banner-mark">'+coin+'</div></section>'+
-'<section class="kc-more-group"><h2>My Crew</h2><div class="kc-more-grid">'+
-shortcut('events','▣','My Events','Registrations & sessions')+
-shortcut('people','♧','My Connections','Find crew members')+
-shortcut('feed','◉','Crew Feed','Posts & updates')+
-shortcut('chat','✉','Crew Chat','Talk with your crew')+
-shortcut('memories','▧','KC Memories','Shared moments')+
-shortcut('rehearsals','◷','Rehearsals','Practice sessions')+
-shortcut('auditions','✦','Auditions','Join the crew')+
-(isAdmin?shortcut('attendance','◎','Attendance','Member check-in'): '')+
+const u=S.user||{};
+const item=(view,icon,label,disabled=false)=>'<button type="button" class="kc-more-pill '+(disabled?'is-disabled':'')+'" '+(disabled?'disabled':'data-view="'+view+'"')+'><span>'+icon+'</span><b>'+label+'</b>'+(disabled?'<em>COMING SOON</em>':'')+'</button>';
+const other=(view,icon,label,disabled=false)=>'<button type="button" class="kc-more-other '+(disabled?'is-disabled':'')+'" '+(disabled?'disabled':'data-view="'+view+'"')+'><span class="kc-more-other-icon">'+icon+'</span><b>'+label+'</b></button>';
+return '<div class="kc-more-reference">'+
+'<header class="kc-more-reference-header"><button type="button" class="kc-more-back" data-view="overview" aria-label="Back to home">‹</button><h1>More</h1><span class="kc-more-spacer"></span><button type="button" class="kc-more-profile" data-view="profile" aria-label="Open profile">'+avatarMarkup(u,'small')+'</button></header>'+
+'<div class="kc-more-logo-wrap">'+brandMarkMarkup('kc-more-reference-logo')+'</div>'+
+'<section class="kc-more-reference-group"><h2>My ONE</h2><div class="kc-more-reference-pills">'+
+item('auditions','▱','My Jobs')+
+item('events','▣','My Events')+
+item('people','♧','My Connections')+
+item('achievements','＄','My Gigs')+
+item('memories','♧','My Bookmarks')+
+item('','♙','My Meetings',true)+
 '</div></section>'+
-'<section class="kc-more-group kc-more-others"><h2>Others</h2>'+
-'<button class="kc-more-row" data-view="notifications"><span>♧</span><b>Notifications</b><i>›</i></button>'+
-'<button class="kc-more-row" data-view="settings"><span>⚙</span><b>Settings & Help</b><i>›</i></button>'+
-'<a class="kc-more-row" href="https://github.com/jamidineshkumar/kineticcrew/issues" target="_blank" rel="noopener"><span>▤</span><b>Report a Bug</b><i>↗</i></a>'+
-'<button class="kc-more-row" data-view="credits"><span>✧</span><b>About Kinetic Crew</b><i>›</i></button>'+
-'</section></div>';
-}function eventsPage(){return welcome('Events & registrations','The next moment is waiting. Find your event and lock in.',admin()?button('＋ New event','new-event'):'')+(admin()?eventForm():'')+section('Upcoming moments','Register once. Show up ready.','<span class="pill">'+S.events.length+' EVENTS</span>')+'<div class="eventgrid">'+(S.events.map(card).join('')||empty('No events yet','A crew admin can publish the first event here.'))+'</div>';}
+'<section class="kc-more-reference-group kc-more-reference-others"><h2>Others</h2><div class="kc-more-reference-others-grid">'+
+other('','♜','Bank Accounts',true)+
+other('settings','⚙','Settings & Help')+
+other('','♧','Refer & Earn',true)+
+'<a class="kc-more-other" href="https://github.com/jamidineshkumar/kineticcrew/issues" target="_blank" rel="noopener"><span class="kc-more-other-icon">☏</span><b>Report A Bug</b></a>'+
+'</div></section>'+
+'<div class="kc-more-reference-footer">Made with <span>🤟</span> For Students</div>'+
+'<div class="kc-more-reference-watermark" aria-hidden="true">KC</div>'+
+'<div class="kc-more-reference-sparkle" aria-hidden="true">✦</div>'+
+'</div>';
+}
+function eventsPage(){return welcome('Events & registrations','The next moment is waiting. Find your event and lock in.',admin()?button('＋ New event','new-event'):'')+(admin()?eventForm():'')+section('Upcoming moments','Register once. Show up ready.','<span class="pill">'+S.events.length+' EVENTS</span>')+'<div class="eventgrid">'+(S.events.map(card).join('')||empty('No events yet','A crew admin can publish the first event here.'))+'</div>';}
 function updatesPage(){return welcome('Crew updates','Announcements, changes, and the latest from your people.',admin()?button('＋ New update','new-update'):'')+'<div class="twoCol"><div class="announcements">'+(S.announcements.map(announcement).join('')||empty('It is quiet in here','Updates will appear here when published.'))+'</div>'+(superadmin()?updateForm():'')+'</div>';}
 function rosterRows(rows){const query=String(S.attendanceQuery||'').trim().toLowerCase(),filtered=(rows||[]).filter(m=>!query||(String(m.name||'')+' '+String(m.email||'')).toLowerCase().includes(query));return filtered.length?filtered.map(m=>{const status=m.status||(m.attended?'present':'pending'),label=status==='not_attending'?'Not attending':status==='present'?'Present':status==='absent'?'Absent':'Pending';return '<div class="rosterrow attendance-rosterrow"><div class="avatar">'+esc(initials(m.name))+'</div><div class="rosterperson"><b>'+esc(m.name)+'</b><small>'+esc(m.email)+'</small><span class="status '+esc(status)+'">'+label+'</span></div><div class="attendance-status-actions">'+[['present','Present'],['absent','Absent'],['not_attending','Not attending'],['pending','Reset']].map(([v,t])=>'<button type="button" class="attendance-status-btn '+(status===v?'selected':'')+'" data-attendance-status="'+v+'" data-member-id="'+esc(m.member_id||'')+'" '+(!m.member_id||S.roster?.finalized?'disabled':'')+'>'+t+'</button>').join('')+'</div></div>';}).join(''):empty(query?'No matching members':'No registrations yet',query?'Try another name or email.':'Members who register will appear here.');}
 function attendancePage(){if(!admin())return empty('Admin access required','Attendance verification is available to admins and super admins.');const finalized=!!S.roster?.finalized;const audit=(S.attendanceAudit||[]).slice(0,12);return welcome('Attendance desk','Set each registered member to Present, Absent or Not attending. Finalized events are locked.')+'<div class="attendancegrid"><form id="verifyForm" class="surface verifyform">'+formTitle('▦','Attendance verification','Choose the event, then scan the member QR or enter their six-digit OTP.')+'<label class="field">Event<select name="eventId" required><option value="">Select an event…</option>'+S.events.map(e=>'<option value="'+esc(e.id)+'" '+(String(S.rosterEvent)===String(e.id)?'selected':'')+'>'+esc(e.title)+'</option>').join('')+'</select></label><label class="field">Member email (for OTP verification)<input name="memberEmail" type="email" placeholder="member@example.com" required></label><label class="field">Six-digit event OTP<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="Enter OTP" required></label><button type="submit" class="primary full" '+(finalized?'disabled':'')+'>Verify OTP & mark present</button><div class="or-divider"><span>OR</span></div><button type="button" class="outline full" id="openQrScanner" '+(finalized?'disabled':'')+'>▦ Scan event QR — instant check-in</button><div id="qrScanner" class="qr-scanner" hidden><video id="qrVideo" autoplay playsinline></video><button type="button" class="outline full" id="closeQrScanner">Close scanner</button></div><p class="hint">QR and OTP are alternative check-in methods. Both verify event registration on the server.</p></form><div class="surface"><div class="rosterhead"><div><h3>Event roster</h3><p>Present, absent and not attending.</p></div><select id="rosterSelect" class="select"><option value="">Choose event</option>'+S.events.map(e=>'<option value="'+esc(e.id)+'" '+(String(S.rosterEvent)===String(e.id)?'selected':'')+'>'+esc(e.title)+'</option>').join('')+'</select></div><label class="field attendance-search">Find a member<input id="attendanceSearch" type="search" value="'+esc(S.attendanceQuery||'')+'" placeholder="Search name or email…" autocomplete="off"></label><div id="rosterBody">'+(S.roster?rosterRows(S.roster.roster):empty('Roster is waiting','Select an event to see registrations.'))+'</div>'+(S.roster?'<div class="attendance-actions"><button class="outline" id="exportAttendance">Export Excel CSV</button><button class="primary" id="finalizeAttendance" '+(finalized?'disabled':'')+'>'+(finalized?'Attendance locked':'Finalize & lock attendance')+'</button>'+(finalized&&superadmin()?'<button class="outline" id="reopenAttendance">Reopen attendance</button>':'')+'</div>'+(finalized?'<p class="hint">This event is locked. Only the Super Admin can reopen it. All changes are recorded in the audit history.</p>':'<p class="hint">Admins can edit statuses until attendance is finalized. Finalization marks remaining Pending members absent.</p>')+'<section class="attendance-audit"><h3>Recent audit history</h3>'+(audit.length?audit.map(a=>'<div class="attendance-audit-row"><span><b>'+esc(a.member_name)+'</b><small>'+esc(a.actor_name)+' · '+esc(a.action.replace('_',' '))+'</small></span><span>'+esc((a.previous_status||'—')+' → '+a.new_status)+'<small>'+esc(dt(a.changed_at))+'</small></span></div>').join(''):'<p class="hint">No changes recorded yet.</p>')+'</section>':'')+'</div></div>';}function peoplePage(){
