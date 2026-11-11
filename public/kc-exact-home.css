@@ -273,3 +273,13 @@
  body.kc-home-screen .kc-exact-update-row{gap:6px!important}
  body.kc-home-screen .kc-exact-update{padding:7px 5px!important;gap:5px!important}
 }
+
+/* Final screenshot alignment: retain the reference's generous gap under the top controls. */
+@media(max-width:900px){
+ body.kc-home-screen .kc-exact-home{padding-top:68px!important}
+ body.kc-home-screen .kc-exact-greeting{display:none!important}
+ body.kc-home-screen .kc-exact-quick button i{display:grid!important;place-items:center!important}
+ body.kc-home-screen .kc-exact-quick button i svg{width:30px!important;height:30px!important;fill:none!important;stroke:#d8c8e0!important;stroke-width:1.65!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+ body.kc-home-screen .kc-exact-home:after{content:"✦";position:absolute;right:2px;bottom:8px;font-size:38px;line-height:1;color:#f4edf8;pointer-events:none;text-shadow:0 0 18px rgba(255,255,255,.14)}
+}
+@media(max-width:390px){body.kc-home-screen .kc-exact-home{padding-top:58px!important}}
