@@ -175,9 +175,25 @@ async function pollCrewNotifications(){
 }
 function startCrewNotificationPolling(){
  if(kcAnnouncementPoll)clearInterval(kcAnnouncementPoll);
- kcAnnouncementPoll=setInterval(pollCrewNotifications,25000);
- document.addEventListener('visibilitychange',()=>{if(!document.hidden)pollCrewNotifications();});
+ kcAnnouncementPoll=setInterval(()=>{pollCrewNotifications();syncCrewSnapshot();},25000);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden){pollCrewNotifications();syncCrewSnapshot();}});
 }
+
+let kcSnapshotBusy=false;
+async function syncCrewSnapshot(){
+ if(kcSnapshotBusy||!S.user||document.hidden)return;
+ kcSnapshotBusy=true;
+ try{
+  const snapshot=await api('bootstrap');
+  if(snapshot?.user)S.user={...S.user,...snapshot.user};
+  const nextEvents=snapshot?.events||[],nextAnnouncements=snapshot?.announcements||[],nextMembers=snapshot?.members||[];
+  const changed=JSON.stringify(S.events)!==JSON.stringify(nextEvents)||JSON.stringify(S.announcements)!==JSON.stringify(nextAnnouncements)||JSON.stringify(S.members)!==JSON.stringify(nextMembers);
+  S.events=nextEvents;S.announcements=nextAnnouncements;S.members=nextMembers;
+  if(changed){paintUser();paint();}
+ }catch(error){console.warn('Background crew sync failed:',error);}
+ finally{kcSnapshotBusy=false;}
+}
+
 function playNoticeSound(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const ctx=new C(),now=ctx.currentTime;[660,880].forEach((hz,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='sine';osc.frequency.value=hz;gain.gain.setValueAtTime(.0001,now+i*.12);gain.gain.exponentialRampToValueAtTime(.11,now+i*.12+.025);gain.gain.exponentialRampToValueAtTime(.0001,now+i*.12+.22);osc.connect(gain);gain.connect(ctx.destination);osc.start(now+i*.12);osc.stop(now+i*.12+.24);});setTimeout(()=>ctx.close(),700);}catch{}}
 function notificationCard(a){const read=isRead(a.id);return '<article class="notification-item '+(read?'read':'unread')+'" data-notice-id="'+esc(a.id)+'"><span class="notification-icon">'+(read?'✓':'✦')+'</span><div class="notification-copy"><div class="announce-meta"><b>CREW UPDATE</b><span>·</span><span>'+esc(dt(a.created_at))+'</span><span class="notice-state">'+(read?'READ':'NEW')+'</span></div><h3>'+esc(a.title)+'</h3><p>'+esc(a.body)+'</p><small>From '+esc(a.author_name||'Kinetic Crew Admin')+'</small></div><button class="notice-read-button" data-read-notice="'+esc(a.id)+'" aria-label="'+(read?'Already read':'Mark as read')+'" '+(read?'disabled':'')+'>'+(read?'✓':'Mark read')+'</button>'+(superadmin()?'<button class="notice-delete-button" data-delete-announcement="'+esc(a.id)+'" aria-label="Delete crew update">×</button>':'')+'</article>';}
 function notificationsPage(){
@@ -250,8 +266,8 @@ return '<div class="kc-more-reference">'+
 '<section class="kc-more-reference-group"><h2>My Crew</h2><div class="kc-more-reference-pills">'+
 pill('events','events','Events')+pill('auditions','jobs','Auditions')+
 pill('rehearsals','rehearsal','Rehearsals')+pill('attendance','attendance','Attendance')+
-pill('people','people','Crew Members')+pill('chat','chat','Crew Chat')+
-pill('feed','feed','Crew Feed')+pill('memories','bookmark','Memories')+
+pill('people','people','Crew Members')+
+pill('feed','feed','Kinetic Gram')+pill('memories','bookmark','Memories')+
 '</div></section>'+
 '<section class="kc-more-reference-group kc-more-reference-others"><h2>More</h2><div class="kc-more-reference-others-grid">'+
 other('updates','announcements','Announcements')+other('notifications','notifications','Notifications')+
@@ -576,7 +592,7 @@ document.addEventListener('click',async e=>{
   }
   return;
  }
- if(e.target.closest('#replayIntro')){localStorage.removeItem('kc-intro-seen:'+String(S.user.auth_id||S.user.id));showCrewIntro(true);return;}
+ 
  if(e.target.closest('#clearAppCache')){try{if('caches'in window){const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith('kinetic-crew-')).map(k=>caches.delete(k)));}notice('Temporary cache cleared. Reloading fresh assets…');setTimeout(()=>location.reload(),500);}catch(err){notice('Could not clear app cache.');}return;}
  if(e.target.closest('#settingsSignOut')){try{await auth.signOut();}finally{location.replace(window.kcPath('login.html'));}return;}
 });
@@ -664,7 +680,7 @@ async function boot(){
    const target=S.view;
    go(target).catch(error=>{console.warn('Saved page restore failed:',error);S.view='overview';paint();});
   }
-  showCrewIntro(false);
+
   if(saved&&(!saved.userId||saved.userId===(session.user.id||session.user.auth_id)))restorePageScroll(saved);
   else savePageState();
  }catch(e){
