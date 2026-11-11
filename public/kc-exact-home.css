@@ -204,3 +204,10 @@
  body.kc-home-screen .kc-exact-home{max-width:900px}
  body.kc-home-screen .kc-exact-hero{height:210px}
 }
+
+@media(max-width:900px){
+ body.kc-home-screen .kc-exact-hero{width:calc(100% - 6px);font-family:inherit;text-align:left;cursor:pointer}
+}
+@media(min-width:901px){
+ body.kc-home-screen .kc-exact-hero{width:100%;font-family:inherit;text-align:left;cursor:pointer}
+}
