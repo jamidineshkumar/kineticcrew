@@ -262,3 +262,7 @@
  .kc-home-quick button i{font-size:22px}
  .kc-home-quick button b{font-size:10px}
 }
+
+@media(max-width:1100px){
+ .kc-vibe-home:before{content:"KC"!important;display:block!important;position:absolute!important;z-index:-1!important;pointer-events:none!important;top:42%!important;right:-.16em!important;font-family:Arial,Helvetica,sans-serif!important;font-size:clamp(230px,72vw,470px)!important;font-weight:950!important;line-height:.8!important;letter-spacing:-.13em!important;color:rgba(186,157,224,.075)!important;white-space:nowrap!important}
+}
