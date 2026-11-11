@@ -147,3 +147,26 @@
 @media(prefers-reduced-motion:reduce){
  .kc-page-enter,.kc-vibe-event-card,.kc-member-directory-card{animation:none!important;transition:none!important}
 }
+
+@media(max-width:900px){
+ .kc-st-home-tools{position:relative;z-index:1;margin:0 0 24px;display:grid;gap:13px}
+ .kc-st-search{
+  width:100%;min-height:48px;display:flex;align-items:center;gap:10px;
+  padding:0 14px;border:1px solid rgba(255,255,255,.1);border-radius:15px;
+  background:rgba(42,38,34,.88);color:#aaa29a;text-align:left;
+ }
+ .kc-st-search-icon{font-size:25px;line-height:1;color:var(--st-gold-2)}
+ .kc-st-search>span:nth-child(2){flex:1;font-size:13px}
+ .kc-st-search>b{font-size:20px;color:var(--st-gold-2);font-weight:500}
+ .kc-st-categories{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+ .kc-st-categories button{
+  min-width:0;min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+  padding:9px 4px;border:1px solid rgba(255,255,255,.085);border-radius:17px;
+  background:linear-gradient(150deg,#2b2723,#201e1c);color:var(--st-text);
+ }
+ .kc-st-categories i{
+  width:34px;height:34px;display:grid;place-items:center;border-radius:12px;
+  background:rgba(217,166,94,.12);color:var(--st-gold-2);font-style:normal;font-size:20px
+ }
+ .kc-st-categories span{font-size:10px;font-weight:700;white-space:nowrap}
+}
