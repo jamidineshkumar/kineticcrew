@@ -1,0 +1,40 @@
+/* Approved Kinetic Crew mobile shell: one bottom dock, no duplicate top navigation. */
+@media(max-width:900px){
+  .kc-app-header,.topbar{display:none!important}
+  .side,.navshade{display:none!important}
+  main{padding-top:0!important;padding-bottom:calc(88px + env(safe-area-inset-bottom))!important}
+  .content{padding-top:14px!important}
+  .kc-mobile-dock{
+    position:fixed!important;z-index:1000!important;left:16px!important;right:16px!important;
+    bottom:calc(10px + env(safe-area-inset-bottom))!important;
+    display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    grid-auto-flow:row!important;gap:5px!important;padding:9px!important;
+    border:1px solid rgba(255,255,255,.12)!important;border-radius:22px!important;
+    background:rgba(25,26,29,.94)!important;color:#f7f5f2!important;
+    box-shadow:0 14px 38px rgba(0,0,0,.42)!important;
+    backdrop-filter:blur(22px)!important;-webkit-backdrop-filter:blur(22px)!important;
+  }
+  .kc-mobile-dock button{
+    min-width:0!important;min-height:58px!important;display:flex!important;
+    flex-direction:column!important;align-items:center!important;justify-content:center!important;
+    gap:5px!important;padding:7px 3px!important;border:0!important;border-radius:15px!important;
+    background:transparent!important;color:#aaa9ad!important;font:inherit!important;
+  }
+  .kc-mobile-dock .dock-icon{font-size:21px!important;line-height:1!important}
+  .kc-mobile-dock .dock-label{display:block!important;font-size:10px!important;font-weight:650!important;white-space:nowrap!important}
+  .kc-mobile-dock button.active{background:rgba(239,145,62,.16)!important;color:#f3a45c!important}
+  .kc-vibe-home{--vibe-muted:#aaa9ad;color:#f7f5f2!important}
+  .kc-vibe-home:before{background:radial-gradient(ellipse at 85% 5%,rgba(232,135,56,.16),transparent 38%),radial-gradient(ellipse at 15% 38%,rgba(255,177,93,.08),transparent 40%)!important}
+  .kc-vibe-greeting>span,.kc-vibe-footer>span{color:#efa45f!important}
+  .kc-vibe-featured,.kc-vibe-event-card,.kc-vibe-friend,.kc-vibe-updates .announcement{
+    background:linear-gradient(145deg,rgba(42,43,47,.96),rgba(29,30,33,.96))!important;
+    border-color:rgba(255,255,255,.1)!important;color:#f7f5f2!important;
+  }
+  .kc-vibe-pink{background:linear-gradient(110deg,#f0a05b,#c97835)!important;color:#171719!important;box-shadow:0 6px 20px rgba(220,133,62,.18)!important}
+  .kc-vibe-outline{border-color:rgba(239,164,95,.55)!important}
+  .kc-vibe-badge{background:#c97835!important;color:#171719!important}
+  .kc-vibe-heading h2{color:#f7f5f2!important}
+  .kc-vibe-heading>button{color:#efa45f!important}
+  .kc-vibe-empty{border-color:rgba(255,255,255,.16)!important;background:rgba(255,255,255,.025)!important;color:#aaa9ad!important}
+}
+@media(prefers-reduced-motion:reduce){.kc-mobile-dock *{transition:none!important}}
