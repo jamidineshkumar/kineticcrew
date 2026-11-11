@@ -1,59 +1,52 @@
-# Kinetic Crew native app setup
+# Kinetic Crew Android app
 
-The existing Kinetic Crew web app remains in `public/` and continues to use the existing Supabase project. Capacitor packages that same web app into Android and iOS native containers.
+The Android app packages the existing `public/` web application with Capacitor. It keeps the current Supabase backend and does not require a separate API or database migration.
 
-## Local setup
+## Build a test APK
 
-Requirements:
-- Node.js 22+
-- Android Studio + Android SDK for Android
-- macOS + Xcode for iOS device builds
+1. Open GitHub → Actions → **Build Kinetic Crew Android APK**.
+2. Select **Run workflow** on the `main` branch.
+3. Wait for the Android job to finish.
+4. Download the `kinetic-crew-debug-apk` artifact and extract `app-debug.apk`.
+5. Transfer it to an Android phone and install it. Android may ask you to allow installs from the browser or file manager used to open the APK.
 
-Install and generate native projects:
+The debug APK is for device testing. It is not the final distributable release build.
+
+## Build a signed release APK for sharing
+
+A release APK must be signed with a persistent Android keystore. Generate the keystore once and keep a secure backup. **Never commit the keystore or passwords to Git.** Losing the keystore means you cannot publish seamless updates signed with the same app identity.
+
+Configure these GitHub Actions repository secrets:
+
+- `ANDROID_KEYSTORE_BASE64`: Base64-encoded keystore file
+- `ANDROID_KEYSTORE_PASSWORD`: keystore password
+- `ANDROID_KEY_ALIAS`: key alias
+- `ANDROID_KEY_PASSWORD`: key password
+
+After adding all four secrets, run the same workflow again. It will produce the `kinetic-crew-signed-release-apk` artifact. Share that APK through WhatsApp or host it on the Kinetic Crew website. Future APK updates must use the same keystore and application ID.
+
+## Generate a keystore securely
+
+Run locally on a computer with Java installed (replace the alias and validity details as desired):
 
 ```bash
-npm install
-npx cap add android
-npx cap sync android
-npx cap open android
+keytool -genkeypair -v -keystore kinetic-crew-release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias kineticcrew
 ```
 
-For iOS, on a Mac:
+Convert it to Base64 for the GitHub secret:
 
-```bash
-npx cap add ios
-npx cap sync ios
-npx cap open ios
-```
+- macOS/Linux: `base64 -w 0 kinetic-crew-release.jks`
+- Windows PowerShell: `[Convert]::ToBase64String([IO.File]::ReadAllBytes("kinetic-crew-release.jks"))`
 
-After changing files in `public/`, run `npx cap sync` before rebuilding native apps.
+Store the original `.jks` file and passwords somewhere safe and private. Do not send them in chat.
 
-## Automated builds
+## Existing backend and hosting
 
-GitHub Actions workflow `.github/workflows/mobile-build.yml` builds:
-- Android debug APK (installable for internal testing; not a signed production release)
-- iOS Simulator app (for simulator testing only)
-
-Run it from GitHub → Actions → Build Kinetic Crew mobile apps → Run workflow. Download the artifacts from the completed workflow run.
-
-## Release distribution
-
-### Android
-A production APK/AAB must be signed with an Android upload/release keystore. Keep the keystore and passwords in GitHub Actions secrets, never in this repository. For Play Store distribution, create an AAB and configure Play App Signing in Google Play Console. Direct sharing to members can use a signed APK.
-
-### iOS
-A real iPhone-installable build and App Store/TestFlight distribution require an Apple Developer account, a registered bundle identifier, signing certificates and provisioning profiles. The simulator artifact is not installable on a physical iPhone. Configure signing securely in the macOS build pipeline before distributing.
-
-## Existing backend
-
-The app continues to use the existing Supabase Auth, database and Edge Function configuration in `public/config.js`. Never put Supabase service-role keys, APNs keys, FCM service-account JSON, or signing credentials in browser files or Git.
+- Supabase Auth, database, storage and existing Edge Functions remain the backend.
+- The existing public Supabase URL and publishable key remain in `public/config.js`.
+- Cloudflare continues to host the web app.
+- Native APK distribution does not require Google Play Console registration.
 
 ## Push notifications
 
-The current web app has in-app notifications only. Background/closed-app push is not complete just by packaging the website. It requires:
-- Supabase table and server-side delivery function for device tokens
-- Firebase Cloud Messaging configuration for Android
-- APNs key and Apple Developer configuration for iOS
-- Permission prompts and native registration handling
-
-Do not announce push delivery as active until both platforms have been configured and real-device tests pass.
+The current web app's in-app notifications and Android push notifications are different. Native background/closed-app push requires Firebase Cloud Messaging configuration, secure device-token registration, server-side delivery, and real-device testing. The workflow can install `google-services.json` from the `GOOGLE_SERVICES_JSON_BASE64` secret when configured. Do not announce native push as active until end-to-end tests pass.
