@@ -358,3 +358,97 @@
   #kcMobileDock .kc-dock-home,
   #kcMobileDock .kc-dock-group button .dock-icon{animation:none!important}
 }
+
+
+/* Exact reference dock: standalone white Home circle + dark capsule, fixed to viewport bottom. */
+@media(max-width:900px){
+  #kcMobileDock.kc-mobile-dock{
+    position:fixed!important;z-index:10000!important;
+    left:50%!important;right:auto!important;top:auto!important;
+    bottom:calc(8px + env(safe-area-inset-bottom,0px))!important;
+    transform:translateX(-50%)!important;
+    display:flex!important;flex-direction:row!important;align-items:center!important;
+    justify-content:center!important;gap:10px!important;
+    box-sizing:border-box!important;width:calc(100vw - 28px)!important;
+    max-width:560px!important;height:84px!important;min-height:84px!important;max-height:84px!important;
+    margin:0!important;padding:0!important;overflow:visible!important;
+    border:0!important;border-radius:0!important;background:transparent!important;
+    box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  }
+  #kcMobileDock .kc-dock-home{
+    flex:0 0 76px!important;width:76px!important;height:76px!important;
+    min-width:76px!important;min-height:76px!important;
+    display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+    gap:3px!important;margin:0!important;padding:5px!important;
+    border-radius:50%!important;border:0!important;
+    background:#fff!important;color:#171717!important;
+    box-shadow:0 0 0 7px rgba(35,38,42,.92)!important;
+    animation:none!important;
+  }
+  #kcMobileDock .kc-dock-home .dock-icon{
+    flex:0 0 39px!important;width:39px!important;height:39px!important;
+    min-width:39px!important;min-height:39px!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    background:transparent!important;border:0!important;box-shadow:none!important;color:#171717!important;
+  }
+  #kcMobileDock .kc-dock-home .dock-icon svg{width:36px!important;height:36px!important;stroke:#171717!important;stroke-width:1.9!important}
+  #kcMobileDock .kc-dock-home .dock-label{font-size:14px!important;font-weight:500!important;line-height:1.1!important;color:#171717!important}
+  #kcMobileDock .kc-dock-group{
+    flex:1 1 0!important;min-width:0!important;height:76px!important;min-height:76px!important;max-height:76px!important;
+    display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    align-items:center!important;justify-items:stretch!important;gap:0!important;
+    margin:0!important;padding:5px 8px!important;box-sizing:border-box!important;
+    border:0!important;border-radius:999px!important;
+    background:#24272b!important;color:#f2f2f2!important;
+    box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+    overflow:hidden!important;
+  }
+  #kcMobileDock .kc-dock-group button{
+    display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+    gap:4px!important;width:100%!important;height:64px!important;min-width:0!important;min-height:0!important;
+    margin:0!important;padding:3px 1px!important;border:0!important;border-radius:0!important;
+    background:transparent!important;color:#f0f0f0!important;box-shadow:none!important;
+    animation:none!important;transform:none!important;overflow:visible!important;
+  }
+  #kcMobileDock .kc-dock-group button .dock-icon{
+    flex:0 0 38px!important;width:38px!important;height:38px!important;
+    min-width:38px!important;min-height:38px!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    background:transparent!important;border:0!important;border-radius:0!important;
+    box-shadow:none!important;color:#ededed!important;animation:none!important;
+  }
+  #kcMobileDock .kc-dock-group button .dock-icon svg{
+    display:block!important;width:34px!important;height:34px!important;
+    fill:none!important;stroke:#ededed!important;stroke-width:1.8!important;
+    stroke-linecap:round!important;stroke-linejoin:round!important;
+  }
+  #kcMobileDock .kc-dock-group button .dock-label{
+    display:block!important;max-width:100%!important;margin:0!important;padding:0!important;
+    font-size:13px!important;font-weight:500!important;line-height:1.1!important;
+    letter-spacing:0!important;white-space:nowrap!important;text-align:center!important;color:#f2f2f2!important;
+  }
+  #kcMobileDock .kc-dock-group button.active{
+    background:transparent!important;color:#fff!important;border:0!important;box-shadow:none!important;
+  }
+  #kcMobileDock .kc-dock-group button.active .dock-icon{
+    background:transparent!important;border:0!important;box-shadow:none!important;animation:none!important;
+  }
+  #kcMobileDock .kc-dock-group button.active .dock-label{color:#fff!important}
+  #kcMobileDock .kc-fun-zone-emoji{font-size:32px!important;line-height:1!important;animation:none!important}
+  #kcMobileDock .kc-dock-group button.active .kc-fun-zone-emoji{filter:none!important;animation:none!important}
+  main{padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))!important}
+  main>footer{display:none!important}
+}
+@media(max-width:380px){
+  #kcMobileDock.kc-mobile-dock{width:calc(100vw - 18px)!important;gap:7px!important;height:78px!important;min-height:78px!important}
+  #kcMobileDock .kc-dock-home{flex-basis:68px!important;width:68px!important;height:68px!important;min-width:68px!important;min-height:68px!important}
+  #kcMobileDock .kc-dock-home .dock-icon{flex-basis:34px!important;width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important}
+  #kcMobileDock .kc-dock-home .dock-icon svg{width:31px!important;height:31px!important}
+  #kcMobileDock .kc-dock-home .dock-label{font-size:12px!important}
+  #kcMobileDock .kc-dock-group{height:68px!important;min-height:68px!important;max-height:68px!important;padding:3px 4px!important}
+  #kcMobileDock .kc-dock-group button{height:60px!important;gap:2px!important}
+  #kcMobileDock .kc-dock-group button .dock-icon{flex-basis:33px!important;width:33px!important;height:33px!important;min-width:33px!important;min-height:33px!important}
+  #kcMobileDock .kc-dock-group button .dock-icon svg{width:29px!important;height:29px!important}
+  #kcMobileDock .kc-dock-group button .dock-label{font-size:10px!important}
+  #kcMobileDock .kc-fun-zone-emoji{font-size:27px!important}
+}
