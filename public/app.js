@@ -232,37 +232,37 @@ function formTitle(icon,title,sub){return '<div class="formtitle"><div class="fo
 function eventForm(){return '<form id="eventForm" class="surface formgrid">'+formTitle('＋','Create an event','Publish a crew experience with its own poster and ticket details.')+'<label class="field">Event name<input name="title" maxlength="120" required placeholder="Reloaded Auditions"></label><label class="field">Category<select name="category" required><option>Auditions</option><option>Performances</option><option>Workshops</option><option selected>Community</option><option>Rehearsals</option><option>Other</option></select></label><label class="field">Location<input name="location" maxlength="160" placeholder="Dance studio / auditorium"></label><label class="field">Date & time<input name="starts_at" type="datetime-local" required></label><label class="field">Capacity<input name="capacity" type="number" min="1" max="10000" value="40" required></label><label class="field span2">Poster image URL<input name="cover_url" type="url" inputmode="url" placeholder="https://… (optional)"><small class="hint">Use a publicly accessible HTTPS image URL.</small></label><label class="field span2">Description<textarea name="description" rows="3" maxlength="2500" placeholder="What should members know?"></textarea></label><label class="field span2 kce-featured-check"><span><input name="featured" type="checkbox" value="true"> Feature this event at the top of Discover</span></label><button class="primary full">＋ Publish event</button></form>';}
 function updateForm(){return '<form id="updateForm" class="surface publish">'+formTitle('♧','Broadcast a message','Send the crew a clear signal.')+'<label class="field">Headline<input name="title" maxlength="140" required placeholder="What is the update?"></label><label class="field">Message<textarea name="body" rows="5" maxlength="5000" required placeholder="Share the details…"></textarea></label><label class="field">Audience<select name="audience"><option value="all">Everyone</option><option value="member">Members</option><option value="admin">Admins</option><option value="super_admin">Super admins</option></select></label><button class="primary full">Publish update →</button><div class="notice">Announcements appear in Crew HQ. Push notifications when the app is closed require a separate delivery setup.</div></form>';}
 function home(){
-const now=Date.now();
-const all=[...(S.events||[])].sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at));
-const upcoming=all.filter(e=>new Date(e.starts_at).getTime()>=now);
-const featured=upcoming.find(e=>e.featured)||upcoming[0]||null;
-const image=featured&&(featured.cover_url||featured.image_url||featured.banner_url||featured.poster_url||featured.image)||'';
-const joined=Number(featured?.registration_count||0);
-const featuredAction=featured
- ? 'data-open-event="'+esc(featured.id)+'"'
- : 'data-view="events"';
-const featuredTitle=featured?esc(featured.title):'Your next crew experience';
-const featuredDate=featured?esc(ds(featured.starts_at)):'Discover what is coming next';
-const featuredPlace=featured?esc(featured.location||'Venue to be announced'):'Explore upcoming events';
-const imageStyle=image?' style="--kc-feature-image:url(&quot;'+esc(image)+'&quot;)"':'';
-const tile=(cls,view,icon,label,sub)=>'<button type="button" class="kc-mosaic-tile '+cls+'" data-view="'+view+'"><span class="kc-mosaic-icon" aria-hidden="true">'+icon+'</span><span class="kc-mosaic-label">'+label+'</span>'+(sub?'<span class="kc-mosaic-sub">'+sub+'</span>':'')+'<span class="kc-mosaic-arrow" aria-hidden="true">↗</span></button>';
-return '<div class="kc-exact-home kc-reference-home">'+
-'<section class="kc-reference-mosaic" aria-label="Kinetic Crew home">'+
-'<div class="kc-mosaic-column kc-mosaic-left">'+
-tile('kc-mosaic-auditions','events','<svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><path d="M3 9h3m-3 4h3"/></svg>','Auditions','Find your place in KC')+
-tile('kc-mosaic-community','feed','<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 21v-2a7 7 0 0 1 14 0v2m2-6a5 5 0 0 1 4 5v1"/></svg>','Community','Connect with your crew')+
-'</div>'+
-'<button type="button" class="kc-mosaic-feature" '+featuredAction+imageStyle+' aria-label="'+(featured? 'Open featured event: '+esc(featured.title):'Explore upcoming events')+'">'+
-'<span class="kc-feature-scrim"></span><span class="kc-feature-top"><span class="kc-feature-tag">✦ FEATURED EXPERIENCE</span><span class="kc-feature-heart" aria-hidden="true">♡</span></span>'+
-'<span class="kc-feature-social"><span class="kc-feature-avatars"><i>K</i><i>C</i><i>+</i></span><small>'+(joined?joined+'+ joined':'Be the first to join')+'</small></span>'+
-'<span class="kc-feature-copy"><strong>'+featuredTitle+'</strong><small>▣ '+featuredDate+'</small><small>⌖ '+featuredPlace+'</small></span>'+
-'<span class="kc-feature-open">Explore event ↗</span>'+
-'</button>'+
-'<div class="kc-mosaic-column kc-mosaic-right">'+
-tile('kc-mosaic-explore','events','<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4m8-4v4M3 9h18m3 5-4 4-2-2"/></svg>','Explore Events','Discover what is next')+
-tile('kc-mosaic-updates','notifications','<svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/><path d="M19 3v3m-1.5-1.5h3"/></svg>','Crew Updates','The latest from KC')+
-'</div>'+
-'</section></div>';
+const now=Date.now(),all=[...(S.events||[])].sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at)),upcoming=all.filter(e=>new Date(e.starts_at).getTime()>=now),registered=upcoming.filter(e=>e.registered),past=all.filter(e=>new Date(e.starts_at).getTime()<now).reverse(),yourEvents=registered.length?registered:upcoming,friendsEvents=upcoming.filter(e=>Number(e.registration_count||0)>0&&!e.registered),u=S.user||{},name=(u.name||u.email||'Crew member').split('@')[0].split(' ')[0];
+const eventImage=e=>e.cover_url||e.image_url||e.banner_url||e.poster_url||e.image||'';
+const eventCard=(e,kind)=>'<button class="kc-exact-event-card" data-open-event="'+esc(e.id)+'"><span class="kc-exact-event-image" '+(eventImage(e)?'style="background-image:url(\''+esc(eventImage(e))+'\')"':'')+'><em class="'+(kind==='live'?'live':'')+'">'+(kind==='live'?'● Live':'Upcoming')+'</em><span class="kc-exact-event-arrow">↗</span></span><span class="kc-exact-event-copy"><b>'+esc(e.title)+'</b><small>'+esc(ds(e.starts_at))+' · '+esc(e.location||'Location TBA')+'</small></span></button>';
+const announcements=(S.announcements||[]).slice(0,3);
+const updates=announcements.length?announcements.map((a,i)=>'<button class="kc-exact-update" data-view="notifications"><span class="kc-exact-update-icon">'+(['◉','✦','▧'][i%3])+'</span><span><b>'+esc(a.title||'Crew update')+'</b><small>'+esc(a.body||a.message||'A new update from your crew')+'</small></span></button>').join(''):'<div class="kc-exact-update kc-exact-empty">Crew announcements and rehearsal updates will appear here.</div>';
+const friendEvent=friendsEvents[0]||upcoming[0];
+const count=Number(friendEvent?.registration_count||0);
+const updateSlides=[{kind:'auditions',view:'events',kicker:'AUDITIONS · RELOADED',title:'RELOADED',subtitle:'AUDITIONS',cta:'Registrations Open'},...announcements.map(a=>({kind:'announcement',view:'notifications',kicker:'CREW SIGNAL',title:a.title||'Crew announcement',subtitle:a.body||a.message||'A new update from your crew',cta:'Read update'})),...upcoming.slice(0,4).map(e=>({kind:'event',view:'events',kicker:'UPCOMING EVENT',title:e.title||'Crew event',subtitle:[ds(e.starts_at),e.location||'Location to be announced'].filter(Boolean).join(' · '),cta:'View event'}))];
+return '<div class="kc-exact-home">'+
+'<section class="kc-home-updates" aria-label="Important crew updates"><div class="kc-home-updates-head"><span>THE LATEST FROM KC</span><b>CREW UPDATES</b></div><div class="kc-home-updates-window"><div class="kc-home-updates-track">'+updateSlides.map((slide,i)=>'<button type="button" class="kc-home-update-slide '+(i===0?'active':'')+' kc-home-update-'+slide.kind+'" data-view="'+slide.view+'" aria-label="'+esc(slide.title)+'"><span class="kc-home-update-kicker">'+esc(slide.kicker)+'</span><b>'+esc(slide.title)+'</b><strong>'+esc(slide.subtitle)+'</strong><span class="kc-home-update-cta">'+esc(slide.cta)+' <i>→</i></span></button>').join('')+'</div></div><div class="kc-home-updates-footer"><div class="kc-home-update-dots">'+updateSlides.map((slide,i)=>'<span class="'+(i===0?'active':'')+'"></span>').join('')+'</div><span class="kc-home-update-count">01 / '+String(updateSlides.length).padStart(2,'0')+'</span></div></section>'+
+'<section class="kc-reference-mosaic" aria-label="Kinetic Crew shortcuts">
+<div class="kc-mosaic-column kc-mosaic-left">
+<button type="button" class="kc-mosaic-tile kc-mosaic-auditions" data-view="events"><span class="kc-mosaic-icon">♫</span><span class="kc-mosaic-label">Auditions</span><span class="kc-mosaic-sub">Find your place in KC</span></button>
+<button type="button" class="kc-mosaic-tile kc-mosaic-community" data-view="people"><span class="kc-mosaic-icon">♧</span><span class="kc-mosaic-label">Community</span><span class="kc-mosaic-sub">Connect with your crew</span></button>
+</div>
+<button type="button" class="kc-mosaic-feature" data-view="events" aria-label="Featured event">
+<span class="kc-feature-scrim"></span><span class="kc-feature-top"><span class="kc-feature-tag">✦ FEATURED EXPERIENCE</span><span class="kc-feature-heart" aria-hidden="true">♡</span></span>
+<span class="kc-feature-social"><span class="kc-feature-avatars"><i>K</i><i>C</i><i>+</i></span><small>Discover the next crew moment</small></span>
+<span class="kc-feature-copy"><strong>Featured Event</strong><small>Explore what's happening at Kinetic Crew</small></span><span class="kc-feature-open">Explore event ↗</span>
+</button>
+<div class="kc-mosaic-column kc-mosaic-right">
+<button type="button" class="kc-mosaic-tile kc-mosaic-explore" data-view="events"><span class="kc-mosaic-icon">▦</span><span class="kc-mosaic-label">Explore Events</span><span class="kc-mosaic-sub">Discover what's next</span></button>
+<button type="button" class="kc-mosaic-tile kc-mosaic-updates" data-view="notifications"><span class="kc-mosaic-icon">♢</span><span class="kc-mosaic-label">Crew Updates</span><span class="kc-mosaic-sub">The latest from KC</span></button>
+</div>
+</section>'+
+'<section class="kc-exact-gram-entry"><div><span>KC COMMUNITY</span><b>Kinetic Gram</b><small>Stories, posts and reels from your crew</small></div><button type="button" data-view="feed">Open Gram ↗</button></section>'+
+'<section class="kc-exact-section"><div class="kc-exact-heading"><h2><i>▢</i>Your Events</h2><button data-view="events">View all →</button></div><div class="kc-exact-event-row">'+(yourEvents.length?yourEvents.slice(0,4).map((e,i)=>eventCard(e,i===0&&registered.length?'live':'upcoming')).join(''):'<div class="kc-exact-empty-card">No events yet. Your next crew moment will appear here.</div>')+'</div></section>'+
+'<section class="kc-exact-section"><div class="kc-exact-heading"><h2><i>♧</i>Where Are Your Friends Going?</h2><button data-view="events">View all →</button></div><div class="kc-exact-friends" data-view="events"><div class="kc-exact-friend-stack"><span>KC</span><span>+</span><span>✦</span><b>+'+Math.max(0,count-3)+'</b></div><div class="kc-exact-friend-copy"><strong>'+(count||0)+' members are going to '+esc(friendEvent?.title||'the next crew event')+'</strong><small>Find your people at the next event</small></div><span class="kc-exact-friend-arrow">→</span></div></section>'+
+'<section class="kc-exact-section"><div class="kc-exact-heading"><h2><i>♧</i>Latest from Your Crew</h2><button data-view="notifications">View all →</button></div><div class="kc-exact-update-row">'+updates+'</div></section>'+
+'<div class="kc-exact-made">Made with <span>🤟</span> For Students</div>'+
+'</div>';
 }
 function morePage(){
 const u=S.user||{};
