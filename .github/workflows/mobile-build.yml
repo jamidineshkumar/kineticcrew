@@ -1,4 +1,4 @@
-name: Build Kinetic Crew mobile apps
+name: Build Kinetic Crew Android APK
 
 on:
   workflow_dispatch:
@@ -7,8 +7,8 @@ on:
     paths:
       - 'public/**'
       - 'package.json'
-      - 'package-lock.json'
       - 'capacitor.config.json'
+      - 'scripts/generate-brand-assets.cjs'
       - '.github/workflows/mobile-build.yml'
 
 permissions:
@@ -22,13 +22,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
-      - run: npm install
-      - run: npx cap add android
-      - name: Add Firebase Android configuration
+      - name: Install dependencies
+        run: npm install
+      - name: Generate official branded Android assets
+        run: |
+          npm run brand:assets
+          npx capacitor-assets generate --android
+      - name: Create Android project
+        run: npx cap add android
+      - name: Add Firebase Android configuration when provided
         env:
           GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
         run: |
@@ -36,34 +43,71 @@ jobs:
             echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > android/app/google-services.json
             echo "Firebase Android config installed."
           else
-            echo "::warning::GOOGLE_SERVICES_JSON_BASE64 is not configured; this APK will not receive native FCM notifications."
+            echo "::notice::Firebase configuration not set; native push notifications are not included in this build."
           fi
-      - run: npx cap sync android
-      - name: Build debug APK
+      - name: Sync Capacitor
+        run: npx cap sync android
+      - name: Build debug APK for device testing
         working-directory: android
         run: ./gradlew assembleDebug
-      - uses: actions/upload-artifact@v4
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
         with:
-          name: kinetic-crew-android-debug-apk
+          name: kinetic-crew-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
-
-  ios-simulator:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - run: npm install
-      - run: npm run brand:assets
-      - run: npx cap add ios
-      - run: npx cap sync ios
-      - name: Build iOS Simulator app
+          retention-days: 14
+      - name: Check whether release signing is configured
+        id: signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          xcodebuild -workspace ios/App/App.xcworkspace -scheme App -sdk iphonesimulator -configuration Debug -derivedDataPath ios/build CODE_SIGNING_ALLOWED=NO
-      - uses: actions/upload-artifact@v4
+          if [ -n "$KEYSTORE_BASE64" ] && [ -n "$KEYSTORE_PASSWORD" ] && [ -n "$KEY_ALIAS" ] && [ -n "$KEY_PASSWORD" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Release signing secrets are not configured. Only the test APK will be produced."
+          fi
+      - name: Build signed release APK
+        if: steps.signing.outputs.configured == 'true'
+        working-directory: android
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > app/kinetic-crew-release.keystore
+          cat >> app/build.gradle <<'EOF'
+
+          android {
+              signingConfigs {
+                  release {
+                      storeFile file("kinetic-crew-release.keystore")
+                      storePassword System.getenv("KEYSTORE_PASSWORD")
+                      keyAlias System.getenv("KEY_ALIAS")
+                      keyPassword System.getenv("KEY_PASSWORD")
+                  }
+              }
+              buildTypes {
+                  release {
+                      signingConfig signingConfigs.release
+                  }
+              }
+          }
+          EOF
+          ./gradlew assembleRelease
+      - name: Upload signed release APK
+        if: steps.signing.outputs.configured == 'true'
+        uses: actions/upload-artifact@v4
         with:
-          name: kinetic-crew-ios-simulator-build
-          path: ios/build/Build/Products/Debug-iphonesimulator/App.app
+          name: kinetic-crew-signed-release-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
+          retention-days: 30
+      - name: Remove temporary signing material
+        if: always()
+        run: rm -f android/app/kinetic-crew-release.keystore
