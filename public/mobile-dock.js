@@ -4,9 +4,9 @@
   if (document.getElementById('kcMobileDock')) return;
   const items = [
     { view: 'overview', icon: '<svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-6h6v6"/></svg>', label: 'Home' },
-    { view: 'events', icon: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>', label: 'Events' },
-    { view: 'fun-zone', icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.4 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>', label: 'Fun Zone' },
-    { view: 'people', icon: '<svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="7.2"/><path d="m16.2 16.2 5 5"/></svg>', label: 'Search' }
+    { view: 'events', icon: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>', label: 'Opportunities' },
+    { view: 'people', icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 3.4-6 8-6s7.2 2 8 6"/></svg>', label: 'Network' },
+    { view: 'more', icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M16.5 8.5a5 5 0 1 0 0 7"/></svg>', label: 'Earnings' }
   ];
   const dock=document.createElement('nav');
   dock.id='kcMobileDock';dock.className='kc-mobile-dock';
