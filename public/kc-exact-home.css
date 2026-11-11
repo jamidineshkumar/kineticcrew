@@ -111,3 +111,58 @@
 @media(prefers-reduced-motion:reduce){.kc-exact-home *{scroll-behavior:auto!important;transition:none!important}}
 
 @media(max-width:900px){body:not(.kc-home-screen) .kc-header-brand,body:not(.kc-home-screen) .kc-header-actions{display:none!important}}
+
+/* More menu — match supplied Kinetic Crew menu screenshot. */
+@media(max-width:900px){
+ body.kc-more-open{background:#090909!important;color:#f7f5f8!important}
+ body.kc-more-open main{padding:0!important;background:transparent!important}
+ body.kc-more-open .content{padding:0 22px 32px!important;min-height:calc(100dvh - 66px)!important;background:radial-gradient(ellipse at 82% 12%,rgba(150,0,135,.24),transparent 34%),linear-gradient(160deg,#101010 0%,#090909 62%,#111 100%)!important}
+ body.kc-more-open .kc-mobile-dock{display:none!important}
+ .kc-more-reference{position:relative;isolation:isolate;min-height:calc(100dvh - 70px);max-width:720px;margin:0 auto;padding:0 0 84px;color:#fff;overflow:hidden}
+ .kc-more-reference-header{position:relative;z-index:2;display:flex;align-items:center;gap:15px;height:66px;margin:0 -22px;padding:0 22px}
+ .kc-more-reference-header .kc-more-back{width:36px;height:42px;padding:0;border:0;background:none;color:#fff;font-size:43px;line-height:1;font-weight:300}
+ .kc-more-reference-header h1{margin:0;font-size:26px;font-weight:750;letter-spacing:-.035em}
+ .kc-more-reference-header .kc-more-spacer{flex:1}
+ .kc-more-reference-header .kc-more-profile{width:44px;height:44px;padding:0;overflow:hidden;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:#27212a}
+ .kc-more-reference-header .kc-more-profile img,.kc-more-reference-header .kc-more-profile .avatar-photo,.kc-more-reference-header .kc-more-profile .avatar-fallback{width:100%;height:100%;object-fit:cover;border-radius:50%}
+ .kc-more-logo-wrap{height:clamp(300px,48vh,450px);display:flex;align-items:center;justify-content:center;margin:-3px -10px 2px;position:relative}
+ .kc-more-reference-logo{display:block;width:min(100%,570px);height:100%;max-height:430px;object-fit:contain;border-radius:0!important;filter:drop-shadow(0 10px 28px rgba(205,18,158,.12))}
+ .kc-more-reference-group{position:relative;z-index:1;margin:0 0 34px}
+ .kc-more-reference-group h2{margin:0 0 18px;color:#9a969b;font-size:22px;font-weight:500;letter-spacing:-.035em}
+ .kc-more-reference-pills{display:grid;grid-template-columns:max-content max-content;justify-content:start;gap:17px 18px}
+ .kc-more-pill{position:relative;min-height:72px;display:inline-flex;align-items:center;gap:13px;padding:10px 22px;border:2px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(255,255,255,.012);color:#fff;white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
+ .kc-more-pill>span{display:grid;place-items:center;width:42px;height:42px;font-size:38px;line-height:1;font-weight:300}
+ .kc-more-pill>b{font-size:20px;font-weight:500;letter-spacing:-.025em}
+ .kc-more-pill.is-disabled{opacity:.48}
+ .kc-more-pill em{position:absolute;right:-5px;top:-13px;padding:7px 13px;border-radius:999px;background:#b51132;color:white;font-size:11px;font-style:normal;font-weight:800;letter-spacing:.02em}
+ .kc-more-reference-others{margin-top:38px}
+ .kc-more-reference-others h2{margin-bottom:17px}
+ .kc-more-reference-others-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 15px}
+ .kc-more-other{min-width:0;display:flex;align-items:center;gap:15px;padding:0;border:0;background:none;color:#f6f4f7;text-align:left;text-decoration:none}
+ .kc-more-other-icon{width:62px;height:62px;flex:0 0 62px;display:grid;place-items:center;border:2px solid rgba(255,255,255,.22);border-radius:50%;color:#f5f3f7;font-size:31px;font-weight:300}
+ .kc-more-other>b{font-size:16px;font-weight:500;white-space:nowrap}
+ .kc-more-other.is-disabled{opacity:.45}
+ .kc-more-reference-footer{position:relative;z-index:1;margin-top:55px;font-size:24px;line-height:1.25;letter-spacing:-.04em;white-space:nowrap}
+ .kc-more-reference-footer span{color:#f04468}
+ .kc-more-reference-watermark{position:absolute;z-index:-1;right:-.14em;bottom:36px;font-size:clamp(180px,48vw,320px);font-weight:950;letter-spacing:-.15em;line-height:.8;color:rgba(129,123,147,.08);pointer-events:none}
+ .kc-more-reference-sparkle{position:fixed;z-index:2;right:26px;bottom:27px;color:#f5f1f7;font-size:46px;line-height:1;pointer-events:none;text-shadow:0 0 18px rgba(255,255,255,.14)}
+}
+@media(max-width:420px){
+ body.kc-more-open .content{padding-inline:22px!important}
+ .kc-more-logo-wrap{height:clamp(270px,43vh,360px)}
+ .kc-more-reference-pills{gap:15px 12px}
+ .kc-more-pill{min-height:66px;padding:8px 17px;gap:10px}
+ .kc-more-pill>span{width:34px;height:36px;font-size:32px}
+ .kc-more-pill>b{font-size:18px}
+ .kc-more-other-icon{width:54px;height:54px;flex-basis:54px;font-size:27px}
+ .kc-more-other>b{font-size:14px}
+ .kc-more-reference-footer{font-size:21px}
+}
+@media(max-width:360px){
+ .kc-more-reference-pills{grid-template-columns:1fr 1fr;gap:13px 9px}
+ .kc-more-pill{width:100%;justify-content:flex-start;padding-inline:12px}
+ .kc-more-pill>b{font-size:15px}
+ .kc-more-reference-others-grid{gap:18px 9px}
+ .kc-more-other{gap:9px}
+ .kc-more-other>b{font-size:12px}
+}
