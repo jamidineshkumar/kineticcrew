@@ -1,14 +1,13 @@
-/* Approved five-tab Kinetic Crew navigation: Home, Events, Crew, Memories, Profile. */
+/* Single approved four-tab mobile navigation: Home, Feed, Events, Crew Chat. */
 (() => {
   'use strict';
   if (document.getElementById('kcMobileDock')) return;
 
   const items = [
-    { view: 'overview', icon: '⌂', label: 'Home', kind: 'standard' },
-    { view: 'events', icon: '▦', label: 'Events', kind: 'standard' },
-    { view: 'people', icon: '♧', label: 'Crew', kind: 'standard' },
-    { view: 'memories', icon: '▧', label: 'Memories', kind: 'standard' },
-    { view: 'profile', icon: '♙', label: 'Profile', kind: 'standard' }
+    { view: 'overview', icon: '⌂', label: 'Home' },
+    { view: 'feed', icon: '◈', label: 'Feed' },
+    { view: 'events', icon: '▦', label: 'Events' },
+    { view: 'chat', icon: '✉', label: 'Crew Chat' }
   ];
 
   const dock = document.createElement('nav');
@@ -16,19 +15,17 @@
   dock.className = 'kc-mobile-dock kc-vibe-dock';
   dock.setAttribute('aria-label', 'Main app navigation');
   dock.innerHTML = items.map(item =>
-    '<button type="button" class="' + (item.kind === 'create' ? 'dock-create' : '') + '" data-view="' + item.view + '" aria-label="' + item.label + '">' +
+    '<button type="button" data-view="' + item.view + '" aria-label="' + item.label + '">' +
       '<span class="dock-icon" aria-hidden="true">' + item.icon + '</span>' +
-      (item.kind === 'create' ? '' : '<span class="dock-label">' + item.label + '</span>') +
+      '<span class="dock-label">' + item.label + '</span>' +
     '</button>'
   ).join('');
   document.body.appendChild(dock);
 
   function activeView() {
     const active = document.querySelector('#nav .navitem.active[data-view],#nav [data-view].active');
-    if (active) return active.dataset.view;
-    return document.body.classList.contains('kc-more-open') ? 'more' : '';
+    return active ? active.dataset.view : '';
   }
-
   function sync() {
     const view = activeView();
     dock.querySelectorAll('button').forEach(button => {
@@ -38,22 +35,14 @@
       else button.removeAttribute('aria-current');
     });
   }
-
   dock.addEventListener('click', event => {
     const button = event.target.closest('button[data-view]');
     if (!button) return;
     document.dispatchEvent(new CustomEvent('kc:navigate', { detail: { view: button.dataset.view } }));
-    if (button.dataset.view === 'feed') {
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        document.querySelector('#socialPostForm textarea, #socialPostForm input:not([type=hidden])')?.focus();
-      }));
-    }
   });
-
   const nav = document.getElementById('nav');
   const app = document.getElementById('app');
   if (nav) new MutationObserver(sync).observe(nav, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] });
   if (app) new MutationObserver(sync).observe(app, { childList: true, subtree: true });
   sync();
-  window.addEventListener('resize', sync, { passive: true });
 })();
