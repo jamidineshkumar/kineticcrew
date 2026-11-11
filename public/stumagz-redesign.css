@@ -1221,3 +1221,27 @@ button:hover,.event:hover {transform:none!important}
 .kc-start-error strong{font-size:18px}.kc-start-error p{max-width:320px;color:var(--muted);font-size:13px;line-height:1.6}
 .kc-start-error button{padding:11px 18px;border:1px solid #555;border-radius:10px;background:#24242a;color:#fff}
 
+
+/* Home header + five-action mobile dock aligned to the approved "What's the Vibe?" reference. */
+.kc-vibe-top{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand actions" "greeting greeting";align-items:center;gap:15px 18px;margin:0 0 30px;padding:4px 2px 22px;border-bottom:1px solid rgba(255,255,255,.09)}
+.kc-vibe-brandline{grid-area:brand;display:flex;align-items:center;gap:10px;min-width:0}
+.kc-vibe-logo{width:43px;height:43px;object-fit:contain;border-radius:12px;background:#fff;padding:2px;flex:0 0 43px}
+.kc-vibe-brandcopy b{display:block;font-size:13px;font-weight:900;letter-spacing:.055em;color:#fff}
+.kc-vibe-brandcopy i{color:#ed4d9a;font-style:normal}
+.kc-vibe-brandcopy small{display:block;margin-top:4px;color:#aaa2b5;font-size:8px;font-weight:800;letter-spacing:.16em}
+.kc-vibe-greeting{grid-area:greeting}
+.kc-vibe-greeting>span{color:#d8a5ef}
+.kc-vibe-greeting h1{font-size:clamp(29px,5vw,43px);margin:8px 0 7px}
+.kc-vibe-greeting h1 em{color:#f05b9f;font-style:normal}
+.kc-vibe-actions{grid-area:actions}
+.kc-vibe-actions>button{width:44px;height:44px;border-radius:15px}
+.kc-vibe-actions .avatar-photo,.kc-vibe-actions .avatar-fallback{width:32px;height:32px;border-radius:50%;object-fit:cover}
+.kc-vibe-dock{grid-template-columns:repeat(5,minmax(0,1fr))!important;align-items:center}
+.kc-vibe-dock button{min-height:49px}
+.kc-vibe-dock .dock-icon{font-size:19px}
+.kc-vibe-dock .dock-label{font-size:9px}
+.kc-vibe-dock button.active{color:#f05b9f}
+.kc-vibe-dock button.dock-create{justify-self:center;align-self:center;width:49px;height:49px;min-height:49px;padding:0;border:0;border-radius:17px;background:linear-gradient(140deg,#f36aa9,#a95bea);color:#fff;font-size:29px;line-height:1;box-shadow:0 7px 22px rgba(224,70,153,.34)}
+.kc-vibe-dock button.dock-create .dock-icon{font-size:29px;line-height:1}
+@media(min-width:901px){.kc-vibe-top{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand actions" "greeting greeting"}.kc-vibe-greeting h1{font-size:42px}}
+@media(max-width:600px){.kc-vibe-top{gap:13px 10px;margin-bottom:25px;padding-bottom:18px}.kc-vibe-logo{width:38px;height:38px;flex-basis:38px}.kc-vibe-greeting h1{font-size:30px}.kc-vibe-greeting p{font-size:11px}.kc-vibe-actions>button{width:40px;height:40px;border-radius:14px}.kc-vibe-dock{left:10px;right:10px;bottom:max(8px,env(safe-area-inset-bottom));padding:6px 5px calc(6px + env(safe-area-inset-bottom));border-radius:19px}.kc-vibe-dock button.dock-create{width:45px;height:45px;border-radius:15px}}
