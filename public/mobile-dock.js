@@ -11,7 +11,7 @@
   const dock=document.createElement('nav');
   dock.id='kcMobileDock';dock.className='kc-mobile-dock kc-vibe-dock';
   dock.setAttribute('aria-label','Main app navigation');
-  dock.innerHTML=items.map(item=>'<button type="button" data-view="'+item.view+'" aria-label="'+item.label+'" title="'+item.label+'"><span class="dock-icon" aria-hidden="true">'+item.icon+'</span></button>').join('');
+  dock.innerHTML='<button type="button" class="kc-dock-home" data-view="'+items[0].view+'" aria-label="'+items[0].label+'"><span class="dock-icon" aria-hidden="true">'+items[0].icon+'</span><span class="dock-label">'+items[0].label+'</span></button><div class="kc-dock-group">'+items.slice(1).map(item=>'<button type="button" data-view="'+item.view+'" aria-label="'+item.label+'" title="'+item.label+'"><span class="dock-icon" aria-hidden="true">'+item.icon+'</span><span class="dock-label">'+item.label+'</span></button>').join('')+'</div>';
   document.body.appendChild(dock);
   function activeView(){
     const active=document.querySelector('#nav .navitem.active[data-view],#nav [data-view].active');
