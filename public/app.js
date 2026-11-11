@@ -158,7 +158,7 @@ function showDynamicIsland(detail={}){
 window.addEventListener('kc:notification',event=>{const detail=event.detail||{};showDynamicIsland(detail);if(notificationPrefs().sound)playNoticeSound();});
 let kcKnownAnnouncementIds=null,kcAnnouncementPoll=null;
 function seedAnnouncementNotifications(){kcKnownAnnouncementIds=new Set((S.announcements||[]).map(a=>String(a.id)));}
-async let kcSnapshotBusy=false;
+let kcSnapshotBusy=false;
 async function syncCrewSnapshot(){
  if(kcSnapshotBusy||!S.user||document.hidden||!navigator.onLine)return;
  kcSnapshotBusy=true;
