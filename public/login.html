@@ -16,12 +16,14 @@
 <p class="kc-auth-switch" id="kcAuthSwitch">Already have an account? <button type="button" id="kcSwitchAuth">Sign in</button></p><p id="message" class="msg" role="status" aria-live="polite"></p><p class="auth-footnote">Email verification required · Access is subject to crew approval.</p></div></section></div>
 <script>
 (()=>{'use strict';
-const splash=document.getElementById('kcEntrySplash'),welcome=document.getElementById('kcEntryWelcome'),auth=document.getElementById('kcAuthScreen');
-function openAuth(mode){document.body.classList.add('kc-auth-open');document.body.classList.remove('kc-welcome-open');auth.hidden=false;const tab=document.getElementById(mode==='signup'?'signupTab':'loginTab');if(tab)tab.click();window.scrollTo(0,0);}
-function showWelcome(){document.body.classList.remove('kc-auth-open');document.body.classList.add('kc-welcome-open');auth.hidden=true;window.scrollTo(0,0);}
+const splash=document.getElementById('kcEntrySplash'),auth=document.getElementById('kcAuthScreen');
+function openAuth(mode){document.body.classList.add('kc-auth-open');document.body.classList.remove('kc-welcome-open');if(auth)auth.hidden=false;const tab=document.getElementById(mode==='signup'?'signupTab':'loginTab');if(tab)tab.click();window.scrollTo(0,0);}
+function showWelcome(){document.body.classList.remove('kc-auth-open');document.body.classList.add('kc-welcome-open');if(auth)auth.hidden=true;window.scrollTo(0,0);}
 document.querySelectorAll('[data-auth-open]').forEach(button=>button.addEventListener('click',()=>openAuth(button.dataset.authOpen)));
-document.getElementById('kcAuthBack').addEventListener('click',showWelcome);
-setTimeout(()=>{splash.classList.add('kc-splash-out');setTimeout(()=>{splash.hidden=true;document.body.classList.add('kc-welcome-open');},650);},1050);
+const back=document.getElementById('kcAuthBack');if(back)back.addEventListener('click',showWelcome);
+function revealWelcome(){document.body.classList.add('kc-welcome-open');if(splash){splash.classList.add('kc-splash-out');setTimeout(()=>{splash.hidden=true;},700);}}
+setTimeout(revealWelcome,900);
+setTimeout(()=>{if(splash&&!splash.hidden)revealWelcome();},2500);
 })();
 </script>
 <script>
