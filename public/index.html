@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="more-menu-reference.css?v=20261111-more-ref3">
   <link rel="stylesheet" href="kc-transition.css?v=20261111-reveal1">
   <link rel="stylesheet" href="student-tribe-interface.css?v=20261111-stcomplete3">
+  <link rel="stylesheet" href="global-search.css?v=20261111-search1">
 </head>
 <body>
 <div id="appRoot">
@@ -29,6 +30,7 @@
     <header class="kc-mobile-topbar" aria-label="App controls">
       <button type="button" id="menuToggle" class="kc-menu-button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span><span></span></button>
       <a class="kc-header-brand" href="#" data-view="overview" aria-label="Kinetic Crew Home"><img src="https://raw.githubusercontent.com/jamidineshkumar/kineticcrew/main/kinetic-crew-logo.jpg" alt="KC"><span>Kine</span></a>
+      <div class="kc-global-search" id="kcGlobalSearch"><label class="kc-global-search-field"><span aria-hidden="true">⌕</span><input id="kcGlobalSearchInput" type="search" placeholder="Search crew, events, posts…" autocomplete="off" aria-label="Search Kinetic Crew"></label><div class="kc-global-search-results" id="kcGlobalSearchResults" hidden></div></div>
       <div class="kc-header-actions"><button type="button" class="kc-header-notifications" data-view="notifications" aria-label="Notifications"></button><button type="button" class="kc-header-profile" data-view="profile" aria-label="Your profile">KC</button></div>
       </header>
     <aside class="side" id="sidebar">
@@ -66,6 +68,7 @@ window.addEventListener('error',function(e){
 </script>
 <script src="kc-transition.js?v=20261111-reveal1" defer></script>
 <script src="app.js?v=20261111-logoheader2" defer></script>
+<script src="global-search.js?v=20261111-search1" defer></script>
 <script src="crew-enhancements.js?v=20261110-autoupdate1" defer></script>
 <script src="mobile-dock.js?v=20261111-original-tabs2" defer></script>
 </body>
