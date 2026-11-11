@@ -200,3 +200,29 @@
  #kcMobileDock .kc-dock-group button .dock-label{font-size:11px!important}
  #kcMobileDock .kc-dock-group button .dock-icon svg{width:29px!important;height:29px!important}
 }
+
+
+/* Kinetic Crew home-page lower atmosphere: reference glow is limited to the lower feed.
+   The watermark is KC (never ST) and appears only in the home footer area. */
+@media(max-width:1100px){
+ .kc-vibe-home:before{content:none!important;display:none!important}
+ .kc-vibe-home{position:relative!important;isolation:isolate!important}
+ .kc-vibe-home:after{
+  content:"";position:absolute;z-index:-1;pointer-events:none;
+  left:-18px;right:-18px;bottom:-18px;height:74%;
+  background:
+   radial-gradient(ellipse at 22% 12%,rgba(74,58,143,.42),transparent 48%),
+   radial-gradient(ellipse at 82% 30%,rgba(154,37,112,.38),transparent 48%),
+   radial-gradient(ellipse at 48% 76%,rgba(105,39,83,.27),transparent 54%),
+   linear-gradient(180deg,rgba(21,17,34,.05),rgba(35,18,35,.48));
+  filter:blur(10px);opacity:.95;
+ }
+ .kc-vibe-footer{position:relative!important;isolation:isolate!important;overflow:hidden!important}
+ .kc-vibe-footer:after{
+  content:"KC"!important;display:block!important;position:absolute!important;
+  right:-.08em!important;bottom:-.42em!important;z-index:-1!important;
+  font-family:Arial,Helvetica,sans-serif!important;font-size:clamp(180px,52vw,360px)!important;
+  font-weight:950!important;line-height:.82!important;letter-spacing:-.12em!important;
+  color:rgba(170,184,196,.10)!important;pointer-events:none!important;
+ }
+}
