@@ -211,3 +211,65 @@
 @media(min-width:901px){
  body.kc-home-screen .kc-exact-hero{width:100%;font-family:inherit;text-align:left;cursor:pointer}
 }
+
+
+/* Reference-match pass: keep Kinetic Crew's existing shell and navigation, refine only Home. */
+@media(max-width:900px){
+ body.kc-home-screen{background:radial-gradient(ellipse at 100% 18%,rgba(155,0,105,.56),transparent 40%),radial-gradient(ellipse at 0% 38%,rgba(82,67,104,.48),transparent 48%),linear-gradient(155deg,#292532 0%,#211b29 48%,#09090d 100%)!important}
+ body.kc-home-screen main{padding-top:0!important}
+ body.kc-home-screen .kc-mobile-topbar{height:74px!important;padding:8px 22px!important;background:linear-gradient(100deg,rgba(36,31,44,.96),rgba(62,17,53,.9))!important}
+ body.kc-home-screen .kc-menu-button{width:42px!important;height:42px!important;flex-basis:42px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+ body.kc-home-screen .kc-menu-button span{height:2px!important;width:28px!important;border-radius:4px!important;background:#c9b8d2!important}
+ body.kc-home-screen .kc-header-brand{gap:7px!important;font-size:22px!important}
+ body.kc-home-screen .kc-header-brand img{width:34px!important;height:38px!important;object-fit:contain!important;border-radius:0!important}
+ body.kc-home-screen .kc-header-actions{gap:18px!important}
+ body.kc-home-screen .kc-header-actions button{width:46px!important;height:46px!important;border:0!important;background:transparent!important;box-shadow:none!important}
+ body.kc-home-screen .kc-header-notifications svg{width:30px!important;height:30px!important;stroke:#c9b5d2!important}
+ body.kc-home-screen .kc-header-profile{overflow:hidden!important}
+ body.kc-home-screen .kc-header-profile img,.kc-header-profile .avatar-photo,.kc-header-profile .avatar-fallback{width:44px!important;height:44px!important;border-radius:50%!important;object-fit:cover!important}
+ body.kc-home-screen .content{padding:0 17px 24px!important}
+ body.kc-home-screen .kc-exact-home{padding:24px 0 24px!important;max-width:820px!important}
+ body.kc-home-screen .kc-exact-greeting{margin:0 8px 24px!important;gap:6px!important}
+ body.kc-home-screen .kc-exact-greeting h1{font-size:clamp(30px,7.3vw,40px)!important;line-height:1.08!important;font-weight:800!important}
+ body.kc-home-screen .kc-exact-greeting p{font-size:clamp(15px,3.8vw,19px)!important}
+ body.kc-home-screen .kc-exact-hero{height:clamp(174px,26vw,230px)!important;margin:0 3px 22px!important;padding:20px 28px!important;border-radius:28px!important;background:radial-gradient(ellipse at 75% 52%,rgba(211,42,255,.64),transparent 36%),radial-gradient(ellipse at 54% 100%,rgba(92,30,150,.7),transparent 53%),linear-gradient(110deg,#100b1b 0%,#281035 48%,#120d20 100%)!important}
+ body.kc-home-screen .kc-exact-hero:before{right:7%!important;bottom:-33%!important;width:48%!important;height:120%!important;background:linear-gradient(145deg,rgba(8,7,15,.05),rgba(4,4,12,.95))!important;transform:rotate(-22deg)!important}
+ body.kc-home-screen .kc-exact-hero>b{font-size:clamp(32px,8vw,48px)!important}
+ body.kc-home-screen .kc-exact-hero>strong{font-size:clamp(12px,3vw,16px)!important}
+ body.kc-home-screen .kc-exact-hero-cta{font-size:clamp(13px,3vw,16px)!important;padding:9px 18px!important}
+ body.kc-home-screen .kc-exact-quick{gap:12px!important;padding:10px!important;margin-bottom:27px!important;border-radius:27px!important}
+ body.kc-home-screen .kc-exact-quick button{height:clamp(82px,12vw,104px)!important;border-radius:22px!important;background:rgba(12,12,20,.78)!important}
+ body.kc-home-screen .kc-exact-quick button i{font-size:30px!important}
+ body.kc-home-screen .kc-exact-quick button b{font-size:clamp(11px,2.8vw,15px)!important}
+ body.kc-home-screen .kc-exact-section{margin-bottom:24px!important}
+ body.kc-home-screen .kc-exact-heading{margin:0 5px 12px!important}
+ body.kc-home-screen .kc-exact-heading h2{font-size:clamp(17px,4.2vw,22px)!important}
+ body.kc-home-screen .kc-exact-heading h2 i{font-size:24px!important;color:#d5bfdc!important}
+ body.kc-home-screen .kc-exact-heading>button{font-size:clamp(12px,3vw,15px)!important}
+ body.kc-home-screen .kc-exact-event-row{grid-auto-columns:calc(50% - 7px)!important;gap:13px!important}
+ body.kc-home-screen .kc-exact-event-card{border-radius:20px!important;background:rgba(16,15,22,.84)!important}
+ body.kc-home-screen .kc-exact-event-image{height:clamp(102px,17vw,145px)!important}
+ body.kc-home-screen .kc-exact-event-copy{padding:10px 12px 12px!important}
+ body.kc-home-screen .kc-exact-event-copy b{font-size:clamp(14px,3.5vw,18px)!important}
+ body.kc-home-screen .kc-exact-event-copy small{font-size:clamp(10px,2.5vw,13px)!important}
+ body.kc-home-screen .kc-exact-friends{min-height:82px!important;border-radius:24px!important;background:rgba(12,12,19,.72)!important}
+ body.kc-home-screen .kc-exact-friend-stack span,body.kc-home-screen .kc-exact-friend-stack b{width:42px!important;height:42px!important;font-size:12px!important}
+ body.kc-home-screen .kc-exact-friend-copy strong{font-size:clamp(11px,2.8vw,15px)!important}
+ body.kc-home-screen .kc-exact-update-row{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
+ body.kc-home-screen .kc-exact-update{min-height:82px!important;border-radius:19px!important;padding:9px!important;background:rgba(15,14,22,.72)!important}
+ body.kc-home-screen .kc-exact-update-icon{width:34px!important;height:34px!important;flex-basis:34px!important;font-size:18px!important}
+ body.kc-home-screen .kc-exact-update b{font-size:clamp(9px,2.5vw,13px)!important}
+ body.kc-home-screen .kc-exact-update small{font-size:clamp(8px,2vw,11px)!important}
+ body.kc-home-screen .kc-exact-made{font-size:clamp(23px,5.5vw,34px)!important;margin-top:26px!important;padding:12px 8px!important}
+ body.kc-home-screen .kc-mobile-dock{bottom:calc(9px + env(safe-area-inset-bottom))!important}
+}
+@media(max-width:390px){
+ body.kc-home-screen .content{padding-inline:13px!important}
+ body.kc-home-screen .kc-exact-home{padding-top:20px!important}
+ body.kc-home-screen .kc-exact-quick{gap:7px!important;padding:8px!important}
+ body.kc-home-screen .kc-exact-quick button{height:76px!important}
+ body.kc-home-screen .kc-exact-quick button b{font-size:10px!important}
+ body.kc-home-screen .kc-exact-event-row{grid-auto-columns:calc(57% - 5px)!important}
+ body.kc-home-screen .kc-exact-update-row{gap:6px!important}
+ body.kc-home-screen .kc-exact-update{padding:7px 5px!important;gap:5px!important}
+}

@@ -215,7 +215,7 @@ const friendEvent=friendsEvents[0]||upcoming[0];
 const count=Number(friendEvent?.registration_count||0);
 return '<div class="kc-exact-home">'+
 '<div class="kc-exact-greeting"><h1>What’s the Vibe? <span>👋</span></h1><p>Hey '+esc(name)+', the crew’s in motion!</p></div>'+
-'<button type="button" class="kc-exact-hero" data-view="auditions" aria-label="Open Kinetic Crew auditions"><span class="kc-exact-hero-mark">KC</span><b>RELOADED</b><strong>A U D I T I O N S</strong><span class="kc-exact-hero-cta">Registrations Open <i>→</i></span><small>01 / 03</small><i class="kc-exact-hero-corner"></i></a>'+
+'<button type="button" class="kc-exact-hero" data-view="auditions" aria-label="Open Kinetic Crew auditions"><span class="kc-exact-hero-mark">KC</span><b>RELOADED</b><strong>A U D I T I O N S</strong><span class="kc-exact-hero-cta">Registrations Open <i>→</i></span><small>01 / 03</small><i class="kc-exact-hero-corner"></i></button>'+
 '<section class="kc-exact-quick"><button data-view="events"><i>▦</i><b>Events</b></button><button data-view="people"><i>♧</i><b>Crew</b></button><button data-view="rehearsals"><i>♬</i><b>Rehearsals</b></button><button data-view="attendance"><i>✓</i><b>Attendance</b></button></section>'+
 '<section class="kc-exact-section"><div class="kc-exact-heading"><h2><i>▢</i>Your Events ('+registered.length+')</h2><button data-view="events">View all →</button></div><div class="kc-exact-event-row">'+(yourEvents.length?yourEvents.slice(0,4).map((e,i)=>eventCard(e,i===0&&registered.length?'live':'upcoming')).join(''):'<div class="kc-exact-empty-card">No events yet. Your next crew moment will appear here.</div>')+'</div></section>'+
 '<section class="kc-exact-section"><div class="kc-exact-heading"><h2><i>♧</i>Where Are Your Friends Going?</h2><button data-view="events">View all →</button></div><div class="kc-exact-friends" data-view="events"><div class="kc-exact-friend-stack"><span>KC</span><span>+</span><span>✦</span><b>+'+Math.max(0,count-3)+'</b></div><div class="kc-exact-friend-copy"><strong>'+(count||0)+' members are going to '+esc(friendEvent?.title||'the next crew event')+'</strong><small>Find your people at the next event</small></div><span class="kc-exact-friend-arrow">→</span></div></section>'+
@@ -225,29 +225,35 @@ return '<div class="kc-exact-home">'+
 }
 function morePage(){
 const u=S.user||{};
-const item=(view,icon,label,disabled=false)=>'<button type="button" class="kc-more-pill '+(disabled?'is-disabled':'')+'" '+(disabled?'disabled':'data-view="'+view+'"')+'><span>'+icon+'</span><b>'+label+'</b>'+(disabled?'<em>COMING SOON</em>':'')+'</button>';
-const other=(view,icon,label,disabled=false)=>'<button type="button" class="kc-more-other '+(disabled?'is-disabled':'')+'" '+(disabled?'disabled':'data-view="'+view+'"')+'><span class="kc-more-other-icon">'+icon+'</span><b>'+label+'</b></button>';
+const icon=(name)=>({
+jobs:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2"/></svg>',
+events:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4m8-4v4M3 9h18"/><path d="m9 14 2 2 4-4"/></svg>',
+people:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a7 7 0 0 1 14 0v2M17 4a4 4 0 0 1 0 7m2 3a6 6 0 0 1 3 5v2"/></svg>',
+gigs:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v3m-5 2h10l3 4v8a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-8l3-4Z"/><path d="M15 11c-.5-1.5-4-1.5-4 0s4 1 4 3-3.5 2-5 0m2-6v10"/></svg>',
+bookmark:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12a2 2 0 0 1 2 2v17l-8-5-8 5V5a2 2 0 0 1 2-2Z"/></svg>',
+meetings:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><path d="M2 21v-2a6 6 0 0 1 12 0v2m1-6a5 5 0 0 1 7 4v2"/></svg>',
+bank:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2 9 10-6 10 6H2Zm2 2v8m5-8v8m6-8v8m5-8v8M2 21h20"/></svg>',
+settings:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.6a8 8 0 0 1-1.6.9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.6-.9l-1.7.6-1.4-2.4 1.4-1.1a7 7 0 0 1 0-1.9l-1.4-1.1 1.4-2.4 1.7.6a8 8 0 0 1 1.6-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.6.9l1.7-.6 1.4 2.4-1.4 1.1a7 7 0 0 1 0 1.9Z"/></svg>',
+gift:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10h18v11H3zM2 6h20v4H2zM12 6v15"/><path d="M12 6H7a2.5 2.5 0 1 1 2.5-2.5C9.5 5 12 6 12 6Zm0 0h5a2.5 2.5 0 1 0-2.5-2.5C14.5 5 12 6 12 6Z"/></svg>',
+bug:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8h8a4 4 0 0 1 4 4v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-5a4 4 0 0 1 4-4Z"/><path d="M9 13h.01M15 13h.01M9 17h6M12 8V5m-4 3L6 6m10 2 2-2"/></svg>'
+}[name]||'');
+const pill=(view,key,label,disabled=false)=>'<button type="button" class="kc-more-pill '+(disabled?'is-disabled':'')+'" '+(disabled?'disabled':'data-view="'+view+'"')+'><span class="kc-more-pill-icon">'+icon(key)+'</span><b>'+label+'</b>'+(disabled?'<em>COMING SOON</em>':'')+'</button>';
+const other=(view,key,label,disabled=false)=>'<button type="button" class="kc-more-other '+(disabled?'is-disabled':'')+'" '+(disabled?'disabled':'data-view="'+view+'"')+'><span class="kc-more-other-icon">'+icon(key)+'</span><b>'+label+'</b></button>';
 return '<div class="kc-more-reference">'+
-'<header class="kc-more-reference-header"><button type="button" class="kc-more-back" data-view="overview" aria-label="Back to home">‹</button><h1>More</h1><span class="kc-more-spacer"></span><button type="button" class="kc-more-profile" data-view="profile" aria-label="Open profile">'+avatarMarkup(u,'small')+'</button></header>'+
+'<header class="kc-more-reference-header"><button type="button" class="kc-more-back" data-view="overview" aria-label="Back to home"><svg viewBox="0 0 24 24"><path d="m15 4-8 8 8 8"/></svg></button><h1>More</h1><span class="kc-more-spacer"></span><button type="button" class="kc-more-profile" data-view="profile" aria-label="Open profile">'+avatarMarkup(u,'small')+'</button></header>'+
 '<div class="kc-more-logo-wrap">'+brandMarkMarkup('kc-more-reference-logo')+'</div>'+
 '<section class="kc-more-reference-group"><h2>My ONE</h2><div class="kc-more-reference-pills">'+
-item('auditions','▱','My Jobs')+
-item('events','▣','My Events')+
-item('people','♧','My Connections')+
-item('achievements','＄','My Gigs')+
-item('memories','♧','My Bookmarks')+
-item('','♙','My Meetings',true)+
+pill('auditions','jobs','My Jobs')+pill('events','events','My Events')+
+pill('people','people','My Connections')+pill('achievements','gigs','My Gigs')+
+pill('memories','bookmark','My Bookmarks')+pill('','meetings','My Meetings',true)+
 '</div></section>'+
 '<section class="kc-more-reference-group kc-more-reference-others"><h2>Others</h2><div class="kc-more-reference-others-grid">'+
-other('','♜','Bank Accounts',true)+
-other('settings','⚙','Settings & Help')+
-other('','♧','Refer & Earn',true)+
-'<a class="kc-more-other" href="https://github.com/jamidineshkumar/kineticcrew/issues" target="_blank" rel="noopener"><span class="kc-more-other-icon">☏</span><b>Report A Bug</b></a>'+
+other('','bank','Bank Accounts',true)+other('settings','settings','Settings & Help')+
+other('','gift','Refer & Earn',true)+
+'<a class="kc-more-other" href="https://github.com/jamidineshkumar/kineticcrew/issues" target="_blank" rel="noopener"><span class="kc-more-other-icon">'+icon('bug')+'</span><b>Report A Bug</b></a>'+
 '</div></section>'+
 '<div class="kc-more-reference-footer">Made with <span>🤟</span> For Students</div>'+
-'<div class="kc-more-reference-watermark" aria-hidden="true">KC</div>'+
-'<div class="kc-more-reference-sparkle" aria-hidden="true">✦</div>'+
-'</div>';
+'<div class="kc-more-reference-watermark" aria-hidden="true">KC</div><div class="kc-more-reference-sparkle" aria-hidden="true">✦</div></div>';
 }
 function eventsPage(){return welcome('Events & registrations','The next moment is waiting. Find your event and lock in.',admin()?button('＋ New event','new-event'):'')+(admin()?eventForm():'')+section('Upcoming moments','Register once. Show up ready.','<span class="pill">'+S.events.length+' EVENTS</span>')+'<div class="eventgrid">'+(S.events.map(card).join('')||empty('No events yet','A crew admin can publish the first event here.'))+'</div>';}
 function updatesPage(){return welcome('Crew updates','Announcements, changes, and the latest from your people.',admin()?button('＋ New update','new-update'):'')+'<div class="twoCol"><div class="announcements">'+(S.announcements.map(announcement).join('')||empty('It is quiet in here','Updates will appear here when published.'))+'</div>'+(superadmin()?updateForm():'')+'</div>';}
@@ -591,7 +597,7 @@ function setMobileMenu(open){
  if(toggle){toggle.setAttribute('aria-expanded',open?'true':'false');toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');}
  document.body.classList.toggle('kc-menu-open',!!open);
 }
-document.addEventListener('click',event=>{const toggle=event.target.closest('#menuToggle');if(!toggle)return;event.preventDefault();event.stopPropagation();setMobileMenu(!$('#sidebar')?.classList.contains('open'));});
+document.addEventListener('click',event=>{const toggle=event.target.closest('#menuToggle');if(!toggle)return;event.preventDefault();event.stopPropagation();setMobileMenu(false);go('more');});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('#sidebar')?.classList.contains('open'))setMobileMenu(false);});
 window.addEventListener('popstate',()=>{if($('#sidebar')?.classList.contains('open'))setMobileMenu(false);});
 $('#nav')?.addEventListener('click',event=>{if(event.target.closest('[data-view]'))setMobileMenu(false);});
