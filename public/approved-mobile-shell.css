@@ -311,3 +311,50 @@
 @media(prefers-reduced-motion:reduce){
   #kcMobileDock .kc-fun-zone-emoji{animation:none!important}
 }
+
+
+/* Animated gradient buttons on the approved Home / Events / Fun Zone / Search dock. */
+@media(max-width:900px){
+  @keyframes kcDockGradientFlow{
+    0%{background-position:0% 50%;filter:hue-rotate(0deg)}
+    50%{background-position:100% 50%;filter:hue-rotate(14deg)}
+    100%{background-position:0% 50%;filter:hue-rotate(0deg)}
+  }
+  @keyframes kcDockGradientGlow{
+    0%,100%{box-shadow:0 0 10px rgba(130,119,255,.28),inset 0 1px 2px rgba(255,255,255,.3)}
+    50%{box-shadow:0 0 19px rgba(255,111,190,.48),0 0 28px rgba(90,184,255,.25),inset 0 1px 3px rgba(255,255,255,.42)}
+  }
+  #kcMobileDock .kc-dock-home{
+    background:linear-gradient(135deg,#ff9ecb,#a78bfa,#69c9ff,#ff9ecb)!important;
+    background-size:260% 260%!important;
+    border:1px solid rgba(255,255,255,.42)!important;
+    color:#171321!important;
+    animation:kcDockGradientFlow 6s ease-in-out infinite,kcDockGradientGlow 3.2s ease-in-out infinite!important;
+  }
+  #kcMobileDock .kc-dock-home .dock-icon{
+    background:transparent!important;border-color:transparent!important;
+    color:#171321!important;box-shadow:none!important;
+  }
+  #kcMobileDock .kc-dock-home .dock-label{color:#171321!important}
+  #kcMobileDock .kc-dock-group button .dock-icon{
+    background:linear-gradient(135deg,#ff9ecb,#a78bfa,#69c9ff,#ff9ecb)!important;
+    background-size:260% 260%!important;
+    border:1px solid rgba(255,255,255,.24)!important;
+    color:#171321!important;
+    animation:kcDockGradientFlow 6s ease-in-out infinite,kcDockGradientGlow 3.2s ease-in-out infinite!important;
+  }
+  #kcMobileDock .kc-dock-group button:nth-child(2) .dock-icon{animation-delay:-1.4s,-.7s!important}
+  #kcMobileDock .kc-dock-group button:nth-child(3) .dock-icon{animation-delay:-2.8s,-1.4s!important}
+  #kcMobileDock .kc-dock-group button .dock-icon svg{stroke:#171321!important}
+  #kcMobileDock .kc-dock-group button .dock-label{color:#f0edf7!important}
+  #kcMobileDock .kc-dock-home.active,
+  #kcMobileDock .kc-dock-group button.active .dock-icon{
+    border-color:rgba(255,255,255,.72)!important;
+    animation:kcDockGradientFlow 3.2s ease-in-out infinite,kcDockGradientGlow 1.8s ease-in-out infinite!important;
+  }
+  #kcMobileDock .kc-dock-group button.active .dock-label{color:#fff!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #kcMobileDock .kc-dock-home,
+  #kcMobileDock .kc-dock-group button .dock-icon{animation:none!important}
+}
