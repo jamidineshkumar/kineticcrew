@@ -1,18 +1,18 @@
-# Kinetic Crew Android app
+# Kinetic Crew mobile apps
 
-The Android app packages the existing `public/` web application with Capacitor. It keeps the current Supabase backend and does not require a separate API or database migration.
+Kinetic Crew keeps one shared web codebase in `public/`, packaged with Capacitor for Android and iOS. Both native platforms use the existing Supabase backend; Cloudflare continues to host the web/PWA version. No separate API or database migration is introduced.
 
-## Build a test APK
+## Android
 
-1. Open GitHub → Actions → **Build Kinetic Crew Android APK**.
+### Build a test APK
+
+1. Open GitHub → Actions → **Build Kinetic Crew Mobile Apps**.
 2. Select **Run workflow** on the `main` branch.
 3. Wait for the Android job to finish.
 4. Download the `kinetic-crew-debug-apk` artifact and extract `app-debug.apk`.
 5. Transfer it to an Android phone and install it. Android may ask you to allow installs from the browser or file manager used to open the APK.
 
-The debug APK is for device testing. It is not the final distributable release build.
-
-## Build a signed release APK for sharing
+### Build a signed release APK for sharing
 
 A release APK must be signed with a persistent Android keystore. Generate the keystore once and keep a secure backup. **Never commit the keystore or passwords to Git.** Losing the keystore means you cannot publish seamless updates signed with the same app identity.
 
@@ -23,30 +23,57 @@ Configure these GitHub Actions repository secrets:
 - `ANDROID_KEY_ALIAS`: key alias
 - `ANDROID_KEY_PASSWORD`: key password
 
-After adding all four secrets, run the same workflow again. It will produce the `kinetic-crew-signed-release-apk` artifact. Share that APK through WhatsApp or host it on the Kinetic Crew website. Future APK updates must use the same keystore and application ID.
+After adding all four secrets, run the same workflow again. It produces the `kinetic-crew-signed-release-apk` artifact. Future APK updates must use the same keystore and application ID.
 
-## Generate a keystore securely
+Windows PowerShell Base64 conversion:
 
-Run locally on a computer with Java installed (replace the alias and validity details as desired):
-
-```bash
-keytool -genkeypair -v -keystore kinetic-crew-release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias kineticcrew
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("$HOME\kinetic-crew-release.jks")) | Set-Clipboard
 ```
-
-Convert it to Base64 for the GitHub secret:
-
-- macOS/Linux: `base64 -w 0 kinetic-crew-release.jks`
-- Windows PowerShell: `[Convert]::ToBase64String([IO.File]::ReadAllBytes("kinetic-crew-release.jks"))`
 
 Store the original `.jks` file and passwords somewhere safe and private. Do not send them in chat.
 
-## Existing backend and hosting
+## iOS
 
-- Supabase Auth, database, storage and existing Edge Functions remain the backend.
-- The existing public Supabase URL and publishable key remain in `public/config.js`.
-- Cloudflare continues to host the web app.
-- Native APK distribution does not require Google Play Console registration.
+### Build for the iOS Simulator
 
-## Push notifications
+The workflow runs on a macOS GitHub runner with Xcode, creates/syncs the Capacitor iOS project, generates the official app icons, and builds the app for the iOS Simulator. Download the `kinetic-crew-ios-simulator` artifact to inspect/run it in an iOS Simulator on a Mac.
 
-The current web app's in-app notifications and Android push notifications are different. Native background/closed-app push requires Firebase Cloud Messaging configuration, secure device-token registration, server-side delivery, and real-device testing. The workflow can install `google-services.json` from the `GOOGLE_SERVICES_JSON_BASE64` secret when configured. Do not announce native push as active until end-to-end tests pass.
+**The simulator artifact is not an installable iPhone IPA.** A physical iPhone build must be signed by Apple.
+
+### Build an installable iOS IPA
+
+For ad-hoc device distribution, you need an active Apple Developer Program membership, an Apple Distribution certificate exported as a password-protected `.p12`, and an Ad Hoc provisioning profile for bundle ID `com.kineticcrew.hq` that includes the target iPhone UDIDs. Configure these GitHub Actions repository secrets:
+
+- `IOS_DISTRIBUTION_CERTIFICATE_BASE64`: Base64-encoded Apple Distribution `.p12`
+- `IOS_DISTRIBUTION_CERTIFICATE_PASSWORD`: password protecting the `.p12`
+- `IOS_PROVISIONING_PROFILE_BASE64`: Base64-encoded Ad Hoc `.mobileprovision`
+- `IOS_TEAM_ID`: Apple Developer Team ID
+
+When all four are present, the iOS job imports the signing assets temporarily, archives the app, exports an Ad Hoc IPA, and uploads `kinetic-crew-ios-ipa`. Keep the certificate, profile, and passwords private. The Ad Hoc IPA only installs on devices included in its provisioning profile. For TestFlight/App Store distribution, use an App Store provisioning profile and change the export method to `app-store-connect`; App Store Connect submission is a separate step.
+
+Without these Apple signing assets, the workflow still produces the simulator build. It does not pretend to produce an installable iPhone app.
+
+## Install the website on iPhone (PWA)
+
+The Cloudflare-hosted website remains the no-App-Store option. On iPhone, open the HTTPS Kinetic Crew website in Safari, tap **Share**, then **Add to Home Screen**. This creates a home-screen web app using the existing web/PWA experience. It is not the same as a signed native IPA, and iOS may impose different background and push-notification limitations.
+
+## Backend, hosting, and features
+
+- Supabase Auth, database, storage, and existing Edge Functions remain the backend.
+- The existing public Supabase URL and publishable key in `public/config.js` are not changed.
+- Cloudflare continues to host the web/PWA version.
+- The Capacitor iOS and Android wrappers load the same `public/` application, so existing app screens and flows are preserved.
+- Native push notifications require platform-specific configuration and end-to-end testing. The presence of an iOS build does not mean native iOS push is enabled.
+
+## Local development
+
+```bash
+npm install
+npm run brand:assets
+npx cap add ios
+npx cap sync ios
+npx cap open ios
+```
+
+iOS project generation/building requires macOS and Xcode. Android builds can be performed on Windows, macOS, or Linux with the Android toolchain.
