@@ -214,7 +214,7 @@ const updates=announcements.length?announcements.map((a,i)=>'<button class="kc-e
 const friendEvent=friendsEvents[0]||upcoming[0];
 const count=Number(friendEvent?.registration_count||0);
 return '<div class="kc-exact-home">'+
-'<div class="kc-exact-greeting"><h1>What’s the Vibe? <span>👋</span></h1><p>Hey '+esc(name)+', the crew’s in motion!</p></div>'+
+'
 '<button type="button" class="kc-exact-hero" data-view="auditions" aria-label="Open Kinetic Crew auditions"><span class="kc-exact-hero-mark">KC</span><b>RELOADED</b><strong>A U D I T I O N S</strong><span class="kc-exact-hero-cta">Registrations Open <i>→</i></span><small>01 / 03</small><i class="kc-exact-hero-corner"></i></button>'+
 '<section class="kc-exact-quick"><button data-view="events"><i>▦</i><b>Events</b></button><button data-view="people"><i>♧</i><b>Crew</b></button><button data-view="rehearsals"><i>♬</i><b>Rehearsals</b></button><button data-view="attendance"><i>✓</i><b>Attendance</b></button></section>'+
 '<section class="kc-exact-section"><div class="kc-exact-heading"><h2><i>▢</i>Your Events ('+registered.length+')</h2><button data-view="events">View all →</button></div><div class="kc-exact-event-row">'+(yourEvents.length?yourEvents.slice(0,4).map((e,i)=>eventCard(e,i===0&&registered.length?'live':'upcoming')).join(''):'<div class="kc-exact-empty-card">No events yet. Your next crew moment will appear here.</div>')+'</div></section>'+
