@@ -1220,3 +1220,8 @@ button:hover,.event:hover {transform:none!important}
 .kc-start-error{min-height:45vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;color:var(--text)}
 .kc-start-error strong{font-size:18px}.kc-start-error p{max-width:320px;color:var(--muted);font-size:13px;line-height:1.6}
 .kc-start-error button{padding:11px 18px;border:1px solid #555;border-radius:10px;background:#24242a;color:#fff}
+
+/* Official crew logo branding across signed-in home and mobile app header */
+.kc-header-spacer{display:flex;align-items:center;justify-content:center;flex:1;min-width:0}
+.kc-topbar-logo{display:block;width:46px;height:46px;object-fit:contain;border-radius:12px}
+.kc-home-brand-logo{display:block;width:72px;height:72px;object-fit:contain;margin:0 0 18px;border-radius:16px}
