@@ -1,4 +1,4 @@
-/* Five-item mobile navigation matching the Kinetic Crew reference. */
+/* Approved five-tab Kinetic Crew navigation: Home, Events, Crew, Memories, Profile. */
 (() => {
   'use strict';
   if (document.getElementById('kcMobileDock')) return;
@@ -6,8 +6,8 @@
   const items = [
     { view: 'overview', icon: '⌂', label: 'Home', kind: 'standard' },
     { view: 'events', icon: '▦', label: 'Events', kind: 'standard' },
-    { view: 'feed', icon: '+', label: 'Create', kind: 'create' },
     { view: 'people', icon: '♧', label: 'Crew', kind: 'standard' },
+    { view: 'memories', icon: '▧', label: 'Memories', kind: 'standard' },
     { view: 'profile', icon: '♙', label: 'Profile', kind: 'standard' }
   ];
 
