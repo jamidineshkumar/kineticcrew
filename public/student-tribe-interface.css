@@ -170,3 +170,33 @@
  }
  .kc-st-categories span{font-size:10px;font-weight:700;white-space:nowrap}
 }
+
+
+/* Screenshot-accurate Student Tribe reference treatment — Kinetic Crew labels/actions retained. */
+@media(max-width:900px){
+ body{background:#1c1a19!important;color:#f1efed!important}
+ #app,.shell,main,.content{background:transparent!important}
+ .kc-vibe-home:before{color:rgba(35,42,45,.72)!important;top:110px!important;right:-.12em!important;font-size:clamp(300px,78vw,620px)!important;letter-spacing:-.12em!important}
+ .kc-vibe-footer{background:transparent!important;border:0!important;box-shadow:none!important}
+ .kc-vibe-footer:after{display:none!important}
+ #kcMobileDock.kc-mobile-dock{gap:10px!important;width:calc(100vw - 44px)!important;max-width:900px!important;height:88px!important;min-height:88px!important;max-height:88px!important;bottom:calc(8px + env(safe-area-inset-bottom,0px))!important}
+ #kcMobileDock .kc-dock-home{flex-basis:82px!important;width:82px!important;height:82px!important;min-width:82px!important;min-height:82px!important;background:#fff!important;color:#171717!important;border:0!important;box-shadow:0 0 0 8px #25282b!important}
+ #kcMobileDock .kc-dock-home .dock-icon{background:transparent!important;color:#171717!important}
+ #kcMobileDock .kc-dock-home .dock-icon svg{stroke:#171717!important}
+ #kcMobileDock .kc-dock-home .dock-label{color:#171717!important;font-size:15px!important;font-weight:500!important}
+ #kcMobileDock .kc-dock-group{height:82px!important;min-height:82px!important;max-height:82px!important;background:#24272b!important;border:0!important;border-radius:999px!important;padding:5px 12px!important}
+ #kcMobileDock .kc-dock-group button{height:70px!important;color:#f0f0f0!important;background:transparent!important}
+ #kcMobileDock .kc-dock-group button .dock-icon{background:transparent!important;border:0!important;box-shadow:none!important;color:#ededed!important}
+ #kcMobileDock .kc-dock-group button .dock-icon svg{width:36px!important;height:36px!important;stroke:#ededed!important;stroke-width:1.8!important}
+ #kcMobileDock .kc-dock-group button .dock-label{font-size:14px!important;font-weight:500!important;color:#f2f2f2!important}
+ #kcMobileDock .kc-dock-group button.active .dock-icon{background:transparent!important;box-shadow:none!important;color:#fff!important}
+ #kcMobileDock .kc-dock-group button.active .dock-label{color:#fff!important}
+ #kcMobileDock .kc-fun-zone-emoji{display:none!important}
+}
+@media(max-width:380px){
+ #kcMobileDock.kc-mobile-dock{width:calc(100vw - 24px)!important;gap:8px!important;height:76px!important;min-height:76px!important}
+ #kcMobileDock .kc-dock-home{flex-basis:70px!important;width:70px!important;height:70px!important;min-width:70px!important;min-height:70px!important}
+ #kcMobileDock .kc-dock-group{height:70px!important;min-height:70px!important;max-height:70px!important;padding:3px 5px!important}
+ #kcMobileDock .kc-dock-group button .dock-label{font-size:11px!important}
+ #kcMobileDock .kc-dock-group button .dock-icon svg{width:29px!important;height:29px!important}
+}
