@@ -49,7 +49,7 @@
 @media(max-width:380px){.kc-mobile-dock{width:94vw!important;gap:3px!important;padding-inline:7px!important}.kc-mobile-dock button{width:48px!important;height:48px!important}}
 @media(prefers-reduced-motion:reduce){.kc-mobile-dock button{transition:none!important}}
 
-/* Fun Zone replaces the generic More action in the dock. */
+/* Final four-item dock: Home, Events, Fun Zone, Search. */
 @media(max-width:900px){
   .kc-mobile-dock button{background:rgba(255,255,255,.10)!important}
   .kc-mobile-dock button.active{background:linear-gradient(145deg,#596bff,#3479f6)!important}
