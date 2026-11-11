@@ -332,3 +332,27 @@
  }
  body.kc-home-screen .kc-header-actions button{flex:0 0 42px!important}
 }
+
+
+/* Keep app controls on opposite ends of the mobile header. */
+@media(max-width:900px){
+ body.kc-home-screen .kc-mobile-topbar,
+ body:not(.kc-more-open) .kc-mobile-topbar{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:12px!important;width:100%!important;box-sizing:border-box!important
+ }
+ body.kc-home-screen .kc-header-brand,
+ body:not(.kc-more-open) .kc-header-brand{
+  display:flex!important;align-items:center!important;flex:1 1 auto!important;min-width:0!important;
+  margin:0!important;visibility:visible!important;opacity:1!important
+ }
+ body.kc-home-screen .kc-header-brand img,
+ body:not(.kc-more-open) .kc-header-brand img{display:block!important;width:36px!important;height:36px!important;object-fit:contain!important;flex:0 0 36px!important}
+ body.kc-home-screen .kc-header-actions,
+ body:not(.kc-more-open) .kc-header-actions{
+  display:flex!important;align-items:center!important;justify-content:flex-end!important;
+  flex:0 0 auto!important;margin-left:auto!important;gap:10px!important
+ }
+ body.kc-home-screen .kc-header-actions button,
+ body:not(.kc-more-open) .kc-header-actions button{flex:0 0 42px!important}
+}
