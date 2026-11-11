@@ -1,0 +1,48 @@
+/* Kinetic Crew — liquid-glass profile surface */
+.kc-liquid-profile{position:relative;isolation:isolate;max-width:980px;margin:0 auto;padding:clamp(10px,2.4vw,24px);color:#f5f3f8}
+.kc-liquid-profile:before{content:"";position:absolute;z-index:-1;inset:4% -8% 18%;pointer-events:none;background:radial-gradient(ellipse at 16% 18%,rgba(245,125,181,.16),transparent 38%),radial-gradient(ellipse at 88% 42%,rgba(91,199,229,.14),transparent 34%);filter:blur(42px)}
+.kc-liquid-profile-card{position:relative;isolation:isolate;min-height:440px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px clamp(18px,4vw,42px) 34px;border:1px solid rgba(255,255,255,.2);border-radius:30px;background:linear-gradient(145deg,rgba(69,68,78,.72),rgba(24,25,31,.86) 58%,rgba(43,38,48,.78));box-shadow:0 26px 70px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.16);backdrop-filter:blur(28px) saturate(135%);-webkit-backdrop-filter:blur(28px) saturate(135%)}
+.kc-liquid-profile-card:before{content:"";position:absolute;z-index:-2;inset:0;background-image:var(--kc-liquid-cover);background-position:center 38%;background-size:cover;opacity:.25;filter:blur(2px) saturate(.7);transform:scale(1.04)}
+.kc-liquid-profile-card:after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(180deg,rgba(10,10,15,.34),rgba(10,10,15,.56) 48%,rgba(10,10,15,.9));pointer-events:none}
+.kc-liquid-card-top{position:relative;z-index:3;width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;align-self:stretch}
+.kc-liquid-wordmark{font-size:10px;letter-spacing:.19em;color:#e8e4ed;white-space:nowrap}.kc-liquid-wordmark b{color:#f2b0d0}
+.kc-liquid-card-top .kc-profile-back,.kc-liquid-card-top .kc-profile-share-button{width:42px;height:42px;min-width:42px;border:1px solid rgba(255,255,255,.18);border-radius:50%;background:rgba(14,14,19,.36);color:#fff;backdrop-filter:blur(16px)}
+.kc-liquid-card-top .kc-profile-hero-right{display:flex;align-items:center;gap:8px}
+.kc-liquid-card-top .kc-profile-edit-button{border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:11px 18px;background:rgba(255,255,255,.12);color:#fff;backdrop-filter:blur(16px)}
+.kc-liquid-profile-photo{position:relative;width:clamp(124px,23vw,174px);aspect-ratio:1;margin:32px auto 18px;border-radius:30px;overflow:hidden;display:grid;place-items:center;background:linear-gradient(145deg,#55515e,#17171d);border:1px solid rgba(255,255,255,.3);box-shadow:0 18px 48px rgba(0,0,0,.4),0 0 38px rgba(224,131,187,.12)}
+.kc-liquid-profile-photo img{width:100%;height:100%;object-fit:cover;object-position:center}.kc-liquid-profile-photo>span{font-size:42px;font-weight:700;color:#fff}
+.kc-liquid-photo-ring{position:absolute;inset:0;border:1px solid rgba(255,255,255,.2);border-radius:inherit;pointer-events:none}
+.kc-liquid-profile-copy{position:relative;z-index:2;width:100%;text-align:center}
+.kc-liquid-eyebrow{font-size:9px;letter-spacing:.24em;color:#e9b0d0;font-weight:800}
+.kc-liquid-profile-copy h1{margin:8px 0 5px;font-size:clamp(25px,5vw,42px);line-height:1.1;letter-spacing:-.035em;color:#fff}
+.kc-liquid-profile-copy>p{margin:0;color:rgba(244,240,248,.75);font-size:14px}
+.kc-liquid-profile-copy>p span{color:#f1a9d0;padding:0 4px}
+.kc-liquid-profile-copy .kc-profile-role{display:inline-flex;margin-top:14px;padding:9px 17px;border:1px solid rgba(255,211,145,.38);border-radius:999px;background:linear-gradient(110deg,rgba(193,133,60,.28),rgba(235,184,113,.12));color:#f2d29f;font-size:9px;font-weight:800;letter-spacing:.19em}
+.kc-liquid-profile-copy .kc-liquid-bio{max-width:520px;margin:13px auto 0;font-size:12px;line-height:1.65;color:rgba(241,237,246,.72)}
+.kc-liquid-orb{position:absolute;z-index:-1;width:180px;height:180px;border-radius:50%;filter:blur(42px);opacity:.25;pointer-events:none}
+.kc-liquid-orb-pink{left:-80px;bottom:-95px;background:#ef83b8}.kc-liquid-orb-cyan{right:-95px;top:28%;background:#70d7e8}
+.kc-liquid-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0}
+.kc-liquid-stats button{min-width:0;display:grid;gap:5px;place-items:center;padding:16px 8px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:linear-gradient(145deg,rgba(55,57,65,.72),rgba(25,26,32,.78));color:#f8f5fa;backdrop-filter:blur(18px);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.kc-liquid-stats b{font-size:23px}.kc-liquid-stats span{font-size:10px;color:#bcb7c5}
+.kc-liquid-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.kc-liquid-feature{position:relative;min-height:126px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:5px;overflow:hidden;padding:17px;border:1px solid rgba(255,255,255,.14);border-radius:22px;background:linear-gradient(145deg,rgba(64,65,76,.66),rgba(25,26,32,.82));color:#fff;text-align:left;box-shadow:inset 0 1px 0 rgba(255,255,255,.07);backdrop-filter:blur(20px)}
+.kc-liquid-feature:before{content:"";position:absolute;width:130px;height:130px;right:-45px;top:-55px;border-radius:50%;background:var(--kc-feature-glow,rgba(222,143,191,.2));filter:blur(26px)}
+.kc-liquid-feature-icon{position:absolute;top:15px;left:17px;font-size:22px;color:var(--kc-feature-accent,#edb3d0)}
+.kc-liquid-feature b,.kc-liquid-feature small,.kc-liquid-feature i{position:relative;z-index:1}.kc-liquid-feature b{font-size:15px}.kc-liquid-feature small{font-size:10px;color:#c0bbc8}.kc-liquid-feature i{position:absolute;right:16px;bottom:17px;font-style:normal;color:#e8d6e3}
+.kc-liquid-feature-events{--kc-feature-glow:rgba(112,202,228,.22);--kc-feature-accent:#91d8e8}.kc-liquid-feature-achievements{--kc-feature-glow:rgba(235,190,105,.22);--kc-feature-accent:#e9c77e}.kc-liquid-feature-connections{--kc-feature-glow:rgba(150,143,232,.2);--kc-feature-accent:#b9b0f1}
+.kc-liquid-profile .kc-founder-stats{margin-top:16px}
+.kc-liquid-profile .kc-founder-story,.kc-liquid-profile .kc-founder-featured,.kc-liquid-profile .kc-founder-console,.kc-liquid-profile .kc-profile-editor{margin-top:16px}
+.kc-liquid-profile .kc-profile-editor{border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:14px;background:rgba(30,30,37,.76);backdrop-filter:blur(20px)}
+.kc-liquid-profile .kc-profile-editor>summary{cursor:pointer;font-weight:700;padding:8px}
+.kc-liquid-profile .kc-profile-form{padding:8px}
+.kc-liquid-profile .kc-profile-form input,.kc-liquid-profile .kc-profile-form textarea{background:rgba(8,8,13,.55);border-color:rgba(255,255,255,.16);color:#fff}
+.kc-liquid-profile .kc-founder-console,.kc-liquid-profile .kc-founder-story,.kc-liquid-profile .kc-founder-featured{border-radius:22px;backdrop-filter:blur(18px)}
+.kc-liquid-profile .kc-founder-tools button{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
+.kc-liquid-transition{position:fixed;z-index:100000;inset:0;overflow:hidden;pointer-events:none;background:rgba(7,8,13,0);backdrop-filter:blur(0);-webkit-backdrop-filter:blur(0)}
+.kc-liquid-transition-wash{position:absolute;inset:0;background:radial-gradient(circle at 50% 48%,rgba(231,145,195,.18),transparent 38%),radial-gradient(circle at 78% 60%,rgba(100,205,225,.16),transparent 34%),rgba(7,8,13,.84);opacity:0}
+.kc-liquid-transition-card{position:fixed;display:grid;place-items:center;overflow:hidden;border:1px solid rgba(255,255,255,.36);background:linear-gradient(145deg,rgba(78,77,90,.94),rgba(19,20,27,.96));box-shadow:0 24px 90px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.2);color:#fff;backdrop-filter:blur(26px) saturate(140%);-webkit-backdrop-filter:blur(26px) saturate(140%);transform-origin:center}
+.kc-liquid-transition-card:before{content:"";position:absolute;inset:-35%;background:radial-gradient(circle at 30% 35%,rgba(239,138,190,.35),transparent 36%),radial-gradient(circle at 75% 65%,rgba(112,208,226,.3),transparent 34%);filter:blur(24px)}
+.kc-liquid-transition-card span{position:relative;z-index:1;font:700 12px/1.2 system-ui,sans-serif;letter-spacing:.2em}
+.kc-liquid-transition-card b{position:relative;z-index:1;margin-top:8px;font:500 11px/1.2 system-ui,sans-serif;letter-spacing:.08em;color:rgba(255,255,255,.7)}
+@media(max-width:640px){.kc-liquid-profile{padding:8px 4px}.kc-liquid-profile-card{min-height:400px;border-radius:25px;padding:15px 14px 28px}.kc-liquid-card-top .kc-profile-edit-button{padding:10px 13px;font-size:11px}.kc-liquid-profile-photo{margin-top:27px;width:132px;border-radius:25px}.kc-liquid-profile-copy h1{font-size:28px}.kc-liquid-stats{gap:7px}.kc-liquid-stats button{padding:13px 5px}.kc-liquid-stats b{font-size:20px}.kc-liquid-stats span{font-size:9px}.kc-liquid-card-grid{gap:9px}.kc-liquid-feature{min-height:116px;padding:14px}.kc-liquid-feature b{font-size:13px}.kc-liquid-feature small{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.kc-liquid-profile,.kc-liquid-profile *{scroll-behavior:auto!important}.kc-liquid-transition{display:none!important}}
