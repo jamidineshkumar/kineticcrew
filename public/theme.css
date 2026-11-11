@@ -1,2 +1,12 @@
 /* Kinetic Crew HQ uses a dark, high-contrast neon visual system. */
 :root{color-scheme:dark;}
+/* Functional light appearance for the core app shell and shared surfaces. */
+:root[data-theme="light"]{color-scheme:light;--bg:#f4f5f8;--panel:#fff;--panel2:#eef0f5;--line:#d9dce5;--muted:#62697a;--text:#171923;--lime:#648b13;--purple:#7253c7}
+:root[data-theme="light"] body{background:#f4f5f8;color:#171923}
+:root[data-theme="light"] .side,:root[data-theme="light"] .kc-mobile-topbar{background:#fff!important;border-color:#d9dce5!important}
+:root[data-theme="light"] .surface,:root[data-theme="light"] .settings-card,:root[data-theme="light"] .kc-more-reference{background:#fff!important;color:#171923;border-color:#d9dce5!important}
+:root[data-theme="light"] .navitem,:root[data-theme="light"] .nav-group-toggle{color:#444b5a}
+:root[data-theme="light"] .navitem.active{background:#edf4dc;color:#45640c}
+:root[data-theme="light"] input,:root[data-theme="light"] textarea,:root[data-theme="light"] select{background:#fff;color:#171923;border-color:#cbd0dc}
+:root[data-theme="light"] .welcome h1,:root[data-theme="light"] h1,:root[data-theme="light"] h2,:root[data-theme="light"] h3{color:#171923}
+:root[data-theme="light"] .muted,:root[data-theme="light"] small,:root[data-theme="light"] .hint{color:#62697a}
