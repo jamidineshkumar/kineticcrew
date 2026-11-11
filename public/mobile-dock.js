@@ -6,7 +6,6 @@
     { view: 'overview', icon: '<svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-6h6v6"/></svg>', label: 'Home' },
     { view: 'feed', icon: '<svg viewBox="0 0 24 24"><path d="m12 3 9 9-9 9-9-9z"/><path d="m12 8 4 4-4 4-4-4z"/></svg>', label: 'Feed' },
     { view: 'events', icon: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M8 3v18M13 3v18M18 3v18M3 8h18M3 13h18M3 18h18"/></svg>', label: 'Events' },
-    { view: 'chat', icon: '<svg viewBox="0 0 24 24"><path d="M4 5h16v12H9l-5 4z"/><path d="M8 10h8M8 13h5"/></svg>', label: 'Crew Chat' },
     { view: 'fun-zone', icon: '<span class="kc-fun-zone-emoji" aria-hidden="true">🤪</span>', label: 'Fun Zone' }
   ];
   const dock=document.createElement('nav');
