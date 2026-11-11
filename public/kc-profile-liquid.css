@@ -85,3 +85,20 @@
 .kc-home-update-count{font-size:10px;color:rgba(255,255,255,.7);font-variant-numeric:tabular-nums}
 @media(max-width:640px){.kc-home-updates{min-height:230px;padding:16px;border-radius:23px}.kc-home-update-slide{min-height:174px}.kc-home-update-slide>b{font-size:34px}}
 @media(prefers-reduced-motion:reduce){.kc-home-updates-track,.kc-home-update-dots span{transition:none!important}}
+
+
+/* Single-panel profile reference: one floating liquid-glass identity card. */
+.kc-single-profile{position:relative;isolation:isolate;min-height:calc(100svh - 150px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:22px 12px 34px;overflow:hidden}
+.kc-single-profile:before{content:"";position:absolute;z-index:-1;inset:5% -8% 8%;pointer-events:none;background:radial-gradient(ellipse at 12% 54%,rgba(244,133,183,.24),transparent 34%),radial-gradient(ellipse at 88% 32%,rgba(102,205,229,.23),transparent 36%);filter:blur(36px)}
+.kc-single-profile .kc-liquid-profile-card{width:min(100%,520px);min-height:0;max-width:520px;margin:0 auto;padding:18px clamp(18px,5vw,34px) 30px;border-radius:28px;justify-content:flex-start;box-shadow:0 28px 76px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.2)}
+.kc-single-profile .kc-liquid-profile-card:before{opacity:.18}
+.kc-single-profile .kc-liquid-profile-card:after{background:linear-gradient(180deg,rgba(10,10,15,.26),rgba(10,10,15,.48) 45%,rgba(10,10,15,.84))}
+.kc-single-profile .kc-liquid-card-top{min-height:38px}
+.kc-single-profile .kc-liquid-profile-photo{width:min(66%,270px);height:auto;aspect-ratio:1.12;margin:30px auto 20px;border-radius:24px}
+.kc-single-profile .kc-liquid-profile-copy h1{font-size:clamp(27px,6vw,38px);margin-top:9px}
+.kc-single-profile .kc-liquid-profile-copy>p{font-size:13px}
+.kc-single-profile-tags{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:15px}
+.kc-single-profile-tags span{display:inline-flex;align-items:center;padding:7px 12px;border:1px solid rgba(241,180,218,.24);border-radius:999px;background:rgba(220,155,202,.15);color:#edc2df;font-size:9px;font-weight:750;letter-spacing:.1em}
+.kc-single-profile .kc-liquid-profile-copy .kc-liquid-bio{max-width:390px;margin:15px auto 0;font-size:12px;line-height:1.7}
+.kc-single-profile .kc-profile-editor{width:min(100%,520px);margin:0 auto}
+@media(max-width:640px){.kc-single-profile{min-height:calc(100svh - 125px);padding:14px 3px 28px}.kc-single-profile .kc-liquid-profile-card{width:100%;padding:15px 14px 27px;border-radius:25px}.kc-single-profile .kc-liquid-profile-photo{width:min(72%,250px);margin:26px auto 18px;border-radius:22px}.kc-single-profile .kc-liquid-profile-copy h1{font-size:29px}}
