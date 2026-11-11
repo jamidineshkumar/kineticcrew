@@ -99,3 +99,34 @@
  .kce-detail-facts>div{padding:10px}
 }
 @media(min-width:701px){.kce-category-mosaic{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:130px}.kce-featured-event{min-height:360px}.kce-art-featured{min-height:360px}.kce-events-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* Event publishing, ticket wallet and compact mobile polish */
+.kce-featured-check{display:flex;align-items:center;min-height:44px;padding:12px 14px;border:1px solid var(--line,#39333f);border-radius:13px;background:var(--panel2,#292430)}
+.kce-featured-check>span{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700}
+.kce-featured-check input{width:18px;height:18px;accent-color:#c02ed6}
+.kce-events .formgrid .hint{display:block;margin-top:5px;font-size:10px;color:var(--muted,#aaa2b4)}
+.kce-events .formgrid button[type=submit],.kce-events .formgrid button:not([type]){min-height:48px;border-radius:14px}
+.kce-event-card:focus-visible,.kce-featured-event:focus-visible,.kce-category:focus-visible,.kce-tabs button:focus-visible,.kce-register-button:focus-visible{outline:2px solid #e58aff;outline-offset:3px}
+.kce-register-button{position:relative;z-index:1;touch-action:manipulation}
+.kce-register-button[aria-busy=true]{cursor:progress;filter:saturate(.7)}
+.kce-ticket-modal{width:min(440px,calc(100vw - 28px));padding:0!important;overflow:hidden;border:1px solid #b85be766!important;border-radius:25px!important;background:#17131e!important;color:#fff!important}
+.kce-ticket-top{padding:23px 22px 17px;background:radial-gradient(ellipse at 85% 0%,#a62fc577,transparent 50%),linear-gradient(145deg,#2b1538,#17131e)}
+.kce-ticket-top .eyebrow{color:#e8b5ff}.kce-ticket-top h2{margin:9px 0 5px;color:#fff;font-size:25px}.kce-ticket-top p{margin:0;color:#d5c4df;font-size:11px}
+.kce-ticket-body{padding:18px 22px 22px}
+.kce-ticket-qr{display:grid;place-items:center;min-height:220px;padding:15px;border-radius:17px;background:#fff}
+.kce-ticket-qr img{max-width:100%;height:auto}
+.kce-ticket-qr canvas{max-width:100%;height:auto}
+.kce-ticket-code{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.kce-ticket-code span{display:grid;gap:5px;color:#a9a0b4;font-size:8px;letter-spacing:.12em;text-transform:uppercase}
+.kce-ticket-code b{color:#fff;font-size:12px;letter-spacing:0;text-transform:none;overflow-wrap:anywhere}
+.kce-ticket-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:14px;border-top:1px dashed #6c5a75;color:#b8a9c3;font-size:9px}
+.kce-ticket-foot strong{color:#8ee0bd;font-size:10px}
+.kce-ticket-body .primary{width:100%;min-height:45px;margin-top:14px}
+@media(max-width:600px){
+ .kce-events .formgrid{padding:15px}
+ .kce-events .formgrid .field{min-width:0}
+ .kce-featured-check{grid-column:1/-1}
+ .kce-ticket-top{padding:20px 18px 15px}
+ .kce-ticket-body{padding:15px 18px 18px}
+ .kce-ticket-qr{min-height:205px}
+}
