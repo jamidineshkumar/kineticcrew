@@ -77,3 +77,51 @@
   70%{transform:scale(1.08) rotate(7deg)}
 }
 @media(prefers-reduced-motion:reduce){.kc-mobile-dock .kc-fun-zone-emoji{animation:none!important}}
+
+/* Unified glassmorphism shell: rounded floating header and dock, based on the supplied dock reference. */
+@media(max-width:900px){
+  .kc-mobile-topbar{
+    position:sticky!important;top:8px!important;z-index:120!important;
+    display:flex!important;align-items:center!important;justify-content:flex-start!important;
+    width:calc(100% - 28px)!important;height:58px!important;
+    margin:8px 14px 12px!important;padding:7px 10px!important;
+    border:1px solid rgba(255,255,255,.13)!important;border-radius:22px!important;
+    background:rgba(35,35,42,.62)!important;color:#f5f4fa!important;
+    box-shadow:0 8px 28px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.07)!important;
+    backdrop-filter:blur(24px) saturate(145%)!important;-webkit-backdrop-filter:blur(24px) saturate(145%)!important;
+  }
+  .kc-menu-button{
+    width:43px!important;height:43px!important;border-radius:50%!important;
+    border:1px solid rgba(255,255,255,.10)!important;
+    background:rgba(255,255,255,.09)!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08)!important;
+  }
+  .kc-menu-button span{width:20px!important;background:#eeeef5!important}
+  .kc-mobile-dock{
+    width:min(91vw,440px)!important;min-height:76px!important;
+    padding:9px 13px!important;gap:7px!important;
+    border:1px solid rgba(255,255,255,.14)!important;border-radius:999px!important;
+    background:rgba(36,36,43,.68)!important;
+    box-shadow:0 12px 34px rgba(0,0,0,.36),inset 0 1px 0 rgba(255,255,255,.09)!important;
+    backdrop-filter:blur(26px) saturate(155%)!important;-webkit-backdrop-filter:blur(26px) saturate(155%)!important;
+  }
+  .kc-mobile-dock button{
+    width:52px!important;height:52px!important;border-radius:50%!important;
+    background:rgba(255,255,255,.09)!important;
+    border:1px solid rgba(255,255,255,.035)!important;
+    color:#e6e4ed!important;
+  }
+  .kc-mobile-dock button.active{
+    color:#fff!important;
+    background:linear-gradient(135deg,#ffb2d7 0%,#a9baff 48%,#73d5ff 100%)!important;
+    border-color:rgba(255,255,255,.32)!important;
+    box-shadow:0 0 18px rgba(164,169,255,.38),inset 0 1px 2px rgba(255,255,255,.42)!important;
+  }
+  .kc-mobile-dock .kc-fun-zone-emoji{font-size:25px!important}
+  .kc-mobile-dock button.active .kc-fun-zone-emoji{filter:drop-shadow(0 0 5px rgba(255,255,255,.6))!important}
+  .nav-group-symbol svg{width:21px;height:21px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+}
+@media(max-width:380px){
+  .kc-mobile-dock{width:93vw!important;padding-inline:8px!important;gap:3px!important}
+  .kc-mobile-dock button{width:48px!important;height:48px!important}
+}
