@@ -28,3 +28,13 @@
   backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)
  }
 }
+
+@media(max-width:1100px){
+ .kc-home-intro{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:12px!important}
+ .kc-home-intro-copy{min-width:0;flex:1}
+ .kc-home-top-actions{display:flex;align-items:center;gap:9px;flex:0 0 auto;padding-top:3px}
+ .kc-home-top-actions button{position:relative;width:42px;height:42px;display:grid;place-items:center;padding:0;border-radius:50%;overflow:visible;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.15);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+ .kc-home-top-actions button svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+ .kc-home-top-actions button>i{position:absolute;right:2px;top:2px;width:8px;height:8px;border-radius:50%;background:#ff3c9d;box-shadow:0 0 10px #ff3c9d}
+ .kc-home-top-actions button img,.kc-home-top-actions button .avatar{width:34px;height:34px;border-radius:50%;object-fit:cover}
+}
