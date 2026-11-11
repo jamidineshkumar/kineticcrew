@@ -102,9 +102,10 @@ function brandMarkMarkup(extra=''){return '<img class="kc-brand-mark '+extra+'" 
 function avatarMarkup(user,size='') {const src=user?.avatar_url;return src?'<img class="avatar-photo '+size+'" data-fallback="'+esc(initials(user?.name||user?.email))+'" src="'+esc(src)+'" alt="'+esc(user.name||'Crew member')+'">':'<span class="avatar-fallback '+size+'">'+esc(initials(user?.name||user?.email))+'</span>';}
 function profileCover(url){return url?' style="background-image:url(&quot;'+esc(url)+'&quot;)':'';}
 function profilePage(){
-const u=S.user||{},social=S.profileSocial||{},founder=superadmin(),events=Array.isArray(S.events)?S.events:[],posts=(S.socialPosts||[]).filter(p=>String(p.author_id)===String(u.auth_id));
-const followers=Number(social.followers_count||0),following=Number(social.following_count||0),attended=events.filter(e=>e.attended===true||e.attendance_status==='present').length;
-const photo=u.avatar_url||'',banner=u.banner_url||photo,job=u.profession||u.designation||u.occupation||u.job_title||(founder?'Founder & President':'Kinetic Crew Member');
+const u=S.user||{},founder=superadmin();
+const photo=u.avatar_url||'',banner=u.banner_url||photo;
+const job=u.profession||u.designation||u.occupation||u.job_title||(founder?'Founder & President':'Kinetic Crew Member');
+const username=u.username||String(u.email||'crew-member').split('@')[0];
 const editForm='<details class="kc-profile-editor" id="profileEditor"><summary>Edit profile details</summary><form id="profileForm" class="kc-profile-form">'+
 '<label class="field">Full name<input name="name" maxlength="100" required value="'+esc(u.name||'')+'"></label>'+
 '<label class="field">About you<textarea name="bio" maxlength="500" rows="3">'+esc(u.bio||'')+'</textarea></label>'+
@@ -112,17 +113,12 @@ const editForm='<details class="kc-profile-editor" id="profileEditor"><summary>E
 '<label class="field">Username<input name="username" id="profileUsername" minlength="3" maxlength="24" pattern="[a-zA-Z0-9_]{3,24}" value="'+esc(u.username||'')+'" placeholder="your_username" required></label>'+
 '<div class="kc-profile-upload-row"><label for="profilePhotoInput">Change profile photo<input id="profilePhotoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden></label><label for="profileBannerInput">Change cover photo<input id="profileBannerInput" type="file" accept="image/png,image/jpeg,image/webp" hidden></label></div>'+
 '<p class="hint">JPG, PNG or WebP · Maximum 5 MB each.</p><button class="primary full">Save changes</button></form></details>';
-const activity=posts.length?posts.slice(0,3).map(socialPostCard).join(''):'<div class="kc-profile-empty">Your posts will appear here when you share something on Kinetic Gram.</div>';
-const recentEvents=events.filter(e=>e.registered||e.attended===true||e.attendance_status==='present').slice(0,3);
-return '<div class="kc-reference-profile kc-liquid-profile">'+
+return '<div class="kc-reference-profile kc-liquid-profile kc-single-profile">'+
 '<section class="kc-liquid-profile-card" '+(banner?'style="--kc-liquid-cover:url(&quot;'+esc(banner)+'&quot;)"':'')+'>'+
-'<div class="kc-liquid-card-top"><button class="kc-profile-back" data-view="overview" aria-label="Back home">‹</button><span class="kc-liquid-wordmark">KINETIC <b>CREW</b></span><div class="kc-profile-hero-right"><button class="kc-profile-share-button" type="button" data-share-profile aria-label="Share profile">↗</button><button class="kc-profile-edit-button" data-profile-edit>Edit profile</button></div></div>'+
+'<div class="kc-liquid-card-top"><button class="kc-profile-back" data-view="overview" aria-label="Back home">‹</button><span class="kc-liquid-wordmark">KINETIC <b>CREW</b></span><div class="kc-profile-hero-right"><button class="kc-profile-share-button" type="button" data-share-profile aria-label="Share profile">↗</button><button class="kc-profile-edit-button" data-profile-edit>Edit</button></div></div>'+
 '<div class="kc-liquid-profile-photo">'+(photo?'<img src="'+esc(photo)+'" alt="'+esc(u.name||'Profile photo')+'" loading="eager">':'<span>'+esc(initials(u.name||u.email))+'</span>')+'</div>'+
-'<div class="kc-liquid-profile-copy"><span class="kc-liquid-eyebrow">'+(founder?'FOUNDER':'KINETIC CREW MEMBER')+'</span><h1>'+esc(u.name||'Kinetic Crew Member')+'</h1><p>@'+esc(u.username||String(u.email||'crew-member').split('@')[0])+'</p><span class="kc-profile-role">'+esc(String(job).toUpperCase())+'</span>'+(u.bio?'<p class="kc-liquid-bio">'+esc(u.bio)+'</p>':'')+'</div>'+
+'<div class="kc-liquid-profile-copy"><span class="kc-liquid-eyebrow">'+(founder?'FOUNDER':'KINETIC CREW MEMBER')+'</span><h1>'+esc(u.name||'Kinetic Crew Member')+'</h1><p>@'+esc(username)+'</p><div class="kc-single-profile-tags"><span>'+esc(String(job).toUpperCase())+'</span>'+(u.profession&&u.designation?'<span>'+esc(String(u.designation).toUpperCase())+'</span>':'')+'</div>'+(u.bio?'<p class="kc-liquid-bio">'+esc(u.bio)+'</p>':'')+'</div>'+
 '<div class="kc-liquid-orb kc-liquid-orb-pink"></div><div class="kc-liquid-orb kc-liquid-orb-cyan"></div></section>'+
-'<section class="kc-liquid-stats"><button type="button" data-view="people"><b>'+followers+'</b><span>Followers</span></button><button type="button" data-view="people"><b>'+following+'</b><span>Following</span></button><div><b>'+attended+'</b><span>Events attended</span></div></section>'+
-'<section class="kc-profile-content-section"><div class="kc-profile-content-heading"><div><span>YOUR ACTIVITY</span><h2>Posts</h2></div><button type="button" data-view="feed">Open Kinetic Gram ↗</button></div><div class="kc-profile-posts">'+activity+'</div></section>'+
-'<section class="kc-profile-content-section"><div class="kc-profile-content-heading"><div><span>ON THE CALENDAR</span><h2>Your events</h2></div><button type="button" data-view="events">View events ↗</button></div><div class="kc-profile-event-list">'+(recentEvents.length?recentEvents.map(e=>'<article><span class="kc-profile-event-date">'+esc(ds(e.starts_at))+'</span><b>'+esc(e.title||'Crew event')+'</b><small>'+esc(e.location||'Location to be announced')+'</small></article>').join(''):'<p class="kc-profile-empty">Events you register for or attend will appear here.</p>')+'</div></section>'+
 editForm+'</div>';
 }
 function publicProfilePage(){
