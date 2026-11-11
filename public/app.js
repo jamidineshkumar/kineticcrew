@@ -78,7 +78,7 @@ document.addEventListener('error',event=>{
  const img=event.target;
  if(!(img instanceof HTMLImageElement))return;
  if(img.classList.contains('brand-logo')){
-  if(img.dataset.kcFallback!=='yes'){img.dataset.kcFallback='yes';img.src=window.kcPath('kinetic-crew-logo.jpg');}
+  if(img.dataset.kcFallback!=='yes'){img.dataset.kcFallback='yes';img.src='https://raw.githubusercontent.com/jamidineshkumar/kineticcrew/main/kinetic-crew-logo.jpg';}
   else img.style.visibility='hidden';
   return;
  }
@@ -246,7 +246,7 @@ const pill=(view,key,label,disabled=false)=>'<button type="button" class="kc-mor
 const other=(view,key,label,disabled=false)=>'<button type="button" class="kc-more-other '+(disabled?'is-disabled':'')+'" '+(disabled?'disabled':'data-view="'+view+'"')+'><span class="kc-more-other-icon">'+icon(key)+'</span><b>'+label+'</b></button>';
 return '<div class="kc-more-reference">'+
 '<header class="kc-more-reference-header"><button type="button" class="kc-more-back" data-view="overview" aria-label="Back to home"><svg viewBox="0 0 24 24"><path d="m15 4-8 8 8 8"/></svg></button><h1>More</h1><span class="kc-more-spacer"></span><button type="button" class="kc-more-profile" data-view="profile" aria-label="Open profile">'+avatarMarkup(u,'small')+'</button></header>'+
-'<div class="kc-more-logo-wrap"><img class="kc-more-reference-logo" src="'+window.kcPath('kinetic-crew-logo.svg')+'" alt="Kinetic Crew logo" onerror="this.style.display=\'none\';this.parentElement.textContent=\'KINETIC CREW\'" /></div>'+
+'<div class="kc-more-logo-wrap"><img class="kc-more-reference-logo" src="'+'https://raw.githubusercontent.com/jamidineshkumar/kineticcrew/main/kinetic-crew-logo.jpg'+'" alt="Kinetic Crew logo" onerror="this.style.display=\'none\';this.parentElement.textContent=\'KINETIC CREW\'" /></div>'+
 '<section class="kc-more-reference-group"><h2>My Crew</h2><div class="kc-more-reference-pills">'+
 pill('events','events','Events')+pill('auditions','jobs','Auditions')+
 pill('rehearsals','rehearsal','Rehearsals')+pill('attendance','attendance','Attendance')+
