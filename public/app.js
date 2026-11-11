@@ -3,6 +3,14 @@
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
 window.KC_APP_VERSION='1.2.5';
 const S={user:null,view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],publicMembers:[],featureItems:{},socialPosts:[],socialLikes:[],socialComments:[],roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',error:'',peopleQuery:''};
+window.KC_SEARCH_API={
+ snapshot:()=>({events:S.events||[],announcements:S.announcements||[],members:S.publicMembers||[],posts:S.socialPosts||[]}),
+ load:async()=>{const jobs=[];if(!S.publicMembers?.length)jobs.push(rpc('crew_profile_directory',{}).then(({data,error})=>{if(error)throw error;S.publicMembers=Array.isArray(data)?data:[];}));if(!S.socialPosts?.length)jobs.push(loadSocialFeed());await Promise.all(jobs);},
+ openEvent:id=>{S.selectedEvent=id;go('event-detail');},
+ openProfile:id=>{S.selectedProfileId=id;go('public-profile');},
+ openPost:id=>{go('feed').then(()=>requestAnimationFrame(()=>document.querySelector('[data-social-post="'+CSS.escape(String(id))+'"]')?.scrollIntoView({behavior:'smooth',block:'center'})));},
+ openView:view=>go(view)
+};
 if('scrollRestoration'in history)history.scrollRestoration='manual';
 const PAGE_STATE_KEY='kinetic-crew-page-state-v1';
 function readPageState(){try{const raw=sessionStorage.getItem(PAGE_STATE_KEY);return raw?JSON.parse(raw):null;}catch{return null;}}
