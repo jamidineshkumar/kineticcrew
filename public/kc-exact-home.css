@@ -166,3 +166,41 @@
  .kc-more-other{gap:9px}
  .kc-more-other>b{font-size:12px}
 }
+
+/* Responsive website presentation of the same approved Home design. */
+@media(min-width:901px){
+ body.kc-home-screen{background:#090711!important;color:#f7f3ff!important}
+ body.kc-home-screen main{background:transparent!important;padding:24px 24px 48px!important}
+ body.kc-home-screen .content{max-width:1120px!important;margin:0 auto!important;padding:0 22px 32px!important;background:transparent!important}
+ body.kc-home-screen .kc-mobile-topbar{max-width:1160px!important;margin:0 auto!important;padding:12px 24px!important;border-radius:0 0 22px 22px!important;background:linear-gradient(100deg,rgba(17,12,29,.97),rgba(54,18,54,.9))!important;border:1px solid rgba(255,255,255,.09)!important;backdrop-filter:blur(22px)!important}
+ body.kc-home-screen .kc-exact-home{max-width:1080px;margin:0 auto;padding:12px 0 36px}
+ body.kc-home-screen .kc-exact-hero{height:250px;margin:0 0 22px;padding:30px 42px;border-radius:30px}
+ body.kc-home-screen .kc-exact-hero>b{font-size:56px}
+ body.kc-home-screen .kc-exact-hero>strong{font-size:18px}
+ body.kc-home-screen .kc-exact-hero-cta{font-size:16px;padding:12px 22px}
+ body.kc-home-screen .kc-exact-quick{gap:14px;padding:12px;margin-bottom:30px}
+ body.kc-home-screen .kc-exact-quick button{height:112px;border-radius:22px}
+ body.kc-home-screen .kc-exact-quick button i{font-size:34px}
+ body.kc-home-screen .kc-exact-quick button b{font-size:15px}
+ body.kc-home-screen .kc-exact-heading h2{font-size:22px}
+ body.kc-home-screen .kc-exact-heading>button{font-size:14px}
+ body.kc-home-screen .kc-exact-event-row{grid-auto-columns:calc(50% - 8px);gap:16px}
+ body.kc-home-screen .kc-exact-event-image{height:175px}
+ body.kc-home-screen .kc-exact-event-copy{padding:13px 16px}
+ body.kc-home-screen .kc-exact-event-copy b{font-size:18px}
+ body.kc-home-screen .kc-exact-event-copy small{font-size:13px}
+ body.kc-home-screen .kc-exact-friends{min-height:96px;padding:14px 20px}
+ body.kc-home-screen .kc-exact-friend-stack span,body.kc-home-screen .kc-exact-friend-stack b{width:48px;height:48px}
+ body.kc-home-screen .kc-exact-friend-copy strong{font-size:15px}
+ body.kc-home-screen .kc-exact-update-row{gap:14px}
+ body.kc-home-screen .kc-exact-update{min-height:98px;padding:14px;gap:12px}
+ body.kc-home-screen .kc-exact-update-icon{width:42px;height:42px;flex-basis:42px;font-size:21px}
+ body.kc-home-screen .kc-exact-update b{font-size:14px}
+ body.kc-home-screen .kc-exact-update small{font-size:12px}
+ body.kc-home-screen .kc-exact-made{font-size:30px;margin-top:38px}
+ body.kc-home-screen .kc-mobile-dock{max-width:880px!important;bottom:18px!important}
+}
+@media(min-width:901px) and (max-width:1200px){
+ body.kc-home-screen .kc-exact-home{max-width:900px}
+ body.kc-home-screen .kc-exact-hero{height:210px}
+}
