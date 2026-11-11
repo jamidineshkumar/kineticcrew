@@ -7,6 +7,18 @@ document.addEventListener('click',e=>{const choice=e.target.closest('[data-set-t
 // Install action sits directly below Sign In and above the audition prompt.
 let installPrompt=null;
 window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;});
+document.addEventListener('click',async event=>{
+ const trigger=event.target.closest('[data-kc-install]');
+ if(!trigger)return;
+ event.preventDefault();
+ if(installPrompt){
+  trigger.disabled=true;trigger.textContent='Opening installer…';
+  try{installPrompt.prompt();const choice=await installPrompt.userChoice;if(choice?.outcome==='accepted'){trigger.textContent='App installed';}else{trigger.disabled=false;trigger.textContent='↓ Install app';}}catch{trigger.disabled=false;trigger.textContent='↓ Install app';}
+  installPrompt=null;return;
+ }
+ const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+ window.alert(isIOS?'To install Kinetic Crew: tap Share, then Add to Home Screen.':'To install Kinetic Crew: open your browser menu (⋮), then choose Install app or Add to Home screen.');
+});
 function addInstallAction(){
  const actions=document.querySelector('.kc-welcome-actions');
  if(!actions||document.getElementById('kcInstallApp'))return;
