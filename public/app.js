@@ -131,7 +131,7 @@ function publicProfilePage(){
  const photo=p.avatar_url||'';
  const job=p.profession||p.designation||p.occupation||(founder?'Founder & President':'Kinetic Crew Member');
  return '<div class="kc-reference-profile kc-public-reference-profile '+(founder?'is-founder':'')+'">'+
- '<section class="kc-profile-hero">
+ '<section class="kc-profile-hero">'+
  '<div class="kc-profile-hero-actions"><button class="kc-profile-back" data-view="people" aria-label="Back to crew">‹</button><div class="kc-profile-hero-right">'+(self?'<button class="kc-profile-edit-button" data-view="profile">Edit profile</button>':'<button type="button" class="kc-profile-edit-button kc-follow-action" data-follow="'+esc(p.auth_id)+'" data-following="'+(following?'true':'false')+'">'+(following?'Following':'Follow')+'</button>')+'</div></div>'+
  '<div class="kc-profile-identity">'+(photo?'<img class="kc-public-profile-avatar" src="'+esc(photo)+'" alt="'+esc(p.name||'Crew member')+' profile photo">':'<span class="kc-public-profile-avatar">'+esc(initials(p.name||p.email))+'</span>')+
  '<h1>'+esc(p.name||'Kinetic Crew Member').toUpperCase()+'</h1><p>@'+esc(p.username||String(p.email||'crew-member').split('@')[0])+'</p><span class="kc-profile-role">'+(founder?'FOUNDER / SUPER ADMIN':esc(String(job).toUpperCase()))+'</span></div></section>'+
