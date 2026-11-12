@@ -24,3 +24,6 @@
 @keyframes kc-more-ad-progress{to{transform:scaleX(1)}}
 @media(max-width:560px){.kc-more-event-ads{min-height:278px;margin-bottom:30px}.kc-more-ad-slide{padding:17px}.kc-more-ad-copy{max-width:94%}.kc-more-ad-copy h2{font-size:clamp(24px,7vw,32px)}.kc-more-ad-copy p{max-width:90%}}
 @media(prefers-reduced-motion:reduce){.kc-more-ad-slide,.kc-more-ad-slide:before,.kc-more-ad-dots i,.kc-more-ad-progress i{animation:none!important}.kc-more-ad-slide{opacity:0;visibility:hidden;transform:none}.kc-more-ad-slide:first-child{opacity:1;visibility:visible}.kc-more-ad-dots i:first-child{background:#ff946f}.kc-more-ad-progress{display:none}}
+
+/* The former intro container now hosts the full-height live event showcase. */
+.kc-more-logo-wrap.kc-more-intro.kc-more-event-ads-host{height:auto!important;min-height:0!important;max-height:none!important;display:block!important;overflow:visible!important;margin:10px 0 28px!important;padding:0!important;border:0!important;background:none!important}
