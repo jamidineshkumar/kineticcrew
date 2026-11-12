@@ -22,3 +22,12 @@
 html[data-theme="light"] .notice-category-tabs{background:rgba(20,25,30,.025)}
 html[data-theme="light"] .notice-category-tabs button.active{color:#272a30}
 html[data-theme="light"] .kc-nav-signout,html[data-theme="light"] .kc-more-signout{color:#292b30}
+
+/* Personal inbox clear + administrator global notification removal */
+#clearAllNotifications{border-color:rgba(255,145,125,.34);color:var(--text,#f4f4f5)}
+#clearAllNotifications:hover{background:rgba(255,120,100,.1);border-color:rgba(255,145,125,.55)}
+.notice-delete-button{position:absolute;right:12px;top:12px;z-index:2;display:grid;place-items:center;width:30px;height:30px;padding:0;border:1px solid rgba(255,112,91,.32);border-radius:10px;background:rgba(255,112,91,.1);color:#ff9b87;font-size:20px;line-height:1;cursor:pointer}
+.notice-delete-button:hover{background:rgba(255,112,91,.2);border-color:rgba(255,112,91,.58)}
+.notice-delete-button:disabled{opacity:.45;cursor:wait}
+.notification-item:has(.notice-delete-button) .notification-copy{padding-right:26px}
+@media(max-width:600px){.notice-actions{flex-wrap:wrap}.notice-actions #clearAllNotifications,.notice-actions #markAllRead{min-height:38px;padding-inline:10px;font-size:11px}.notice-delete-button{right:8px;top:8px;width:28px;height:28px}}
