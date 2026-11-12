@@ -1,0 +1,105 @@
+
+/* Homepage hero and dock refinement — remove kicker, improve rhythm and fit. */
+@media(max-width:900px){
+ body.kc-home-screen .kc-home-greeting{
+  align-items:center!important;gap:12px!important;
+  min-height:144px!important;margin:0 2px 24px!important;
+  padding:8px 2px 8px 4px!important;
+ }
+ body.kc-home-screen .kc-home-greeting-copy{flex:1 1 auto!important;min-width:0!important}
+ body.kc-home-screen .kc-home-greeting-kicker{display:none!important}
+ body.kc-home-screen .kc-home-greeting h1{
+  font-size:clamp(27px,7.1vw,36px)!important;
+  line-height:.99!important;letter-spacing:-.06em!important;
+  margin:0!important;max-width:100%!important;
+ }
+ body.kc-home-screen .kc-home-greeting-lead{
+  margin-top:9px!important;line-height:1.35!important;
+ }
+ body.kc-home-screen .kc-home-greeting-mark{
+  flex:0 0 98px!important;width:98px!important;height:98px!important;
+  min-width:98px!important;min-height:98px!important;
+  padding:5px!important;border-radius:28px!important;
+  transform:none!important;overflow:hidden!important;
+ }
+ body.kc-home-screen .kc-home-greeting-mark .kc-home-greeting-logo,
+ body.kc-home-screen .kc-home-greeting-mark .kc-brand-mark{
+  display:block!important;width:100%!important;height:100%!important;
+  min-width:0!important;min-height:0!important;max-width:100%!important;max-height:100%!important;
+  object-fit:contain!important;object-position:center!important;
+  margin:0!important;transform:none!important;border-radius:21px!important;
+ }
+}
+@media(max-width:390px){
+ body.kc-home-screen .kc-home-greeting{gap:9px!important;min-height:138px!important}
+ body.kc-home-screen .kc-home-greeting-mark{
+  flex-basis:88px!important;width:88px!important;height:88px!important;
+  min-width:88px!important;min-height:88px!important;border-radius:25px!important;
+ }
+ body.kc-home-screen .kc-home-greeting h1{font-size:27px!important;line-height:1!important}
+}
+
+/* Dock buttons use the same restrained frosted graphite treatment as menu controls. */
+@media(max-width:900px){
+ #kcMobileDock.kc-mobile-dock{
+  height:78px!important;min-height:78px!important;max-height:78px!important;
+  padding:6px!important;gap:5px!important;border-radius:27px!important;
+  background:rgba(25,27,30,.92)!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.09)!important;
+  -webkit-backdrop-filter:blur(26px) saturate(145%)!important;
+  backdrop-filter:blur(26px) saturate(145%)!important;
+ }
+ #kcMobileDock .kc-dock-home,#kcMobileDock .kc-dock-group-item{
+  height:64px!important;max-height:64px!important;gap:3px!important;
+  border:1px solid rgba(255,255,255,.075)!important;border-radius:20px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025))!important;
+  color:rgba(247,245,244,.82)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 3px 9px rgba(0,0,0,.12)!important;
+ }
+ #kcMobileDock .dock-icon{
+  width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;
+  flex:0 0 34px!important;border-radius:12px!important;
+  background:rgba(255,255,255,.035)!important;color:inherit!important;box-shadow:none!important;
+ }
+ #kcMobileDock .dock-icon svg{width:26px!important;height:26px!important}
+ #kcMobileDock .dock-label{font-size:9px!important;line-height:12px!important;height:12px!important}
+ #kcMobileDock .kc-dock-home.active,#kcMobileDock .kc-dock-group-item.active{
+  background:linear-gradient(145deg,rgba(255,174,139,.23),rgba(191,132,192,.19),rgba(117,137,203,.16))!important;
+  border-color:rgba(235,185,164,.28)!important;color:#fff!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 4px 13px rgba(0,0,0,.17)!important;
+ }
+ #kcMobileDock .kc-dock-home.active .dock-icon,
+ #kcMobileDock .kc-dock-group-item.active .dock-icon{
+  background:rgba(255,255,255,.12)!important;color:#fff!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12)!important;
+ }
+}
+@media(max-width:380px){
+ #kcMobileDock.kc-mobile-dock{height:74px!important;min-height:74px!important;max-height:74px!important}
+ #kcMobileDock .kc-dock-home,#kcMobileDock .kc-dock-group-item{height:62px!important;max-height:62px!important}
+ #kcMobileDock .dock-icon{width:31px!important;height:31px!important;min-width:31px!important;min-height:31px!important;flex-basis:31px!important}
+}
+html[data-theme="light"] #kcMobileDock.kc-mobile-dock{
+ background:rgba(246,247,249,.94)!important;border-color:rgba(45,48,56,.13)!important;
+ box-shadow:0 10px 26px rgba(35,39,48,.14),inset 0 1px 0 #fff!important;
+}
+html[data-theme="light"] #kcMobileDock .kc-dock-home,
+html[data-theme="light"] #kcMobileDock .kc-dock-group-item{
+ background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(235,237,241,.82))!important;
+ border-color:rgba(43,47,56,.09)!important;color:#555b65!important;
+ box-shadow:inset 0 1px 0 #fff,0 2px 7px rgba(32,37,46,.07)!important;
+}
+html[data-theme="light"] #kcMobileDock .kc-dock-home.active,
+html[data-theme="light"] #kcMobileDock .kc-dock-group-item.active{
+ background:linear-gradient(145deg,rgba(255,189,159,.42),rgba(213,179,220,.36),rgba(171,186,235,.32))!important;
+ border-color:rgba(144,112,151,.22)!important;color:#302a35!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 3px 9px rgba(45,42,57,.09)!important;
+}
+html[data-theme="light"] #kcMobileDock .kc-dock-home.active .dock-icon,
+html[data-theme="light"] #kcMobileDock .kc-dock-group-item.active .dock-icon{
+ background:rgba(255,255,255,.62)!important;color:#342d3b!important;
+}
+html[data-theme="light"] #kcMobileDock .dock-label{color:#555b65!important}
+html[data-theme="light"] #kcMobileDock .kc-dock-home.active .dock-label,
+html[data-theme="light"] #kcMobileDock .kc-dock-group-item.active .dock-label{color:#302a35!important}
