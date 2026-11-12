@@ -709,7 +709,7 @@ function memberActionRingMarkup(memberId,memberRole,memberName){
  if(canManage&&memberRole!=='super_admin')actions.push([blocked?'unblock':'block',blocked?'↗':'⊘',blocked?'Unblock member':'Block member']);
  if(canManage&&memberRole!=='super_admin')actions.push(['delete','⌫','Delete member']);
  const buttons=actions.map(([action,icon,label],index)=>{
-  const angle=(360*index)/actions.length;
+  const angle=actions.length===1?0:(-90+(180*index)/(actions.length-1));
   const attrs='style="--action-angle:'+angle+'deg"';
   return action==='delete'?'<button type="button" class="kc-member-action kc-member-action-delete" '+attrs+' data-member-remove="'+esc(memberId)+'" data-member-name="'+esc(memberName||'Crew member')+'" aria-label="'+esc(label)+'" title="'+esc(label)+'"><span>'+icon+'</span><small>'+esc(label)+'</small></button>':'<button type="button" class="kc-member-action kc-member-action-'+action+'" '+attrs+' data-member-action="'+action+'" data-member-id="'+esc(memberId)+'" data-member-name="'+esc(memberName||'Crew member')+'" aria-label="'+esc(label)+'" title="'+esc(label)+'"><span>'+icon+'</span><small>'+esc(label)+'</small></button>';
  }).join('');
