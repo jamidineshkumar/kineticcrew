@@ -50,3 +50,8 @@
  .kc-brand-editor-actions{grid-template-columns:1fr 1fr}
 }
 @media(prefers-reduced-motion:reduce){.kc-brand-editor-stage,.kc-brand-editor-drop,.kc-brand-mode,.kc-brand-editor-actions button{transition:none!important}}
+
+.kc-brand-editor-stage.is-drop-target:after{border-color:rgba(255,208,158,.7);box-shadow:inset 0 0 30px rgba(255,159,83,.13)}
+.kc-brand-editor-status{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--panel2)}
+.kc-brand-editor-status:before{content:"";width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#8bd5a6;box-shadow:0 0 12px rgba(139,213,166,.5)}
+.kc-brand-editor-stage.has-image .kc-brand-editor-hint{background:rgba(9,10,13,.72);backdrop-filter:blur(10px)}
