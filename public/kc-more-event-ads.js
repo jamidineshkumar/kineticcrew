@@ -16,6 +16,8 @@ function render(root){
   ...recent.slice(0,3).map(e=>({type:'event',item:e,past:true}))
  ];
  if(slides.length===2)slides.push({type:'community'});
+ // User-requested carousel order: exchange slide 2 and slide 3.
+ if(slides.length>=3)[slides[1],slides[2]]=[slides[2],slides[1]];
  const renderSlide=(s,i)=>{
   const n=String(i+1).padStart(2,'0'),total=String(slides.length).padStart(2,'0');
   if(s.type==='brand')return '<article class="kc-brand-intro-slide is-active" data-slide="'+i+'">'+(s.eyebrow?'<small>'+safe(s.eyebrow)+'</small>':'')+'<h2>'+s.title+'</h2>'+(s.sub?'<p>'+safe(s.sub)+'</p>':'')+(s.tag?'<strong>'+safe(s.tag)+'</strong>':'')+'</article>';
