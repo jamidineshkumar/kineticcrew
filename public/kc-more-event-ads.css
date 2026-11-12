@@ -131,3 +131,24 @@
  .kc-brand-intro-glow{animation:none!important}
  .kc-brand-intro-slide{transition:none!important}
 }
+
+/* Dynamic event and announcement slides within the same 4-second crew intro. */
+.kc-brand-intro-slide .kc-brand-content-title{
+ max-width:100%;font-size:clamp(25px,6.2vw,39px)!important;line-height:1.02!important;
+ letter-spacing:-.055em!important;overflow-wrap:anywhere;
+}
+.kc-brand-intro-slide p{
+ display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.kc-brand-intro-cta{
+ display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:36px;
+ margin-top:5px;padding:0 15px;border:1px solid rgba(244,157,197,.35);border-radius:999px;
+ background:linear-gradient(100deg,rgba(228,69,145,.25),rgba(66,190,197,.18));
+ color:#fff;font-size:9px;font-weight:900;letter-spacing:.1em;
+}
+.kc-brand-intro-cta span{color:#f5a66e;font-size:15px}
+@media(max-width:560px){
+ .kc-brand-intro-slide .kc-brand-content-title{font-size:clamp(25px,7vw,34px)!important}
+ .kc-brand-intro-slide p{-webkit-line-clamp:2;font-size:10px}
+ .kc-brand-intro-cta{min-height:32px;font-size:8px}
+}
