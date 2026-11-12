@@ -39,3 +39,16 @@
 .kc-global-search-row{display:flex!important;align-items:stretch!important;gap:0!important}
 .kc-global-search-row .kc-global-search-field{width:100%!important;flex:1 1 100%!important}
 .kc-search-scan-button{display:none!important}
+
+/* App feature search + recently searched */
+.kc-search-recent{padding:8px 2px 4px}
+.kc-search-recent-head{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 10px}
+.kc-search-recent-head b{font-size:12px;letter-spacing:.01em}
+.kc-search-recent-head button{border:0;background:transparent;color:var(--muted,#aaa);font:inherit;font-size:11px}
+.kc-search-recent-chips{display:flex;flex-wrap:wrap;gap:8px}
+.kc-search-recent-chips button{display:inline-flex;align-items:center;min-height:36px;padding:0 12px;border:1px solid #ffffff20;border-radius:999px;background:#ffffff09;color:inherit;font:inherit;font-size:12px}
+.kc-search-recent-chips button:active{background:#ffffff18}
+.kc-search-search-hint{padding:20px 10px 14px}
+.kc-search-filter-row button[data-search-filter="features"]{border-color:#d4b47b55}
+.kc-search-result-type{color:#e6c58d}
+@media(max-width:600px){.kc-search-dialog{margin-top:3vh}.kc-search-recent-chips{gap:7px}.kc-search-recent-chips button{min-height:34px;font-size:11px}}
