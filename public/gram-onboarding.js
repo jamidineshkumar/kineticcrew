@@ -28,8 +28,8 @@
     if(node){node.textContent=message;node.classList.toggle('is-error',isError);}
   }
   async function persistOptOut() {
-    if (!dontShow) return true;
-    if (saved) return true;
+    if (!dontShow && !saved) return true;
+    if (saved && dontShow) return true;
     if (saving) return window.kgPreferenceSavePromise;
     saving = true;
     setStatus('Saving to your account…');
@@ -37,12 +37,12 @@
       try {
         if (!activeUser) activeUser = await getUser();
         if (!activeUser || !window.kcSupabase?.auth?.updateUser) throw new Error('Sign in again to save this preference.');
-        const metadata = {...(activeUser.user_metadata||{}),[KEY]:true};
+        const metadata = {...(activeUser.user_metadata||{}),[KEY]:dontShow};
         const {data,error} = await window.kcSupabase.auth.updateUser({data:metadata});
         if (error) throw error;
         activeUser = data.user || {...activeUser,user_metadata:metadata};
-        saved = true;
-        setStatus('Saved to your account · This tutorial stays hidden on your devices.');
+        saved = dontShow;
+        setStatus(dontShow ? 'Saved to your account · This tutorial stays hidden on your devices.' : 'Preference updated · The tutorial can appear again.');
         return true;
       } catch(error) {
         console.warn('Could not save Gram tutorial preference:',error);
@@ -60,7 +60,7 @@
     root.querySelector('#kgDontShow').addEventListener('change', async event => {
       dontShow = event.target.checked;
       if (dontShow) await persistOptOut();
-      else { saved=false; setStatus('Preference unchanged. The tutorial may appear again next time.'); }
+      else { await persistOptOut(); }
     });
     root.querySelector('[data-kg-next]').addEventListener('click', advance);
     root.querySelector('[data-kg-back]').addEventListener('click', () => { if(index>0){index--;render();} });
