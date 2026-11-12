@@ -279,7 +279,7 @@ async function syncCrewSnapshot(){
    api('bootstrap'),
    rpc('crew_event_metadata',{}).catch(()=>({data:[]})),
    featureApi('list','rehearsals',{}).catch(()=>S.featureItems.rehearsals||[]),
-   client.from('crew_social_posts').select('*').order('created_at',{ascending:false}).limit(100).catch(()=>({data:S.socialPosts||[],error:null}))
+   Promise.resolve().then(()=>client.from('crew_social_posts').select('*').order('created_at',{ascending:false}).limit(100)).catch(()=>({data:S.socialPosts||[],error:null}))
   ]);
   if(snapshot?.user)S.user={...S.user,...snapshot.user};
   const eventMeta=new Map((Array.isArray(metaResult?.data)?metaResult.data:[]).map(item=>[String(item.id),item]));
@@ -288,8 +288,10 @@ async function syncCrewSnapshot(){
   const previous=kcKnownAnnouncementIds||new Set((S.announcements||[]).map(a=>String(a.id)));
   const nextPostRows=postRows.error?(S.socialPosts||[]):(postRows.data||[]);
   const previousPostIds=new Set((S.socialPosts||[]).map(p=>String(p.id)));
-  const incomingAnnouncements=rows.filter(a=>!previous.has(String(a.id)));
-  const incomingEvents=nextEvents.filter(e=>!new Set((S.events||[]).map(x=>String(x.id))).has(String(e.id)));
+  const previousAnnouncements=new Map((S.announcements||[]).map(a=>[String(a.id),a]));
+  const incomingAnnouncements=rows.filter(a=>{const old=previousAnnouncements.get(String(a.id));return !old||JSON.stringify(old)!==JSON.stringify(a);});
+  const previousEvents=new Map((S.events||[]).map(x=>[String(x.id),x]));
+  const incomingEvents=nextEvents.filter(e=>{const old=previousEvents.get(String(e.id));return !old||JSON.stringify(old)!==JSON.stringify(e);});
   const incomingPosts=nextPostRows.filter(p=>!previousPostIds.has(String(p.id)));
   kcKnownAnnouncementIds=new Set(rows.map(a=>String(a.id)));
   const changed=JSON.stringify(S.events)!==JSON.stringify(nextEvents)||JSON.stringify(S.announcements)!==JSON.stringify(rows)||JSON.stringify(S.members)!==JSON.stringify(nextMembers)||JSON.stringify(S.socialPosts)!==JSON.stringify(nextPostRows);
