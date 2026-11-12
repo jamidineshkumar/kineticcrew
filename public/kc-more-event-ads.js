@@ -36,9 +36,35 @@ function render(root){
   return '<article class="kc-more-ad-slide" style="'+style+'"><div class="kc-more-ad-top"><span class="kc-more-ad-kicker">KINETIC CREW · '+safe(category)+'</span><span class="kc-more-ad-count">'+String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0')+'</span></div><div class="kc-more-ad-bottom"><div class="kc-more-ad-copy"><span class="kc-more-ad-label">'+(past?'RECENT CREW EVENT':e.featured?'FEATURED EVENT':'UPCOMING EVENT')+'</span><h2>'+safe(e.title)+'</h2><p>'+safe(subtitle)+'</p><button class="kc-more-ad-cta" type="button" data-open-event="'+safe(e.id)+'">'+(e.registered?'View your ticket':'Explore event')+' <span>→</span></button></div></div></article>';
  }).join('');
  root.innerHTML='<style>'+keyframes+dotFrames+'</style><div class="kc-more-event-ads" aria-label="Kinetic Crew events and promotions"><div class="kc-more-ad-track">'+markup+'</div><div class="kc-more-ad-dots" aria-hidden="true">'+slides.map((_,i)=>'<i style="--kc-ad-duration:'+cycle+'s;animation-name:kcMoreAdDot'+i+';animation-duration:'+cycle+'s;animation-delay:0s"></i>').join('')+'</div><div class="kc-more-ad-progress"><i style="--kc-ad-duration:'+cycle+'s"></i></div></div>';
+ const slideNodes=[...root.querySelectorAll('.kc-more-ad-slide')];
+ const dotNodes=[...root.querySelectorAll('.kc-more-ad-dots i')];
+ let activeIndex=0;
+ const showSlide=(index)=>{
+  activeIndex=((index%slideNodes.length)+slideNodes.length)%slideNodes.length;
+  slideNodes.forEach((node,i)=>{
+   const active=i===activeIndex;
+   node.classList.toggle('is-active',active);
+   node.setAttribute('aria-hidden',active?'false':'true');
+  });
+  dotNodes.forEach((node,i)=>node.classList.toggle('is-active',i===activeIndex));
+ };
+ if(slideNodes.length){
+  showSlide(0);
+  if(root._kcAdsTimer)clearInterval(root._kcAdsTimer);
+  root._kcAdsTimer=setInterval(()=>showSlide(activeIndex+1),5000);
+ }
  root.dataset.kcAdsReady='yes';
 }
-function scan(){document.querySelectorAll('.kc-more-intro').forEach(node=>{if(!node.parentElement)return;render(node);if(node.dataset.kcAdsReady==='yes')node.classList.add('kc-more-event-ads-host');});}
+function scan(){
+ document.querySelectorAll('.kc-more-event-ads').forEach(node=>{
+  if(!node.isConnected&&node._kcAdsTimer){clearInterval(node._kcAdsTimer);node._kcAdsTimer=null;}
+ });
+ document.querySelectorAll('.kc-more-intro').forEach(node=>{
+  if(!node.parentElement)return;
+  render(node);
+  if(node.dataset.kcAdsReady==='yes')node.classList.add('kc-more-event-ads-host');
+ });
+}
 const start=()=>{scan();new MutationObserver(scan).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
