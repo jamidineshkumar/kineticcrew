@@ -1492,6 +1492,15 @@ async function boot(){
   let pendingProfileId=incomingProfile||localStorage.getItem('kc_pending_profile')||'';
   if(incomingProfile){try{localStorage.setItem('kc_pending_profile',incomingProfile);}catch{}const cleanUrl=new URL(location.href);cleanUrl.searchParams.delete('kc_profile');history.replaceState({},'',cleanUrl.pathname+cleanUrl.search+cleanUrl.hash);}
   if(!session||!session.user){location.replace(window.kcPath('login.html'));return;}
+  const accessCheck=await withTimeout(client.rpc('crew_assert_not_blocked',{}),10000,'Could not verify your Kinetic Crew account status.');
+  if(accessCheck.error){
+   if(/blocked|suspended/i.test(accessCheck.error.message||'')){
+    await auth.signOut({scope:'local'}).catch(()=>{});
+    location.replace(window.kcPath('login.html?blocked=1'));
+    return;
+   }
+   throw accessCheck.error;
+  }
   rpc('crew_profile_login_touch',{}).catch(error=>console.warn('Could not record today’s profile login:',error));
   const saved=readPageState();
   const incomingShare=new URLSearchParams(location.search);
@@ -1508,6 +1517,18 @@ async function boot(){
    await withTimeout(refresh(),15000,'Crew data is taking too long to load. Please retry.');
   }catch(error){
    if(!restoreOffline(session.user))throw error;
+  }
+  // Re-check access when the app returns to the foreground; a newly blocked account
+  // is signed out on this device even if its access token has not expired yet.
+  if(!window.__kcBlockWatch){
+   window.__kcBlockWatch=setInterval(async()=>{
+    if(!S.user||document.hidden)return;
+    try{const result=await client.rpc('crew_assert_not_blocked',{});if(result.error&&/blocked|suspended/i.test(result.error.message||'')){await auth.signOut({scope:'local'});location.replace(window.kcPath('login.html?blocked=1'));}}
+    catch(error){console.warn('Crew account status re-check failed:',error);}
+   },30000);
+   document.addEventListener('visibilitychange',async()=>{
+    if(!document.hidden&&S.user){try{const result=await client.rpc('crew_assert_not_blocked',{});if(result.error&&/blocked|suspended/i.test(result.error.message||'')){await auth.signOut({scope:'local'});location.replace(window.kcPath('login.html?blocked=1'));}}catch(error){console.warn('Crew access check failed:',error);}}
+   });
   }
   // Render the authenticated shell before optional community queries. A slow feed must
   // never hold the entire app on its launch screen.
