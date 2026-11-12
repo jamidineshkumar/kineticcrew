@@ -12,9 +12,9 @@
  const setImage=img=>{
   if(!(img instanceof HTMLImageElement))return;
   const src=img.getAttribute('src')||'';
-  if(activeUrl&&/kinetic-crew-logo\.(?:svg|jpe?g|png|webp)(?:[?#]|$)/i.test(src)&&src!==activeUrl){
-   img.dataset.kcBrandManaged='true';img.src=activeUrl;
-  }
+  const isBrandImage=/kinetic-crew-logo\.(?:svg|jpe?g|png|webp)(?:[?#]|$)/i.test(src)||img.classList.contains('brand-logo')||img.dataset.kcBrandManaged==='true';
+  if(activeUrl&&isBrandImage&&src!==activeUrl){img.dataset.kcBrandManaged='true';img.src=activeUrl;}
+
  };
  const setLink=(selector,url)=>{
   document.querySelectorAll(selector).forEach(link=>{if(link.href!==url)link.href=url;if(link.rel==='icon'||link.rel==='shortcut icon'||link.rel==='apple-touch-icon')link.type='image/png';});
