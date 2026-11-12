@@ -25,3 +25,28 @@
 #uploadBrandLogo{min-height:48px;width:100%;max-width:360px}
 #uploadBrandLogo:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:480px){.kc-brand-editor-layout{grid-template-columns:minmax(0,1fr) 84px;gap:10px}.kc-brand-current img{width:68px;height:68px}.kc-brand-editor-tools{padding:13px}.kc-brand-mode,.kc-brand-editor-actions button{font-size:11px}}
+
+/* Refined touch-first logo studio */
+.kc-brand-editor-stage{position:relative;isolation:isolate;transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+.kc-brand-editor-stage:after{content:"";position:absolute;inset:12%;border:1px dashed rgba(255,255,255,.12);border-radius:14px;pointer-events:none}
+.kc-brand-editor-stage.is-drop-target{border-color:#f2a15d;box-shadow:0 0 0 4px rgba(242,161,93,.16),0 18px 42px rgba(0,0,0,.24);transform:scale(1.01)}
+.kc-brand-editor-drop{position:absolute;inset:0;display:grid;place-items:center;padding:18px;text-align:center;background:rgba(13,14,18,.82);color:#ffe0bf;font-size:11px;font-weight:800;letter-spacing:.16em;opacity:0;pointer-events:none;transition:opacity .18s ease}
+.kc-brand-editor-stage.is-drop-target .kc-brand-editor-drop{opacity:1}
+.kc-brand-editor-hint{z-index:2;max-width:calc(100% - 20px);overflow:hidden;text-overflow:ellipsis}
+.kc-brand-editor-status{min-height:18px;margin:2px 0 14px;color:var(--muted);font-size:11px;line-height:1.5;overflow-wrap:anywhere}
+.kc-brand-editor-stage:focus-within{outline:2px solid rgba(242,161,93,.6);outline-offset:3px}
+.kc-brand-editor-tools{box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 10px 24px rgba(0,0,0,.08)}
+.kc-brand-mode,.kc-brand-editor-actions button{transition:background .18s ease,border-color .18s ease,transform .18s ease}
+.kc-brand-mode:active,.kc-brand-editor-actions button:active{transform:scale(.98)}
+#brandLogoZoom{height:28px;cursor:pointer}
+#brandLogoCanvas{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+@media(max-width:480px){
+ .kc-brand-editor-layout{grid-template-columns:minmax(0,1fr) 76px;align-items:start}
+ .kc-brand-editor-stage{min-width:0}
+ .kc-brand-current{padding-top:12px}
+ .kc-brand-current img{width:64px;height:64px}
+ .kc-brand-current span{font-size:8px;line-height:1.4}
+ .kc-brand-editor-hint{font-size:8px;letter-spacing:.07em}
+ .kc-brand-editor-actions{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){.kc-brand-editor-stage,.kc-brand-editor-drop,.kc-brand-mode,.kc-brand-editor-actions button{transition:none!important}}
