@@ -34,3 +34,8 @@
 .kc-global-search-field>span{display:none!important}
 .kc-global-search-field{gap:0!important}
 .kc-global-search-field input{padding-left:0!important}
+
+/* Search is intentionally a single clean field; QR scanning lives on the profile page. */
+.kc-global-search-row{display:flex!important;align-items:stretch!important;gap:0!important}
+.kc-global-search-row .kc-global-search-field{width:100%!important;flex:1 1 100%!important}
+.kc-search-scan-button{display:none!important}
