@@ -29,8 +29,8 @@ const FEATURE_INDEX=[
  {view:'brand-settings',label:'Brand Identity',detail:'Manage Kinetic Crew branding',roles:['super_admin']},
  {view:'new-event',label:'Create Event',detail:'Publish a crew event',roles:['admin','super_admin']}
 ];
-function recentSearches(){try{return JSON.parse(localStorage.getItem(RECENT_KEY)||'[]').filter(x=>typeof x==='string').slice(0,6);}catch{return [];}}
-function rememberSearch(value){const q=String(value||'').trim();if(q.length<2)return;const rows=[q,...recentSearches().filter(x=>norm(x)!==norm(q))].slice(0,6);try{localStorage.setItem(RECENT_KEY,JSON.stringify(rows));}catch{}}
+function recentSearches(){try{return JSON.parse(localStorage.getItem(RECENT_KEY)||'[]').filter(x=>typeof x==='string').slice(0,5);}catch{return [];}}
+function rememberSearch(value){const q=String(value||'').trim();if(q.length<2)return;const rows=[q,...recentSearches().filter(x=>norm(x)!==norm(q))].slice(0,5);try{localStorage.setItem(RECENT_KEY,JSON.stringify(rows));}catch{}}
 
 function mount(){if(root)return;root=document.createElement('section');root.id='kcGlobalSearch';root.className='kc-search-overlay';root.hidden=true;root.innerHTML='<div class="kc-search-dialog" role="dialog" aria-modal="true" aria-label="Search Kinetic Crew"><header><b>Search Kinetic Crew</b><button type="button" id="kcSearchClose" aria-label="Close search">×</button></header><div class="kc-global-search-row"><label class="kc-global-search-field"><input id="kcGlobalSearchInput" type="search" placeholder="Search people, events, posts, app features…" autocomplete="off" aria-label="Search Kinetic Crew"></label></div><div class="kc-global-search-results" id="kcGlobalSearchResults" hidden></div><small class="kc-search-hint">Search your crew workspace · Esc to close</small></div>';document.body.appendChild(root);
 scannerRoot=document.createElement('div');scannerRoot.className='kc-qr-scanner';scannerRoot.id='kcQrScanner';scannerRoot.hidden=true;
