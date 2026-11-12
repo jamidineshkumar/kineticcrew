@@ -102,3 +102,30 @@
 .kc-single-profile .kc-liquid-profile-copy .kc-liquid-bio{max-width:390px;margin:15px auto 0;font-size:12px;line-height:1.7}
 .kc-single-profile .kc-profile-editor{width:min(100%,520px);margin:0 auto}
 @media(max-width:640px){.kc-single-profile{min-height:calc(100svh - 125px);padding:14px 3px 28px}.kc-single-profile .kc-liquid-profile-card{width:100%;padding:15px 14px 27px;border-radius:25px}.kc-single-profile .kc-liquid-profile-photo{width:min(72%,250px);margin:26px auto 18px;border-radius:22px}.kc-single-profile .kc-liquid-profile-copy h1{font-size:29px}}
+
+/* Refined profile entrance: fluid, restrained, premium motion (no cartoon bounce). */
+.kc-single-profile{animation:kc-profile-stage-in .62s cubic-bezier(.2,.72,.18,1) both}
+.kc-single-profile .kc-liquid-profile-card{transform-origin:50% 42%;animation:kc-profile-card-in .82s cubic-bezier(.18,.78,.2,1) both;will-change:transform,opacity,filter}
+.kc-single-profile .kc-liquid-card-top{animation:kc-profile-top-in .58s .12s cubic-bezier(.2,.72,.18,1) both}
+.kc-single-profile .kc-liquid-profile-photo{animation:kc-profile-photo-in .9s .08s cubic-bezier(.16,.84,.24,1) both;will-change:transform,opacity,filter}
+.kc-single-profile .kc-liquid-profile-copy>*{animation:kc-profile-copy-in .58s cubic-bezier(.2,.72,.18,1) both}
+.kc-single-profile .kc-liquid-profile-copy>*:nth-child(1){animation-delay:.18s}
+.kc-single-profile .kc-liquid-profile-copy>*:nth-child(2){animation-delay:.24s}
+.kc-single-profile .kc-liquid-profile-copy>*:nth-child(3){animation-delay:.3s}
+.kc-single-profile .kc-single-profile-tags{animation:kc-profile-copy-in .58s .36s both}
+.kc-single-profile .kc-liquid-bio{animation:kc-profile-copy-in .58s .42s both}
+.kc-single-profile .kc-liquid-orb{animation:kc-profile-glow-in 1.1s .1s ease-out both}
+.kc-single-profile .kc-liquid-orb-cyan{animation-delay:.22s}
+.kc-single-profile .kc-profile-editor{animation:kc-profile-editor-in .65s .2s cubic-bezier(.2,.72,.18,1) both}
+.kc-single-profile .kc-profile-back,.kc-single-profile .kc-profile-share-button,.kc-single-profile .kc-profile-edit-button{transition:transform .24s ease,background .24s ease,border-color .24s ease}
+.kc-single-profile .kc-profile-back:active,.kc-single-profile .kc-profile-share-button:active,.kc-single-profile .kc-profile-edit-button:active{transform:scale(.94)}
+.kc-single-profile .kc-liquid-profile-photo img{transition:transform .8s cubic-bezier(.2,.7,.2,1),filter .5s ease}
+.kc-single-profile .kc-liquid-profile-card:hover .kc-liquid-profile-photo img{transform:scale(1.035)}
+@keyframes kc-profile-stage-in{from{opacity:0}to{opacity:1}}
+@keyframes kc-profile-card-in{0%{opacity:0;transform:translateY(26px) scale(.965);filter:blur(12px)}65%{opacity:1;filter:blur(0)}100%{transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes kc-profile-photo-in{0%{opacity:0;transform:translateY(18px) scale(.9);filter:blur(9px)}70%{opacity:1;filter:blur(0)}100%{transform:translateY(0) scale(1)}}
+@keyframes kc-profile-top-in{from{opacity:0;transform:translateY(-9px)}to{opacity:1;transform:translateY(0)}}
+@keyframes kc-profile-copy-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes kc-profile-glow-in{from{opacity:0;transform:scale(.72)}to{opacity:.25;transform:scale(1)}}
+@keyframes kc-profile-editor-in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.kc-single-profile,.kc-single-profile *{animation:none!important;transition:none!important}}
