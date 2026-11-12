@@ -180,7 +180,7 @@ body.kc-home-screen .kc-exact-home.kc-home-reference{max-width:650px!important;m
 .kc-home-user>span{display:grid!important;gap:3px!important}
 .kc-home-user small{font-size:10px!important;color:var(--home-muted)!important;letter-spacing:.01em!important}
 .kc-home-user b{font-size:14px!important;font-weight:650!important;color:var(--home-text)!important}
-.kc-home-theme-toggle{display:grid!important;place-items:center!important;width:42px!important;height:42px!important;flex:0 0 42px!important;border-radius:50%!important;border:1px solid var(--home-line)!important;background:var(--home-panel)!important;color:var(--home-text)!important;font-size:18px!important;box-shadow:0 6px 20px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.16)!important}
+.kc-home-theme-toggle{display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;min-width:42px!important;height:42px!important;padding:0 12px!important;border-radius:999px!important;border:1px solid var(--home-line)!important;background:var(--home-panel)!important;color:var(--home-text)!important;font-size:13px!important;font-weight:600!important;box-shadow:0 6px 20px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.16)!important}.kc-home-theme-toggle .theme-label{font-size:10px!important;white-space:nowrap!important}
 .kc-home-greeting{margin:0 2px 18px!important}
 .kc-home-greeting h1{margin:0!important;font-size:clamp(28px,7vw,36px)!important;line-height:1.05!important;letter-spacing:-.055em!important;font-weight:650!important;color:var(--home-text)!important}
 .kc-home-greeting p{margin:6px 0 0!important;font-size:13px!important;color:var(--home-muted)!important}
