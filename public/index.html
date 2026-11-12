@@ -45,7 +45,7 @@
     </aside>
     <div id="navShade" class="navshade"></div>
     <main>
-      <section id="app" class="content"><div class="kc-simple-loader" role="status" aria-live="polite"><span class="kc-loader-dot"></span><span>Opening Kinetic Crew</span><span class="kc-loader-dots" aria-hidden="true"><i></i><i></i><i></i></span></div></section>
+      <section id="app" class="content" aria-live="polite"></section>
       <footer><span><img class="brand-logo" src="https://raw.githubusercontent.com/jamidineshkumar/kineticcrew/main/kinetic-crew-logo.jpg" alt="Kinetic Crew" width="44" height="44" decoding="async" fetchpriority="high" onerror="this.onerror=null;this.src='kinetic-crew-logo.jpg';"> KINETIC CREW · BUILT TO MOVE TOGETHER</span><span>KINETIC CREW <b>v1.2.5</b></span></footer>
     </main>
   </div>
@@ -62,7 +62,7 @@
 window.addEventListener('error',function(e){
  if(e.filename&&/app\.js(?:\?|$)/.test(e.filename)){
   const root=document.getElementById('app');
-  if(root&&root.textContent.includes('Opening Kinetic Crew')){
+  if(root&&!root.children.length){
    root.innerHTML='<div class="kc-start-error" role="alert"><strong>Kinetic Crew could not start</strong><p>The app script failed to load. Please reload once. If this continues, contact the crew administrator.</p><button type="button" onclick="location.reload()">Reload app</button></div>';
   }
  }
