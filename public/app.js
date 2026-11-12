@@ -696,6 +696,7 @@ async function loadMemberActionState(){
 }
 function memberFavorite(id){return (S.memberFavorites||[]).includes(String(id));}
 async function toggleMemberFavorite(id){
+ await rpc('crew_assert_not_blocked',{});
  const key=String(id),exists=memberFavorite(key),table=client.from('crew_member_favorites');
  const result=exists?await table.delete().eq('owner_auth_id',S.user.auth_id).eq('favorite_auth_id',key):await table.upsert({owner_auth_id:S.user.auth_id,favorite_auth_id:key},{onConflict:'owner_auth_id,favorite_auth_id'});
  if(result.error)throw result.error;
@@ -712,6 +713,7 @@ function memberActionRingMarkup(memberId,memberRole,memberName){
 async function openDirectMessage(memberId){
  const id=String(memberId||'');if(!id||id===String(S.user?.auth_id))return;
  const person=(S.publicMembers||[]).concat(S.members||[]).find(m=>String(m.auth_id)===id)||{auth_id:id,name:'Crew member'};
+ await rpc('crew_assert_not_blocked',{});
  const safeId=value=>/^[a-zA-Z0-9-]{16,64}$/.test(String(value));
  if(!safeId(id)||!safeId(S.user.auth_id))throw Error('This member account ID is invalid.');
  $('#modalRoot').innerHTML='<div class="modalback kc-dm-backdrop" id="kcDmBackdrop"><section class="modal kc-dm-modal" role="dialog" aria-modal="true" aria-labelledby="kcDmTitle"><button type="button" class="iconbutton modalclose" id="kcDmClose" aria-label="Close message">×</button><span class="eyebrow">PRIVATE CREW CHAT</span><h2 id="kcDmTitle">'+esc(person.name||'Crew member')+'</h2><div class="kc-dm-thread" id="kcDmThread"><p class="hint">Loading conversation…</p></div><form id="kcDirectMessageForm" data-recipient-id="'+esc(id)+'"><textarea name="body" rows="2" maxlength="4000" placeholder="Write a message…" required></textarea><button type="submit" class="primary">Send message ↗</button></form></section></div>';
@@ -1314,6 +1316,7 @@ document.addEventListener('submit',async e=>{
   const body=String(new FormData(f).get('body')||'').trim(),recipientId=f.dataset.recipientId,button=f.querySelector('button[type="submit"]');
   if(!body)return;button.disabled=true;
   try{
+   await rpc('crew_assert_not_blocked',{});
    const {error}=await client.from('crew_direct_messages').insert({sender_id:S.user.auth_id,recipient_id:recipientId,body});
    if(error)throw error;f.reset();await refreshDirectMessageThread(recipientId);
   }catch(error){notice(error.message||'Could not send this message.');}
