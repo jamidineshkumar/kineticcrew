@@ -32,8 +32,8 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const action = String(body?.action || "");
     const targetId = String(body?.authId || "").trim();
-    if (!["block", "unblock"].includes(action)) return json({ error: "Choose block or unblock." }, 400);
-    if (!targetId || targetId.length > 128 || targetId === authData.user.id) return json({ error: "Choose a valid member account." }, 400);
+    if (!["list", "block", "unblock"].includes(action)) return json({ error: "Choose list, block or unblock." }, 400);
+    if (action !== "list" && (!targetId || targetId.length > 128 || targetId === authData.user.id)) return json({ error: "Choose a valid member account." }, 400);
 
     const admin = createClient(url, service, { auth: { persistSession: false, autoRefreshToken: false } });
     const [{ data: actor, error: actorError }, { data: target, error: targetError }] = await Promise.all([
@@ -41,6 +41,11 @@ Deno.serve(async (req) => {
       admin.from("crew_profiles").select("auth_id,name,role").eq("auth_id", targetId).maybeSingle(),
     ]);
     if (actorError || !actor || !["admin", "super_admin"].includes(actor.role)) return json({ error: "Admin access required." }, 403);
+    if (action === "list") {
+      const { data: blocked, error: listError } = await admin.from("crew_member_blocks").select("blocked_auth_id");
+      if (listError) throw listError;
+      return json({ ok: true, blocked: (blocked || []).map((row) => row.blocked_auth_id) });
+    }
     if (targetError || !target) return json({ error: "Crew member not found." }, 404);
     if (target.role === "super_admin") return json({ error: "A Super Admin account cannot be blocked or unblocked here." }, 403);
     if (actor.role === "admin" && target.role !== "member") return json({ error: "Admins can block or unblock members only. A Super Admin must manage Admin accounts." }, 403);
