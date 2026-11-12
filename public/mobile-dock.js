@@ -9,7 +9,7 @@
  const group=document.createElement('div');group.className='kc-dock-group';
  const items=[
   {view:'events',label:'Events',path:'<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/>'},
-  {view:'feed',label:'Kinetic Gram',path:'<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M7 16V8l5 5 5-5v8"/>'},
+  {view:'feed',label:'Kinetic Gram',path:'<defs><linearGradient id="kcDockKGradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff806b"/><stop offset=".52" stop-color="#d66bff"/><stop offset="1" stop-color="#7c8cff"/></linearGradient></defs><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M8 7v10M16 7l-8 5 8 5" stroke="url(#kcDockKGradient)" stroke-width="2.4"/>'},
   {search:true,label:'Search',path:'<circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/>'}
  ];
  group.innerHTML=items.map(item=>'<button type="button" class="kc-dock-group-item" '+(item.search?'data-search-open':'data-view="'+item.view+'"')+' aria-label="'+item.label+'" title="'+item.label+'"><span class="dock-icon">'+svg(item.path)+'</span><span class="dock-label">'+item.label+'</span></button>').join('');
