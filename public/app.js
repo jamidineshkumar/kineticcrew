@@ -105,9 +105,12 @@ function profileCover(url){return url?' style="background-image:url(&quot;'+esc(
 
 function profileCardBackMarkup(user,authId,username){
  const profileId=String(authId||'');
- const qrTarget=new URL(window.kcPath(''),location.origin);
- if(profileId)qrTarget.searchParams.set('kc_profile',profileId);
  const handle=String(username||'crew-member').replace(/^@/,'');
+ const qrTarget=new URL(window.kcPath('connect.html'),location.origin);
+ if(profileId)qrTarget.searchParams.set('id',profileId);
+ qrTarget.searchParams.set('u',handle);
+ qrTarget.searchParams.set('n',String(user?.name||'Kinetic Crew Member'));
+ if(user?.avatar_url)qrTarget.searchParams.set('p',String(user.avatar_url));
  const instagram='https://www.instagram.com/'+encodeURIComponent(handle)+'/';
  return '<section class="kc-profile-card-back" aria-label="Digital contact card">'+
  '<div class="kc-card-back-top"><span>KINETIC CREW</span><span>METALLIC ID</span></div>'+
