@@ -59,3 +59,11 @@ html[data-theme="light"] body.kc-home-screen .kc-home-greeting-mark{background:r
  body.kc-home-screen .kc-home-greeting-mark span{font-size:23px!important}
 }
 @media(prefers-reduced-motion:reduce){body.kc-home-screen .kc-home-greeting-mark{transform:none!important}}
+
+/* Home hero refinement: slightly larger logo artwork, remove secondary micro-copy. */
+body.kc-home-screen .kc-home-greeting-mark .kc-brand-mark{
+  display:block!important;width:116%!important;height:116%!important;
+  max-width:none!important;max-height:none!important;object-fit:contain!important;
+  flex:none!important;
+}
+body.kc-home-screen .kc-home-greeting-sub{display:none!important}
