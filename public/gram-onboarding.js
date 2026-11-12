@@ -11,38 +11,65 @@
     {eyebrow:'07 / CHATS',title:'Stay connected',body:'Use crew conversations to message people, coordinate plans and keep up with your community.',visual:'<div class="kg-demo-chat"><span>Hey, are we rehearsing today?</span><b>Yes — see you there!</b></div>'},
     {eyebrow:'08 / PRIVACY',title:'You control your space',body:'Review follow requests and privacy settings. Block or report accounts and only share content you have permission to share.',visual:'<div class="kg-demo-privacy"><span>✓</span><b>Your crew. Your controls.</b></div>'}
   ];
-  let activeUser = null, index = 0, dontShow = false, busy = false;
-  const esc = value => String(value).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  let activeUser = null, index = 0, dontShow = false, busy = false, saving = false, saved = false;
+  const KEY_STATUS = 'kgPreferenceStatus';
   async function getUser() {
     try {
+      if (!window.kcSupabase?.auth?.getUser) throw new Error('Account session is not ready');
       const {data,error} = await window.kcSupabase.auth.getUser();
       if (error) throw error;
       activeUser = data.user;
       return activeUser;
     } catch (error) { console.warn('Gram tutorial account preference unavailable:', error); return null; }
   }
-  function alreadyDismissed(user) {
-    return user?.user_metadata?.[KEY] === true;
+  function alreadyDismissed(user) { return user?.user_metadata?.[KEY] === true; }
+  function setStatus(message, isError=false) {
+    const node=document.getElementById(KEY_STATUS);
+    if(node){node.textContent=message;node.classList.toggle('is-error',isError);}
+  }
+  async function persistOptOut() {
+    if (!dontShow) return true;
+    if (saved) return true;
+    if (saving) return window.kgPreferenceSavePromise;
+    saving = true;
+    setStatus('Saving to your account…');
+    window.kgPreferenceSavePromise = (async()=>{
+      try {
+        if (!activeUser) activeUser = await getUser();
+        if (!activeUser || !window.kcSupabase?.auth?.updateUser) throw new Error('Sign in again to save this preference.');
+        const metadata = {...(activeUser.user_metadata||{}),[KEY]:true};
+        const {data,error} = await window.kcSupabase.auth.updateUser({data:metadata});
+        if (error) throw error;
+        activeUser = data.user || {...activeUser,user_metadata:metadata};
+        saved = true;
+        setStatus('Saved to your account · This tutorial stays hidden on your devices.');
+        return true;
+      } catch(error) {
+        console.warn('Could not save Gram tutorial preference:',error);
+        setStatus('Could not save. Check your connection and try again.',true);
+        return false;
+      } finally { saving=false; }
+    })();
+    return window.kgPreferenceSavePromise;
   }
   function render() {
     let root = document.getElementById('kgTutorial');
     if (!root) { root = document.createElement('div'); root.id = 'kgTutorial'; document.body.appendChild(root); }
     const step = steps[index];
-    root.innerHTML = '<div class="kg-tutorial-backdrop"><section class="kg-tutorial-dialog" role="dialog" aria-modal="true" aria-labelledby="kgTutorialTitle"><header class="kg-tutorial-head"><span class="kg-brand"><i>K</i><b>Kinetic <em>Gram</em></b></span><button type="button" class="kg-tutorial-close" data-kg-close aria-label="Close tutorial">×</button></header><div class="kg-tutorial-progress">'+steps.map((_,i)=>'<span class="'+(i<=index?'is-done':'')+'"></span>').join('')+'</div><div class="kg-tutorial-visual">'+step.visual+'</div><div class="kg-tutorial-copy"><small>'+step.eyebrow+'</small><h2 id="kgTutorialTitle">'+step.title+'</h2><p>'+step.body+'</p></div><label class="kg-tutorial-optout"><input type="checkbox" id="kgDontShow" '+(dontShow?'checked':'')+'><span>Don’t show this again on my devices</span></label><footer class="kg-tutorial-footer"><button type="button" class="kg-tutorial-skip" data-kg-close>Skip for now</button><div><button type="button" class="kg-tutorial-back" data-kg-back '+(index===0?'disabled':'')+'>Back</button><button type="button" class="kg-tutorial-next" data-kg-next>'+(index===steps.length-1?'Finish':'Next')+' <span>→</span></button></div></footer></section></div>';
-    root.querySelector('#kgDontShow').addEventListener('change', event => { dontShow = event.target.checked; });
+    root.innerHTML = '<div class="kg-tutorial-backdrop"><section class="kg-tutorial-dialog" role="dialog" aria-modal="true" aria-labelledby="kgTutorialTitle" tabindex="-1"><header class="kg-tutorial-head"><span class="kg-brand"><i>K</i><b>Kinetic <em>Gram</em></b></span><button type="button" class="kg-tutorial-close" data-kg-close aria-label="Close tutorial">×</button></header><div class="kg-tutorial-progress">'+steps.map((_,i)=>'<span class="'+(i<=index?'is-done':'')+'"></span>').join('')+'</div><div class="kg-tutorial-visual"><div class="kg-preview-frame"><div class="kg-preview-top"><span class="kg-preview-dot"></span><b>KINETIC GRAM</b><span class="kg-preview-live">VIDEO PREVIEW</span></div><div class="kg-preview-scene">'+step.visual+'</div><div class="kg-preview-controls"><span class="kg-preview-play">▶</span><span class="kg-preview-track"><i></i></span><span class="kg-preview-time">0:08</span></div></div></div><div class="kg-tutorial-copy"><small>'+step.eyebrow+'</small><h2 id="kgTutorialTitle">'+step.title+'</h2><p>'+step.body+'</p></div><label class="kg-tutorial-optout"><input type="checkbox" id="kgDontShow" '+(dontShow?'checked':'')+'><span>Don’t show this again on my devices</span></label><small class="kg-tutorial-save-status" id="'+KEY_STATUS+'">'+(saved?'Saved to your account · This tutorial stays hidden on your devices.':'Your choice syncs with your account across devices.')+'</small><footer class="kg-tutorial-footer"><button type="button" class="kg-tutorial-skip" data-kg-close>Skip for now</button><div><button type="button" class="kg-tutorial-back" data-kg-back '+(index===0?'disabled':'')+'>Back</button><button type="button" class="kg-tutorial-next" data-kg-next>'+(index===steps.length-1?'Finish':'Next')+' <span>→</span></button></div></footer></section></div>';
+    root.querySelector('#kgDontShow').addEventListener('change', async event => {
+      dontShow = event.target.checked;
+      if (dontShow) await persistOptOut();
+      else { saved=false; setStatus('Preference unchanged. The tutorial may appear again next time.'); }
+    });
     root.querySelector('[data-kg-next]').addEventListener('click', advance);
     root.querySelector('[data-kg-back]').addEventListener('click', () => { if(index>0){index--;render();} });
     root.querySelectorAll('[data-kg-close]').forEach(button => button.addEventListener('click', closeForNow));
     root.querySelector('.kg-tutorial-dialog').focus?.();
   }
-  async function persistOptOut() {
-    if (!dontShow) return false;
-    if (!activeUser) activeUser = await getUser();
-    if (!activeUser || !window.kcSupabase?.auth?.updateUser) return false;
-    const metadata = {...(activeUser.user_metadata||{}),[KEY]:true};
-    const {data,error} = await window.kcSupabase.auth.updateUser({data:metadata});
-    if (error) { console.warn('Could not save Gram tutorial preference:',error); return false; }
-    activeUser = data.user || {...activeUser,user_metadata:metadata};
+  async function finishAndClose() {
+    if (dontShow && !await persistOptOut()) return false;
+    close();
     return true;
   }
   async function advance() {
@@ -51,22 +78,20 @@
     busy = true;
     const button = document.querySelector('[data-kg-next]');
     if (button) { button.disabled = true; button.textContent = 'Saving…'; }
-    const saved = await persistOptOut();
-    if (dontShow && !saved) {
+    const done = await finishAndClose();
+    if (!done) {
       busy = false;
       if (button) { button.disabled = false; button.textContent = 'Try again'; }
-      const note = document.querySelector('.kg-tutorial-copy p');
-      if (note) note.textContent = 'We couldn’t save this preference to your account. Please try again, or uncheck the option to finish for now.';
-      return;
     }
+  }
+  async function closeForNow() {
+    if (busy) return;
+    if (dontShow && !await persistOptOut()) return;
     close();
   }
-  function closeForNow() { close(); }
   function close() {
     document.getElementById('kgTutorial')?.remove();
-    busy = false;
-    index = 0;
-    dontShow = false;
+    busy = false; index = 0; dontShow = false;
   }
   let lastFeedNode = null, checkTimer = null;
   async function checkFeed() {
@@ -75,7 +100,7 @@
     lastFeedNode = feed;
     const user = await getUser();
     if (!user || alreadyDismissed(user)) return;
-    index = 0; dontShow = false; render();
+    index = 0; dontShow = false; saved = false; render();
   }
   const observer = new MutationObserver(() => {
     clearTimeout(checkTimer);
