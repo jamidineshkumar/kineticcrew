@@ -79,3 +79,20 @@ html[data-theme="light"] #kcMobileDock .kc-dock-group-item.active{color:#25212d!
 }
 html[data-theme="light"] #kcMobileDock .kc-dock-home.active,
 html[data-theme="light"] #kcMobileDock .kc-dock-group-item.active{color:#25212d!important}
+
+/* Final override: focused Home must retain the same compact capsule styling as other tabs. */
+@media(max-width:900px){
+ #kcMobileDock .kc-dock-home:focus,
+ #kcMobileDock .kc-dock-home:focus-visible,
+ #kcMobileDock .kc-dock-home.active:focus,
+ #kcMobileDock .kc-dock-home.active:focus-visible{
+  outline:0!important;border:0!important;
+  border-radius:19px!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 0 16px rgba(220,93,153,.12)!important;
+ }
+ #kcMobileDock .kc-dock-home.active{
+  border-radius:19px!important;
+  background:linear-gradient(135deg,rgba(255,116,92,.20),rgba(145,91,255,.18))!important;
+ }
+ #kcMobileDock .kc-dock-home.active .dock-label{color:#fff!important}
+}
