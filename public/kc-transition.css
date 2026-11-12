@@ -1,11 +1,8 @@
-/* Short, restrained transition: no full-screen particle field or expensive canvas loop. */
-.kc-transition-overlay{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;overflow:hidden;pointer-events:none;background:rgba(4,5,12,.28);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);opacity:1;visibility:visible;transition:opacity .34s cubic-bezier(.2,.7,.25,1),visibility .34s}
-.kc-transition-overlay:before{content:"";position:absolute;width:min(72vw,320px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(129,65,255,.13),rgba(0,198,255,.04) 48%,transparent 72%);filter:blur(12px)}
-.kc-transition-overlay.is-leaving{opacity:0;visibility:hidden}
-.kc-transition-center{position:relative;display:flex;align-items:center;flex-direction:column;gap:12px;animation:kc-transition-mark-in .28s ease both}
-.kc-transition-center img{width:54px;height:54px;object-fit:contain;filter:drop-shadow(0 8px 24px rgba(145,82,255,.25))}
-.kc-transition-center span{font-size:10px;font-weight:800;letter-spacing:.22em;color:rgba(255,255,255,.8)}
-@keyframes kc-transition-mark-in{from{opacity:0;transform:translateY(5px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+/* Smooth, non-blocking app and page transitions. */
+.kc-transition-overlay{display:none!important;pointer-events:none!important}
+#app.kc-app-start-enter{animation:kc-app-start-enter .32s cubic-bezier(.2,.72,.22,1) both}
 #app.kc-view-enter{animation:kc-nav-fade .24s cubic-bezier(.2,.7,.25,1) both}
-@keyframes kc-nav-fade{from{opacity:.82}to{opacity:1}}
-@media(prefers-reduced-motion:reduce){.kc-transition-overlay,#app.kc-view-enter{animation:none!important;transition:none!important}.kc-transition-overlay{display:none!important}}
+@keyframes kc-app-start-enter{from{opacity:.72;transform:translate3d(0,8px,0);filter:blur(2px)}to{opacity:1;transform:translate3d(0,0,0);filter:blur(0)}}
+@keyframes kc-nav-fade{from{opacity:.82;transform:translate3d(0,4px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+.kc-transition-ready #app{visibility:visible}
+@media(prefers-reduced-motion:reduce){#app.kc-app-start-enter,#app.kc-view-enter{animation:none!important}.kc-transition-overlay{display:none!important}}
