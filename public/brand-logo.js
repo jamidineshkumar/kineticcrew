@@ -17,7 +17,7 @@
   }
  };
  const setLink=(selector,url)=>{
-  document.querySelectorAll(selector).forEach(link=>{if(link.href!==url)link.href=url;});
+  document.querySelectorAll(selector).forEach(link=>{if(link.href!==url)link.href=url;if(link.rel==='icon'||link.rel==='shortcut icon')link.type='image/png';});
  };
  const applyManifest=async url=>{
   const link=document.querySelector('link[rel="manifest"]');if(!link)return;
