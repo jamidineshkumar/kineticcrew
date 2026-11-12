@@ -37,13 +37,12 @@ Deno.serve(async(req)=>{
    return json({error:"Could not connect to Gmail SMTP. Check SMTP_USER, SMTP_PASS, and Gmail SMTP access in Supabase Edge Function secrets."},503);
   }
   const body=await req.json(),eventId=String(body.eventId||"");
-  const subject=String(body.subject||"").trim().slice(0,140);
-  const greeting=String(body.greeting||"Your Kinetic Crew pass is ready").trim().slice(0,120);
-  const message=String(body.message||"Keep this ticket ready and show its QR code at the event entrance.").trim().slice(0,1200);
-  const footer=String(body.footer||"We look forward to seeing you there.").trim().slice(0,300);
+  const greeting="Your Kinetic Crew pass is ready";
+  const message="Keep this personal ticket ready and show its QR code at the event entrance. Each QR code is unique to its registered member.";
+  const footer="We look forward to seeing you there. · KINETIC CREW";
   const recipientMode=body.recipientMode==="single"?"single":"all";
   const singleEmail=String(body.email||"").trim().toLowerCase();
-  if(!eventId||!subject||!greeting||!message)return json({error:"Event, subject, greeting and message are required."},400);
+  if(!eventId)return json({error:"Event is required."},400);
   const {data:event,error:eventError}=await adminClient.from("crew_events").select("id,title,description,location,starts_at").eq("id",eventId).maybeSingle();
   if(eventError||!event)return json({error:"Event not found."},404);
   let query=adminClient.from("crew_registrations").select("member_id,crew_profiles!inner(auth_id,name,email)").eq("event_id",eventId);
@@ -65,6 +64,7 @@ Deno.serve(async(req)=>{
    const passDigest=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(payload));
    const passId=Array.from(new Uint8Array(passDigest)).slice(0,4).map(v=>v.toString(16).padStart(2,"0")).join("").toUpperCase();
    const eventTitle=String(event.title||"Kinetic Crew Event").trim()||"Kinetic Crew Event";
+   const subject="Your "+eventTitle+" ticket · Kinetic Crew";
    const eventDate=dateLabel(event.starts_at);
    const eventTime=timeLabel(event.starts_at);
    const eventVenue=String(event.location||"To be announced");
