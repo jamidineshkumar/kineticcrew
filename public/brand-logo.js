@@ -3,7 +3,7 @@
 (function(){
  'use strict';
  const FALLBACK=(()=>{try{return window.kcPath('kinetic-crew-logo.svg');}catch{return 'kinetic-crew-logo.svg';}})();
- const CACHE_KEY='kc-global-brand-logo-v1';
+ const CACHE_KEY='kc-global-brand-logo-v2';
  let activeUrl='';
  let manifestObjectUrl='';
  const validUrl=value=>{
@@ -17,7 +17,7 @@
   }
  };
  const setLink=(selector,url)=>{
-  document.querySelectorAll(selector).forEach(link=>{if(link.href!==url)link.href=url;if(link.rel==='icon'||link.rel==='shortcut icon')link.type='image/png';});
+  document.querySelectorAll(selector).forEach(link=>{if(link.href!==url)link.href=url;if(link.rel==='icon'||link.rel==='shortcut icon'||link.rel==='apple-touch-icon')link.type='image/png';});
  };
  const applyManifest=async url=>{
   const link=document.querySelector('link[rel="manifest"]');if(!link)return;
