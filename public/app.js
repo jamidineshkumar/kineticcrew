@@ -401,6 +401,7 @@ function home(){
  const registered=upcoming.filter(e=>e.registered),yourEvents=registered.length?registered:upcoming;
  const homeEvents=[...upcoming,...recentPublished].slice(0,6);
  const homeListEvents=upcoming.length?upcoming.slice(0,3):recentPublished.slice(0,3);
+ const people=(S.publicMembers||[]).filter(m=>String(m.auth_id)!==String(S.user?.auth_id)).slice(0,8);
  const u=S.user||{},name=(u.name||u.email||'Crew member').split('@')[0].split(' ')[0];
  const hour=new Date().getHours(),greeting=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
  const homeMood=upcoming.length?'Your next crew moment is getting closer.':'Your space. Your people. Your next big moment.';
