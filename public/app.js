@@ -724,6 +724,7 @@ if(S.view==='overview'){
 function brandSettingsPage(){
  if(!superadmin())return empty('Super Admin access required','Only the Super Admin can change the official Kinetic Crew logo.');
  const current=S.appSettings?.brand_logo_url||window.KC_BRAND_LOGO_URL||window.kcPath('kinetic-crew-logo.svg');
+ setTimeout(kcBrandDraw,0);
  return welcome('Brand identity','Create and manage the official Kinetic Crew logo across the app, browser and installed experience.')+
  '<section class="surface settings-card kc-brand-settings-card">'+
  '<span class="settings-kicker">SUPER ADMIN ONLY</span><h3>Official Kinetic Crew logo</h3>'+
