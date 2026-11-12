@@ -27,3 +27,15 @@
 
 /* The former intro container now hosts the full-height live event showcase. */
 .kc-more-logo-wrap.kc-more-intro.kc-more-event-ads-host{height:auto!important;min-height:0!important;max-height:none!important;display:block!important;overflow:visible!important;margin:10px 0 28px!important;padding:0!important;border:0!important;background:none!important}
+
+/* Branded interstitial promo between every event advertisement. */
+.kc-more-ad-promo{background:radial-gradient(ellipse at 82% 12%,#ff4d9b48,transparent 44%),radial-gradient(ellipse at 12% 88%,#31d4d455,transparent 48%),linear-gradient(135deg,#211729,#12171c 62%,#25151f)}
+.kc-more-ad-promo:before{background:radial-gradient(ellipse at 80% 15%,#ff4d9b38,transparent 45%),radial-gradient(ellipse at 15% 88%,#31d4d433,transparent 48%),linear-gradient(135deg,#211729,#12171c 62%,#25151f);animation:kc-more-ad-glow 8s ease-in-out infinite alternate}
+.kc-more-ad-promo .kc-more-ad-copy{max-width:100%;gap:10px}
+.kc-more-ad-promo .kc-more-ad-copy h2{font-size:clamp(27px,7vw,43px);line-height:.99}
+.kc-more-ad-promo .kc-more-ad-copy h2 em{font-style:normal;background:linear-gradient(95deg,#ff4d9b,#ffb35d 48%,#31d4d4);background-clip:text;-webkit-background-clip:text;color:transparent}
+.kc-more-ad-promo .kc-more-ad-label{color:#ffb0d1}
+.kc-more-ad-promo .kc-more-ad-cta{border-color:#ff8dc777;background:linear-gradient(100deg,#e83c91,#a94ce0 55%,#26b9c2);box-shadow:0 8px 25px #c43e9b45;color:#fff}
+.kc-more-ad-promo .kc-more-ad-cta span{color:#fff}
+@keyframes kc-more-ad-glow{from{filter:hue-rotate(0deg) saturate(1)}to{filter:hue-rotate(24deg) saturate(1.25)}}
+@media(prefers-reduced-motion:reduce){.kc-more-ad-promo:before{animation:none!important}}
