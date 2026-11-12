@@ -365,3 +365,35 @@
  .kc-ticket-details{gap:9px 7px;padding:10px}
 }
 @media(prefers-reduced-motion:reduce){.kc-profile-flip-inner{transition:none!important}}
+
+/* Ticket reverse: reserve real height for the complete QR block on narrow phones. */
+.kc-profile-flip-shell,
+.kc-profile-flip-inner{min-height:510px!important}
+.kc-profile-flip-shell .kc-profile-card-back{
+  min-height:510px!important;
+  height:510px!important;
+  box-sizing:border-box!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
+  padding:18px clamp(16px,3.5vw,25px)!important;
+}
+.kc-ticket-heading{flex:0 0 auto!important}
+.kc-ticket-stub{
+  min-height:252px!important;
+  height:auto!important;
+  flex:0 0 auto!important;
+  overflow:visible!important;
+  box-sizing:border-box!important;
+  padding-bottom:14px!important;
+}
+.kc-ticket-qr-wrap{flex:0 0 auto!important}
+.kc-ticket-qr-wrap .kc-profile-qr{flex:0 0 auto!important}
+.kc-ticket-details{flex:0 0 auto!important}
+.kc-ticket-footer{flex:0 0 auto!important;margin-top:auto!important}
+.kc-profile-flip-return-hint{flex:0 0 auto!important;margin-top:0!important}
+@media(max-width:380px){
+  .kc-profile-flip-shell,
+  .kc-profile-flip-inner{min-height:510px!important}
+  .kc-profile-flip-shell .kc-profile-card-back{min-height:510px!important;height:510px!important}
+  .kc-ticket-stub{min-height:252px!important}
+}
