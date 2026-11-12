@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
-window.KC_APP_VERSION='1.2.8';
+window.KC_APP_VERSION='1.2.9';
 const S={user:null,view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],publicMembers:[],featureItems:{},socialPosts:[],socialLikes:[],socialComments:[],roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',error:'',peopleQuery:'',eventsFilter:'all',sharedDraft:null};
 window.KC_SEARCH_API={
  snapshot:()=>({events:S.events||[],announcements:S.announcements||[],members:S.publicMembers||[],posts:S.socialPosts||[]}),
@@ -49,8 +49,8 @@ function normalizeFeatureKey(value,payload){
 async function featureApi(action,feature,payload){
  const operation=String(action||'').trim().toLowerCase(),cleanPayload=payload&&typeof payload==='object'?payload:{};
  const requested=normalizeFeatureKey(feature,cleanPayload);
- if(operation!=='leaderboard'&&!requested)throw Error('A crew feature was not selected. Return to the feature page and try again.');
- if(operation!=='leaderboard'&&!featureKeys.includes(requested))throw Error('Unsupported crew feature requested: '+String(feature??cleanPayload.feature??'(empty)')+'. Please reload Kinetic Crew and try again.');
+ if(operation!=='leaderboard'&&!requested)throw Error('Kinetic Crew could not identify which feature to open. Please return to the page and try again.');
+ if(operation!=='leaderboard'&&!featureKeys.includes(requested))throw Error('Unsupported crew feature "'+requested+'" for action "'+operation+'". Please reload Kinetic Crew and try again.');
  const {data,error}=await rpc('crew_features',{p_action:operation,p_feature:operation==='leaderboard'?null:requested,p_payload:cleanPayload});
  if(error){const m=error.message||'Feature request failed.';if(/could not find the function|schema cache/i.test(m))throw Error('The crew feature service is not ready. Reload the app; if this continues, contact the Super Admin.');throw Error(m);}
  return data;
@@ -533,7 +533,7 @@ function socialFeedPage(){
  '<div class="kc-feed-section-head"><b>For the crew</b><span>'+posts.length+' POSTS</span></div><div class="social-feed-list">'+(posts.map(socialPostCard).join('')||empty('Your crew feed starts here','Share the first reel, performance or moment with everyone.'))+'</div></div>';
 }
 
-const featureLabels={rehearsals:'Rehearsals',leave:'Leave requests',memories:'KC Memories',polls:'Polls & voting'};
+const featureLabels={rehearsals:'Rehearsals',leave:'Leave requests',memories:'KC Memories',polls:'Polls & voting',expenses:'Crew expenses',auditions:'Auditions',chat:'Crew chat',achievements:'Achievements'};
 const featureMeta={
  rehearsals:['Plan a practice session','Create rehearsals, assign a choreographer and share the venue.','Session title','Practice details','Create session'],
  leave:['Request time away','Send a leave request to the crew admins.','Leave request','Reason and dates','Submit request'],
