@@ -859,7 +859,7 @@ document.addEventListener('submit',async e=>{
   if(key==='memories'){
    const photo=d.get('memory_photo');
    if(photo&&photo.size){
-    if(!/^image\\/(jpeg|png|webp|gif)$/.test(photo.type)) {notice('Choose a JPG, PNG, WEBP or GIF photo.');return;}
+    if(!/^image\/(jpeg|png|webp|gif)$/.test(photo.type)) {notice('Choose a JPG, PNG, WEBP or GIF photo.');return;}
     if(photo.size>15*1024*1024){notice('Photo must be 15 MB or smaller.');return;}
     const safeName=String(photo.name||'memory-photo').replace(/[^a-zA-Z0-9._-]/g,'-').slice(-90);
     const path=S.user.auth_id+'/'+Date.now()+'-'+safeName;
