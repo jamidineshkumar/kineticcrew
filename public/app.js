@@ -393,6 +393,7 @@ function socialPostCard(post){
 }
 function socialFeedPage(){
  const posts=S.socialPosts||[],people=(S.publicMembers||[]).filter(m=>String(m.auth_id)!==String(S.user?.auth_id)).slice(0,18);
+ window.__kcGramPosts=posts;window.__kcGramPeople=people;
  const stories='<section class="kc-feed-stories"><div class="kc-feed-stories-head"><b>Stories</b><span>CREW MOMENTS</span></div><div class="kc-feed-story-rail"><button class="kc-feed-story own" data-view="profile"><span class="kc-story-ring"><span class="kc-story-avatar">'+avatarMarkup(S.user)+'</span><i>+</i></span><small>Your story</small></button>'+people.map((p,i)=>'<button class="kc-feed-story" data-open-profile="'+esc(p.auth_id)+'"><span class="kc-story-ring '+(i<5?'fresh':'')+'"><span class="kc-story-avatar">'+avatarMarkup(p)+'</span></span><small>'+esc((p.name||'Crew').split(' ')[0])+'</small></button>').join('')+'</div></section>';
  return '<div class="kc-feed-page"><header class="kc-feed-top"><div><span class="kc-feed-kicker">KINETIC CREW / COMMUNITY</span><h1>Kinetic Gram</h1></div></header>'+
  '<div class="kc-feed-tabs"><span class="active">Feed</span><span>Following</span><span>Reels</span></div>'+stories+
