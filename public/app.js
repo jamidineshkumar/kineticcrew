@@ -175,7 +175,7 @@ function publicProfilePage(){
  const attended=Number(p.events_attended_count??p.attended_events_count??0);
  const resume=p.resume_url||p.resume||'';
  const coverLetter=p.cover_letter_url||p.coverLetterUrl||'';
- const coverStyle=photo?' style="--kc-visitor-cover:url('+JSON.stringify(safeSocialUrl(photo))+')"':'';
+ const coverStyle=photo?' style="--kc-visitor-cover:url(&quot;'+esc(safeSocialUrl(photo))+'&quot;)"':'';
  const action=self?'<button class="kc-visitor-action" data-view="profile">Edit profile</button>':'<button type="button" class="kc-visitor-action kc-follow-action" data-follow="'+esc(p.auth_id)+'" data-following="'+(following?'true':'false')+'">'+(following?'Following':'Follow')+'</button>';
  const card=(icon,title,sub,value,cls,href)=>href?'<a class="kc-visitor-tile '+cls+'" href="'+esc(href)+'" target="_blank" rel="noopener noreferrer"><span class="kc-visitor-icon">'+icon+'</span><span class="kc-visitor-tile-copy"><b>'+title+'</b><small>'+sub+'</small></span><strong>'+value+'</strong></a>':'<article class="kc-visitor-tile '+cls+'"><span class="kc-visitor-icon">'+icon+'</span><span class="kc-visitor-tile-copy"><b>'+title+'</b><small>'+sub+'</small></span><strong>'+value+'</strong></article>';
  return '<main class="kc-visitor-profile">'+
