@@ -353,7 +353,7 @@ function eventDetailPage(){
 }
 function announcement(a){return '<article class="announcement"><div class="announceicon">♧</div><div class="announcebody"><div class="announce-meta"><b>CREW SIGNAL</b><span>·</span><span>'+esc(dt(a.created_at))+'</span></div><h3>'+esc(a.title)+'</h3><p>'+esc(a.body)+'</p><div class="author">Posted by <b>'+esc(a.author_name||'Crew Admin')+'</b></div></div>'+(superadmin()?'<button type="button" class="textlink danger-link" data-delete-announcement="'+esc(a.id)+'">Delete</button>':'')+'</article>';}
 function formTitle(icon,title,sub){return '<div class="formtitle formtitle-clean"><h3>'+title+'</h3></div>';}
-function eventWasUpdated(event){const created=Date.parse(event?.created_at||''),updated=Date.parse(event?.updated_at||'');return Number.isFinite(created)&&Number.isFinite(updated)&&updated-created>5000;}
+function eventWasUpdated(event){const created=Date.parse(event?.created_at||''),updated=Date.parse(event?.updated_at||'');return Number.isFinite(created)&&Number.isFinite(updated)&&updated-created>1000;}
 function eventUpdatedLabel(event){return eventWasUpdated(event)?'<span class="kce-event-updated">UPDATED · '+esc(dt(event.updated_at))+'</span>':'';}
 function eventDateInput(value){const d=new Date(value||'');if(Number.isNaN(d.getTime()))return '';const local=new Date(d.getTime()-d.getTimezoneOffset()*60000);return local.toISOString().slice(0,16);}
 function eventForm(event=null){
