@@ -45,3 +45,13 @@
 .kg-tutorial-one-video .kg-tutorial-footer{align-items:center}
 .kg-tutorial-one-video .kg-tutorial-next{background:linear-gradient(100deg,#ed5a9f,#f0a36d);color:#191719}
 @media(max-width:560px){.kg-tutorial-one-video{padding:17px;border-radius:25px}.kg-tutorial-one-video .kg-tutorial-visual{height:190px}.kg-video-copy{padding-top:15px}}
+
+
+/* Single continuous Kinetic Gram walkthrough; hide any legacy chapter counters. */
+.kg-video-scene-count,.kg-tutorial-progress,.kg-video-chapter,.kg-video-step-count{display:none!important}
+.kg-tutorial-one-video .kg-video-copy h2{font-size:clamp(21px,5.5vw,27px);line-height:1.15}
+.kg-tutorial-one-video .kg-video-copy p{min-height:58px}
+.kg-video-kicker{font-size:9px;letter-spacing:.17em}
+.kg-video-progress i{transition:width .12s linear}
+.kg-tutorial-one-video .kg-tutorial-visual{position:relative}
+.kg-tutorial-one-video .kg-video-scene.is-playing{animation:kgVideoSceneIn .4s ease both}
