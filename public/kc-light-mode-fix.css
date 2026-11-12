@@ -98,3 +98,55 @@ html[data-theme="light"] .kc-more-reference-sparkle{color:rgba(130,100,120,.22)!
  50%{transform:translateY(-1px) scale(1.035);box-shadow:0 5px 16px rgba(238,91,83,.38)}
 }
 @media(prefers-reduced-motion:reduce){.kc-event-updated-chip{animation:none!important}}
+
+
+/* Home carousel: separate the update glass pill from the slide kicker. */
+.kc-home-featured-art .kc-home-featured-kicker{
+ position:relative!important;z-index:3!important;
+ display:block!important;flex:0 1 auto!important;
+ width:auto!important;max-width:100%!important;
+ padding-right:0!important;white-space:normal!important;
+}
+.kc-home-featured-art .kc-event-updated-chip{
+ position:absolute!important;z-index:5!important;
+ top:49px!important;left:19px!important;right:auto!important;bottom:auto!important;
+ display:inline-flex!important;align-items:center!important;justify-content:flex-start!important;
+ flex:0 0 auto!important;width:max-content!important;min-width:0!important;
+ max-width:calc(100% - 38px)!important;height:auto!important;min-height:25px!important;
+ box-sizing:border-box!important;gap:6px!important;padding:5px 11px!important;
+ overflow:hidden!important;white-space:nowrap!important;text-overflow:ellipsis!important;
+ border:1px solid rgba(255,178,135,.32)!important;border-radius:999px!important;
+ background:linear-gradient(125deg,rgba(255,137,101,.18),rgba(194,105,140,.14),rgba(255,255,255,.075))!important;
+ color:#ffe0d1!important;font:750 8px/1 system-ui,sans-serif!important;letter-spacing:.13em!important;
+ box-shadow:0 5px 18px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.16)!important;
+ -webkit-backdrop-filter:blur(18px) saturate(145%)!important;
+ backdrop-filter:blur(18px) saturate(145%)!important;
+ animation:kcUpdatedGlassFloat 2.8s ease-in-out infinite!important;
+}
+.kc-home-featured-art .kc-event-updated-fire{
+ display:inline-block!important;flex:0 0 auto!important;
+ font-size:11px!important;line-height:1!important;
+ transform-origin:50% 85%!important;
+ animation:kcUpdatedFireMove 1.15s ease-in-out infinite!important;
+ filter:drop-shadow(0 0 5px rgba(255,133,76,.45))!important;
+}
+@keyframes kcUpdatedGlassFloat{
+ 0%,100%{transform:translateY(0);box-shadow:0 5px 18px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.16)}
+ 50%{transform:translateY(-2px);box-shadow:0 8px 22px rgba(255,119,86,.15),inset 0 1px 0 rgba(255,255,255,.2)}
+}
+@keyframes kcUpdatedFireMove{
+ 0%,100%{transform:rotate(-7deg) scale(1)}
+ 35%{transform:rotate(8deg) scale(1.12)}
+ 70%{transform:rotate(-3deg) scale(.96)}
+}
+@media(prefers-reduced-motion:reduce){
+ .kc-home-featured-art .kc-event-updated-chip,.kc-home-featured-art .kc-event-updated-fire{animation:none!important}
+}
+html[data-theme="light"] .kc-home-featured-art .kc-event-updated-chip{
+ color:#713f35!important;
+ border-color:rgba(176,103,79,.3)!important;
+ background:linear-gradient(125deg,rgba(255,224,207,.82),rgba(236,207,227,.72),rgba(255,255,255,.72))!important;
+ box-shadow:0 5px 16px rgba(58,46,55,.12),inset 0 1px 0 rgba(255,255,255,.8)!important;
+ -webkit-backdrop-filter:blur(18px) saturate(145%)!important;
+ backdrop-filter:blur(18px) saturate(145%)!important;
+}
