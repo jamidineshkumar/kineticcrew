@@ -394,6 +394,8 @@ function eventForm(event=null){
  '<div class="kce-event-form-actions"><button class="primary full" type="submit">'+(editing?'Save event changes':'＋ Publish event')+'</button>'+(editing?'<button class="outline full" type="button" data-view="event-detail">Cancel</button>':'')+'</div></form>';
 }
 function updateForm(){return '<form id="updateForm" class="surface publish">'+formTitle('♧','Broadcast a message','Send the crew a clear signal.')+'<label class="field">Headline<input name="title" maxlength="140" required placeholder="What is the update?"></label><label class="field">Message<textarea name="body" rows="5" maxlength="5000" required placeholder="Share the details…"></textarea></label><label class="field">Audience<select name="audience"><option value="all">Everyone</option><option value="member">Members</option><option value="admin">Admins</option><option value="super_admin">Super admins</option></select></label><button class="primary full">Publish update →</button><div class="notice">Announcements appear in Crew HQ. Push notifications when the app is closed require a separate delivery setup.</div></form>';}
+function safeSocialUrl(raw){try{const url=new URL(String(raw||''));return url.protocol==='https:'?url.href:'';}catch{return '';}}
+
 function home(){
  const now=Date.now(),all=[...(S.events||[])].filter(e=>e&&e.id&&e.title).sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at));
  const upcoming=all.filter(e=>new Date(e.starts_at).getTime()>=now);
