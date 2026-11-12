@@ -58,8 +58,9 @@ function notice(text){const t=$('#toast');if(!t){console.warn('Kinetic Crew toas
 function cacheKey(userId){return 'kc-bootstrap-v2:'+userId;}
 function paintUser(){if(!S.user)return;const name=$('#profileName'),userRole=$('#profileRole'),avatar=$('#avatar'),topAvatar=$('#topAvatar');if(name)name.textContent=S.user.name||S.user.email||'Crew Member';if(userRole)userRole.textContent=role(S.user.role);if(avatar)avatar.innerHTML=avatarMarkup(S.user);if(topAvatar)topAvatar.innerHTML=avatarMarkup(S.user,'small');}
 async function refresh(){
- const results=await Promise.all([api('bootstrap'),rpc('crew_get_app_settings',{}).catch(error=>({error})),rpc('crew_event_metadata',{}).catch(error=>({error,data:[]}))]);
+ const results=await Promise.all([api('bootstrap'),rpc('crew_get_app_settings',{}).catch(error=>({error})),rpc('crew_event_metadata',{}).catch(error=>({error,data:[]})),featureApi('list','rehearsals',{}).catch(()=>[])]);
  const d=results[0],cfg=results[1],meta=Array.isArray(results[2]?.data)?results[2].data:[];
+ S.featureItems.rehearsals=Array.isArray(results[3])?results[3]:(results[3]?.data||[]);
  const eventMeta=new Map(meta.map(item=>[String(item.id),item]));
  S.user=d.user;S.events=(d.events||[]).map(event=>({...event,...(eventMeta.get(String(event.id))||{})}));S.announcements=d.announcements||[];S.members=d.members||[];
  S.offline=false;S.error='';
@@ -167,7 +168,7 @@ async function syncCrewSnapshot(){
  if(kcSnapshotBusy||!S.user||document.hidden||!navigator.onLine)return;
  kcSnapshotBusy=true;
  try{
-  const [snapshot,metaResult]=await Promise.all([api('bootstrap'),rpc('crew_event_metadata',{}).catch(()=>({data:[]}))]);
+  const [snapshot,metaResult,rehearsalRows]=await Promise.all([api('bootstrap'),rpc('crew_event_metadata',{}).catch(()=>({data:[]})),featureApi('list','rehearsals',{}).catch(()=>S.featureItems.rehearsals||[])]);
   if(snapshot?.user)S.user={...S.user,...snapshot.user};
   const eventMeta=new Map((Array.isArray(metaResult?.data)?metaResult.data:[]).map(item=>[String(item.id),item]));
   const nextEvents=(snapshot?.events||[]).map(event=>({...event,...(eventMeta.get(String(event.id))||{})})),nextAnnouncements=snapshot?.announcements||[],nextMembers=snapshot?.members||[];
@@ -176,8 +177,10 @@ async function syncCrewSnapshot(){
   const incoming=previousIds===null?[]:rows.filter(a=>!previousIds.has(String(a.id)));
   kcKnownAnnouncementIds=new Set(rows.map(a=>String(a.id)));
   const changed=JSON.stringify(S.events)!==JSON.stringify(nextEvents)||JSON.stringify(S.announcements)!==JSON.stringify(rows)||JSON.stringify(S.members)!==JSON.stringify(nextMembers);
-  S.events=nextEvents;S.announcements=rows;S.members=nextMembers;
-  if(changed){paintUser();paint();}
+  const nextRehearsals=Array.isArray(rehearsalRows)?rehearsalRows:(rehearsalRows?.data||[]);
+  const rehearsalChanged=JSON.stringify(S.featureItems.rehearsals||[])!==JSON.stringify(nextRehearsals);
+  S.events=nextEvents;S.announcements=rows;S.members=nextMembers;S.featureItems.rehearsals=nextRehearsals;
+  if(changed||rehearsalChanged){paintUser();paint();}
   if(incoming.length){
    const latest=incoming[0];
    window.dispatchEvent(new CustomEvent('kc:notification',{detail:{title:latest.title||'Crew update',body:latest.body||'A new update was posted.',target:'notifications'}}));
@@ -232,20 +235,39 @@ function formTitle(icon,title,sub){return '<div class="formtitle"><div class="fo
 function eventForm(){return '<form id="eventForm" class="surface formgrid">'+formTitle('＋','Create an event','Publish a crew experience with its own poster and ticket details.')+'<label class="field">Event name<input name="title" maxlength="120" required placeholder="Reloaded Auditions"></label><label class="field">Category<select name="category" required><option>Auditions</option><option>Performances</option><option>Workshops</option><option selected>Community</option><option>Rehearsals</option><option>Other</option></select></label><label class="field">Location<input name="location" maxlength="160" placeholder="Dance studio / auditorium"></label><label class="field">Date & time<input name="starts_at" type="datetime-local" required></label><label class="field">Capacity<input name="capacity" type="number" min="1" max="10000" value="40" required></label><label class="field span2">Poster image URL<input name="cover_url" type="url" inputmode="url" placeholder="https://… (optional)"><small class="hint">Use a publicly accessible HTTPS image URL.</small></label><label class="field span2">Description<textarea name="description" rows="3" maxlength="2500" placeholder="What should members know?"></textarea></label><label class="field span2 kce-featured-check"><span><input name="featured" type="checkbox" value="true"> Feature this event at the top of Discover</span></label><button class="primary full">＋ Publish event</button></form>';}
 function updateForm(){return '<form id="updateForm" class="surface publish">'+formTitle('♧','Broadcast a message','Send the crew a clear signal.')+'<label class="field">Headline<input name="title" maxlength="140" required placeholder="What is the update?"></label><label class="field">Message<textarea name="body" rows="5" maxlength="5000" required placeholder="Share the details…"></textarea></label><label class="field">Audience<select name="audience"><option value="all">Everyone</option><option value="member">Members</option><option value="admin">Admins</option><option value="super_admin">Super admins</option></select></label><button class="primary full">Publish update →</button><div class="notice">Announcements appear in Crew HQ. Push notifications when the app is closed require a separate delivery setup.</div></form>';}
 function home(){
-const now=Date.now(),all=[...(S.events||[])].sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at)),upcoming=all.filter(e=>new Date(e.starts_at).getTime()>=now),registered=upcoming.filter(e=>e.registered),yourEvents=registered.length?registered:upcoming,u=S.user||{},name=(u.name||u.email||'Crew member').split('@')[0].split(' ')[0];
-const announcements=(S.announcements||[]).slice(0,3),featured=yourEvents[0]||upcoming[0],photo=e=>safeSocialUrl(e?.cover_url||e?.image_url||e?.banner_url||e?.poster_url||e?.image||'');
-const eventCard=(e,kind)=>'<button class="kc-exact-event-card" data-open-event="'+esc(e.id)+'"><span class="kc-exact-event-image" '+(photo(e)?'style="background-image:url(\''+esc(photo(e))+'\')"' :'')+'><em class="'+(kind==='live'?'live':'')+'">'+(kind==='live'?'● Registered':'Upcoming')+'</em><span class="kc-exact-event-arrow">↗</span></span><span class="kc-exact-event-copy"><b>'+esc(e.title)+'</b><small>'+esc(ds(e.starts_at))+' · '+esc(e.location||'Location TBA')+'</small></span></button>';
-const slides=[{view:'events',kicker:'KINETIC CREW · UP NEXT',title:featured?.title||'Your next crew moment',subtitle:featured?[ds(featured.starts_at),featured.location||'Venue to be announced'].join(' · '):'Discover events, auditions and performances',cta:featured?'Explore event':'Explore events',image:photo(featured)},...announcements.map(a=>({view:'notifications',kicker:'CREW UPDATE',title:a.title||'A note from your crew',subtitle:a.body||a.message||'A new update from Kinetic Crew',cta:'Read update'}))];
-const updates=announcements.length?announcements.map((a,i)=>'<button class="kc-exact-update" data-view="notifications"><span class="kc-exact-update-icon">'+(['•','↗','▧'][i%3])+'</span><span><b>'+esc(a.title||'Crew update')+'</b><small>'+esc(a.body||a.message||'A new update from your crew')+'</small></span></button>').join(''):'<div class="kc-exact-update kc-exact-empty">Crew announcements and rehearsal updates will appear here.</div>';
-const count=Number(featured?.registration_count||0);
-return '<div class="kc-exact-home kc-home-reference">'+
-'<header class="kc-home-reference-header"><div class="kc-home-user"><span><small>Welcome back</small><b>'+esc(name)+'</b></span></div><button type="button" class="kc-home-theme-toggle" data-theme-toggle aria-label="Switch colour theme" title="Switch colour theme"><span aria-hidden="true">'+(document.documentElement.dataset.theme==='dark'?'☀':'☾')+'</span></button></header>'+
-'<section class="kc-home-greeting"><h1>Good morning!</h1><p>Let’s make something happen today.</p></section>'+
-
-'<section class="kc-home-featured"><div class="kc-home-featured-track">'+slides.map((slide,i)=>'<article class="kc-home-feature-slide '+(i===0?'is-active':'')+'" data-home-slide="'+i+'" '+(slide.image?'style="--kc-home-feature-image:url(&quot;'+esc(slide.image)+'&quot;)"':'')+'><div class="kc-home-featured-art"><span class="kc-home-featured-kicker">'+esc(slide.kicker)+'</span></div><div class="kc-home-featured-glass"><span class="kc-home-featured-label">'+(i===0&&featured?'FEATURED EVENT':i===0?'YOUR CREW SPACE':'CREW UPDATE')+'</span><b>'+esc(slide.title)+'</b><small>'+esc(slide.subtitle)+'</small><button type="button" data-view="'+slide.view+'">'+esc(slide.cta)+' <i>→</i></button></div></article>').join('')+'</div>'+(slides.length>1?'<div class="kc-home-featured-dots" aria-label="Featured carousel pages">'+slides.map((_,i)=>'<button type="button" data-home-slide-to="'+i+'" class="'+(i===0?'active':'')+'" aria-label="Show slide '+(i+1)+'"></button>').join('')+'</div>':'')+'</section>'+'<section class="kc-home-reference-section"><div class="kc-home-reference-section-head"><h2>Up next</h2><button data-view="events">View all <span>→</span></button></div><div class="kc-home-upnext-list">'+(yourEvents.length?yourEvents.slice(0,3).map((e,i)=>'<button class="kc-home-upnext-item" data-open-event="'+esc(e.id)+'"><span class="kc-home-upnext-date"><small>'+esc(new Date(e.starts_at).toLocaleDateString([],{weekday:'short'}))+'</small><b>'+esc(new Date(e.starts_at).toLocaleDateString([],{day:'2-digit'}))+'</b></span><span class="kc-home-upnext-copy"><b>'+esc(e.title)+'</b><small>'+esc(ds(e.starts_at))+' · '+esc(e.location||'Venue TBA')+'</small></span><i>↗</i></button>').join(''):'<div class="kc-home-upnext-empty">No upcoming events yet. Keep an eye on crew updates.</div>')+'</div></section>'+
-'<section class="kc-home-reference-section"><div class="kc-home-reference-section-head"><h2>Latest from your crew</h2><button data-view="notifications">See all <span>→</span></button></div><div class="kc-exact-update-row">'+updates+'</div></section>'+
-'<section class="kc-home-community-strip" data-view="feed"><span class="kc-home-community-icon">G</span><span><b>Kinetic Gram</b><small>Stories, posts and moments from your crew</small></span><i>→</i></section>'+
-'</div>';
+ const now=Date.now(),all=[...(S.events||[])].sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at));
+ const upcoming=all.filter(e=>new Date(e.starts_at).getTime()>=now);
+ const registered=upcoming.filter(e=>e.registered),yourEvents=registered.length?registered:upcoming;
+ const u=S.user||{},name=(u.name||u.email||'Crew member').split('@')[0].split(' ')[0];
+ const announcements=[...(S.announcements||[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+ const rehearsals=[...(S.featureItems?.rehearsals||[])].filter(item=>{
+  const when=item.data?.session_at;return when&&new Date(when).getTime()>=now;
+ }).sort((a,b)=>new Date(a.data.session_at)-new Date(b.data.session_at));
+ const photo=e=>safeSocialUrl(e?.cover_url||e?.image_url||e?.banner_url||e?.poster_url||e?.image||'');
+ const category=e=>{
+  const raw=String(e?.category||'').toLowerCase(),words=String((e?.category||'')+' '+(e?.title||'')+' '+(e?.description||'')).toLowerCase();
+  if(/audition|tryout|selection/.test(words))return 'AUDITION';
+  if(/rehearsal|practice/.test(words))return 'REHEARSAL';
+  if(/performance|showcase|concert|flashmob|stage/.test(words))return 'PERFORMANCE';
+  if(/workshop|class|training|masterclass/.test(words))return 'WORKSHOP';
+  return raw?raw.toUpperCase():'CREW EVENT';
+ };
+ const slides=[
+  ...upcoming.slice(0,6).map(e=>({kind:'event',view:'events',id:e.id,kicker:'KINETIC CREW · '+category(e),label:e.featured?'FEATURED EVENT':'UPCOMING EVENT',title:e.title||'Upcoming crew event',subtitle:[ds(e.starts_at),e.location||'Venue to be announced'].filter(Boolean).join(' · '),cta:e.registered?'View your ticket':'Explore event',image:photo(e)})),
+  ...rehearsals.slice(0,5).map(item=>({kind:'rehearsal',view:'rehearsals',id:item.id,kicker:'KINETIC CREW · REHEARSAL',label:'UPCOMING REHEARSAL',title:item.title||'Crew rehearsal',subtitle:[dt(item.data.session_at),item.data.location||'Practice location TBA'].filter(Boolean).join(' · '),cta:'View rehearsal',image:safeSocialUrl(item.data.cover_url||item.data.image_url||'')})),
+  ...announcements.slice(0,6).map(a=>({kind:'update',view:'notifications',id:a.id,kicker:'KINETIC CREW · IMPORTANT UPDATE',label:'CREW ANNOUNCEMENT',title:a.title||'A note from your crew',subtitle:a.body||a.message||'An important update from Kinetic Crew',cta:'Read update',image:safeSocialUrl(a.image_url||a.cover_url||a.banner_url||'')}))
+ ];
+ if(!slides.length)slides.push({kind:'welcome',view:'events',kicker:'KINETIC CREW · YOUR CREW SPACE',label:'STAY IN THE LOOP',title:'Your next crew moment',subtitle:'Events, auditions, performances, rehearsals and important crew updates will appear here.',cta:'Explore events',image:''});
+ const updates=announcements.slice(0,3).map((a,i)=>'<button class="kc-exact-update" data-view="notifications"><span class="kc-exact-update-icon">'+(['•','↗','▧'][i%3])+'</span><span><b>'+esc(a.title||'Crew update')+'</b><small>'+esc(a.body||a.message||'A new update from your crew')+'</small></span></button>').join('')||'<div class="kc-exact-update kc-exact-empty">Crew announcements and rehearsal updates will appear here.</div>';
+ const slideMarkup=slides.map((slide,i)=>'<article class="kc-home-feature-slide '+(i===0?'is-active':'')+'" data-home-slide="'+i+'" '+(slide.image?'style="--kc-home-feature-image:url(&quot;'+esc(slide.image)+'&quot;)"':'')+'><div class="kc-home-featured-art"><span class="kc-home-featured-kicker">'+esc(slide.kicker)+'</span><span class="kc-home-featured-count">'+String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0')+'</span></div><div class="kc-home-featured-glass"><span class="kc-home-featured-label">'+esc(slide.label)+'</span><b>'+esc(slide.title)+'</b><small>'+esc(slide.subtitle)+'</small><button type="button" '+(slide.kind==='event'?'data-open-event="'+esc(slide.id)+'"':'data-view="'+slide.view+'"')+'>'+esc(slide.cta)+' <i>→</i></button></div></article>').join('');
+ return '<div class="kc-exact-home kc-home-reference">'+
+ '<header class="kc-home-reference-header"><div class="kc-home-user"><span><small>Welcome back</small><b>'+esc(name)+'</b></span></div><button type="button" class="kc-home-theme-toggle" data-theme-toggle aria-label="Switch colour theme" title="Switch colour theme"><span aria-hidden="true">'+(document.documentElement.dataset.theme==='dark'?'☀':'☾')+'</span></button></header>'+
+ '<section class="kc-home-greeting"><h1>Good morning!</h1><p>Let’s make something happen today.</p></section>'+
+ '<section class="kc-home-featured" aria-label="Featured crew updates"><div class="kc-home-featured-track">'+slideMarkup+'</div>'+(slides.length>1?'<div class="kc-home-featured-dots" aria-label="Featured carousel pages">'+slides.map((_,i)=>'<button type="button" data-home-slide-to="'+i+'" class="'+(i===0?'active':'')+'" aria-label="Show slide '+(i+1)+'"></button>').join('')+'</div>':'')+'</section>'+
+ '<section class="kc-home-reference-section"><div class="kc-home-reference-section-head"><h2>Up next</h2><button data-view="events">View all <span>→</span></button></div><div class="kc-home-upnext-list">'+(yourEvents.length?yourEvents.slice(0,3).map(e=>'<button class="kc-home-upnext-item" data-open-event="'+esc(e.id)+'"><span class="kc-home-upnext-date"><small>'+esc(new Date(e.starts_at).toLocaleDateString([],{weekday:'short'}))+'</small><b>'+esc(new Date(e.starts_at).toLocaleDateString([],{day:'2-digit'}))+'</b></span><span class="kc-home-upnext-copy"><b>'+esc(e.title)+'</b><small>'+esc(ds(e.starts_at))+' · '+esc(e.location||'Venue TBA')+'</small></span><i>↗</i></button>').join(''):'<div class="kc-home-upnext-empty">No upcoming events yet. Keep an eye on crew updates.</div>')+'</div></section>'+
+ '<section class="kc-home-reference-section"><div class="kc-home-reference-section-head"><h2>Latest from your crew</h2><button data-view="notifications">See all <span>→</span></button></div><div class="kc-exact-update-row">'+updates+'</div></section>'+
+ '<section class="kc-home-community-strip" data-view="feed"><span class="kc-home-community-icon">G</span><span><b>Kinetic Gram</b><small>Stories, posts and moments from your crew</small></span><i>→</i></section>'+
+ '</div>';
 }
 function morePage(){
 const u=S.user||{};
