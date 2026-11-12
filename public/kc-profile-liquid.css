@@ -293,3 +293,29 @@
  .kc-founder-enter .kc-single-profile.is-founder .kc-liquid-profile-copy,
  .kc-founder-enter .kc-single-profile.is-founder .kc-liquid-card-top{animation:none!important}
 }
+
+/* Reversible digital profile card with scannable identity on the reverse. */
+.kc-profile-flip-shell{width:100%;max-width:100%;perspective:1500px;-webkit-perspective:1500px;touch-action:pan-y}
+.kc-profile-flip-inner{position:relative;width:100%;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transition:transform .78s cubic-bezier(.2,.72,.18,1)}
+.kc-profile-flip-shell.is-flipped .kc-profile-flip-inner{transform:rotateY(180deg);-webkit-transform:rotateY(180deg)}
+.kc-profile-flip-shell .kc-liquid-profile-card,.kc-profile-flip-shell .kc-profile-hero{backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.kc-profile-flip-shell .kc-profile-card-back{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:space-between;gap:14px;overflow:hidden;padding:clamp(18px,4vw,28px);border:1px solid rgba(219,207,184,.65);border-radius:30px;background:linear-gradient(145deg,#414347 0%,#292c30 24%,#17191d 60%,#35383c 100%);color:#f4f1e9;box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(0,0,0,.55),0 24px 65px rgba(0,0,0,.38);transform:rotateY(180deg);-webkit-transform:rotateY(180deg);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.kc-profile-card-back:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.34;background:repeating-linear-gradient(112deg,rgba(255,255,255,.055) 0 1px,transparent 1px 4px),linear-gradient(120deg,transparent 15%,rgba(255,255,255,.11) 48%,transparent 72%);mix-blend-mode:screen}
+.kc-card-back-top,.kc-card-back-footer{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.kc-card-back-top{font-size:10px;letter-spacing:.2em;color:#e1d1b5;font-weight:750}
+.kc-card-back-top span+span{font-size:9px;letter-spacing:.16em;color:#aeb0b3}
+.kc-card-back-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center}
+.kc-card-back-kicker{font-size:10px;letter-spacing:.22em;color:#c7b18e;font-weight:750}
+.kc-profile-qr{width:164px;height:164px;display:grid;place-items:center;padding:8px;border:1px solid #d2c3a8;border-radius:13px;background:#f4f1e9;box-shadow:0 9px 26px #0006}
+.kc-profile-qr img,.kc-profile-qr canvas{display:block!important;width:148px!important;height:148px!important;max-width:100%}
+.kc-card-back-content>b{font-size:14px;letter-spacing:.02em}
+.kc-card-back-content>small{max-width:260px;color:#b8b8b8;font-size:10px;line-height:1.4}
+.kc-card-instagram-link{display:flex;align-items:center;gap:8px;margin-top:5px;padding:9px 14px;border:1px solid rgba(221,199,163,.32);border-radius:999px;background:#ffffff09;color:#e6d5b8;text-decoration:none;font-size:12px;font-weight:700}
+.kc-card-instagram-link span{color:#fff;font-weight:500}
+.kc-card-back-footer{font-size:9px;letter-spacing:.12em;color:#aeb0b3}
+.kc-card-back-footer button{padding:9px 12px;border:1px solid rgba(221,199,163,.4);border-radius:999px;background:#ffffff0a;color:#eee4d3;font:inherit;letter-spacing:0}
+.kc-single-profile.is-founder .kc-profile-card-back{border-color:rgba(225,194,148,.9);background:linear-gradient(145deg,#514b40 0%,#292a2b 27%,#17191d 63%,#3c3429 100%);box-shadow:inset 0 1px 0 rgba(255,244,224,.34),inset 0 -1px 0 rgba(0,0,0,.65),0 26px 70px #0008}
+.kc-single-profile.is-founder .kc-card-back-top,.kc-single-profile.is-founder .kc-card-back-kicker{color:#e8cfaa}
+.kc-public-reference-profile .kc-profile-flip-shell{margin-bottom:16px}
+@media(max-width:640px){.kc-profile-card-back{border-radius:24px!important}.kc-profile-qr{width:156px;height:156px}.kc-profile-qr img,.kc-profile-qr canvas{width:140px!important;height:140px!important}}
+@media(prefers-reduced-motion:reduce){.kc-profile-flip-inner{transition:none!important}}
