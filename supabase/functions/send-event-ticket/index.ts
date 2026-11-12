@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import QRCode from "npm:qrcode@1.5.4";
+import nodemailer from "npm:nodemailer@6.9.16";
 
 const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization, x-client-info, apikey, content-type","Access-Control-Allow-Methods":"POST, OPTIONS"};
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,"Content-Type":"application/json"}});
@@ -18,8 +19,9 @@ Deno.serve(async(req)=>{
  const adminClient=createClient(url,service);
  const {data:operator,error:roleError}=await adminClient.from("crew_profiles").select("auth_id,role,name").eq("auth_id",user.id).maybeSingle();
  if(roleError||!operator||!["admin","super_admin"].includes(operator.role))return json({error:"Admin access required."},403);
- const apiKey=Deno.env.get("RESEND_API_KEY"),from=Deno.env.get("RESEND_FROM_EMAIL");
- if(!apiKey||!from)return json({error:"Ticket email is not configured yet. Add RESEND_API_KEY and RESEND_FROM_EMAIL to Supabase Edge Function secrets."},503);
+ const smtpUser=Deno.env.get("SMTP_USER")||"kineticcreww@gmail.com",smtpPass=Deno.env.get("SMTP_PASS");
+ if(!smtpPass)return json({error:"Gmail SMTP is not connected to the ticket sender yet. Add SMTP_PASS as a Supabase Edge Function secret. SMTP_USER defaults to kineticcreww@gmail.com."},503);
+ const mailer=nodemailer.createTransport({host:"smtp.gmail.com",port:465,secure:true,auth:{user:smtpUser,pass:smtpPass}});
  try{
   const body=await req.json(),eventId=String(body.eventId||"");
   const subject=String(body.subject||"").trim().slice(0,140);
@@ -49,9 +51,10 @@ Deno.serve(async(req)=>{
    const qrBase64=qrDataUrl.split(",")[1];
    const passId=String(event.id).replace(/-/g,"").slice(-8).toUpperCase();
    const html=`<!doctype html><html><body style="margin:0;padding:28px 12px;background:#111715;font-family:Arial,sans-serif;color:#f5efdf"><div style="max-width:560px;margin:auto;border:1px solid #b79a4c;border-radius:24px;overflow:hidden;background:linear-gradient(145deg,#202722,#111715)"><div style="padding:30px 24px;text-align:center;background:linear-gradient(120deg,#143e39,#40331a)"><div style="font-size:11px;letter-spacing:4px;color:#e6c66c;font-weight:bold">KINETIC CREW · OFFICIAL PASS</div><div style="font-size:12px;letter-spacing:3px;color:#c9c2ae;margin-top:22px">MY TICKET</div><h1 style="font-size:30px;line-height:1.15;margin:12px 0 0;color:#fff8e8">${esc(event.title)}</h1></div><div style="margin:22px 22px 0;padding:18px;border:1px solid #b99c50;border-radius:18px;text-align:center;background:#17201d"><div style="font-size:11px;letter-spacing:2px;color:#d8cba9">PASS ID · ${passId}</div><div style="border-top:1px dashed #c8b987;margin:16px 0"></div><img src="cid:ticket-qr.png" width="220" height="220" alt="Event entry QR code" style="display:block;width:220px;height:220px;margin:auto;background:#f3ecd9;border-radius:10px;padding:8px"><div style="font-size:9px;letter-spacing:2px;color:#aab5a8;margin-top:12px">SCAN AT THE EVENT ENTRANCE</div></div><div style="padding:25px 28px;display:grid;grid-template-columns:1fr 1fr;gap:18px"><div><div style="font-size:10px;letter-spacing:2px;color:#aaa99c">NAME</div><b style="display:block;margin-top:7px">${esc(recipient.name)}</b></div><div><div style="font-size:10px;letter-spacing:2px;color:#aaa99c">DATE</div><b style="display:block;margin-top:7px">${esc(dateLabel(event.starts_at))}</b></div><div><div style="font-size:10px;letter-spacing:2px;color:#aaa99c">VENUE</div><b style="display:block;margin-top:7px">${esc(event.location||"To be announced")}</b></div><div><div style="font-size:10px;letter-spacing:2px;color:#aaa99c">TIME</div><b style="display:block;margin-top:7px">${esc(timeLabel(event.starts_at))}</b></div></div><div style="padding:0 26px 22px"><div style="border-top:1px dashed #8e907f;padding-top:15px;font-size:12px;color:#b9b9a9">● VALID PASS <span style="float:right">UNIQUE TO YOUR ACCOUNT</span></div></div><div style="padding:0 26px 28px"><h2 style="font-size:19px;color:#e9c76b">${esc(greeting)}</h2><p style="font-size:14px;line-height:1.65;color:#d0d0c5;white-space:pre-line">${esc(message)}</p><p style="font-size:13px;color:#bcb8a8">${esc(footer)}</p><div style="margin-top:24px;padding-top:16px;border-top:1px solid #ffffff22;text-align:center;color:#8d9a90;font-size:10px;letter-spacing:3px">KINETIC CREW · BUILT TO MOVE TOGETHER</div></div></div></body></html>`;
-   const response=await fetch("https://api.resend.com/emails",{method:"POST",headers:{"Authorization":"Bearer "+apiKey,"Content-Type":"application/json"},body:JSON.stringify({from,to:[recipient.email],subject,html,attachments:[{filename:"kinetic-crew-ticket-qr.png",content:qrBase64,content_id:"ticket-qr.png"}]})});
-   const result=await response.json();
-   sendResults.push({email:recipient.email,ok:response.ok,error:response.ok?undefined:String(result.message||result.name||"Delivery failed").slice(0,180)});
+   try{
+    await mailer.sendMail({from:'"KINETIC CREW" <kineticcreww@gmail.com>',to:recipient.email,subject,html,attachments:[{filename:"kinetic-crew-ticket-qr.png",content:qrBase64,encoding:"base64",cid:"ticket-qr.png"}]});
+    sendResults.push({email:recipient.email,ok:true});
+   }catch(mailError){sendResults.push({email:recipient.email,ok:false,error:String(mailError instanceof Error?mailError.message:"SMTP delivery failed").slice(0,180)});}
   }
   return json({ok:true,sent:sendResults.filter(x=>x.ok).length,failed:sendResults.filter(x=>!x.ok).length,results:sendResults});
  }catch(error){console.error("send-event-ticket:",error);return json({error:error instanceof Error?error.message:"Ticket email failed."},500);}
