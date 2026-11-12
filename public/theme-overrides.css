@@ -960,3 +960,48 @@ body:has(.crop-backdrop) .kc-bottom-nav{visibility:hidden!important;pointer-even
  .kc-attendance-otp-form{grid-template-columns:1fr}.kc-attendance-verify-btn{grid-column:auto}
  .kc-attendance-roster .attendance-status-actions{gap:4px}.kc-attendance-roster .attendance-status-btn{font-size:8px;padding:0 8px}
 }
+
+/* Kinetic Gram mobile layout and external-link previews */
+.kc-feed-page{width:100%;max-width:860px;margin:0 auto;padding:clamp(14px,3vw,26px) 16px calc(112px + env(safe-area-inset-bottom));overflow-x:clip;box-sizing:border-box}
+.kc-feed-page *{box-sizing:border-box;min-width:0}
+.kc-feed-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 18px}
+.kc-feed-top h1{margin:7px 0 0;font-size:clamp(28px,6vw,38px);letter-spacing:-.045em}
+.kc-feed-tabs{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;margin:0 0 14px;border:1px solid #ffffff20;border-radius:999px;background:#ffffff0b}
+.kc-feed-tabs span{flex:1;text-align:center;padding:13px 12px;color:#c2c0c7;font-size:12px;font-weight:750;white-space:nowrap}
+.kc-feed-tabs span.active{color:#ff947d;border-bottom:2px solid #ff6b53}
+.kc-feed-stories,.kc-feed-composer,.social-post-card{max-width:100%;overflow:hidden}
+.kc-feed-composer{display:grid;grid-template-columns:42px minmax(0,1fr);gap:12px;padding:14px!important;border-radius:22px!important}
+.kc-feed-compose-main{min-width:0}
+.kc-feed-composer textarea,.kc-feed-composer input{width:100%;min-width:0;max-width:100%;box-sizing:border-box}
+.kc-feed-link-field{display:flex;align-items:center;gap:10px;min-width:0}
+.kc-feed-link-field input{flex:1}
+.social-composer-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.social-composer-foot small{font-size:10px;color:#aaa7b1}
+.social-composer-foot button{min-width:120px;min-height:44px}
+.social-feed-list{display:grid;gap:14px;min-width:0}
+.social-post-card{padding:14px!important;border-radius:20px!important}
+.social-post-head{display:flex;align-items:center;gap:10px;min-width:0}
+.social-post-head>div{flex:1;min-width:0}
+.social-post-caption{white-space:pre-wrap;overflow-wrap:anywhere}
+.social-embed{width:100%;max-width:100%;margin:12px 0;border-radius:16px;overflow:hidden;background:#09090b}
+.social-embed iframe{display:block;width:100%;max-width:100%;border:0}
+.social-embed-video{aspect-ratio:16/9}.social-embed-video iframe{height:100%;aspect-ratio:16/9}
+.social-embed-instagram{min-height:400px}.social-embed-instagram iframe{height:540px}
+.social-embed-tiktok{max-width:420px;margin-inline:auto}.social-embed-tiktok iframe{height:740px;max-height:78vh}
+.social-link-preview{display:flex;align-items:center;gap:12px;max-width:100%;overflow:hidden}
+.social-link-preview>span:nth-child(2){min-width:0;overflow-wrap:anywhere}
+.social-link-preview b,.social-link-preview em{display:block;overflow-wrap:anywhere}
+.social-post-actions{display:flex;flex-wrap:wrap;gap:8px}
+.social-post-actions button{flex:1;min-width:82px;min-height:40px}
+@media(max-width:600px){
+ .kc-feed-page{padding:12px 12px calc(108px + env(safe-area-inset-bottom))}
+ .kc-feed-composer{grid-template-columns:34px minmax(0,1fr);gap:9px;padding:11px!important}
+ .kc-feed-composer .kc-feed-compose-avatar{width:34px;height:34px}
+ .kc-feed-composer textarea{font-size:12px;min-height:72px}
+ .kc-feed-link-field{padding:8px 10px}
+ .social-composer-foot{align-items:stretch}
+ .social-composer-foot small{width:100%}
+ .social-composer-foot button{width:100%}
+ .social-embed-instagram iframe{height:460px}
+ .social-embed-tiktok iframe{height:650px}
+}
