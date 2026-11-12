@@ -151,3 +151,47 @@
 .kce-nightpulse .kce-detail-status{border-color:#55d5c47a;background:#102e2b;color:#8aeee1}.kce-nightpulse .kce-detail-content h1{font-size:clamp(32px,6vw,52px)}.kce-nightpulse .kce-detail-meta{color:#c8e9df}.kce-nightpulse .kce-detail-panel,.kce-nightpulse .kce-reserve-panel{border-color:#ffffff20;border-radius:18px;background:#171d1c}.kce-nightpulse .kce-detail-facts>div{border-color:#ffffff1b;background:#101615}.kce-nightpulse .kce-detail-facts small{color:#91a49c}.kce-nightpulse .kce-detail-facts b{color:#eaf3ed}.kce-nightpulse .kce-register-button{background:linear-gradient(100deg,#d3a34a,#37c9b9);color:#071412;box-shadow:0 8px 24px #32c9b922}.kce-nightpulse .kce-confirmed{border-color:#3fc7ad55;background:#17342f;color:#7ce1c8}
 .kce-ticket-modal{border-color:#55d6c577!important;background:#111918!important}.kce-ticket-top{background:radial-gradient(ellipse at 85% 0%,#d2a44755,transparent 52%),linear-gradient(145deg,#1b3732,#111918)}.kce-ticket-top .eyebrow{color:#80e2d4}.kce-ticket-top h2{color:#f4f7f3}.kce-ticket-body{background:#111918}.kce-ticket-foot{border-color:#45615a}.kce-ticket-foot strong{color:#72dfca}
 @media(max-width:700px){.kce-nightpulse .kce-events-head{gap:13px}.kce-nightpulse .kce-events-head-actions{width:100%}.kce-nightpulse .kce-featured-event,.kce-nightpulse .kce-art-featured{min-height:255px!important}.kce-nightpulse .kce-featured-info{max-width:80%;left:17px;right:17px;bottom:17px}.kce-nightpulse .kce-detail-hero{min-height:345px}.kce-nightpulse .kce-detail-columns{grid-template-columns:1fr}.kce-nightpulse .kce-event-card{flex-basis:68vw;max-width:250px}}
+
+/* Night Pulse v2: event discovery, ticket wallet and mobile-first hierarchy */
+.kce-nightpulse{max-width:1120px}
+.kce-nightpulse .kce-events-head{align-items:center;margin-bottom:18px}
+.kce-nightpulse .kce-events-head h1{font-size:clamp(28px,5vw,42px)}
+.kce-nightpulse .kce-event-search{min-height:52px;border-radius:18px;box-shadow:inset 5px 5px 12px #0006, inset -3px -3px 10px #ffffff08}
+.kce-nightpulse .kce-featured-event{min-height:300px;border-radius:24px}
+.kce-nightpulse .kce-art-featured{min-height:300px!important}
+.kce-nightpulse .kce-featured-info{left:24px;bottom:22px;max-width:72%}
+.kce-nightpulse .kce-discover-label{margin-top:25px}
+.kce-nightpulse .kce-event-shortcuts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:104px;gap:10px;margin:16px 0 22px}
+.kce-nightpulse .kce-event-shortcuts .kce-category{min-height:0;border-radius:18px;background-color:#18211f;border-color:#ffffff18;box-shadow:inset 3px 3px 9px #0005,inset -2px -2px 8px #ffffff08}
+.kce-nightpulse .kce-events-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;scroll-snap-type:none;padding:0}
+.kce-nightpulse .kce-event-card{min-width:0;flex:initial;max-width:none}
+.kce-nightpulse .kce-event-card>.kce-art{min-height:175px}
+.kce-nightpulse .kce-event-meta{padding:14px}
+.kce-nightpulse .kce-detail-hero{min-height:390px}
+.kce-nightpulse .kce-detail-content{max-width:760px}
+.kce-nightpulse .kce-detail-columns{grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);align-items:stretch}
+.kce-nightpulse .kce-reserve-panel{position:sticky;top:16px;box-shadow:inset 4px 4px 12px #0005,inset -3px -3px 10px #ffffff08}
+.kce-ticket-wallet-card{min-width:0;overflow:hidden;border:1px solid #ffffff22;border-radius:19px;background:linear-gradient(145deg,#202826,#111817);box-shadow:0 12px 28px #0005}
+.kce-ticket-wallet-main{display:block;width:100%;padding:0;border:0;background:none;color:inherit;text-align:left}
+.kce-ticket-wallet-main .kce-art{min-height:150px}
+.kce-ticket-wallet-main .kce-event-meta{display:flex;flex-direction:column;padding:13px}
+.kce-wallet-qr{display:flex;align-items:center;justify-content:space-between;width:calc(100% - 26px);min-height:43px;margin:0 13px 13px;padding:0 14px;border:1px solid #47cbbb66;border-radius:13px;background:linear-gradient(100deg,#d3a34a,#37c9b9);color:#081513;font-size:11px;font-weight:850}
+.kce-nightpulse .kce-empty-state{min-width:0;grid-column:1/-1}
+@media(max-width:700px){
+ .kce-nightpulse .kce-events-head{align-items:flex-start}
+ .kce-nightpulse .kce-featured-event,.kce-nightpulse .kce-art-featured{min-height:260px!important}
+ .kce-nightpulse .kce-featured-info{left:17px;bottom:17px;max-width:84%}
+ .kce-nightpulse .kce-event-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,98px);gap:8px;margin:14px 0 19px}
+ .kce-nightpulse .kce-event-shortcuts .kce-category{min-height:98px;padding:12px}
+ .kce-nightpulse .kce-events-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .kce-nightpulse .kce-event-card>.kce-art{min-height:128px}
+ .kce-nightpulse .kce-event-meta{padding:10px}
+ .kce-nightpulse .kce-event-meta>b{font-size:12px}
+ .kce-nightpulse .kce-event-meta>small{font-size:9px;line-height:1.45}
+ .kce-nightpulse .kce-detail-hero{min-height:330px}
+ .kce-nightpulse .kce-detail-columns{grid-template-columns:1fr}
+ .kce-nightpulse .kce-reserve-panel{position:static}
+ .kce-ticket-wallet-main .kce-art{min-height:120px}
+ .kce-wallet-qr{width:calc(100% - 20px);margin:0 10px 10px;padding:0 10px;font-size:10px}
+}
+@media(min-width:701px){.kce-nightpulse .kce-events-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
