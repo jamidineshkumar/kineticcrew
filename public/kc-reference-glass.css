@@ -110,3 +110,55 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .social-post-card{background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.025))!important;border:1px solid var(--kc-ref-line)!important;border-radius:19px!important}
 .social-action.liked{color:#ff9a72!important}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+/* Reference refinement v3 — less generic, more editorial, layered and spatial. */
+:root{--kc-ref-orange:#ff6a2a;--kc-ref-line:rgba(255,255,255,.105);--kc-ref-glass:blur(26px) saturate(155%)}
+body{background:#08090b!important}
+.kc-mobile-topbar{background:linear-gradient(115deg,rgba(38,40,43,.82),rgba(14,15,17,.88))!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:22px!important;box-shadow:0 14px 38px #0008,inset 0 1px 0 #ffffff14!important}
+.kc-mobile-topbar .kc-header-actions button{width:39px!important;height:39px!important;border-radius:50%!important;background:linear-gradient(145deg,#383a3d,#1c1e20)!important;border:1px solid #ffffff20!important}
+.surface,.stat,.event,.announcement,.feature-card,.notification-item,.crew-profile-tile,.social-post-card,.kc-detail-panel,.kce-reserve-panel,.notice-settings,.notice-feed,.formgrid,.publish,.verifyform,.attendancegrid>.surface,.wa-chat-shell,.kc-profile-editor,.kc-profile-form,.notice-hero,.kc-ticket-modal{
+ background:linear-gradient(145deg,rgba(48,50,53,.68),rgba(17,19,21,.88))!important;
+ border:1px solid rgba(255,255,255,.105)!important;border-radius:22px!important;
+ box-shadow:0 20px 52px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.09)!important;
+}
+.primary,.kc-register-button,.kce-register-button,.kc-exact-gram-entry button,.kce-featured-info>strong,.kce-admin-event{
+ background:linear-gradient(135deg,#ff8a4c,#ed511d)!important;box-shadow:0 8px 24px #ff672a25!important
+}
+@media(max-width:900px){
+ body.kc-home-screen .content{padding:6px 13px 30px!important}
+ .kc-exact-home{padding-top:9px!important}
+ .kc-home-updates{min-height:218px!important;padding:16px!important;border-radius:27px!important;background:linear-gradient(145deg,rgba(63,65,68,.8),rgba(20,22,24,.96))!important}
+ .kc-home-update-slide{min-height:178px!important;border-radius:20px!important;background:radial-gradient(ellipse at 84% 18%,rgba(255,111,53,.18),transparent 42%),linear-gradient(145deg,rgba(255,255,255,.09),rgba(12,13,15,.42))!important}
+ .kc-home-update-slide>b{font-size:clamp(25px,7.5vw,35px)!important;font-weight:650!important;letter-spacing:-.055em!important}
+ .kc-exact-quick{grid-template-columns:repeat(4,minmax(0,1fr))!important;padding:8px!important;gap:7px!important;background:linear-gradient(145deg,rgba(50,52,55,.62),rgba(15,17,19,.78))!important;border-radius:23px!important}
+ .kc-exact-quick button{height:76px!important;border-radius:17px!important;background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.018))!important;border-color:rgba(255,255,255,.09)!important}
+ .kc-exact-quick button i{color:#ff9b6b!important}
+ .kc-exact-gram-entry{position:relative!important;overflow:hidden!important;min-height:106px!important;padding:17px!important;border-radius:23px!important;background:radial-gradient(ellipse at 95% 5%,rgba(255,112,53,.2),transparent 42%),linear-gradient(145deg,#383a3d,#17191b)!important;border-color:#ffffff18!important}
+ .kc-exact-gram-entry:after{content:"";position:absolute;right:-24px;bottom:-48px;width:145px;height:145px;border:1px solid #ffffff12;border-radius:50%;box-shadow:0 0 0 16px #ffffff05,0 0 0 34px #ffffff03;pointer-events:none}
+ .kc-exact-gram-entry>div>b{font-size:21px!important;letter-spacing:-.045em!important}
+ .kc-exact-section{margin-bottom:25px!important}
+ .kc-exact-heading{border:0!important;margin-bottom:12px!important;padding:0 1px!important}
+ .kc-exact-heading h2{font-size:16px!important;font-weight:650!important;letter-spacing:-.035em!important}
+ .kc-exact-event-row{grid-auto-columns:minmax(76%,1fr)!important;gap:11px!important}
+ .kc-exact-event-card{border-radius:21px!important;background:linear-gradient(145deg,#303235,#151719)!important;box-shadow:0 14px 35px #0006,inset 0 1px 0 #ffffff12!important}
+ .kc-exact-event-image{height:154px!important}
+ .kc-exact-event-copy{padding:13px 14px 15px!important}
+ .kc-exact-event-copy b{font-size:14px!important;font-weight:650!important}
+ .kc-exact-friends{min-height:82px!important;border-radius:21px!important;background:linear-gradient(145deg,#343639,#17191b)!important;box-shadow:0 14px 34px #0006,inset 0 1px 0 #ffffff12!important}
+ .kc-exact-update{min-height:68px!important;border-radius:18px!important;background:linear-gradient(145deg,#303235,#17191b)!important}
+ .kc-exact-update-icon{background:linear-gradient(145deg,#4b4d50,#252729)!important;color:#ff9a6b!important;border:1px solid #ffffff12!important}
+}
+@media(min-width:901px){
+ .kc-exact-home{max-width:1120px!important;margin:0 auto!important}
+ .kc-exact-quick{max-width:700px}
+ .kc-exact-event-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important}
+}
+.kce-nightpulse .kce-featured-event,.kce-nightpulse .kce-event-card{background:linear-gradient(145deg,#303235,#141618)!important;border-color:#ffffff18!important;box-shadow:0 18px 42px #0007,inset 0 1px 0 #ffffff12!important}
+.kce-nightpulse .kce-tabs button.active{background:rgba(255,105,48,.15)!important;border-color:#ff8b5c88!important;color:#ffe0d1!important}
+.kce-nightpulse .kce-tabs button{background:linear-gradient(145deg,#292b2e,#17191b)!important}
+.kc-liquid-profile-card{border-radius:28px!important;overflow:hidden!important;background-color:#27292c!important}
+.kc-liquid-profile-card:before{background:linear-gradient(140deg,rgba(255,255,255,.1),transparent 38%,rgba(255,106,42,.12))!important}
+.kc-liquid-profile-photo{border:3px solid rgba(255,255,255,.72)!important;box-shadow:0 14px 34px #0009!important}
+.kc-liquid-orb{opacity:.28!important;filter:blur(2px)!important}
+.kc-feed-composer,.kc-feed-stories,.social-post-card{background:linear-gradient(145deg,#303235,#17191b)!important}
