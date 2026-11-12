@@ -1028,7 +1028,7 @@ async function showCrewIntro(force){
  }
  if(document.getElementById('kcIntro'))return;
  const overlay=document.createElement('section');overlay.id='kcIntro';overlay.className='kc-intro';
- overlay.innerHTML='<div class="kc-intro-grain"></div><div class="kc-intro-orbit"></div><div class="kc-intro-content"><img src="'+window.kcPath('kinetic-crew-logo.jpg')+'" alt="Kinetic Crew" class="kc-intro-logo"><span class="kc-intro-overline">A CREW IS MORE THAN A NAME</span><h1>MOVE AS ONE.<br><em>MAKE IT KINETIC.</em></h1><p>Different styles. One rhythm. One crew.</p><button type="button" id="kcIntroEnter">ENTER THE CREW ↗</button><button type="button" id="kcIntroSkip">Skip intro</button></div>';
+ overlay.innerHTML='<div class="kc-intro-grain"></div><div class="kc-intro-orbit"></div><div class="kc-intro-content"><img src="'+window.kcPath('kinetic-crew-logo.svg')+'" alt="Kinetic Crew" class="kc-intro-logo"><span class="kc-intro-overline">A CREW IS MORE THAN A NAME</span><h1>MOVE AS ONE.<br><em>MAKE IT KINETIC.</em></h1><p>Different styles. One rhythm. One crew.</p><button type="button" id="kcIntroEnter">ENTER THE CREW ↗</button><button type="button" id="kcIntroSkip">Skip intro</button></div>';
  document.body.appendChild(overlay);
  const finish=async play=>{
    if(play&&S.appSettings?.intro_audio_url&&notificationPrefs().sound){try{const audio=new Audio(S.appSettings.intro_audio_url);audio.volume=.65;await audio.play();}catch(error){console.info('Intro soundtrack requires browser playback permission.',error);}}
