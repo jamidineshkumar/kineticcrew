@@ -396,6 +396,123 @@ function eventForm(event=null){
 function updateForm(){return '<form id="updateForm" class="surface publish">'+formTitle('♧','Broadcast a message','Send the crew a clear signal.')+'<label class="field">Headline<input name="title" maxlength="140" required placeholder="What is the update?"></label><label class="field">Message<textarea name="body" rows="5" maxlength="5000" required placeholder="Share the details…"></textarea></label><label class="field">Audience<select name="audience"><option value="all">Everyone</option><option value="member">Members</option><option value="admin">Admins</option><option value="super_admin">Super admins</option></select></label><button class="primary full">Publish update →</button><div class="notice">Announcements appear in Crew HQ. Push notifications when the app is closed require a separate delivery setup.</div></form>';}
 function safeSocialUrl(raw){try{const url=new URL(String(raw||''));return url.protocol==='https:'?url.href:'';}catch{return '';}}
 
+function rosterRows(rows){const query=String(S.attendanceQuery||'').trim().toLowerCase(),filtered=(rows||[]).filter(m=>!query||(String(m.name||'')+' '+String(m.email||'')).toLowerCase().includes(query));return filtered.length?filtered.map(m=>{const status=m.status||(m.attended?'present':'pending'),label=status==='not_attending'?'Not attending':status==='present'?'Present':status==='absent'?'Absent':'Pending';return '<div class="rosterrow attendance-rosterrow"><div class="avatar">'+esc(initials(m.name))+'</div><div class="rosterperson"><b>'+esc(m.name)+'</b><small>'+esc(m.email)+'</small><span class="status '+esc(status)+'">'+label+'</span></div><div class="attendance-status-actions">'+[['present','Present'],['absent','Absent'],['not_attending','Not attending'],['pending','Reset']].map(([v,t])=>'<button type="button" class="attendance-status-btn '+(status===v?'selected':'')+'" data-attendance-status="'+v+'" data-member-id="'+esc(m.member_id||'')+'" '+(!m.member_id||S.roster?.finalized?'disabled':'')+'>'+t+'</button>').join('')+'</div></div>';}).join(''):empty(query?'No matching members':'No registrations yet',query?'Try another name or email.':'Members who register will appear here.');}
+
+function attendanceReportCard(eventId,memberMode){
+ const email=String(S.user?.email||'').trim();
+ return '<section class="kc-attendance-report"><div class="kc-attendance-section-title"><div><span class="kc-attendance-kicker">KINETIC CREW / REPORTING</span><h2>Send attendance report</h2><p>'+(memberMode?'Send your personal attendance statement as a formal email with a PDF attachment.':'Send a formal attendance summary with the complete event roster and PDF report attached.')+'</p></div><span class="kc-attendance-round-icon">✉</span></div><form id="attendanceReportForm" class="kc-attendance-report-form"><input type="hidden" name="eventId" value="'+esc(eventId)+'"><label><span>Send report to</span><input type="email" name="toEmail" value="'+esc(email)+'" '+(memberMode?'readonly':'required')+' placeholder="recipient@example.com"></label><button type="submit" class="kc-attendance-verify-btn">✉ Send attendance report + PDF</button><p class="kc-attendance-note">'+(memberMode?'Members receive only their own attendance details.':'Admins and Super Admins receive the complete registered-member attendance report.')+'</p></form></section>';
+}
+
+function memberAttendancePage(){
+ const events=(S.events||[]).filter(e=>e&&e.registered);
+ const selected=events.find(e=>String(e.id)===String(S.attendanceReportEvent))||events[0]||null;
+ if(selected)S.attendanceReportEvent=selected.id;
+ const options=events.map(e=>'<option value="'+esc(e.id)+'" '+(selected&&String(selected.id)===String(e.id)?'selected':'')+'>'+esc(e.title)+'</option>').join('');
+ return '<main class="kc-attendance-home kc-member-attendance"><header class="kc-attendance-heading"><div><span class="kc-attendance-kicker">KINETIC CREW / YOUR RECORDS</span><h1>Your attendance <em>report.</em></h1><p>Get a formal email summary and a PDF copy of your event attendance.</p></div><span class="kc-attendance-live"><i></i> MEMBER</span></header><section class="kc-attendance-next"><div class="kc-attendance-next-head"><span class="kc-attendance-kicker">YOUR EVENTS</span><span class="kc-attendance-event-count">'+events.length+' REGISTERED</span></div><label class="kc-attendance-event-select"><span>◷</span><select id="attendanceReportEventSelect"><option value="">Select a registered event</option>'+options+'</select><span>⌄</span></label><div class="kc-attendance-event-meta">'+(selected?'<b>'+esc(selected.title)+'</b><small>'+esc(dt(selected.starts_at))+' · '+esc(selected.location||'Venue to be announced')+'</small>':'<b>No registered events yet</b><small>Register for an event to request your personal attendance statement.</small>')+'</div></section>'+(selected?attendanceReportCard(selected.id,true):'<section class="kc-attendance-summary kc-attendance-empty"><h2>No report available yet.</h2><p>Your attendance reports will appear here after you register for a Kinetic Crew event.</p></section>')+'</main>';
+}
+
+function socialEmbed(url){
+ try{
+  const u=new URL(url),host=u.hostname.toLowerCase().replace(/^www\./,'');
+  let id='';
+  if(host==='youtu.be')id=u.pathname.split('/').filter(Boolean)[0]||'';
+  else if(['youtube.com','m.youtube.com'].includes(host)){
+   id=u.searchParams.get('v')||'';
+   if(!id){const parts=u.pathname.split('/').filter(Boolean),marker=parts.findIndex(p=>p==='shorts'||p==='embed');if(marker>=0)id=parts[marker+1]||'';}
+  }
+  if(id&&/^[a-zA-Z0-9_-]{6,20}$/.test(id))return '<div class="social-embed social-embed-video"><iframe src="https://www.youtube-nocookie.com/embed/'+esc(id)+'" title="Shared crew video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>';
+  if(host==='instagram.com'&&/^\/(p|reel|tv)\/[A-Za-z0-9_-]+/.test(u.pathname))return '<div class="social-embed social-embed-instagram"><iframe src="https://www.instagram.com'+esc(u.pathname.replace(/\/$/,'')+'/embed')+'" title="Instagram shared post" loading="lazy" allowfullscreen referrerpolicy="no-referrer"></iframe></div>';
+  if(host==='tiktok.com'||host==='m.tiktok.com'){
+   const match=u.pathname.match(/\/video\/(\d+)/);if(match)return '<div class="social-embed social-embed-tiktok"><iframe src="https://www.tiktok.com/player/v1/'+match[1]+'?music_info=1&description=1" title="TikTok shared video" loading="lazy" allow="fullscreen" allowfullscreen></iframe></div>';
+  }
+ }catch{}
+ return '';
+}
+
+async function loadSocialFeed(){
+ const [posts,likes,comments,people]=await Promise.all([
+  client.from('crew_social_posts').select('*').order('created_at',{ascending:false}).limit(100),
+  client.from('crew_social_likes').select('post_id,user_id'),
+  client.from('crew_social_comments').select('*').order('created_at',{ascending:true}).limit(1000),
+  rpc('crew_profile_directory',{})
+ ]);
+ for(const result of [posts,likes,comments,people])if(result.error)throw result.error;
+ S.socialPosts=posts.data||[];S.socialLikes=likes.data||[];S.socialComments=comments.data||[];
+ S.publicMembers=Array.isArray(people.data)?people.data:[];
+}
+
+async function loadMemories(){
+ const {data,error}=await rpc('crew_memories_list',{});
+ if(error)throw error;
+ const rows=Array.isArray(data)?data:[];
+ S.featureItems.memories=await Promise.all(rows.map(async item=>{
+  const details={...(item.data||{})};
+  if(details.storage_path){
+   const {data:signed,error:signError}=await client.storage.from('crew-memories').createSignedUrl(details.storage_path,7200);
+   if(signError)details.media_error=signError.message||'Photo could not be opened.';
+   else details.signed_media_url=signed?.signedUrl||'';
+  }
+  return {...item,data:details};
+ }));
+ return S.featureItems.memories;
+}
+
+function socialPostCard(post){
+ const people=S.publicMembers||[],author=people.find(m=>String(m.auth_id)===String(post.author_id))||{name:post.author_id===S.user.auth_id?S.user.name:'Crew member',role:'member'};
+ const url=safeSocialUrl(post.link_url),host=url?new URL(url).hostname.replace(/^www[.]/,''):'Shared link';
+ const likes=S.socialLikes.filter(l=>String(l.post_id)===String(post.id)),liked=likes.some(l=>String(l.user_id)===String(S.user.auth_id));
+ const comments=S.socialComments.filter(c=>String(c.post_id)===String(post.id));
+ const owned=String(post.author_id)===String(S.user.auth_id);
+ const commentMarkup=comments.map(c=>{const person=people.find(m=>String(m.auth_id)===String(c.user_id))||{name:'Crew member'};return '<article class="social-comment"><b>'+esc(person.name)+'</b><p>'+esc(c.body)+'</p><time>'+esc(dt(c.created_at))+'</time></article>';}).join('');
+ return '<article class="surface social-post-card" data-social-post="'+esc(post.id)+'"><header class="social-post-head">'+avatarMarkup(author,'social-author-avatar')+'<div><b>'+esc(author.name||'Crew member')+'</b><small>'+esc(role(author.role))+' · '+esc(dt(post.created_at))+'</small></div>'+(owned||admin()?'<button type="button" class="social-delete" data-social-delete="'+esc(post.id)+'" aria-label="Delete post">×</button>':'')+'</header>'+
+ (post.caption?'<p class="social-post-caption">'+esc(post.caption)+'</p>':'')+
+ (url?socialEmbed(url)+'<a class="social-link-preview" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer"><span class="social-link-icon">↗</span><span><small>SHARED LINK</small><b>'+esc(host)+'</b><em>Open original post or page</em></span><span class="social-link-arrow">↗</span></a>':'<div class="social-invalid-link">This shared link is unavailable.</div>')+
+ '<div class="social-post-stats"><span>'+likes.length+' '+(likes.length===1?'like':'likes')+'</span><span>'+comments.length+' '+(comments.length===1?'comment':'comments')+'</span></div>'+
+ '<div class="social-post-actions"><button type="button" class="'+(liked?'social-action liked':'social-action')+'" data-social-like="'+esc(post.id)+'" data-liked="'+(liked?'true':'false')+'">'+(liked?'♥ Liked':'♡ Like')+'</button><button type="button" class="social-action" data-social-comments-toggle="'+esc(post.id)+'">▢ Comment</button><button type="button" class="social-action" data-social-share="'+esc(post.id)+'">↗ Share</button></div>'+
+ '<section class="social-comments" data-social-comments="'+esc(post.id)+'" hidden><div class="social-comments-list">'+(commentMarkup||'<p class="social-no-comments">Start the conversation.</p>')+'</div><form class="social-comment-form" data-social-comment-form="'+esc(post.id)+'"><input name="body" maxlength="800" required placeholder="Write a comment…"><button type="submit" aria-label="Send comment">➤</button></form></section></article>';
+}
+
+function featureForm(key){
+ const meta=featureMeta[key],isPoll=key==='polls',isLeave=key==='leave',isExpense=key==='expenses',isAudition=key==='auditions',isMemory=key==='memories',isChat=key==='chat',isRehearsal=key==='rehearsals',isAchievement=key==='achievements';
+ return '<form class="surface feature-form" data-feature-form="'+key+'">'+formTitle('✦',meta[0],meta[1])+(isChat?'<input type="hidden" name="title" value="Crew message">':'<label class="field">'+meta[2]+'<input name="title" maxlength="160" required placeholder="'+meta[2]+'"></label>')+'<label class="field">'+meta[3]+'<textarea name="body" rows="3" maxlength="5000" '+(isChat?'required':'')+' placeholder="'+(isPoll?'e.g. Song A, Song B, Song C':isExpense?'e.g. ₹1200 · costumes · event name':isMemory?'Add a caption and paste a shareable media URL':isAudition?'Dance style, applicant details and video URL':isLeave?'Dates and reason':isChat?'Message the crew…':'Add useful details…')+'"></textarea></label>'+
+ (isPoll?'<p class="hint">Separate each option with a comma. Members can change their vote until the poll closes.</p>':'')+
+ 
+ (isLeave?'<label class="field">From<input name="from_date" type="date" required></label><label class="field">To<input name="to_date" type="date" required></label>':'')+
+ (isRehearsal?'<label class="field">Date & time<input name="session_at" type="datetime-local" required></label><label class="field">Location<input name="location" maxlength="160" placeholder="Practice room / studio"></label>':'')+
+ 
+ (isAudition?'<label class="field">Dance style<input name="style" maxlength="80" placeholder="Hip-hop / freestyle / classical"></label><label class="field">Audition video URL<input name="media_url" type="url" placeholder="https://…"></label>':'')+
+ (isMemory?'<section class="memory-upload-panel"><div class="memory-upload-title"><b>📷 Add a photo</b><small>Upload a JPG, PNG, WEBP or GIF image · maximum 15 MB</small></div><label class="memory-upload-drop"><span>＋</span><b>Choose photo from device</b><small>Tap to browse your gallery</small><input name="memory_photo" type="file" accept="image/jpeg,image/png,image/webp,image/gif"></label><img class="memory-upload-preview" alt="Selected photo preview" hidden><label class="field">Or paste an image URL<input name="media_url" type="url" inputmode="url" placeholder="https://… (optional if uploading)"></label></section>':'')+'<button class="primary full">'+meta[4]+' →</button></form>';
+}
+
+function featureCard(key,item){
+ const data=item.data||{},status=item.status||'open';
+ let extra='';
+ if(key==='polls'){
+   const opts=String(item.body||'').split(',').map(x=>x.trim()).filter(Boolean);
+   extra='<div class="poll-options">'+opts.map(o=>'<button class="outline poll-vote" data-vote-id="'+esc(item.id)+'" data-choice="'+esc(o)+'">'+esc(o)+'</button>').join('')+'</div><button class="textlink" data-poll-results="'+esc(item.id)+'">View results</button>';
+ }
+ if(key==='leave'||key==='auditions'){
+   extra='<div class="feature-status">Status: <b>'+esc(status.toUpperCase())+'</b></div>';
+   if(admin()&&status==='pending')extra+='<div class="feature-actions"><button class="outline" data-moderate="'+esc(item.id)+'" data-status="approved" data-feature="'+key+'">Approve</button><button class="outline" data-moderate="'+esc(item.id)+'" data-status="rejected" data-feature="'+key+'">Reject</button></div>';
+   if(admin()&&key==='auditions'&&status==='open')extra+='<div class="feature-actions"><button class="outline" data-moderate="'+esc(item.id)+'" data-status="selected" data-feature="'+key+'">Select</button><button class="outline" data-moderate="'+esc(item.id)+'" data-status="rejected" data-feature="'+key+'">Not selected</button></div>';
+ }
+ 
+ const mediaValue=data.signed_media_url||data.media_url;
+ if(mediaValue){const media=String(mediaValue),safe=esc(media),isImage=String(data.media_type||'').startsWith('image/')||/\.(jpe?g|png|gif|webp|avif)(\?.*)?($|#)/i.test(media);if(isImage)extra+='<a class="feature-media-link" href="'+safe+'" target="_blank" rel="noopener"><img class="feature-media-preview" src="'+safe+'" alt="'+esc(item.title)+'" loading="lazy" decoding="async" onerror="this.closest(\'a\').classList.add(\'media-unavailable\');this.remove();"><span>Open photo ↗</span></a>';else if(/\.(mp4|webm|ogg)(\?.*)?$/i.test(media))extra+='<video class="feature-video-preview" src="'+safe+'" controls preload="metadata" playsinline></video>';else extra+='<p><a class="feature-link" href="'+safe+'" target="_blank" rel="noopener">Open shared media ↗</a></p>';}
+ if(data.from_date)extra+='<p class="feature-meta">'+esc(data.from_date)+' → '+esc(data.to_date||data.from_date)+'</p>';
+ if(key==='rehearsals'&&data.session_at)extra+='<p class="feature-meta">◷ '+esc(dt(data.session_at))+' · '+esc(data.location||'Location TBA')+'</p>';
+ 
+ return '<article class="surface feature-card"><div class="feature-card-top"><span class="pill">'+esc(status)+'</span><small>'+esc(dt(item.created_at))+'</small></div><h3>'+esc(item.title)+'</h3><p>'+esc(item.body||'')+'</p>'+extra+'<div class="feature-card-foot"><span>By '+esc(item.author_name||'Crew member')+'</span>'+(admin()||item.author_id===S.user.auth_id?'<button class="textlink" data-feature-delete="'+esc(item.id)+'" data-feature="'+key+'">Delete</button>':'')+'</div></article>';
+}
+
+function featurePage(key){
+ const items=(S.featureItems[key]||[]).slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+ const canCreate=key==='polls'||key==='memories'||key==='leave'||admin();
+ const title=featureLabels[key]||'Crew feature';
+ const descriptions={polls:'Your voice matters. Vote on the next crew decision.',memories:'Relive performances, rehearsals and the moments in between.',leave:'Send a leave request to the crew admins.',rehearsals:'Practice plans and rehearsal details.',auditions:'Audition announcements and submissions.'};
+ return welcome(title,descriptions[key]||'Everything happening across Kinetic Crew.')+(canCreate?featureForm(key):'')+'<div class="feature-feed">'+(items.map(item=>featureCard(key,item)).join('')||empty('Nothing here yet','New '+title.toLowerCase()+' will appear here.'))+'</div>';
+}
+
 function home(){
  const now=Date.now(),all=[...(S.events||[])].filter(e=>e&&e.id&&e.title).sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at));
  const upcoming=all.filter(e=>new Date(e.starts_at).getTime()>=now);
