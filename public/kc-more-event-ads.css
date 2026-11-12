@@ -179,3 +179,32 @@
 @media(prefers-reduced-motion:reduce){
   .kc-brand-intro-slide h2:not(.kc-brand-content-title) em{animation:none!important;background-position:50% 50%!important}
 }
+
+
+/* Final polish: readable crew wordmark, lighter GPU-friendly glow and visible watermark. */
+.kc-brand-intro-slide h2 em{
+ display:inline!important;
+ background-image:linear-gradient(95deg,#f24f9c 0%,#ffb46d 48%,#43d1d1 100%)!important;
+ background-clip:text!important;-webkit-background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;color:transparent!important;
+ box-decoration-break:clone;-webkit-box-decoration-break:clone;
+}
+.kc-brand-intro-slide h2{overflow:visible!important;max-width:100%;text-wrap:balance}
+.kc-brand-intro-glow{
+ opacity:.72!important;filter:blur(19px)!important;
+ transform:translate3d(0,0,0);will-change:transform;
+ animation:kcBrandGlow 18s linear infinite!important;
+}
+.kc-brand-intro-watermark{
+ z-index:0!important;right:5px!important;bottom:-22px!important;
+ color:rgba(255,255,255,.055)!important;
+ font-size:clamp(150px,36vw,230px)!important;
+ line-height:.9!important;pointer-events:none!important;
+}
+.kc-brand-intro-stage{z-index:2!important}
+.kc-brand-intro-top,.kc-brand-intro-bottom{z-index:3!important}
+.kc-brand-intro-slide{transition:opacity .42s ease,transform .5s cubic-bezier(.2,.75,.2,1),visibility .42s!important;will-change:opacity,transform}
+@media(prefers-reduced-motion:reduce){
+ .kc-brand-intro-glow{animation:none!important}
+ .kc-brand-intro-slide{transition:none!important}
+}
