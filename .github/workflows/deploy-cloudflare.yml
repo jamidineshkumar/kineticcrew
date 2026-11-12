@@ -32,6 +32,7 @@ jobs:
         run: |
           node --check public/app.js
           node --check public/brand-logo.js
+          node --check public/kc-transition.js
           node --check public/global-search.js
           node --check public/theme.js
           node --check public/sw.js
