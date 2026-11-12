@@ -971,7 +971,7 @@ document.addEventListener('change',event=>{
 });
 document.addEventListener('input',event=>{
  if(event.target.id==='brandLogoZoom'){
-  kcBrandEditor.zoom=Math.max(50,Math.min(300,Number(event.target.value)||100));
+  kcBrandEditor.zoom=Math.max(kcBrandEditor.fit==='cover'?100:50,Math.min(300,Number(event.target.value)||100));
   const output=$('#brandLogoZoomValue');if(output)output.textContent=Math.round(kcBrandEditor.zoom)+'%';
   kcBrandClampPan();kcBrandDraw();
  }
@@ -1011,7 +1011,7 @@ document.addEventListener('pointermove',event=>{
  const canvas=$('#brandLogoCanvas');if(!canvas)return;
  if(p.pointers.size>=2&&p.pinch){
   const pts=[...p.pointers.values()],distance=kcBrandPointerDistance(pts[0],pts[1]);
-  p.zoom=Math.max(50,Math.min(300,p.pinch.zoom*distance/p.pinch.distance));
+  p.zoom=Math.max(p.fit==='cover'?100:50,Math.min(300,p.pinch.zoom*distance/p.pinch.distance));
   const slider=$('#brandLogoZoom'),output=$('#brandLogoZoomValue');if(slider)slider.value=String(Math.round(p.zoom));if(output)output.textContent=Math.round(p.zoom)+'%';
  }else if(p.drag?.id===event.pointerId){
   const rect=canvas.getBoundingClientRect();
