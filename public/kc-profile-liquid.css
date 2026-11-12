@@ -319,3 +319,7 @@
 .kc-public-reference-profile .kc-profile-flip-shell{margin-bottom:16px}
 @media(max-width:640px){.kc-profile-card-back{border-radius:24px!important}.kc-profile-qr{width:156px;height:156px}.kc-profile-qr img,.kc-profile-qr canvas{width:140px!important;height:140px!important}}
 @media(prefers-reduced-motion:reduce){.kc-profile-flip-inner{transition:none!important}}
+
+/* Founder treatment also applies when another member opens the public Founder profile. */
+.kc-public-reference-profile.is-founder .kc-profile-card-back{border-color:rgba(225,194,148,.9)!important;background:linear-gradient(145deg,#514b40 0%,#292a2b 27%,#17191d 63%,#3c3429 100%)!important;box-shadow:inset 0 1px 0 rgba(255,244,224,.34),inset 0 -1px 0 rgba(0,0,0,.65),0 26px 70px #0008!important}
+.kc-public-reference-profile.is-founder .kc-card-back-top,.kc-public-reference-profile.is-founder .kc-card-back-kicker{color:#e8cfaa!important}
