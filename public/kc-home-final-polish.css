@@ -1,0 +1,61 @@
+/* Home screen polish: centered identity, readable light theme, balanced carousel. */
+@media(max-width:900px){
+ body.kc-home-screen .kc-home-reference-header{position:relative!important;justify-content:center!important;min-height:54px!important;margin:0 0 20px!important}
+ body.kc-home-screen .kc-home-user{justify-content:center!important;text-align:center!important}
+ body.kc-home-screen .kc-home-user>span{justify-items:center!important}
+ body.kc-home-screen .kc-home-theme-toggle{position:absolute!important;right:2px!important;top:50%!important;transform:translateY(-50%)!important}
+ body.kc-home-screen .kc-home-greeting{display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:14px!important}
+ body.kc-home-screen .kc-home-greeting h1{max-width:54%!important}
+ body.kc-home-screen .kc-home-greeting p{max-width:46%!important;text-align:left!important}
+ body.kc-home-screen .kc-home-featured{touch-action:pan-y!important;user-select:none!important}
+ body.kc-home-screen .kc-home-feature-slide{will-change:opacity,transform!important}
+ body.kc-home-screen .kc-home-featured-dots{bottom:13px!important;right:18px!important}
+}
+html[data-theme="light"] body.kc-home-screen{background:#f3f4f7!important;color:#20232a!important}
+html[data-theme="light"] body.kc-home-screen .kc-exact-home{color:#20232a!important}
+html[data-theme="light"] body.kc-home-screen .kc-home-user small,
+html[data-theme="light"] body.kc-home-screen .kc-home-greeting p,
+html[data-theme="light"] body.kc-home-screen .kc-home-reference-section-head button{color:#626875!important}
+html[data-theme="light"] body.kc-home-screen .kc-home-user b,
+html[data-theme="light"] body.kc-home-screen .kc-home-greeting h1,
+html[data-theme="light"] body.kc-home-screen .kc-home-reference-section-head h2{color:#20232a!important}
+html[data-theme="light"] body.kc-home-screen .kc-home-featured{
+ border-color:rgba(39,42,52,.16)!important;
+ box-shadow:0 16px 34px rgba(35,39,50,.12)!important
+}
+html[data-theme="light"] body.kc-home-screen .kc-home-feature-slide{
+ background:linear-gradient(145deg,#e8eaf0,#d9dce5 62%,#eee5e1)!important
+}
+html[data-theme="light"] body.kc-home-screen .kc-home-feature-slide:before{
+ background-image:linear-gradient(180deg,rgba(16,18,24,.08),rgba(16,18,24,.18) 35%,rgba(16,18,24,.82) 100%),var(--kc-home-feature-image)!important
+}
+html[data-theme="light"] body.kc-home-screen .kc-home-featured-glass{
+ background:linear-gradient(145deg,rgba(35,37,44,.94),rgba(22,23,29,.96))!important;
+ border-color:rgba(255,255,255,.22)!important
+}
+html[data-theme="light"] body.kc-home-screen .kc-home-featured-glass>b{color:#fff!important}
+html[data-theme="light"] body.kc-home-screen .kc-home-featured-glass>small{color:#e1e3e9!important}
+html[data-theme="light"] body.kc-home-screen .kc-home-featured-kicker,
+html[data-theme="light"] body.kc-home-screen .kc-home-featured-count{color:#fff!important}
+html[data-theme="light"] body.kc-home-screen .kc-home-upnext-item{
+ background:linear-gradient(145deg,#fff,#f0f1f5)!important;color:#20232a!important;
+ border-color:rgba(30,35,45,.13)!important;box-shadow:0 8px 20px rgba(30,35,45,.07)!important
+}
+html[data-theme="light"] body.kc-home-screen .kc-home-upnext-date{background:#e6e8ee!important;color:#20232a!important}
+html[data-theme="light"] body.kc-home-screen .kc-home-upnext-date small,
+html[data-theme="light"] body.kc-home-screen .kc-home-upnext-copy small{color:#626875!important}
+html[data-theme="light"] body.kc-home-screen .kc-home-upnext-copy b{color:#20232a!important}
+html[data-theme="light"] body.kc-home-screen .kc-home-upnext-empty{
+ background:#fff!important;color:#626875!important;border-color:rgba(30,35,45,.13)!important
+}
+html[data-theme="light"] body.kc-home-screen .kc-exact-update{
+ background:linear-gradient(145deg,#fff,#f0f1f5)!important;color:#20232a!important;border-color:rgba(30,35,45,.13)!important
+}
+html[data-theme="light"] body.kc-home-screen .kc-exact-update b{color:#20232a!important}
+html[data-theme="light"] body.kc-home-screen .kc-exact-update small{color:#626875!important}
+html[data-theme="light"] body.kc-home-screen .kc-home-community-strip{
+ background:linear-gradient(145deg,#fff,#eff0f5)!important;color:#20232a!important;border-color:rgba(30,35,45,.13)!important
+}
+html[data-theme="light"] body.kc-home-screen .kc-home-community-strip b{color:#20232a!important}
+html[data-theme="light"] body.kc-home-screen .kc-home-community-strip small{color:#626875!important}
+@media(prefers-reduced-motion:reduce){body.kc-home-screen .kc-home-feature-slide{will-change:auto!important}}
