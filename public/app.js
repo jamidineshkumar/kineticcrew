@@ -49,7 +49,7 @@ function normalizeFeatureKey(value,payload){
 async function featureApi(action,feature,payload){
  const operation=String(action||'').trim().toLowerCase(),cleanPayload=payload&&typeof payload==='object'?payload:{};
  const currentFeature=featureKeys.includes(S.view)?S.view:'';
- const requested=normalizeFeatureKey(feature??currentFeature,cleanPayload);
+ const requested=normalizeFeatureKey(String(feature||cleanPayload.feature||currentFeature||'').trim(),cleanPayload);
  if(operation!=='leaderboard'&&!requested)throw Error('Kinetic Crew could not identify which feature to open. Please return to the page and try again.');
  if(operation!=='leaderboard'&&!featureKeys.includes(requested))throw Error('Unsupported crew feature "'+requested+'" for action "'+operation+'". Please reload Kinetic Crew and try again.');
  const {data,error}=await rpc('crew_features',{p_action:operation,p_feature:operation==='leaderboard'?null:requested,p_payload:cleanPayload});
