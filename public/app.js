@@ -440,6 +440,54 @@ function home(){
   '<div class="kc-fun-hub-foot">ONE CREW. MANY WAYS TO HAVE FUN. <span>✦</span></div>'+
  '</div>';
 }
+function morePage(){
+const u=S.user||{};
+const icon=(name)=>({
+jobs:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2"/></svg>',
+events:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4m8-4v4M3 9h18"/><path d="m9 14 2 2 4-4"/></svg>',
+people:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a7 7 0 0 1 14 0v2M17 4a4 4 0 0 1 0 7m2 3a6 6 0 0 1 3 5v2"/></svg>',
+gigs:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v3m-5 2h10l3 4v8a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-8l3-4Z"/><path d="M15 11c-.5-1.5-4-1.5-4 0s4 1 4 3-3.5 2-5 0m2-6v10"/></svg>',
+bookmark:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12a2 2 0 0 1 2 2v17l-8-5-8 5V5a2 2 0 0 1 2-2Z"/></svg>',
+meetings:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><path d="M2 21v-2a6 6 0 0 1 12 0v2m1-6a5 5 0 0 1 7 4v2"/></svg>',
+rehearsal:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><path d="M3 9h3m-3 4h3"/></svg>',
+attendance:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 2v4m8-4v4M8 13l2.5 2.5L16 10"/></svg>',
+chat:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-4-.9L3 21l1.8-4.4a8 8 0 1 1 16.2-5.1Z"/><path d="M8 11h8m-8 4h5"/></svg>',
+feed:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>',
+announcements:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 18-5v12L3 13z"/><path d="M6 14l2 7h4l-2-6M21 10v6"/></svg>',
+notifications:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>',
+profile:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
+bank:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2 9 10-6 10 6H2Zm2 2v8m5-8v8m6-8v8m5-8v8M2 21h20"/></svg>',
+settings:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.6a8 8 0 0 1-1.6.9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.6-.9l-1.7.6-1.4-2.4 1.4-1.1a7 7 0 0 1 0-1.9l-1.4-1.1 1.4-2.4 1.7.6a8 8 0 0 1 1.6-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.6.9l1.7-.6 1.4 2.4-1.4 1.1a7 7 0 0 1 0 1.9Z"/></svg>',
+gift:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10h18v11H3zM2 6h20v4H2zM12 6v15"/><path d="M12 6H7a2.5 2.5 0 1 1 2.5-2.5C9.5 5 12 6 12 6Zm0 0h5a2.5 2.5 0 1 0-2.5-2.5C14.5 5 12 6 12 6Z"/></svg>',
+bug:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8h8a4 4 0 0 1 4 4v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-5a4 4 0 0 1 4-4Z"/><path d="M9 13h.01M15 13h.01M9 17h6M12 8V5m-4 3L6 6m10 2 2-2"/></svg>'
+}[name]||'');
+const pill=(view,key,label,disabled=false)=>'<button type="button" class="kc-more-pill '+(disabled?'is-disabled':'')+'" '+(disabled?'disabled':'data-view="'+view+'"')+'><span class="kc-more-pill-icon">'+icon(key)+'</span><b>'+label+'</b>'+(disabled?'<em>COMING SOON</em>':'')+'</button>';
+const other=(view,key,label,disabled=false)=>'<button type="button" class="kc-more-other '+(disabled?'is-disabled':'')+'" '+(disabled?'disabled':'data-view="'+view+'"')+'><span class="kc-more-other-icon">'+icon(key)+'</span><b>'+label+'</b></button>';
+return '<div class="kc-more-reference">'+
+'<header class="kc-more-reference-header"><button type="button" class="kc-more-back" data-view="overview" aria-label="Back to home"><svg viewBox="0 0 24 24"><path d="m15 4-8 8 8 8"/></svg></button><h1><em>More</em></h1><span class="kc-more-spacer"></span></header>'+
+'<div class="kc-more-logo-wrap kc-more-intro" aria-label="Kinetic Crew introduction"><div class="kc-more-intro-track">'+
+'<div class="kc-more-intro-slide"><span class="kc-intro-index">01 / THE MOVEMENT</span><b class="kc-intro-line">WE ARE <em>KINETIC</em><br>CREW.</b><small>One crew. One rhythm. Endless energy.</small></div>'+
+'<div class="kc-more-intro-slide"><span class="kc-intro-index">02 / THE ENERGY</span><b class="kc-intro-line">MOVE WITH<br><em>PURPOSE.</em></b><small>Every beat brings us together.</small></div>'+
+'<div class="kc-more-intro-slide"><span class="kc-intro-index">03 / THE CULTURE</span><b class="kc-intro-line">BUILT ON<br><em>RHYTHM.</em></b><small>Driven by passion. United by dance.</small></div>'+
+'<div class="kc-more-intro-slide"><span class="kc-intro-index">04 / THE PEOPLE</span><b class="kc-intro-line">ONE CREW.<br><em>INFINITE MOVES.</em></b><small>Different styles. Shared heartbeat.</small></div>'+
+'<div class="kc-more-intro-slide"><span class="kc-intro-index">05 / THE CRAFT</span><b class="kc-intro-line">CREATE.<br><em>PERFORM. REPEAT.</em></b><small>Make every moment a performance.</small></div>'+
+'<div class="kc-more-intro-slide"><span class="kc-intro-index">06 / THE IDENTITY</span><b class="kc-intro-line">THIS IS<br><em>KINETIC CREW.</em></b><small>Feel the beat. Become the movement.</small></div>'+
+'</div><div class="kc-more-intro-progress" aria-hidden="true"><i></i></div></div>'+
+'<section class="kc-more-reference-group"><h2>My Crew</h2><div class="kc-more-reference-pills">'+
+pill('events','events','Events')+
+pill('rehearsals','rehearsal','Rehearsals')+pill('attendance','attendance','Attendance')+
+pill('people','people','Crew Members')+
+pill('memories','bookmark','Memories')+
+'</div></section>'+
+'<section class="kc-more-reference-group kc-more-reference-others"><h2>More</h2><div class="kc-more-reference-others-grid">'+
+other('updates','announcements','Announcements')+other('notifications','notifications','Notifications')+
+other('profile','profile','My Profile')+other('settings','settings','Settings')+
+'</div></section>'+
+'<button type="button" class="kc-more-signout" data-kc-signout><span>↗</span><b>Sign out</b><small>Sign out of this device</small></button>'+
+'<div class="kc-more-reference-footer">Made for <span>✦</span> Kinetic Crew</div>'+
+'<div class="kc-more-reference-watermark" aria-hidden="true">KC</div><div class="kc-more-reference-sparkle" aria-hidden="true">✦</div></div>';
+}
+
 function memeZonePage(){
  const posts=S.socialPosts||[];
  const people=(S.publicMembers||[]).filter(m=>String(m.auth_id)!==String(S.user?.auth_id)).slice(0,8);
