@@ -452,3 +452,11 @@
   #kcMobileDock .kc-dock-group button .dock-label{font-size:10px!important}
   #kcMobileDock .kc-fun-zone-emoji{font-size:27px!important}
 }
+
+
+/* Navigation de-duplication: the floating dock owns the primary mobile destinations. */
+@media(max-width:900px){
+  #nav .nav-group[data-nav-group-panel="overview"]{display:none!important}
+  #nav .nav-group-items > .navitem[data-view="events"],
+  #nav .nav-group-items > .navitem[data-view="fun-zone"]{display:none!important}
+}
