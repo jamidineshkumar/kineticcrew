@@ -23,7 +23,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
       - name: Validate dashboard JavaScript
-        run: node --check public/app.js
+        run: |
+          node --check public/app.js
+          node --check public/brand-logo.js
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload static app
