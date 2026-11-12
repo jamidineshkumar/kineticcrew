@@ -1005,3 +1005,7 @@ body:has(.crop-backdrop) .kc-bottom-nav{visibility:hidden!important;pointer-even
  .social-embed-instagram iframe{height:460px}
  .social-embed-tiktok iframe{height:650px}
 }
+
+.kc-share-draft-preview{margin:10px 0;padding:10px;border:1px solid #f09a7255;border-radius:14px;background:#ffffff08}
+.kc-share-draft-preview>span{display:block;margin-bottom:8px;color:#f0b07f;font-size:8px;font-weight:850;letter-spacing:.14em}
+.kc-share-draft-preview>small{display:block;margin-top:8px;color:#c3b6b0;font-size:9px;line-height:1.45}
