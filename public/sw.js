@@ -1,10 +1,13 @@
 const BASE=new URL(self.registration.scope).pathname.replace(/\/?$/,'/');
 const CACHE='kinetic-crew-shell-v130';
-const CORE=['','index.html','connect.html','login.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','icon.svg','kinetic-crew-logo.svg','kinetic-crew-logo.jpg','theme.js','theme-overrides.css','stumagz-redesign.css','mobile-dock.js','push-notifications.js','crew-enhancements.js','crew-enhancements.css','app-version.json','vibe-home.css', 'approved-mobile-shell.css','kc-home-glass-tiles.css','kc-exact-home.css','icon.svg','founder-crown.svg','onboarding.css','more-menu-reference.css','kc-more-neumorphic.css','kc-dock-final.css','kinetic-gram-experience.css','kinetic-gram-experience.js','kc-home-featured-carousel.css','kc-profile-liquid.css','kc-header-alignment-fix.css','kc-home-header-greeting-refresh.css','kc-transition.css','kc-transition.js','student-tribe-interface.css','global-search.js','global-search.css','events-experience.css','gram-onboarding.js','gram-onboarding.css','kc-memories-sharing.css','kc-notifications-inbox.css','kc-home-logo-menu-dedupe.css','kc-profile-single-edit.css','kc-profile-flip-hint.css','kc-app-neumorphic-system.css'];
+const CORE=['','index.html','connect.html','login.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','icon.svg','kinetic-crew-logo.svg','kinetic-crew-logo.jpg','theme.js','theme-overrides.css','stumagz-redesign.css','mobile-dock.js','push-notifications.js','crew-enhancements.js','crew-enhancements.css','app-version.json','vibe-home.css', 'approved-mobile-shell.css','kc-home-glass-tiles.css','kc-exact-home.css','icon.svg','founder-crown.svg','onboarding.css','more-menu-reference.css','kc-more-neumorphic.css','kc-dock-final.css','kinetic-gram-experience.css','kinetic-gram-experience.js','kc-home-featured-carousel.css','kc-profile-liquid.css','kc-header-alignment-fix.css','kc-home-header-greeting-refresh.css','kc-transition.css','kc-transition.js','student-tribe-interface.css','global-search.js','global-search.css','events-experience.css','gram-onboarding.js','gram-onboarding.css','kc-memories-sharing.css','kc-notifications-inbox.css','kc-home-logo-menu-dedupe.css','kc-profile-single-edit.css','kc-profile-flip-hint.css','kc-app-neumorphic-system.css','brand-logo.js','brand-logo-admin.css'];
 const ASSETS=CORE.map(path=>BASE+path);
 const CDN_ASSETS=["https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2","https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js","https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"];
 const CDN_CACHE="kinetic-crew-cdn-v1";
 
+const BRAND_LOGO_RPC='https://lkdfjiweqxshbbcadfna.supabase.co/rest/v1/rpc/crew_get_brand_logo';
+const BRAND_LOGO_KEY='sb_publishable_8-7_og12Zot7nA-W_tz-rw_yDS1I9cp';
+async function getBrandLogo(){try{const response=await fetch(BRAND_LOGO_RPC,{method:'POST',headers:{apikey:BRAND_LOGO_KEY,Authorization:'Bearer '+BRAND_LOGO_KEY,'Content-Type':'application/json'},body:'{}',cache:'no-store'});if(!response.ok)return null;const value=await response.json();return typeof value==='string'&&value.startsWith('https://lkdfjiweqxshbbcadfna.supabase.co/storage/v1/object/public/crew-brand-assets/brand/kinetic-crew-logo.png')?value:null;}catch{return null;}}
 let messaging=null;
 try{
 importScripts("https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js");
@@ -20,11 +23,13 @@ firebase.initializeApp({
 messaging=firebase.messaging();
 }catch(error){console.warn("Push messaging unavailable in this session:",error);}
 try{
-if(messaging)messaging.onBackgroundMessage(payload=>{
+if(messaging)messaging.onBackgroundMessage(async payload=>{
   const title=payload.notification?.title||"Kinetic Crew";
+  const logo=await getBrandLogo();
   self.registration.showNotification(title,{
     body:payload.notification?.body||"You have a new crew update.",
-    icon:BASE+"kinetic-crew-logo.jpg",
+    icon:logo||BASE+"kinetic-crew-logo.jpg",
+    badge:logo||BASE+"kinetic-crew-logo.jpg",
     data:{url:payload.data?.url||BASE}
   });
 });
