@@ -1536,6 +1536,9 @@ async function boot(){
   let pendingProfileId=incomingProfile||localStorage.getItem('kc_pending_profile')||'';
   if(incomingProfile){try{localStorage.setItem('kc_pending_profile',incomingProfile);}catch{}const cleanUrl=new URL(location.href);cleanUrl.searchParams.delete('kc_profile');history.replaceState({},'',cleanUrl.pathname+cleanUrl.search+cleanUrl.hash);}
   if(!session||!session.user){location.replace(window.kcPath('login.html'));return;}
+  const membership=await withTimeout(client.rpc('crew_access_status',{}),10000,'Could not verify your Kinetic Crew membership.');
+  if(membership.error)throw membership.error;
+  if(membership.data?.status!=='approved'){location.replace(window.kcPath('pending.html'));return;}
   const accessCheck=await withTimeout(client.rpc('crew_assert_not_blocked',{}),10000,'Could not verify your Kinetic Crew account status.');
   if(accessCheck.error){
    if(/blocked|suspended/i.test(accessCheck.error.message||'')){
