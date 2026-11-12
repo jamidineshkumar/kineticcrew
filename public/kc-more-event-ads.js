@@ -1,5 +1,6 @@
 (()=>{'use strict';
 const safe=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const mountedRoots=new Set();
 function render(root){
  if(!root||root.dataset.kcAdsReady==='yes')return;
  const slides=[
@@ -10,10 +11,10 @@ function render(root){
  const nodes=[...root.querySelectorAll('.kc-brand-intro-slide')],bar=root.querySelector('.kc-brand-intro-progress i');let active=0;
  const show=i=>{active=i%nodes.length;nodes.forEach((n,k)=>{n.classList.toggle('is-active',k===active);n.setAttribute('aria-hidden',k===active?'false':'true');});if(bar){bar.style.animation='none';void bar.offsetWidth;bar.style.animation='kcBrandIntroProgress 8s linear forwards';}};
  show(0);if(root._kcBrandTimer)clearInterval(root._kcBrandTimer);root._kcBrandTimer=setInterval(()=>show(active+1),4000);
- root.dataset.kcAdsReady='yes';
+ root.dataset.kcAdsReady='yes';mountedRoots.add(root);
 }
 function scan(){
- document.querySelectorAll('.kc-more-brand-intro').forEach(n=>{if(!n.isConnected&&n._kcBrandTimer){clearInterval(n._kcBrandTimer);n._kcBrandTimer=null;}});
+ mountedRoots.forEach(root=>{if(!root.isConnected){if(root._kcBrandTimer)clearInterval(root._kcBrandTimer);root._kcBrandTimer=null;mountedRoots.delete(root);}});
  document.querySelectorAll('.kc-more-intro').forEach(root=>{if(!root.parentElement)return;render(root);if(root.dataset.kcAdsReady==='yes')root.classList.add('kc-more-event-ads-host');});
 }
 const start=()=>{scan();new MutationObserver(scan).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});};
