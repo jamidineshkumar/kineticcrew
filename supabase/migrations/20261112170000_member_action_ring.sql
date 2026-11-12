@@ -49,7 +49,7 @@ language sql
 stable
 security definer
 set search_path = pg_catalog, public, auth
-as $
+as $$
   select auth.uid() is not null
     and p_recipient_id is not null
     and p_recipient_id <> auth.uid()::text
@@ -57,7 +57,7 @@ as $
       select 1 from public.crew_member_blocks b
       where b.blocked_auth_id in (auth.uid()::text, p_recipient_id)
     );
-$;
+$$;
 revoke all on function public.crew_can_message(text) from public, anon;
 grant execute on function public.crew_can_message(text) to authenticated;
 
