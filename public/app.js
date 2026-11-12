@@ -730,11 +730,12 @@ function brandSettingsPage(){
  '<span class="settings-kicker">SUPER ADMIN ONLY</span><h3>Official Kinetic Crew logo</h3>'+
  '<p>Choose an image, then position and scale it inside the square brand canvas before publishing.</p>'+
  '<div class="kc-brand-editor-layout">'+
- '<div class="kc-brand-editor-stage"><canvas id="brandLogoCanvas" width="512" height="512" aria-label="Logo crop preview"></canvas><span class="kc-brand-editor-hint">DRAG TO REPOSITION</span></div>'+
+ '<div class="kc-brand-editor-stage" id="brandLogoDropStage"><canvas id="brandLogoCanvas" width="512" height="512" role="img" tabindex="0" aria-label="Logo crop preview. Drag to reposition or pinch to zoom"></canvas><span class="kc-brand-editor-hint">DRAG TO MOVE · PINCH TO ZOOM</span><span class="kc-brand-editor-drop">DROP IMAGE TO REPLACE</span></div>'+
  '<div class="kc-brand-current"><img id="brandLogoCurrent" src="'+esc(current)+'" alt="Current official Kinetic Crew logo"><span>CURRENT LIVE LOGO</span></div>'+
  '</div>'+
  '<label class="kc-brand-file-label" for="brandLogoFile"><span>＋</span> Choose image</label>'+
  '<input id="brandLogoFile" type="file" accept="image/png,image/jpeg,image/webp">'+
+ '<p class="kc-brand-editor-status" id="brandLogoEditorStatus" aria-live="polite">Choose a PNG, JPG or WebP image to start editing.</p>'+
  '<div class="kc-brand-editor-tools">'+
  '<div class="kc-brand-tool-head"><span>IMAGE POSITION</span><button type="button" class="kc-brand-text-btn" id="brandLogoReset">Reset</button></div>'+
  '<div class="kc-brand-mode-row"><button type="button" class="kc-brand-mode active" data-brand-fit="contain">Fit image</button><button type="button" class="kc-brand-mode" data-brand-fit="cover">Fill square</button></div>'+
@@ -903,70 +904,126 @@ async function saveCroppedImage(){
   button.disabled=false;button.textContent='Use this image →';notice(err.message||'Image upload failed.');
  }
 }
-let kcBrandEditor={image:null,file:null,zoom:100,fit:'contain',rotation:0,x:0,y:0,drag:null};
+let kcBrandEditor={image:null,file:null,zoom:100,fit:'contain',rotation:0,x:0,y:0,drag:null,pointers:new Map(),pinch:null};
+function kcBrandMetrics(){
+ const p=kcBrandEditor,img=p.image;if(!img)return null;
+ const rot=((p.rotation%360)+360)%360,sw=rot%180===0?img.width:img.height,sh=rot%180===0?img.height:img.width;
+ const base=p.fit==='cover'?Math.max(512/sw,512/sh):Math.min(512/sw,512/sh)*.94;
+ return {rot,sw,sh,scale:base*(p.zoom/100),width:sw*base*(p.zoom/100),height:sh*base*(p.zoom/100)};
+}
+function kcBrandClampPan(){
+ const m=kcBrandMetrics();if(!m)return;
+ const p=kcBrandEditor;
+ if(p.fit==='cover'){
+  p.x=Math.max(-(m.width-512)/2,Math.min((m.width-512)/2,p.x));
+  p.y=Math.max(-(m.height-512)/2,Math.min((m.height-512)/2,p.y));
+ }else{
+  p.x=Math.max(-240,Math.min(240,p.x));p.y=Math.max(-240,Math.min(240,p.y));
+ }
+}
 function kcBrandDraw(){
  const canvas=$('#brandLogoCanvas');if(!canvas)return;
  const ctx=canvas.getContext('2d');if(!ctx)return;
  const size=512;ctx.clearRect(0,0,size,size);
- // Checkerboard communicates transparency without becoming part of the exported image.
  const tile=32;for(let y=0;y<size;y+=tile)for(let x=0;x<size;x+=tile){ctx.fillStyle=((x/tile+y/tile)%2===0)?'#34363c':'#26282e';ctx.fillRect(x,y,tile,tile);}
- if(!kcBrandEditor.image){ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='600 20px system-ui';ctx.textAlign='center';ctx.fillText('YOUR LOGO PREVIEW',256,266);ctx.font='14px system-ui';ctx.fillStyle='rgba(255,255,255,.36)';ctx.fillText('Choose an image to begin',256,292);return;}
- const img=kcBrandEditor.image,rot=((kcBrandEditor.rotation%360)+360)%360,sw=(rot%180===0?img.width:img.height),sh=(rot%180===0?img.height:img.width);
- const base=(kcBrandEditor.fit==='cover'?Math.max(size/sw,size/sh):Math.min(size/sw,size/sh))*.88;
- const scale=base*(kcBrandEditor.zoom/100);
- ctx.save();ctx.translate(size/2+kcBrandEditor.x,size/2+kcBrandEditor.y);ctx.rotate(rot*Math.PI/180);ctx.scale(scale,scale);ctx.drawImage(img,-img.width/2,-img.height/2);ctx.restore();
+ if(!kcBrandEditor.image){
+  ctx.fillStyle='rgba(255,255,255,.62)';ctx.font='700 18px system-ui';ctx.textAlign='center';ctx.fillText('YOUR LOGO PREVIEW',256,258);
+  ctx.font='13px system-ui';ctx.fillStyle='rgba(255,255,255,.42)';ctx.fillText('Choose or drop an image to begin',256,284);return;
+ }
+ kcBrandClampPan();
+ const p=kcBrandEditor,m=kcBrandMetrics(),img=p.image;
+ ctx.save();ctx.translate(size/2+p.x,size/2+p.y);ctx.rotate(m.rot*Math.PI/180);ctx.scale(m.scale,m.scale);ctx.drawImage(img,-img.width/2,-img.height/2);ctx.restore();
 }
 function kcBrandSetControls(enabled){
  ['brandLogoZoom','brandLogoRotate','brandLogoCenter','brandLogoReset'].forEach(id=>{const el=$('#'+id);if(el)el.disabled=!enabled;});
  const publish=$('#uploadBrandLogo');if(publish)publish.disabled=!enabled;
  document.querySelectorAll('[data-brand-fit]').forEach(b=>b.disabled=!enabled);
+ const stage=$('.kc-brand-editor-stage');if(stage)stage.classList.toggle('has-image',enabled);
 }
 function kcBrandReset(){
- kcBrandEditor.zoom=100;kcBrandEditor.fit='contain';kcBrandEditor.rotation=0;kcBrandEditor.x=0;kcBrandEditor.y=0;
+ kcBrandEditor.zoom=100;kcBrandEditor.fit='contain';kcBrandEditor.rotation=0;kcBrandEditor.x=0;kcBrandEditor.y=0;kcBrandEditor.drag=null;kcBrandEditor.pinch=null;
  const zoom=$('#brandLogoZoom'),value=$('#brandLogoZoomValue');if(zoom)zoom.value='100';if(value)value.textContent='100%';
  document.querySelectorAll('[data-brand-fit]').forEach(b=>b.classList.toggle('active',b.dataset.brandFit==='contain'));
  kcBrandDraw();
 }
+async function kcBrandLoadFile(file){
+ if(!file)return;
+ if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>5*1024*1024){notice('Choose a PNG, JPG or WebP image under 5 MB.');return;}
+ const button=$('#uploadBrandLogo'),status=$('#brandLogoEditorStatus');
+ if(button){button.disabled=true;button.textContent='Preparing preview…';}
+ if(status)status.textContent='Opening '+file.name+'…';
+ try{
+  const bitmap=await createImageBitmap(file);
+  if(kcBrandEditor.image?.close)kcBrandEditor.image.close();
+  kcBrandEditor.image=bitmap;kcBrandEditor.file=file;kcBrandReset();kcBrandSetControls(true);
+  if(status)status.textContent=file.name+' · Preview ready';
+  const publish=$('#uploadBrandLogo');if(publish){publish.disabled=false;publish.textContent='Publish logo everywhere →';}
+ }catch(error){if(status)status.textContent='Could not open this image. Choose another file.';notice('Could not open this image. Try another file.');kcBrandSetControls(false);}
+}
 document.addEventListener('change',event=>{
  if(event.target.id!=='brandLogoFile')return;
- const file=event.target.files?.[0];if(!file)return;
- if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>5*1024*1024){
-  event.target.value='';notice('Choose a PNG, JPG or WebP image under 5 MB.');return;
- }
- const button=$('#uploadBrandLogo');if(button){button.disabled=true;button.textContent='Preparing preview…';}
- createImageBitmap(file).then(bitmap=>{
-  if(kcBrandEditor.image&&kcBrandEditor.image.close)kcBrandEditor.image.close();
-  kcBrandEditor.image=bitmap;kcBrandEditor.file=file;kcBrandReset();kcBrandSetControls(true);
-  const publish=$('#uploadBrandLogo');if(publish){publish.disabled=false;publish.textContent='Publish logo everywhere →';}
- }).catch(()=>{notice('Could not open this image. Try another file.');kcBrandSetControls(false);});
+ kcBrandLoadFile(event.target.files?.[0]);
 });
 document.addEventListener('input',event=>{
  if(event.target.id==='brandLogoZoom'){
-  kcBrandEditor.zoom=Number(event.target.value)||100;
-  const output=$('#brandLogoZoomValue');if(output)output.textContent=kcBrandEditor.zoom+'%';
-  kcBrandDraw();
+  kcBrandEditor.zoom=Math.max(50,Math.min(300,Number(event.target.value)||100));
+  const output=$('#brandLogoZoomValue');if(output)output.textContent=Math.round(kcBrandEditor.zoom)+'%';
+  kcBrandClampPan();kcBrandDraw();
  }
 });
 document.addEventListener('click',event=>{
  const fit=event.target.closest('[data-brand-fit]');
- if(fit){kcBrandEditor.fit=fit.dataset.brandFit;document.querySelectorAll('[data-brand-fit]').forEach(b=>b.classList.toggle('active',b===fit));kcBrandDraw();return;}
- if(event.target.closest('#brandLogoRotate')){kcBrandEditor.rotation=(kcBrandEditor.rotation+90)%360;kcBrandDraw();return;}
+ if(fit){kcBrandEditor.fit=fit.dataset.brandFit;document.querySelectorAll('[data-brand-fit]').forEach(b=>b.classList.toggle('active',b===fit));kcBrandClampPan();kcBrandDraw();return;}
+ if(event.target.closest('#brandLogoRotate')){kcBrandEditor.rotation=(kcBrandEditor.rotation+90)%360;kcBrandClampPan();kcBrandDraw();return;}
  if(event.target.closest('#brandLogoCenter')){kcBrandEditor.x=0;kcBrandEditor.y=0;kcBrandDraw();return;}
  if(event.target.closest('#brandLogoReset')){kcBrandReset();return;}
 });
+document.addEventListener('dragover',event=>{
+ const stage=event.target.closest('.kc-brand-editor-stage');if(!stage)return;event.preventDefault();stage.classList.add('is-drop-target');
+});
+document.addEventListener('dragleave',event=>{
+ const stage=event.target.closest('.kc-brand-editor-stage');if(stage&&!stage.contains(event.relatedTarget))stage.classList.remove('is-drop-target');
+});
+document.addEventListener('drop',event=>{
+ const stage=event.target.closest('.kc-brand-editor-stage');if(!stage)return;
+ event.preventDefault();stage.classList.remove('is-drop-target');
+ const file=event.dataTransfer?.files?.[0];if(file)kcBrandLoadFile(file);
+});
+function kcBrandPointerDistance(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
 document.addEventListener('pointerdown',event=>{
  const canvas=event.target.closest('#brandLogoCanvas');if(!canvas||!kcBrandEditor.image)return;
- event.preventDefault();canvas.setPointerCapture?.(event.pointerId);
- kcBrandEditor.drag={x:event.clientX,y:event.clientY,originX:kcBrandEditor.x,originY:kcBrandEditor.y};
+ event.preventDefault();try{canvas.setPointerCapture(event.pointerId);}catch{}
+ const p=kcBrandEditor;p.pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+ if(p.pointers.size===2){
+  const pts=[...p.pointers.values()];p.drag=null;p.pinch={distance:Math.max(1,kcBrandPointerDistance(pts[0],pts[1])),zoom:p.zoom};
+ }else{
+  p.drag={id:event.pointerId,x:event.clientX,y:event.clientY,originX:p.x,originY:p.y};
+ }
 });
 document.addEventListener('pointermove',event=>{
- const canvas=$('#brandLogoCanvas');if(!canvas||!kcBrandEditor.drag)return;
- const rect=canvas.getBoundingClientRect(),d=kcBrandEditor.drag;
- kcBrandEditor.x=d.originX+(event.clientX-d.x)*512/rect.width;
- kcBrandEditor.y=d.originY+(event.clientY-d.y)*512/rect.height;kcBrandDraw();
+ const p=kcBrandEditor;if(!p.pointers.has(event.pointerId))return;
+ p.pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+ const canvas=$('#brandLogoCanvas');if(!canvas)return;
+ if(p.pointers.size>=2&&p.pinch){
+  const pts=[...p.pointers.values()],distance=kcBrandPointerDistance(pts[0],pts[1]);
+  p.zoom=Math.max(50,Math.min(300,p.pinch.zoom*distance/p.pinch.distance));
+  const slider=$('#brandLogoZoom'),output=$('#brandLogoZoomValue');if(slider)slider.value=String(Math.round(p.zoom));if(output)output.textContent=Math.round(p.zoom)+'%';
+ }else if(p.drag?.id===event.pointerId){
+  const rect=canvas.getBoundingClientRect();
+  p.x=p.drag.originX+(event.clientX-p.drag.x)*512/Math.max(1,rect.width);
+  p.y=p.drag.originY+(event.clientY-p.drag.y)*512/Math.max(1,rect.height);
+ }
+ kcBrandClampPan();kcBrandDraw();
 });
-document.addEventListener('pointerup',()=>{kcBrandEditor.drag=null;});
-document.addEventListener('pointercancel',()=>{kcBrandEditor.drag=null;});
+function kcBrandEndPointer(event){
+ const p=kcBrandEditor;p.pointers.delete(event.pointerId);
+ if(p.pointers.size<2)p.pinch=null;
+ if(!p.pointers.size)p.drag=null;
+ else if(p.pointers.size===1){const [id,point]=[...p.pointers.entries()][0];p.drag={id,x:point.x,y:point.y,originX:p.x,originY:p.y};}
+}
+document.addEventListener('pointerup',kcBrandEndPointer);
+document.addEventListener('pointercancel',kcBrandEndPointer);
+document.addEventListener('lostpointercapture',kcBrandEndPointer);
 document.addEventListener('click',async event=>{
  const button=event.target.closest('#uploadBrandLogo');if(!button)return;
  event.preventDefault();
@@ -976,9 +1033,8 @@ document.addEventListener('click',async event=>{
  try{
   const canvas=document.createElement('canvas');canvas.width=512;canvas.height=512;
   const ctx=canvas.getContext('2d');if(!ctx)throw Error('Your browser could not prepare the logo image.');
-  const img=kcBrandEditor.image,rot=((kcBrandEditor.rotation%360)+360)%360,sw=rot%180===0?img.width:img.height,sh=rot%180===0?img.height:img.width;
-  const base=(kcBrandEditor.fit==='cover'?Math.max(512/sw,512/sh):Math.min(512/sw,512/sh))*.88,scale=base*(kcBrandEditor.zoom/100);
-  ctx.clearRect(0,0,512,512);ctx.translate(256+kcBrandEditor.x,256+kcBrandEditor.y);ctx.rotate(rot*Math.PI/180);ctx.scale(scale,scale);ctx.drawImage(img,-img.width/2,-img.height/2);
+  kcBrandClampPan();const p=kcBrandEditor,m=kcBrandMetrics(),img=p.image;
+  ctx.clearRect(0,0,512,512);ctx.translate(256+p.x,256+p.y);ctx.rotate(m.rot*Math.PI/180);ctx.scale(m.scale,m.scale);ctx.drawImage(img,-img.width/2,-img.height/2);
   const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
   if(!blob)throw Error('Could not export the edited logo. Try another image.');
   button.textContent='Uploading logo…';
@@ -991,6 +1047,8 @@ document.addEventListener('click',async event=>{
   if(saved.error)throw saved.error;
   S.appSettings={...(S.appSettings||{}),brand_logo_url:publicUrl};
   window.kcApplyBrandLogo?.(publicUrl);
+  const current=$('#brandLogoCurrent');if(current)current.src=publicUrl;
+  const status=$('#brandLogoEditorStatus');if(status)status.textContent='Published successfully · This logo is now live across Kinetic Crew';
   notice('Official Kinetic Crew logo updated everywhere.');paint();
  }catch(error){notice(error.message||'Logo upload failed. Your current logo is unchanged.');button.disabled=false;button.textContent=oldLabel;}
 });
