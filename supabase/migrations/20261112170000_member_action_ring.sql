@@ -43,20 +43,35 @@ create policy "Participants read direct messages" on public.crew_direct_messages
  for select to authenticated
  using (sender_id = (select auth.uid())::text or recipient_id = (select auth.uid())::text);
 
+create or replace function public.crew_can_message(p_recipient_id text)
+returns boolean
+language sql
+stable
+security definer
+set search_path = pg_catalog, public, auth
+as $
+  select auth.uid() is not null
+    and p_recipient_id is not null
+    and p_recipient_id <> auth.uid()::text
+    and not exists (
+      select 1 from public.crew_member_blocks b
+      where b.blocked_auth_id in (auth.uid()::text, p_recipient_id)
+    );
+$;
+revoke all on function public.crew_can_message(text) from public, anon;
+grant execute on function public.crew_can_message(text) to authenticated;
+
 drop policy if exists "Sender creates direct messages" on public.crew_direct_messages;
 create policy "Sender creates direct messages" on public.crew_direct_messages
  for insert to authenticated
  with check (
    sender_id = (select auth.uid())::text
-   and not exists (
-     select 1 from public.crew_member_blocks b
-     where b.blocked_auth_id in (sender_id, recipient_id)
-   )
+   and (select public.crew_can_message(recipient_id))
  );
 
 -- Blocks are deliberately not directly readable or writable by app clients.
 revoke all on public.crew_member_blocks from anon, authenticated;
-grant select, insert, delete on public.crew_member_favorites to authenticated;
+grant select, insert, update, delete on public.crew_member_favorites to authenticated;
 grant select, insert on public.crew_direct_messages to authenticated;
 
 create or replace function public.crew_assert_not_blocked()
