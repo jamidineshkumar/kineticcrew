@@ -45,7 +45,7 @@
  }
  #kcMobileDock .kc-dock-group-item[data-view="feed"] .dock-icon svg{filter:drop-shadow(0 0 5px rgba(214,126,255,.7))!important}
  #kcMobileDock button:active{transform:scale(.94)!important}
- main{padding-bottom:calc(108px + env(safe-area-inset-bottom,0px))!important}
+ main{padding-bottom:calc(132px + env(safe-area-inset-bottom,0px))!important}
  main>footer{display:none!important}
 }
 @media(max-width:380px){
