@@ -1,21 +1,21 @@
-/* Long-press member action ring */
-.kc-member-directory-card,.crew-manage-row{position:relative;overflow:visible;isolation:isolate;transition:transform .28s cubic-bezier(.2,.8,.2,1),padding .28s ease,box-shadow .28s ease}
-.kc-member-directory-card.kc-member-action-open,.crew-manage-row.kc-member-action-open{z-index:40;padding-right:128px;transform:translateX(-5px);box-shadow:0 16px 42px rgba(0,0,0,.34),0 0 0 1px rgba(205,174,120,.22)}
+/* Long-press member actions: profile stays in the card; half-ring sits OUTSIDE its right edge */
+.kc-member-directory-card,.crew-manage-row{position:relative;overflow:visible;isolation:isolate;transition:transform .28s cubic-bezier(.2,.8,.2,1),margin-right .28s ease,box-shadow .28s ease}
+.kc-member-directory-card.kc-member-action-open,.crew-manage-row.kc-member-action-open{z-index:40;margin-right:94px;transform:translateX(-5px);box-shadow:0 16px 42px rgba(0,0,0,.34),0 0 0 1px rgba(205,174,120,.22)}
 .kc-member-directory-card .crew-profile-open,.kc-member-directory-card>p,.kc-member-directory-card .kc-member-directory-footer,.crew-manage-row>*:not(.kc-member-action-ring){transition:transform .28s cubic-bezier(.2,.8,.2,1)}
-.kc-member-directory-card.kc-member-action-open .crew-profile-open,.kc-member-directory-card.kc-member-action-open>p,.kc-member-directory-card.kc-member-action-open .kc-member-directory-footer,.crew-manage-row.kc-member-action-open>*:not(.kc-member-action-ring){transform:translateX(-18px)}
-.kc-member-action-ring{--ring-rotation:0deg;position:absolute;right:10px;top:50%;width:116px;height:116px;transform:translateY(-50%) scale(.72);opacity:0;pointer-events:none;border:1px solid rgba(219,190,145,.3);border-radius:50%;background:radial-gradient(circle,rgba(196,159,111,.12) 0 34%,rgba(24,25,26,.9) 66%,rgba(13,14,16,.94) 100%);box-shadow:0 0 28px rgba(198,160,110,.13),inset 0 0 22px rgba(255,255,255,.04);transition:opacity .22s ease,transform .28s cubic-bezier(.2,.8,.2,1);touch-action:none;cursor:grab;pointer-events:none}
-.kc-member-action-open .kc-member-action-ring{opacity:1;transform:translateY(-50%) scale(1);pointer-events:auto}
-.kc-member-action-ring:before{content:"";position:absolute;inset:12px;border:1px dashed rgba(220,190,145,.27);border-radius:50%;pointer-events:none}
-.kc-member-action-orbit{position:absolute;inset:0;border-radius:50%;transform:rotate(var(--ring-rotation));transition:transform .06s linear}
-.kc-member-action-center{position:absolute;left:50%;top:50%;width:30px;height:30px;display:grid;place-items:center;transform:translate(-50%,-50%);border:1px solid rgba(220,190,145,.3);border-radius:50%;background:rgba(20,21,23,.94);color:#d9bb8b;font-size:9px;font-weight:900;letter-spacing:.08em;pointer-events:none}
-.kc-member-action{position:absolute;left:50%;top:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:43px;height:43px;padding:3px;border:1px solid rgba(220,190,145,.28);border-radius:50%;background:linear-gradient(145deg,#303032,#191a1c);color:#f1e6d5;box-shadow:0 5px 14px rgba(0,0,0,.34);cursor:pointer;transform:translate(-50%,-50%) rotate(var(--action-angle)) translateY(-45px) rotate(calc(-1 * var(--action-angle)))}
+.kc-member-directory-card.kc-member-action-open .crew-profile-open,.kc-member-directory-card.kc-member-action-open>p,.kc-member-directory-card.kc-member-action-open .kc-member-directory-footer,.crew-manage-row.kc-member-action-open>*:not(.kc-member-action-ring){transform:translateX(-10px)}
+.kc-member-action-ring{--ring-rotation:0deg;position:absolute;z-index:5;right:-94px;top:50%;width:94px;height:184px;transform:translateY(-50%) translateX(-12px) scale(.9);opacity:0;pointer-events:none;touch-action:none;cursor:grab;border:1px solid rgba(219,190,145,.42);border-left:0;border-radius:0 100px 100px 0;background:radial-gradient(ellipse at left center,rgba(196,159,111,.04) 0 55%,rgba(24,25,26,.86) 57% 60%,rgba(13,14,16,.18) 62% 100%);box-shadow:9px 0 24px rgba(198,160,110,.1);transition:opacity .22s ease,transform .28s cubic-bezier(.2,.8,.2,1)}
+.kc-member-action-open .kc-member-action-ring{opacity:1;transform:translateY(-50%) translateX(0) scale(1);pointer-events:auto}
+.kc-member-action-ring:before{content:"";position:absolute;left:0;top:16px;width:70px;height:150px;border:1px dashed rgba(220,190,145,.25);border-left:0;border-radius:0 80px 80px 0;pointer-events:none}
+.kc-member-action-orbit{position:absolute;inset:0;border-radius:0 100px 100px 0;transform:rotate(var(--ring-rotation));transform-origin:0 50%;transition:transform .06s linear}
+.kc-member-action-center{position:absolute;left:0;top:50%;width:25px;height:25px;display:grid;place-items:center;transform:translate(-50%,-50%);border:1px solid rgba(220,190,145,.36);border-radius:50%;background:rgba(20,21,23,.96);color:#d9bb8b;font-size:13px;font-weight:900;pointer-events:none}
+.kc-member-action{position:absolute;left:0;top:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:42px;height:42px;padding:3px;border:1px solid rgba(220,190,145,.34);border-radius:50%;background:linear-gradient(145deg,#303032,#191a1c);color:#f1e6d5;box-shadow:0 5px 14px rgba(0,0,0,.38);cursor:pointer;transform:translate(-50%,-50%) rotate(var(--action-angle)) translateX(65px) rotate(calc(-1 * var(--action-angle)))}
 .kc-member-action span{font-size:17px;line-height:1}
-.kc-member-action small{position:absolute;top:43px;width:76px;text-align:center;font-size:8px;line-height:1.15;font-weight:750;color:#d5c2a6;white-space:normal;pointer-events:none}
+.kc-member-action small{position:absolute;left:43px;top:50%;width:62px;transform:translateY(-50%);text-align:left;font-size:8px;line-height:1.1;font-weight:750;color:#d5c2a6;white-space:normal;pointer-events:none}
 .kc-member-action-favorite{color:#f0c879}
 .kc-member-action-message{color:#d7e7f5}
 .kc-member-action-block,.kc-member-action-delete{color:#ff9ca3}
 .kc-member-action-unblock{color:#9fe0b5}
-.kc-member-action:active{transform:scale(.92)}
+.kc-member-action:active{transform:translate(-50%,-50%) scale(.92)}
 .kc-member-action:disabled{opacity:.55;cursor:wait}
 .kc-member-directory-card.kc-member-action-open{min-height:190px}
 .crew-manage-row.kc-member-action-open{min-height:140px}
