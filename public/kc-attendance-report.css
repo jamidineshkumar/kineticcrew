@@ -1,0 +1,22 @@
+/* Attendance report email card and member-facing attendance page. */
+.kc-attendance-report{
+ margin:22px 0;padding:24px;
+ border:1px solid rgba(255,255,255,.09);border-radius:24px;
+ background:linear-gradient(145deg,rgba(38,42,45,.96),rgba(27,30,33,.98));
+ box-shadow:8px 8px 18px #1114,-8px -8px 18px #ffffff08;
+}
+.kc-attendance-report .kc-attendance-section-title{margin-bottom:20px}
+.kc-attendance-report .kc-attendance-section-title h2{margin:8px 0;font-size:clamp(22px,5vw,28px);font-weight:800;letter-spacing:-.045em}
+.kc-attendance-report .kc-attendance-section-title p{max-width:560px;color:#a5aaad;line-height:1.6}
+.kc-attendance-report-form{display:grid;gap:15px}
+.kc-attendance-report-form label{display:grid;gap:8px;color:#d5d8d9;font-size:13px;font-weight:700}
+.kc-attendance-report-form input{width:100%;min-height:54px;box-sizing:border-box;padding:14px 16px;border:1px solid rgba(255,255,255,.12);border-radius:15px;background:#1b1f22;color:#f4f5f5;font:inherit;box-shadow:inset 4px 4px 8px #1115,inset -3px -3px 7px #ffffff08}
+.kc-attendance-report-form input[readonly]{opacity:.82}
+.kc-attendance-report-form .kc-attendance-verify-btn{width:100%;min-height:56px;border-radius:16px;font-weight:800}
+.kc-attendance-report-form .kc-attendance-note{margin:0;color:#969da1;font-size:12px;line-height:1.6}
+.kc-member-attendance .kc-attendance-report{margin-top:22px}
+@media(max-width:600px){
+ .kc-attendance-report{padding:19px;border-radius:21px}
+ .kc-attendance-report .kc-attendance-section-title{align-items:flex-start}
+ .kc-attendance-report .kc-attendance-section-title h2{font-size:23px}
+}
