@@ -1,0 +1,6 @@
+
+.crew-manage-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.crew-manage-row .crew-manage-person{flex:1 1 170px;min-width:0}
+.kc-member-remove{flex:none;border:1px solid rgba(242,105,111,.38);border-radius:12px;padding:10px 12px;background:rgba(180,47,57,.13);color:#ff9da2;font-size:11px;font-weight:800}
+.kc-member-remove:disabled{opacity:.55;cursor:wait}
+@media(max-width:560px){.crew-manage-row{gap:8px}.crew-manage-row .crew-manage-person{flex-basis:calc(100% - 10px)}.crew-manage-row .role-select{flex:1;min-width:110px}.kc-member-remove{flex:1}}
