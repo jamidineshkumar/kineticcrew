@@ -54,7 +54,7 @@ Deno.serve(async(req)=>{
    try{
     await mailer.sendMail({from:'"KINETIC CREW" <kineticcreww@gmail.com>',to:recipient.email,subject,html,attachments:[{filename:"kinetic-crew-ticket-qr.png",content:qrBase64,encoding:"base64",cid:"ticket-qr.png"}]});
     sendResults.push({email:recipient.email,ok:true});
-   }catch(mailError){sendResults.push({email:recipient.email,ok:false,error:String(mailError instanceof Error?mailError.message:"SMTP delivery failed").slice(0,180)});}
+   }catch(mailError){const reason=String(mailError instanceof Error?mailError.message:"SMTP delivery failed").slice(0,240);console.error("send-event-ticket SMTP failure for",recipient.email,reason);sendResults.push({email:recipient.email,ok:false,error:reason});}
   }
   return json({ok:true,sent:sendResults.filter(x=>x.ok).length,failed:sendResults.filter(x=>!x.ok).length,results:sendResults});
  }catch(error){console.error("send-event-ticket:",error);return json({error:error instanceof Error?error.message:"Ticket email failed."},500);}
