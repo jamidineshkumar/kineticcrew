@@ -67,3 +67,9 @@ body.kc-home-screen .kc-home-greeting-mark .kc-brand-mark{
   flex:none!important;
 }
 body.kc-home-screen .kc-home-greeting-sub{display:none!important}
+
+/* Homepage brandmark: modestly larger artwork, same frame and uncropped proportions. */
+body.kc-home-screen .kc-home-greeting-mark .kc-brand-mark{
+  width:132%!important;height:132%!important;max-width:none!important;max-height:none!important;
+  object-fit:contain!important;display:block!important;flex:none!important;
+}
