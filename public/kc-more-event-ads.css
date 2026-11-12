@@ -86,3 +86,48 @@
 @media(prefers-reduced-motion:reduce){
   .kc-more-ad-slide,.kc-more-ad-slide:before{animation:none!important}
 }
+/* Kinetic Crew — professional two-beat brand intro, 4 seconds per chapter. */
+.kc-more-logo-wrap.kc-more-intro.kc-more-event-ads-host{
+ height:clamp(230px,34vw,285px)!important;min-height:clamp(230px,34vw,285px)!important;
+ max-height:clamp(230px,34vw,285px)!important;margin:10px 0 28px!important;
+ display:block!important;overflow:visible!important;border:0!important;background:none!important;
+}
+.kc-more-brand-intro{
+ --kc-pink:#f05b9c;position:relative;isolation:isolate;overflow:hidden;width:100%;height:100%;
+ min-height:230px;border:1px solid rgba(255,255,255,.13);border-radius:27px;
+ padding:20px 22px 18px;background:
+ radial-gradient(ellipse at 85% 10%,rgba(236,76,148,.25),transparent 44%),
+ radial-gradient(ellipse at 8% 92%,rgba(40,198,208,.20),transparent 48%),
+ linear-gradient(135deg,#171820 0%,#22212c 54%,#14181f 100%);
+ box-shadow:0 18px 44px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.12);
+}
+.kc-brand-intro-glow{position:absolute;z-index:-1;inset:-45%;background:conic-gradient(from 20deg,transparent 0 28%,rgba(232,76,151,.13) 38%,transparent 52%,rgba(43,194,205,.12) 67%,transparent 82%);filter:blur(30px);animation:kcBrandGlow 12s linear infinite}
+.kc-brand-intro-top,.kc-brand-intro-bottom{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.kc-brand-intro-top span{font-size:9px;font-weight:900;letter-spacing:.19em;color:#e8d7e0}
+.kc-brand-intro-top b{font-size:9px;letter-spacing:.14em;color:#f1b2d0;border:1px solid rgba(241,178,208,.3);border-radius:99px;padding:7px 10px}
+.kc-brand-intro-stage{position:relative;z-index:1;height:calc(100% - 48px);min-height:155px;display:grid;align-items:center}
+.kc-brand-intro-slide{grid-area:1/1;opacity:0;visibility:hidden;transform:translateY(15px) scale(.985);transition:opacity .65s ease,transform .75s cubic-bezier(.2,.75,.2,1),visibility .65s;max-width:100%}
+.kc-brand-intro-slide.is-active{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
+.kc-brand-intro-slide small{display:block;margin-bottom:10px;color:#f0a8c7;font-size:9px;font-weight:900;letter-spacing:.2em}
+.kc-brand-intro-slide h2{margin:0;color:#fbf8fa;font-size:clamp(35px,8.6vw,53px);font-weight:950;line-height:.91;letter-spacing:-.075em}
+.kc-brand-intro-slide h2 em{font-style:normal;background:linear-gradient(95deg,#f24f9c 0%,#ffb46d 48%,#43d1d1 100%);background-clip:text;-webkit-background-clip:text;color:transparent}
+.kc-brand-intro-slide p{max-width:330px;margin:11px 0 10px;color:rgba(245,240,246,.78);font-size:12px;line-height:1.45;font-weight:520}
+.kc-brand-intro-slide strong{display:inline-block;color:#d7c7d3;font-size:8px;letter-spacing:.17em;font-weight:850}
+.kc-brand-intro-bottom{position:absolute;left:22px;right:22px;bottom:15px;color:#b7aab6;font-size:8px;font-weight:850;letter-spacing:.12em}
+.kc-brand-intro-progress{height:2px;flex:1;max-width:160px;border-radius:10px;background:#ffffff26;overflow:hidden}
+.kc-brand-intro-progress i{display:block;width:100%;height:100%;background:linear-gradient(90deg,#f04c9b,#ffb36e,#42d0d1);transform:scaleX(0);transform-origin:left}
+@keyframes kcBrandIntroProgress{to{transform:scaleX(1)}}
+@keyframes kcBrandGlow{to{transform:rotate(360deg)}}
+.kc-brand-intro-watermark{position:absolute;right:-9px;bottom:-45px;z-index:0;color:rgba(255,255,255,.035);font-size:clamp(130px,32vw,210px);font-weight:1000;letter-spacing:-.15em;line-height:1}
+@media(max-width:560px){
+ .kc-more-logo-wrap.kc-more-intro.kc-more-event-ads-host{height:248px!important;min-height:248px!important;max-height:248px!important;margin:9px 0 23px!important}
+ .kc-more-brand-intro{min-height:248px;padding:18px 18px 16px;border-radius:23px}
+ .kc-brand-intro-stage{min-height:176px}
+ .kc-brand-intro-slide h2{font-size:clamp(36px,10vw,46px)}
+ .kc-brand-intro-slide p{font-size:11px;max-width:290px}
+ .kc-brand-intro-bottom{left:18px;right:18px;bottom:13px}
+}
+@media(prefers-reduced-motion:reduce){
+ .kc-brand-intro-glow{animation:none!important}
+ .kc-brand-intro-slide{transition:none!important}
+}
