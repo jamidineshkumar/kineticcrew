@@ -1,5 +1,5 @@
 const BASE=new URL(self.registration.scope).pathname.replace(/\/?$/,'/');
-const CACHE='kinetic-crew-shell-v122';
+const CACHE='kinetic-crew-shell-v116';
 const CORE=['','index.html','connect.html','login.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','icon.svg','kinetic-crew-logo.svg','kinetic-crew-logo.jpg','theme.js','theme-overrides.css','stumagz-redesign.css','mobile-dock.js','push-notifications.js','crew-enhancements.js','crew-enhancements.css','app-version.json','vibe-home.css', 'approved-mobile-shell.css','kc-home-glass-tiles.css','kc-exact-home.css','icon.svg','founder-crown.svg','onboarding.css','more-menu-reference.css','kc-more-neumorphic.css','kc-dock-four-reference.css','kc-home-featured-carousel.css','kc-profile-liquid.css','kc-header-alignment-fix.css','kc-transition.css','kc-transition.js','student-tribe-interface.css','global-search.js','global-search.css','events-experience.css','gram-onboarding.js','gram-onboarding.css'];
 const ASSETS=CORE.map(path=>BASE+path);
 const CDN_ASSETS=["https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2","https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js","https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"];
