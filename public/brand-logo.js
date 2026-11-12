@@ -3,7 +3,7 @@
 (function(){
  'use strict';
  const FALLBACK=(()=>{try{return window.kcPath('kinetic-crew-logo.svg');}catch{return 'kinetic-crew-logo.svg';}})();
- const CACHE_KEY='kc-global-brand-logo-v3';
+ const CACHE_KEY='kc-global-brand-logo-v4';
  let activeUrl='';
  let manifestObjectUrl='';
  const validUrl=value=>{
@@ -12,7 +12,8 @@
  const setImage=img=>{
   if(!(img instanceof HTMLImageElement))return;
   const src=img.getAttribute('src')||'';
-  const isBrandImage=/kinetic-crew-logo\.(?:svg|jpe?g|png|webp)(?:[?#]|$)/i.test(src)||/(^|[-_])logo($|[-_])/i.test(String(img.className?.baseVal||img.className||''))||/kinetic\s*crew|crew\s*logo|brand\s*logo/i.test(img.alt||'')||img.hasAttribute('data-kc-brand')||img.dataset.kcBrandManaged==='true';
+  const className=String(img.className?.baseVal||img.className||'');
+  const isBrandImage=/kinetic-crew-logo\.(?:svg|jpe?g|png|webp)(?:[?#]|$)/i.test(src)||/(^|[-_])logo($|[-_])|brandmark/i.test(className)||/kinetic\s*crew\s*logo|crew\s*logo|brand\s*logo/i.test(img.alt||'')||img.hasAttribute('data-kc-brand')||img.dataset.kcBrandManaged==='true';
   if(activeUrl&&isBrandImage&&src!==activeUrl){img.dataset.kcBrandManaged='true';img.src=activeUrl;}
 
  };
