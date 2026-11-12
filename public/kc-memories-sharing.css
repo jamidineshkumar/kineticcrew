@@ -1,0 +1,22 @@
+/* KC Memories: searchable recipient picker and photo upload. */
+.memory-share-panel{display:grid;gap:12px;margin:18px 0;padding:16px;border:1px solid var(--line,rgba(255,255,255,.12));border-radius:20px;background:rgba(255,255,255,.025)}
+.memory-share-heading{display:grid;gap:5px}.memory-share-heading b{font-size:15px}.memory-share-heading small,.memory-recipient-option small{color:var(--muted,#92979d);font-size:12px;line-height:1.45}
+.memory-recipient-picker{position:relative;border:1px solid var(--line,rgba(255,255,255,.15));border-radius:15px;background:var(--surface-2,rgba(255,255,255,.035));overflow:hidden}
+.memory-recipient-picker>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;padding:0 14px;cursor:pointer;list-style:none;font-weight:650}
+.memory-recipient-picker>summary::-webkit-details-marker{display:none}
+.memory-recipient-picker>summary:after{content:"⌄";font-size:18px;color:var(--muted,#9ca1a7)}
+.memory-recipient-count{margin-left:auto;color:var(--accent,#ff806e);font-size:12px}
+.memory-member-search{display:block;width:calc(100% - 20px)!important;margin:4px 10px 10px!important;min-height:42px!important;border-radius:12px!important}
+.memory-recipient-list{display:grid;gap:2px;max-height:245px;overflow:auto;padding:0 8px 8px}
+.memory-recipient-option{display:flex;align-items:center;gap:10px;padding:9px 8px;border-radius:12px;cursor:pointer}
+.memory-recipient-option[hidden]{display:none!important}
+.memory-recipient-option:hover{background:rgba(255,255,255,.06)}
+.memory-recipient-option>input{width:18px!important;height:18px!important;flex:0 0 18px;accent-color:var(--accent,#ff806e)}
+.memory-recipient-option>span:nth-of-type(2){display:grid;gap:2px;min-width:0}
+.memory-recipient-option b{font-size:13px}.memory-recipient-option small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.feature-form input[type=file]{padding:12px!important;cursor:pointer}
+.memory-upload-preview{display:block;width:min(100%,420px);max-height:280px;object-fit:cover;border-radius:16px;border:1px solid var(--line,rgba(255,255,255,.14));margin-top:10px}
+.memory-upload-preview[hidden]{display:none!important}
+html[data-theme="light"] .memory-share-panel{background:rgba(20,25,30,.025)}
+html[data-theme="light"] .memory-recipient-picker{background:rgba(20,25,30,.025)}
+@media(max-width:600px){.memory-share-panel{padding:13px}.memory-recipient-list{max-height:220px}}
