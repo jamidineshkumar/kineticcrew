@@ -23,6 +23,7 @@ function render(root){
   const a=(start+fade).toFixed(4),b=(end-fade).toFixed(4);
   return '@keyframes kcMoreAdSlide'+i+'{0%,'+start.toFixed(4)+'%{opacity:0;visibility:hidden;transform:translate3d(20px,0,0) scale(.985)}'+a+'%,'+b+'%{opacity:1;visibility:visible;transform:translate3d(0,0,0) scale(1)}'+end.toFixed(4)+'%,100%{opacity:0;visibility:hidden;transform:translate3d(-16px,0,0) scale(1.012)}}';
  }).join('');
+ const dotFrames=slides.map((slide,i)=>{const start=i*windowPct,end=(i+1)*windowPct,fade=Math.min(.8,windowPct*.035);return '@keyframes kcMoreAdDot'+i+'{0%,'+start.toFixed(4)+'%{width:6px;background:#ffffff65}'+(start+fade).toFixed(4)+'%,'+(end-fade).toFixed(4)+'%{width:19px;background:#ff946f}'+end.toFixed(4)+'%,100%{width:6px;background:#ffffff65}}';}).join('');
  const markup=slides.map((slide,i)=>{
   const common='--kc-ad-duration:'+cycle+'s;animation-name:kcMoreAdSlide'+i+';animation-duration:'+cycle+'s;animation-delay:0s;';
   if(slide.kind==='promo'){
@@ -34,7 +35,7 @@ function render(root){
   const style=common+(src?'--kc-more-ad-image:url("'+safe(src)+'");':'');
   return '<article class="kc-more-ad-slide" style="'+style+'"><div class="kc-more-ad-top"><span class="kc-more-ad-kicker">KINETIC CREW · '+safe(category)+'</span><span class="kc-more-ad-count">'+String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0')+'</span></div><div class="kc-more-ad-bottom"><div class="kc-more-ad-copy"><span class="kc-more-ad-label">'+(past?'RECENT CREW EVENT':e.featured?'FEATURED EVENT':'UPCOMING EVENT')+'</span><h2>'+safe(e.title)+'</h2><p>'+safe(subtitle)+'</p><button class="kc-more-ad-cta" type="button" data-open-event="'+safe(e.id)+'">'+(e.registered?'View your ticket':'Explore event')+' <span>→</span></button></div></div></article>';
  }).join('');
- root.innerHTML='<style>'+keyframes+'</style><div class="kc-more-event-ads" aria-label="Kinetic Crew events and promotions"><div class="kc-more-ad-track">'+markup+'</div><div class="kc-more-ad-dots" aria-hidden="true">'+slides.map((_,i)=>'<i class="'+(i===0?'active':'')+'" style="--kc-ad-duration:'+cycle+'s"></i>').join('')+'</div><div class="kc-more-ad-progress"><i style="--kc-ad-duration:'+cycle+'s"></i></div></div>';
+ root.innerHTML='<style>'+keyframes+dotFrames+'</style><div class="kc-more-event-ads" aria-label="Kinetic Crew events and promotions"><div class="kc-more-ad-track">'+markup+'</div><div class="kc-more-ad-dots" aria-hidden="true">'+slides.map((_,i)=>'<i style="--kc-ad-duration:'+cycle+'s;animation-name:kcMoreAdDot'+i+';animation-duration:'+cycle+'s;animation-delay:0s"></i>').join('')+'</div><div class="kc-more-ad-progress"><i style="--kc-ad-duration:'+cycle+'s"></i></div></div>';
  root.dataset.kcAdsReady='yes';
 }
 function scan(){document.querySelectorAll('.kc-more-intro').forEach(node=>{if(!node.parentElement)return;render(node);if(node.dataset.kcAdsReady==='yes')node.classList.add('kc-more-event-ads-host');});}
