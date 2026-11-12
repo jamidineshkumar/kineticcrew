@@ -1,6 +1,6 @@
 {
-  "version": "1.2.7",
-  "minimum_version": "1.2.6",
+  "version": "1.2.8",
+  "minimum_version": "1.2.7",
   "updated_at": "2026-11-12T00:00:00Z",
-  "release_notes": "Fixed KC Memories loading, added searchable registered-member sharing and photo uploads."
+  "release_notes": "Fixed KC Memories photo validation; added private member sharing, searchable recipients and photo uploads."
 }
