@@ -1,69 +1,20 @@
 (()=>{'use strict';
 const safe=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const date=v=>{const d=new Date(v);return Number.isNaN(+d)?'Date to be announced':d.toLocaleDateString([],{month:'short',day:'numeric'})};
-const image=e=>{for(const v of [e.cover_url,e.image_url,e.banner_url,e.poster_url,e.image]){try{const u=new URL(String(v||''));if(u.protocol==='https:')return u.href}catch{}}return ''};
 function render(root){
  if(!root||root.dataset.kcAdsReady==='yes')return;
- const api=window.KC_SEARCH_API;if(!api||typeof api.snapshot!=='function')return;
- const all=(api.snapshot().events||[]).filter(e=>e&&e.id&&e.title);
- const now=Date.now();
- const upcoming=all.filter(e=>new Date(e.starts_at).getTime()>=now).sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at));
- const recent=all.filter(e=>new Date(e.starts_at).getTime()<now).sort((a,b)=>new Date(b.starts_at)-new Date(a.starts_at));
- const events=[...upcoming,...recent].slice(0,6);
- const slides=[];
- const promo=(index)=>({kind:'promo',index});
- if(!events.length)slides.push(promo(0));
- events.forEach((e,i)=>{
-  slides.push({kind:'event',event:e,index:slides.length});
-  slides.push(promo(slides.length));
- });
- const slot=5,cycle=slides.length*slot,windowPct=100/slides.length;
- const keyframes=slides.map((slide,i)=>{
-  const start=i*windowPct,end=(i+1)*windowPct,fade=Math.min(.8,windowPct*.035);
-  const a=(start+fade).toFixed(4),b=(end-fade).toFixed(4);
-  return '@keyframes kcMoreAdSlide'+i+'{0%,'+start.toFixed(4)+'%{opacity:0;visibility:hidden;transform:translate3d(20px,0,0) scale(.985)}'+a+'%,'+b+'%{opacity:1;visibility:visible;transform:translate3d(0,0,0) scale(1)}'+end.toFixed(4)+'%,100%{opacity:0;visibility:hidden;transform:translate3d(-16px,0,0) scale(1.012)}}';
- }).join('');
- const dotFrames=slides.map((slide,i)=>{const start=i*windowPct,end=(i+1)*windowPct,fade=Math.min(.8,windowPct*.035);return '@keyframes kcMoreAdDot'+i+'{0%,'+start.toFixed(4)+'%{width:6px;background:#ffffff65}'+(start+fade).toFixed(4)+'%,'+(end-fade).toFixed(4)+'%{width:19px;background:#ff946f}'+end.toFixed(4)+'%,100%{width:6px;background:#ffffff65}}';}).join('');
- const markup=slides.map((slide,i)=>{
-  const common='--kc-ad-duration:'+cycle+'s;animation-name:kcMoreAdSlide'+i+';animation-duration:'+cycle+'s;animation-delay:0s;';
-  if(slide.kind==='promo'){
-   return '<article class="kc-more-ad-slide kc-more-ad-promo" style="'+common+'"><div class="kc-more-ad-top"><span class="kc-more-ad-kicker">THE MOVEMENT · KINETIC CREW</span><span class="kc-more-ad-count">KC / '+String(i+1).padStart(2,'0')+'</span></div><div class="kc-more-ad-bottom"><div class="kc-more-ad-copy"><span class="kc-more-ad-label">MORE THAN A CREW. A CULTURE.</span><h2>ONE CREW.<br>ONE RHYTHM.<br><em>INFINITE ENERGY.</em></h2><p>Dance. Perform. Create. Belong. Be part of something that moves together.</p><button class="kc-more-ad-cta" type="button" data-view="people">MEET THE CREW <span>→</span></button></div></div></article>';
-  }
-  const e=slide.event,src=image(e),past=new Date(e.starts_at).getTime()<now;
-  const category=String(e.category||'CREW EVENT').toUpperCase();
-  const subtitle=[date(e.starts_at),e.location||'Venue to be announced'].filter(Boolean).join(' · ');
-  const style=common+(src?'--kc-more-ad-image:url("'+safe(src)+'");':'');
-  return '<article class="kc-more-ad-slide" style="'+style+'"><div class="kc-more-ad-top"><span class="kc-more-ad-kicker">KINETIC CREW · '+safe(category)+'</span><span class="kc-more-ad-count">'+String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0')+'</span></div><div class="kc-more-ad-bottom"><div class="kc-more-ad-copy"><span class="kc-more-ad-label">'+(past?'RECENT CREW EVENT':e.featured?'FEATURED EVENT':'UPCOMING EVENT')+'</span><h2>'+safe(e.title)+'</h2><p>'+safe(subtitle)+'</p><button class="kc-more-ad-cta" type="button" data-open-event="'+safe(e.id)+'">'+(e.registered?'View your ticket':'Explore event')+' <span>→</span></button></div></div></article>';
- }).join('');
- root.innerHTML='<style>'+keyframes+dotFrames+'</style><div class="kc-more-event-ads" aria-label="Kinetic Crew events and promotions"><div class="kc-more-ad-track">'+markup+'</div><div class="kc-more-ad-dots" aria-hidden="true">'+slides.map((_,i)=>'<i style="--kc-ad-duration:'+cycle+'s;animation-name:kcMoreAdDot'+i+';animation-duration:'+cycle+'s;animation-delay:0s"></i>').join('')+'</div><div class="kc-more-ad-progress"><i style="--kc-ad-duration:'+cycle+'s"></i></div></div>';
- const slideNodes=[...root.querySelectorAll('.kc-more-ad-slide')];
- const dotNodes=[...root.querySelectorAll('.kc-more-ad-dots i')];
- let activeIndex=0;
- const showSlide=(index)=>{
-  activeIndex=((index%slideNodes.length)+slideNodes.length)%slideNodes.length;
-  slideNodes.forEach((node,i)=>{
-   const active=i===activeIndex;
-   node.classList.toggle('is-active',active);
-   node.setAttribute('aria-hidden',active?'false':'true');
-  });
-  dotNodes.forEach((node,i)=>node.classList.toggle('is-active',i===activeIndex));
- };
- if(slideNodes.length){
-  showSlide(0);
-  if(root._kcAdsTimer)clearInterval(root._kcAdsTimer);
-  root._kcAdsTimer=setInterval(()=>showSlide(activeIndex+1),5000);
- }
+ const slides=[
+  {eyebrow:'THE MOVEMENT STARTS HERE',title:'KINETIC<br><em>CREW.</em>',sub:'A creative community powered by dance, performance and people.',tag:'DANCE  ·  CREATE  ·  PERFORM'},
+  {eyebrow:'MORE THAN A CREW. A CULTURE.',title:'ONE CREW.<br>ONE <em>RHYTHM.</em>',sub:'We bring talent together, build confidence and turn shared passion into unforgettable moments.',tag:'BUILT TO MOVE TOGETHER'}
+ ];
+ root.innerHTML='<div class="kc-more-brand-intro" role="region" aria-label="Kinetic Crew introduction"><div class="kc-brand-intro-glow"></div><div class="kc-brand-intro-top"><span>THE KINETIC CREW EXPERIENCE</span><b>KC&nbsp; / &nbsp;01</b></div><div class="kc-brand-intro-stage">'+slides.map((s,i)=>'<article class="kc-brand-intro-slide'+(i===0?' is-active':'')+'" aria-hidden="'+(i===0?'false':'true')+'"><small>'+safe(s.eyebrow)+'</small><h2>'+s.title+'</h2><p>'+safe(s.sub)+'</p><strong>'+safe(s.tag)+'</strong></article>').join('')+'</div><div class="kc-brand-intro-bottom"><span>01</span><div class="kc-brand-intro-progress"><i></i></div><span>02</span></div><span class="kc-brand-intro-watermark" aria-hidden="true">KC</span></div>';
+ const nodes=[...root.querySelectorAll('.kc-brand-intro-slide')],bar=root.querySelector('.kc-brand-intro-progress i');let active=0;
+ const show=i=>{active=i%nodes.length;nodes.forEach((n,k)=>{n.classList.toggle('is-active',k===active);n.setAttribute('aria-hidden',k===active?'false':'true');});if(bar){bar.style.animation='none';void bar.offsetWidth;bar.style.animation='kcBrandIntroProgress 8s linear forwards';}};
+ show(0);if(root._kcBrandTimer)clearInterval(root._kcBrandTimer);root._kcBrandTimer=setInterval(()=>show(active+1),4000);
  root.dataset.kcAdsReady='yes';
 }
 function scan(){
- document.querySelectorAll('.kc-more-event-ads').forEach(node=>{
-  if(!node.isConnected&&node._kcAdsTimer){clearInterval(node._kcAdsTimer);node._kcAdsTimer=null;}
- });
- document.querySelectorAll('.kc-more-intro').forEach(node=>{
-  if(!node.parentElement)return;
-  render(node);
-  if(node.dataset.kcAdsReady==='yes')node.classList.add('kc-more-event-ads-host');
- });
+ document.querySelectorAll('.kc-more-brand-intro').forEach(n=>{if(!n.isConnected&&n._kcBrandTimer){clearInterval(n._kcBrandTimer);n._kcBrandTimer=null;}});
+ document.querySelectorAll('.kc-more-intro').forEach(root=>{if(!root.parentElement)return;render(root);if(root.dataset.kcAdsReady==='yes')root.classList.add('kc-more-event-ads-host');});
 }
 const start=()=>{scan();new MutationObserver(scan).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
