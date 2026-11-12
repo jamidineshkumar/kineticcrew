@@ -39,3 +39,50 @@
 .kc-more-ad-promo .kc-more-ad-cta span{color:#fff}
 @keyframes kc-more-ad-glow{from{filter:hue-rotate(0deg) saturate(1)}to{filter:hue-rotate(24deg) saturate(1.25)}}
 @media(prefers-reduced-motion:reduce){.kc-more-ad-promo:before{animation:none!important}}
+
+
+/* Mobile-first compact More-page carousel: reserve space for the promotion, not an empty hero. */
+.kc-more-event-ads{
+  height:196px!important;
+  min-height:196px!important;
+  max-height:196px!important;
+  margin:0 0 20px!important;
+}
+.kc-more-ad-track{position:absolute!important;inset:0!important;min-height:0!important}
+.kc-more-ad-slide{
+  animation:none!important;
+  z-index:0;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:none!important;
+}
+.kc-more-ad-slide.is-active{
+  z-index:2;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  transform:none!important;
+}
+.kc-more-ad-slide:before{animation:none!important}
+.kc-more-ad-dots i{animation:none!important}
+.kc-more-ad-dots i.is-active{width:19px;background:#ff946f}
+.kc-more-ad-progress i{animation:none!important;transform:scaleX(1);transform-origin:left}
+@media(max-width:560px){
+  .kc-more-event-ads{
+    height:184px!important;
+    min-height:184px!important;
+    max-height:184px!important;
+    margin:0 0 18px!important;
+    border-radius:22px;
+  }
+  .kc-more-ad-slide{padding:15px}
+  .kc-more-ad-copy{gap:6px}
+  .kc-more-ad-copy h2{font-size:clamp(22px,6.4vw,29px);line-height:1.02}
+  .kc-more-ad-copy p{font-size:10px;line-height:1.35}
+  .kc-more-ad-cta{min-height:34px;padding:0 13px;font-size:10px}
+  .kc-more-ad-dots{right:12px;bottom:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  .kc-more-ad-slide,.kc-more-ad-slide:before{animation:none!important}
+}
