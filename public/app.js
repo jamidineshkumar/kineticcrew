@@ -332,7 +332,7 @@ function peoplePage(){
 function safeSocialUrl(raw){try{const url=new URL(String(raw||''));return url.protocol==='https:'?url.href:'';}catch{return '';}}
 function socialEmbed(url){
  try{
-  const u=new URL(url),host=u.hostname.toLowerCase().replace(/^www\\./,'');
+  const u=new URL(url),host=u.hostname.toLowerCase().replace(/^www\./,'');
   let id='';
   if(host==='youtu.be')id=u.pathname.split('/').filter(Boolean)[0]||'';
   else if(['youtube.com','m.youtube.com'].includes(host)){
@@ -340,9 +340,9 @@ function socialEmbed(url){
    if(!id){const parts=u.pathname.split('/').filter(Boolean),marker=parts.findIndex(p=>p==='shorts'||p==='embed');if(marker>=0)id=parts[marker+1]||'';}
   }
   if(id&&/^[a-zA-Z0-9_-]{6,20}$/.test(id))return '<div class="social-embed social-embed-video"><iframe src="https://www.youtube-nocookie.com/embed/'+esc(id)+'" title="Shared crew video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>';
-  if(host==='instagram.com'&&/^\\/(p|reel|tv)\\/[A-Za-z0-9_-]+/.test(u.pathname))return '<div class="social-embed social-embed-instagram"><iframe src="https://www.instagram.com'+esc(u.pathname.replace(/\\/$/,'')+'/embed')+'" title="Instagram shared post" loading="lazy" allowfullscreen referrerpolicy="no-referrer"></iframe></div>';
+  if(host==='instagram.com'&&/^\/(p|reel|tv)\/[A-Za-z0-9_-]+/.test(u.pathname))return '<div class="social-embed social-embed-instagram"><iframe src="https://www.instagram.com'+esc(u.pathname.replace(/\/$/,'')+'/embed')+'" title="Instagram shared post" loading="lazy" allowfullscreen referrerpolicy="no-referrer"></iframe></div>';
   if(host==='tiktok.com'||host==='m.tiktok.com'){
-   const match=u.pathname.match(/\\/video\\/(\\d+)/);if(match)return '<div class="social-embed social-embed-tiktok"><iframe src="https://www.tiktok.com/player/v1/'+match[1]+'?music_info=1&description=1" title="TikTok shared video" loading="lazy" allow="fullscreen" allowfullscreen></iframe></div>';
+   const match=u.pathname.match(/\/video\/(\d+)/);if(match)return '<div class="social-embed social-embed-tiktok"><iframe src="https://www.tiktok.com/player/v1/'+match[1]+'?music_info=1&description=1" title="TikTok shared video" loading="lazy" allow="fullscreen" allowfullscreen></iframe></div>';
   }
  }catch{}
  return '';
