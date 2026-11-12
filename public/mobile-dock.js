@@ -9,7 +9,7 @@
  const group=document.createElement('div');group.className='kc-dock-group';
  const items=[
   {view:'events',label:'Events',path:'<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/>'},
-  {view:'fun-zone',label:'Fun Zone',path:'<path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"/><circle cx="12" cy="12" r="4"/>'},
+  {view:'feed',label:'Kinetic Gram',path:'<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M7 16V8l5 5 5-5v8"/>'},
   {search:true,label:'Search',path:'<circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/>'}
  ];
  group.innerHTML=items.map(item=>'<button type="button" class="kc-dock-group-item" '+(item.search?'data-search-open':'data-view="'+item.view+'"')+' aria-label="'+item.label+'" title="'+item.label+'"><span class="dock-icon">'+svg(item.path)+'</span><span class="dock-label">'+item.label+'</span></button>').join('');
