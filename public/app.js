@@ -114,12 +114,12 @@ const editForm='<details class="kc-profile-editor" id="profileEditor"><summary>E
 '<label class="field">Username<input name="username" id="profileUsername" minlength="3" maxlength="24" pattern="[a-zA-Z0-9_]{3,24}" value="'+esc(u.username||'')+'" placeholder="your_username" required></label>'+
 '<div class="kc-profile-upload-row"><label for="profilePhotoInput">Change profile photo<input id="profilePhotoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden></label></div>'+
 '<p class="hint">JPG, PNG or WebP · Maximum 5 MB.</p><button class="primary full">Save changes</button></form></details>';
-return '<div class="kc-reference-profile kc-liquid-profile kc-single-profile">'+
-'<section class="kc-liquid-profile-card">'+
+return '<div class="kc-reference-profile kc-liquid-profile kc-single-profile '+(founder?'is-founder':'')+'">'+
+'<section class="kc-liquid-profile-card '+(founder?'kc-founder-card':'')+'">'+
 '<div class="kc-liquid-card-top"><button class="kc-profile-back" data-view="overview" aria-label="Back home">‹</button><span class="kc-liquid-wordmark">KINETIC <b>CREW</b></span><div class="kc-profile-hero-right"><button class="kc-profile-share-button" type="button" data-share-profile aria-label="Share profile">↗</button><button class="kc-profile-edit-button" data-profile-edit>Edit</button></div></div>'+
 '<div class="kc-liquid-profile-photo">'+(photo?'<img src="'+esc(photo)+'" alt="'+esc(u.name||'Profile photo')+'" loading="eager">':'<span>'+esc(initials(u.name||u.email))+'</span>')+'</div>'+
 '<div class="kc-liquid-profile-copy"><span class="kc-liquid-eyebrow">'+(founder?'FOUNDER':'KINETIC CREW MEMBER')+'</span><h1>'+esc(u.name||'Kinetic Crew Member')+'</h1><p>@'+esc(username)+'</p><div class="kc-single-profile-tags"><span>'+esc(String(job).toUpperCase())+'</span>'+(u.profession&&u.designation?'<span>'+esc(String(u.designation).toUpperCase())+'</span>':'')+'</div>'+(u.bio?'<p class="kc-liquid-bio">'+esc(u.bio)+'</p>':'')+'</div>'+
-'<div class="kc-liquid-orb kc-liquid-orb-pink"></div><div class="kc-liquid-orb kc-liquid-orb-cyan"></div></section>'+
+'<div class="kc-liquid-orb kc-liquid-orb-pink"></div><div class="kc-liquid-orb kc-liquid-orb-cyan"></div>'+(founder?'<div class="kc-founder-particles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>':'')+'</section>'+
 editForm+'</div>';
 }
 function publicProfilePage(){
@@ -531,6 +531,13 @@ return '<section class="nav-group '+(expanded?'expanded':'')+'" data-nav-group-p
 const crumb=$('#crumb');if(crumb)crumb.textContent=({overview:'Overview',more:'More',events:'Events',chat:'Crew chat',feed:'Crew Feed',memes:'Meme Zone','fun-zone-games':'Mini Games',notifications:'Notifications',people:'Discover crew','fun-zone':'Fun Zone',credits:'Credits','public-profile':'Crew profile','crew-management':'Crew management',attendance:'Attendance',profile:'My profile',settings:'App settings',calendar:'Calendar',rehearsals:'Rehearsals',auditions:'Auditions',leaderboard:'Leaderboard'}[S.view]||'Crew management');
 const fn={overview:home,more:morePage,events:eventsPage,'event-detail':eventDetailPage,chat:()=>empty('Separate chat is unavailable','Use Kinetic Gram for crew posts and the notification inbox for official updates.'),feed:socialFeedPage,memes:memeZonePage,'fun-zone-games':miniGamesPage,notifications:notificationsPage,updates:updatesPage,profile:profilePage,'app-settings':settingsPage,people:peoplePage,'public-profile':publicProfilePage,'crew-management':crewManagementPage,attendance:attendancePage,settings:settingsPage,rehearsals:()=>featurePage('rehearsals'),calendar:calendarPage,polls:()=>featurePage('polls'),memories:()=>featurePage('memories'),achievements:()=>featurePage('achievements'),leave:()=>featurePage('leave'),'fun-zone':funZonePage,credits:creditsPage}[S.view]||home;
 $('#app').innerHTML=(S.error?'<div class="alert"><span>'+esc(S.error)+'</span><button data-clear>×</button></div>':'')+(S.offline?'<div class="offline-strip">OFFLINE · LAST SAVED DATA</div>':'')+fn();
+const founderProfileEntry=S.view==='profile'&&superadmin()&&!document.body.classList.contains('kc-founder-profile-open');
+if(S.view!=='profile')document.body.classList.remove('kc-founder-profile-open');
+if(founderProfileEntry){
+ document.body.classList.add('kc-founder-profile-open');
+ const founderApp=$('#app');founderApp.classList.add('kc-founder-enter');
+ setTimeout(()=>founderApp.classList.remove('kc-founder-enter'),1650);
+}
 if(S.homeUpdateTimer){clearInterval(S.homeUpdateTimer);S.homeUpdateTimer=null;}
 if(S.view==='overview'){
  const homeCarousel=document.querySelector('.kc-home-featured');
