@@ -58,9 +58,10 @@ function notice(text){const t=$('#toast');if(!t){console.warn('Kinetic Crew toas
 function cacheKey(userId){return 'kc-bootstrap-v2:'+userId;}
 function paintUser(){if(!S.user)return;const name=$('#profileName'),userRole=$('#profileRole'),avatar=$('#avatar'),topAvatar=$('#topAvatar');if(name)name.textContent=S.user.name||S.user.email||'Crew Member';if(userRole)userRole.textContent=role(S.user.role);if(avatar)avatar.innerHTML=avatarMarkup(S.user);if(topAvatar)topAvatar.innerHTML=avatarMarkup(S.user,'small');}
 async function refresh(){
- const results=await Promise.all([api('bootstrap'),rpc('crew_get_app_settings',{}).catch(error=>({error})),rpc('crew_event_metadata',{}).catch(error=>({error,data:[]})),featureApi('list','rehearsals',{}).catch(()=>[])]);
+ const results=await Promise.all([api('bootstrap'),rpc('crew_get_app_settings',{}).catch(error=>({error})),rpc('crew_event_metadata',{}).catch(error=>({error,data:[]})),featureApi('list','rehearsals',{}).catch(()=>[]),featureApi('list','chat',{}).catch(()=>[])]);
  const d=results[0],cfg=results[1],meta=Array.isArray(results[2]?.data)?results[2].data:[];
  S.featureItems.rehearsals=Array.isArray(results[3])?results[3]:(results[3]?.data||[]);
+ S.featureItems.chat=Array.isArray(results[4])?results[4]:(results[4]?.data||[]);
  const eventMeta=new Map(meta.map(item=>[String(item.id),item]));
  S.user=d.user;S.events=(d.events||[]).map(event=>({...event,...(eventMeta.get(String(event.id))||{})}));S.announcements=d.announcements||[];S.members=d.members||[];
  S.offline=false;S.error='';
@@ -436,13 +437,15 @@ function socialEmbed(url){
  return '';
 }
 async function loadSocialFeed(){
- const [posts,likes,comments]=await Promise.all([
+ const [posts,likes,comments,people]=await Promise.all([
   client.from('crew_social_posts').select('*').order('created_at',{ascending:false}).limit(100),
   client.from('crew_social_likes').select('post_id,user_id'),
-  client.from('crew_social_comments').select('*').order('created_at',{ascending:true}).limit(1000)
+  client.from('crew_social_comments').select('*').order('created_at',{ascending:true}).limit(1000),
+  rpc('crew_profile_directory',{})
  ]);
- for(const result of [posts,likes,comments])if(result.error)throw result.error;
+ for(const result of [posts,likes,comments,people])if(result.error)throw result.error;
  S.socialPosts=posts.data||[];S.socialLikes=likes.data||[];S.socialComments=comments.data||[];
+ S.publicMembers=Array.isArray(people.data)?people.data:[];
 }
 function socialPostCard(post){
  const people=S.publicMembers||[],author=people.find(m=>String(m.auth_id)===String(post.author_id))||{name:post.author_id===S.user.auth_id?S.user.name:'Crew member',role:'member'};
@@ -596,7 +599,7 @@ const expanded=S.navOpen===id;
 return '<section class="nav-group '+(expanded?'expanded':'')+'" data-nav-group-panel="'+id+'"><button type="button" class="nav-group-toggle '+(expanded?'expanded':'')+'" data-nav-group="'+id+'" aria-expanded="'+expanded+'"><span class="nav-group-symbol">'+({overview:'⌂',events:'▦',chat:'✉',notifications:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>',management:'♙',settings:'⚙'}[id])+'</span><span class="nav-group-label"><b>'+label+'</b><small>'+sub+'</small></span><span class="nav-group-chevron">⌄</span></button><div class="nav-group-items" '+(expanded?'':'hidden')+'>'+items.map(n=>'<button class="navitem '+(S.view===n[0]?'active':'')+'" data-view="'+n[0]+'"><span class="nicon">'+n[1]+'</span><span>'+n[2]+'</span>'+(n[0]==='notifications'&&unread()?'<span class="count">'+unread()+'</span>':'')+'</button>').join('')+'</div></section>';
 }).join('');
 const crumb=$('#crumb');if(crumb)crumb.textContent=({overview:'Overview',more:'More',events:'Events',chat:'Crew chat',feed:'Crew Feed',memes:'Meme Zone','fun-zone-games':'Mini Games',notifications:'Notifications',people:'Discover crew','fun-zone':'Fun Zone',credits:'Credits','public-profile':'Crew profile','crew-management':'Crew management',attendance:'Attendance',profile:'My profile',settings:'App settings',calendar:'Calendar',rehearsals:'Rehearsals',auditions:'Auditions',leaderboard:'Leaderboard'}[S.view]||'Crew management');
-const fn={overview:home,more:morePage,events:eventsPage,'event-detail':eventDetailPage,chat:()=>empty('Separate chat is unavailable','Use Kinetic Gram for crew posts and the notification inbox for official updates.'),feed:socialFeedPage,memes:memeZonePage,'fun-zone-games':miniGamesPage,notifications:notificationsPage,updates:updatesPage,profile:profilePage,'app-settings':settingsPage,people:peoplePage,'public-profile':publicProfilePage,'crew-management':crewManagementPage,attendance:attendancePage,settings:settingsPage,rehearsals:()=>featurePage('rehearsals'),calendar:calendarPage,polls:()=>featurePage('polls'),memories:()=>featurePage('memories'),achievements:()=>featurePage('achievements'),leave:()=>featurePage('leave'),'fun-zone':funZonePage,credits:creditsPage}[S.view]||home;
+const fn={overview:home,more:morePage,events:eventsPage,'event-detail':eventDetailPage,chat:chatPage,feed:socialFeedPage,memes:memeZonePage,'fun-zone-games':miniGamesPage,notifications:notificationsPage,updates:updatesPage,profile:profilePage,'app-settings':settingsPage,people:peoplePage,'public-profile':publicProfilePage,'crew-management':crewManagementPage,attendance:attendancePage,settings:settingsPage,rehearsals:()=>featurePage('rehearsals'),calendar:calendarPage,polls:()=>featurePage('polls'),memories:()=>featurePage('memories'),achievements:()=>featurePage('achievements'),leave:()=>featurePage('leave'),'fun-zone':funZonePage,credits:creditsPage}[S.view]||home;
 $('#app').innerHTML=(S.error?'<div class="alert"><span>'+esc(S.error)+'</span><button data-clear>×</button></div>':'')+(S.offline?'<div class="offline-strip">OFFLINE · LAST SAVED DATA</div>':'')+fn();
 renderProfileQrCards();
 const founderProfileEntry=S.view==='profile'&&superadmin()&&!document.body.classList.contains('kc-founder-profile-open');
