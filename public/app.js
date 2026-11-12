@@ -724,16 +724,26 @@ if(S.view==='overview'){
 function brandSettingsPage(){
  if(!superadmin())return empty('Super Admin access required','Only the Super Admin can change the official Kinetic Crew logo.');
  const current=S.appSettings?.brand_logo_url||window.KC_BRAND_LOGO_URL||window.kcPath('kinetic-crew-logo.svg');
- return welcome('Brand identity','Manage the official Kinetic Crew logo used across the app, browser tabs and installable app.')+
+ return welcome('Brand identity','Create and manage the official Kinetic Crew logo across the app, browser and installed experience.')+
  '<section class="surface settings-card kc-brand-settings-card">'+
  '<span class="settings-kicker">SUPER ADMIN ONLY</span><h3>Official Kinetic Crew logo</h3>'+
- '<p>Upload one square logo. It will replace the brand mark across the website, account screens, browser favicon, install icon and shared pages.</p>'+
- '<div class="kc-brand-preview-wrap"><img id="brandLogoPreview" src="'+esc(current)+'" alt="Current Kinetic Crew logo" class="kc-brand-preview"><span>LIVE BRAND PREVIEW</span></div>'+
- '<label class="kc-brand-file-label" for="brandLogoFile">Choose logo image</label>'+
+ '<p>Choose an image, then position and scale it inside the square brand canvas before publishing.</p>'+
+ '<div class="kc-brand-editor-layout">'+
+ '<div class="kc-brand-editor-stage"><canvas id="brandLogoCanvas" width="512" height="512" aria-label="Logo crop preview"></canvas><span class="kc-brand-editor-hint">DRAG TO REPOSITION</span></div>'+
+ '<div class="kc-brand-current"><img id="brandLogoCurrent" src="'+esc(current)+'" alt="Current official Kinetic Crew logo"><span>CURRENT LIVE LOGO</span></div>'+
+ '</div>'+
+ '<label class="kc-brand-file-label" for="brandLogoFile"><span>＋</span> Choose image</label>'+
  '<input id="brandLogoFile" type="file" accept="image/png,image/jpeg,image/webp">'+
- '<small class="kc-brand-file-help">PNG, JPG or WebP · up to 5 MB · transparent PNG recommended · image is fitted inside a square icon canvas.</small>'+
- '<button type="button" class="primary" id="uploadBrandLogo" disabled>Upload and update everywhere →</button>'+
- '<p class="kc-brand-security-note">Upload permission is enforced by Supabase Storage and the settings API for the Super Admin role only.</p>'+
+ '<div class="kc-brand-editor-tools">'+
+ '<div class="kc-brand-tool-head"><span>IMAGE POSITION</span><button type="button" class="kc-brand-text-btn" id="brandLogoReset">Reset</button></div>'+
+ '<div class="kc-brand-mode-row"><button type="button" class="kc-brand-mode active" data-brand-fit="contain">Fit image</button><button type="button" class="kc-brand-mode" data-brand-fit="cover">Fill square</button></div>'+
+ '<label class="kc-brand-zoom-label" for="brandLogoZoom"><span>Zoom</span><output id="brandLogoZoomValue">100%</output></label>'+
+ '<input id="brandLogoZoom" type="range" min="50" max="300" step="1" value="100" disabled>'+
+ '<div class="kc-brand-editor-actions"><button type="button" id="brandLogoRotate" disabled>↻ Rotate 90°</button><button type="button" id="brandLogoCenter" disabled>Center image</button></div>'+
+ '</div>'+
+ '<small class="kc-brand-file-help">PNG, JPG or WebP · maximum 5 MB · transparent areas are preserved. The final icon is exported at 512 × 512.</small>'+
+ '<button type="button" class="primary" id="uploadBrandLogo" disabled>Publish logo everywhere →</button>'+
+ '<p class="kc-brand-security-note">Publishing is restricted by Supabase to the Super Admin account.</p>'+
  '</section>';
 }
 function settingsPage(){
@@ -892,32 +902,84 @@ async function saveCroppedImage(){
   button.disabled=false;button.textContent='Use this image →';notice(err.message||'Image upload failed.');
  }
 }
+let kcBrandEditor={image:null,file:null,zoom:100,fit:'contain',rotation:0,x:0,y:0,drag:null};
+function kcBrandDraw(){
+ const canvas=$('#brandLogoCanvas');if(!canvas)return;
+ const ctx=canvas.getContext('2d');if(!ctx)return;
+ const size=512;ctx.clearRect(0,0,size,size);
+ // Checkerboard communicates transparency without becoming part of the exported image.
+ const tile=32;for(let y=0;y<size;y+=tile)for(let x=0;x<size;x+=tile){ctx.fillStyle=((x/tile+y/tile)%2===0)?'#34363c':'#26282e';ctx.fillRect(x,y,tile,tile);}
+ if(!kcBrandEditor.image){ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='600 20px system-ui';ctx.textAlign='center';ctx.fillText('YOUR LOGO PREVIEW',256,266);ctx.font='14px system-ui';ctx.fillStyle='rgba(255,255,255,.36)';ctx.fillText('Choose an image to begin',256,292);return;}
+ const img=kcBrandEditor.image,rot=((kcBrandEditor.rotation%360)+360)%360,sw=(rot%180===0?img.width:img.height),sh=(rot%180===0?img.height:img.width);
+ const base=(kcBrandEditor.fit==='cover'?Math.max(size/sw,size/sh):Math.min(size/sw,size/sh))*.88;
+ const scale=base*(kcBrandEditor.zoom/100);
+ ctx.save();ctx.translate(size/2+kcBrandEditor.x,size/2+kcBrandEditor.y);ctx.rotate(rot*Math.PI/180);ctx.scale(scale,scale);ctx.drawImage(img,-img.width/2,-img.height/2);ctx.restore();
+}
+function kcBrandSetControls(enabled){
+ ['brandLogoZoom','brandLogoRotate','brandLogoCenter','brandLogoReset'].forEach(id=>{const el=$('#'+id);if(el)el.disabled=!enabled;});
+ const publish=$('#uploadBrandLogo');if(publish)publish.disabled=!enabled;
+ document.querySelectorAll('[data-brand-fit]').forEach(b=>b.disabled=!enabled);
+}
+function kcBrandReset(){
+ kcBrandEditor.zoom=100;kcBrandEditor.fit='contain';kcBrandEditor.rotation=0;kcBrandEditor.x=0;kcBrandEditor.y=0;
+ const zoom=$('#brandLogoZoom'),value=$('#brandLogoZoomValue');if(zoom)zoom.value='100';if(value)value.textContent='100%';
+ document.querySelectorAll('[data-brand-fit]').forEach(b=>b.classList.toggle('active',b.dataset.brandFit==='contain'));
+ kcBrandDraw();
+}
 document.addEventListener('change',event=>{
  if(event.target.id!=='brandLogoFile')return;
- const file=event.target.files?.[0],preview=$('#brandLogoPreview'),button=$('#uploadBrandLogo');
- if(button)button.disabled=!file;
- if(!file)return;
+ const file=event.target.files?.[0];if(!file)return;
  if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>5*1024*1024){
-  event.target.value='';if(button)button.disabled=true;notice('Choose a PNG, JPG or WebP image under 5 MB.');return;
+  event.target.value='';notice('Choose a PNG, JPG or WebP image under 5 MB.');return;
  }
- if(preview){if(preview.dataset.objectUrl)URL.revokeObjectURL(preview.dataset.objectUrl);const objectUrl=URL.createObjectURL(file);preview.src=objectUrl;preview.dataset.objectUrl=objectUrl;}
+ const button=$('#uploadBrandLogo');if(button){button.disabled=true;button.textContent='Preparing preview…';}
+ createImageBitmap(file).then(bitmap=>{
+  if(kcBrandEditor.image&&kcBrandEditor.image.close)kcBrandEditor.image.close();
+  kcBrandEditor.image=bitmap;kcBrandEditor.file=file;kcBrandReset();kcBrandSetControls(true);
+  const publish=$('#uploadBrandLogo');if(publish){publish.disabled=false;publish.textContent='Publish logo everywhere →';}
+ }).catch(()=>{notice('Could not open this image. Try another file.');kcBrandSetControls(false);});
 });
+document.addEventListener('input',event=>{
+ if(event.target.id==='brandLogoZoom'){
+  kcBrandEditor.zoom=Number(event.target.value)||100;
+  const output=$('#brandLogoZoomValue');if(output)output.textContent=kcBrandEditor.zoom+'%';
+  kcBrandDraw();
+ }
+});
+document.addEventListener('click',event=>{
+ const fit=event.target.closest('[data-brand-fit]');
+ if(fit){kcBrandEditor.fit=fit.dataset.brandFit;document.querySelectorAll('[data-brand-fit]').forEach(b=>b.classList.toggle('active',b===fit));kcBrandDraw();return;}
+ if(event.target.closest('#brandLogoRotate')){kcBrandEditor.rotation=(kcBrandEditor.rotation+90)%360;kcBrandDraw();return;}
+ if(event.target.closest('#brandLogoCenter')){kcBrandEditor.x=0;kcBrandEditor.y=0;kcBrandDraw();return;}
+ if(event.target.closest('#brandLogoReset')){kcBrandReset();return;}
+});
+document.addEventListener('pointerdown',event=>{
+ const canvas=event.target.closest('#brandLogoCanvas');if(!canvas||!kcBrandEditor.image)return;
+ event.preventDefault();canvas.setPointerCapture?.(event.pointerId);
+ kcBrandEditor.drag={x:event.clientX,y:event.clientY,originX:kcBrandEditor.x,originY:kcBrandEditor.y};
+});
+document.addEventListener('pointermove',event=>{
+ const canvas=$('#brandLogoCanvas');if(!canvas||!kcBrandEditor.drag)return;
+ const rect=canvas.getBoundingClientRect(),d=kcBrandEditor.drag;
+ kcBrandEditor.x=d.originX+(event.clientX-d.x)*512/rect.width;
+ kcBrandEditor.y=d.originY+(event.clientY-d.y)*512/rect.height;kcBrandDraw();
+});
+document.addEventListener('pointerup',()=>{kcBrandEditor.drag=null;});
+document.addEventListener('pointercancel',()=>{kcBrandEditor.drag=null;});
 document.addEventListener('click',async event=>{
  const button=event.target.closest('#uploadBrandLogo');if(!button)return;
  event.preventDefault();
  if(!superadmin()){notice('Only the Super Admin can change the official logo.');return;}
- const input=$('#brandLogoFile'),file=input?.files?.[0];if(!file){notice('Choose a logo image first.');return;}
- if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>5*1024*1024){notice('Choose a PNG, JPG or WebP image under 5 MB.');return;}
+ if(!kcBrandEditor.image){notice('Choose a logo image first.');return;}
  const oldLabel=button.textContent;button.disabled=true;button.textContent='Preparing logo…';
- let bitmap;
  try{
-  bitmap=await createImageBitmap(file);
   const canvas=document.createElement('canvas');canvas.width=512;canvas.height=512;
   const ctx=canvas.getContext('2d');if(!ctx)throw Error('Your browser could not prepare the logo image.');
-  const scale=Math.min(512/bitmap.width,512/bitmap.height),width=Math.round(bitmap.width*scale),height=Math.round(bitmap.height*scale);
-  ctx.clearRect(0,0,512,512);ctx.drawImage(bitmap,Math.round((512-width)/2),Math.round((512-height)/2),width,height);
+  const img=kcBrandEditor.image,rot=((kcBrandEditor.rotation%360)+360)%360,sw=rot%180===0?img.width:img.height,sh=rot%180===0?img.height:img.width;
+  const base=(kcBrandEditor.fit==='cover'?Math.max(512/sw,512/sh):Math.min(512/sw,512/sh))*.88,scale=base*(kcBrandEditor.zoom/100);
+  ctx.clearRect(0,0,512,512);ctx.translate(256+kcBrandEditor.x,256+kcBrandEditor.y);ctx.rotate(rot*Math.PI/180);ctx.scale(scale,scale);ctx.drawImage(img,-img.width/2,-img.height/2);
   const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
-  if(!blob)throw Error('Could not convert the logo image. Try another image.');
+  if(!blob)throw Error('Could not export the edited logo. Try another image.');
   button.textContent='Uploading logo…';
   const storage=client.storage.from('crew-brand-assets');
   const uploaded=await storage.upload('brand/kinetic-crew-logo.png',blob,{upsert:true,contentType:'image/png',cacheControl:'0'});
@@ -928,10 +990,8 @@ document.addEventListener('click',async event=>{
   if(saved.error)throw saved.error;
   S.appSettings={...(S.appSettings||{}),brand_logo_url:publicUrl};
   window.kcApplyBrandLogo?.(publicUrl);
-  notice('Official Kinetic Crew logo updated everywhere.');
-  paint();
+  notice('Official Kinetic Crew logo updated everywhere.');paint();
  }catch(error){notice(error.message||'Logo upload failed. Your current logo is unchanged.');button.disabled=false;button.textContent=oldLabel;}
- finally{if(bitmap)bitmap.close();}
 });
 document.addEventListener('change',async e=>{
  if(e.target.id==='settingsSound'){saveNotificationPrefs({sound:e.target.checked});if(e.target.checked)playNoticeSound();notice(e.target.checked?'In-app sounds enabled.':'In-app sounds muted.');}
