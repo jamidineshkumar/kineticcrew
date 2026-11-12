@@ -49,6 +49,7 @@ function normalizeFeatureKey(value,payload){
 async function featureApi(action,feature,payload){
  const operation=String(action||'').trim().toLowerCase(),cleanPayload=payload&&typeof payload==='object'?payload:{};
  const requested=normalizeFeatureKey(feature,cleanPayload);
+ if(operation!=='leaderboard'&&!requested)throw Error('A crew feature was not selected. Return to the feature page and try again.');
  if(operation!=='leaderboard'&&!featureKeys.includes(requested))throw Error('Unsupported crew feature requested: '+String(feature??cleanPayload.feature??'(empty)')+'. Please reload Kinetic Crew and try again.');
  const {data,error}=await rpc('crew_features',{p_action:operation,p_feature:operation==='leaderboard'?null:requested,p_payload:cleanPayload});
  if(error){const m=error.message||'Feature request failed.';if(/could not find the function|schema cache/i.test(m))throw Error('The crew feature service is not ready. Reload the app; if this continues, contact the Super Admin.');throw Error(m);}
@@ -85,6 +86,22 @@ function section(title,sub,act=''){return '<div class="sectionhead"><div><h2>'+t
 function empty(title,sub){return '<div class="empty"><div class="emptyicon">✳</div><b>'+title+'</b><p>'+sub+'</p></div>';}
 function stat(title,value,foot,ico){return '<div class="stat"><div class="statlabel"><span>'+title+'</span><span>'+ico+'</span></div><b class="statvalue">'+value+'</b><small>'+foot+'</small></div>';}
 
+document.addEventListener('input',event=>{
+ const search=event.target.closest('.memory-member-search');
+ if(search){const q=search.value.trim().toLowerCase();search.closest('.memory-recipient-picker')?.querySelectorAll('.memory-recipient-option').forEach(row=>{row.hidden=!row.dataset.memberName.includes(q)||!row.textContent.toLowerCase().includes(q);});}
+});
+document.addEventListener('change',event=>{
+ const form=event.target.closest('[data-feature-form="memories"]');
+ if(!form)return;
+ if(event.target.matches('input[name="recipient_ids"]')){
+  const count=form.querySelectorAll('input[name="recipient_ids"]:checked').length;
+  const label=form.querySelector('.memory-recipient-count');if(label)label.textContent=count+' selected';
+ }
+ if(event.target.matches('input[name="memory_photo"]')){
+  const preview=form.querySelector('.memory-upload-preview'),file=event.target.files?.[0];
+  if(preview){if(file){preview.src=URL.createObjectURL(file);preview.hidden=false;}else{preview.removeAttribute('src');preview.hidden=true;}}
+ }
+});
 document.addEventListener('error',event=>{
  const img=event.target;
  if(!(img instanceof HTMLImageElement))return;
@@ -491,7 +508,7 @@ function featureForm(key){
  (isRehearsal?'<label class="field">Date & time<input name="session_at" type="datetime-local" required></label><label class="field">Location<input name="location" maxlength="160" placeholder="Practice room / studio"></label>':'')+
  
  (isAudition?'<label class="field">Dance style<input name="style" maxlength="80" placeholder="Hip-hop / freestyle / classical"></label><label class="field">Audition video URL<input name="media_url" type="url" placeholder="https://…"></label>':'')+
- (isMemory?'<label class="field">Photo / video URL<input name="media_url" type="url" placeholder="Paste a shareable link"></label>':'')+
+ (isMemory?'<section class="memory-share-panel"><div class="memory-share-heading"><b>Share with registered members</b><small>Choose one or more people. Only you, admins and selected members can view this memory.</small></div><details class="memory-recipient-picker"><summary><span>Choose crew members</span><b class="memory-recipient-count">0 selected</b></summary><input type="search" class="memory-member-search" placeholder="Search registered people…" aria-label="Search registered people"><div class="memory-recipient-list">'+((S.publicMembers||[]).filter(p=>String(p.auth_id)!==String(S.user?.auth_id)).map(p=>'<label class="memory-recipient-option" data-member-name="'+esc(p.name||'').toLowerCase()+'"><input type="checkbox" name="recipient_ids" value="'+esc(p.auth_id)+'"><span>'+avatarMarkup(p,'small')+'</span><span><b>'+esc(p.name||'Crew member')+'</b><small>'+esc(p.username?'@'+p.username:(p.email||''))+'</small></span></label>').join('')||'<p class="hint">No other registered members found.</p>')+'</div></details></section><label class="field">Upload a photo<input name="memory_photo" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><small class="hint">JPG, PNG, WEBP or GIF · up to 15 MB</small></label><label class="field">Or paste a photo URL<input name="media_url" type="url" placeholder="https://… (optional if uploading)"></label><img class="memory-upload-preview" alt="Selected photo preview" hidden>':'')+
  '<button class="primary full">'+meta[4]+' →</button></form>';
 }
 function featureCard(key,item){
@@ -647,7 +664,7 @@ function settingsPage(){
  '<section class="surface settings-card"><span class="settings-kicker">DEVICE</span><h3>App maintenance</h3><p>Clear temporary cached files without signing you out.</p><button class="outline" id="clearAppCache">Clear app cache</button><button class="outline" data-view="notifications">Notification settings</button></section>'+
  '<section class="surface settings-card settings-danger"><span class="settings-kicker">SESSION</span><h3>Sign out</h3><p>Sign out of this device. Your crew account remains active.</p><button class="outline" id="settingsSignOut">Sign out ↗</button></section></div>';
 }
-async function go(v){S.view=v;S.error='';S.navOpen=({overview:'overview',events:'events','event-detail':'events',chat:'chat',notifications:'notifications',people:'chat',feed:'chat','public-profile':'chat','crew-management':'management',attendance:'management',profile:'settings',settings:superadmin()?'management':'settings',rehearsals:'chat',calendar:'events',polls:'chat',memories:'chat',achievements:'chat',leave:'chat',auditions:'chat',more:'overview'}[v]||'overview');if(S.chatPoll){clearInterval(S.chatPoll);S.chatPoll=null;}if(v==='crew-management'&&admin()){try{S.members=await api('members');}catch(e){S.error=e.message||'Could not load crew members.';}}if(v==='people'||v==='feed'||v==='fun-zone'){try{const {data,error}=await rpc('crew_profile_directory',{});if(error)throw error;S.publicMembers=Array.isArray(data)?data:[];}catch(e){S.publicMembers=[];S.error=e.message||'Could not load crew profiles.';}}if(v==='feed'||v==='fun-zone'||v==='memes'){try{await loadSocialFeed();}catch(e){S.error=e.message||'Could not load the crew feed.';}}if(v==='profile'||v==='public-profile'||v==='settings'){try{const {data,error}=await rpc('crew_profile_social',{p_auth_id:v==='public-profile'?S.selectedProfileId:S.user.auth_id});if(error)throw error;S.profileSocial=data||null;if(v!=='public-profile'&&S.profileSocial?.profile)S.user={...S.user,...S.profileSocial.profile};}catch(e){S.profileSocial=null;S.error=e.message||'Could not load profile details.';}}if(v==='profile'){try{await loadSocialFeed();}catch(e){S.socialPosts=[];S.socialLikes=[];S.socialComments=[];S.error=e.message||'Could not load your posts.';}}setMobileMenu(false);if(featureKeys.includes(v)){try{S.featureItems[v]=await featureApi('list',v,{});}catch(e){S.error=e.message||'Could not load this feature.';}}if(v==='leaderboard'){try{S.leaderboard=await featureApi('leaderboard',null,{});}catch(e){S.error=e.message||'Could not load leaderboard.';}}paint();const viewRoot=$('#app');viewRoot.classList.remove('kc-view-enter');void viewRoot.offsetWidth;viewRoot.classList.add('kc-view-enter');viewRoot.addEventListener('animationend',function done(e){if(e.target===viewRoot){viewRoot.classList.remove('kc-view-enter');viewRoot.removeEventListener('animationend',done);}},{once:false});if(v==='chat'){S.chatPoll=setInterval(async()=>{if(S.view!=='chat'||S.chatBusy)return;S.chatBusy=true;try{const rows=await featureApi('list','chat',{});const previous=S.featureItems.chat||[],previousIds=new Set(previous.map(m=>String(m.id)));const incoming=rows.filter(m=>!previousIds.has(String(m.id)));if(incoming.length){const latest=incoming[incoming.length-1];if(String(latest.author_id)!==String(S.user.auth_id)){window.dispatchEvent(new CustomEvent('kc:notification',{detail:{title:latest.author_name||'Crew chat',body:latest.body||'Sent you a new message.',target:'chat'}}));if(document.hidden&&'Notification'in window&&Notification.permission==='granted')new Notification('Kinetic Crew · Crew chat',{body:(latest.author_name||'A crew member')+': '+(latest.body||'New message'),icon:window.kcPath('kinetic-crew-logo.jpg')});}}if(rows.length!==(S.featureItems.chat||[]).length||incoming.length){S.featureItems.chat=rows;const box=$('#waMessages');if(box){const atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;box.innerHTML=chatMessagesMarkup(rows);if(atBottom)box.scrollTop=box.scrollHeight;}}}catch{}finally{S.chatBusy=false;}},5000);}window.scrollTo({top:0,behavior:'auto'});savePageState();}
+async function go(v){S.view=v;S.error='';S.navOpen=({overview:'overview',events:'events','event-detail':'events',chat:'chat',notifications:'notifications',people:'chat',feed:'chat','public-profile':'chat','crew-management':'management',attendance:'management',profile:'settings',settings:superadmin()?'management':'settings',rehearsals:'chat',calendar:'events',polls:'chat',memories:'chat',achievements:'chat',leave:'chat',auditions:'chat',more:'overview'}[v]||'overview');if(S.chatPoll){clearInterval(S.chatPoll);S.chatPoll=null;}if(v==='crew-management'&&admin()){try{S.members=await api('members');}catch(e){S.error=e.message||'Could not load crew members.';}}if(v==='people'||v==='feed'||v==='fun-zone'){try{const {data,error}=await rpc('crew_profile_directory',{});if(error)throw error;S.publicMembers=Array.isArray(data)?data:[];}catch(e){S.publicMembers=[];S.error=e.message||'Could not load crew profiles.';}}if(v==='feed'||v==='fun-zone'||v==='memes'){try{await loadSocialFeed();}catch(e){S.error=e.message||'Could not load the crew feed.';}}if(v==='profile'||v==='public-profile'||v==='settings'){try{const {data,error}=await rpc('crew_profile_social',{p_auth_id:v==='public-profile'?S.selectedProfileId:S.user.auth_id});if(error)throw error;S.profileSocial=data||null;if(v!=='public-profile'&&S.profileSocial?.profile)S.user={...S.user,...S.profileSocial.profile};}catch(e){S.profileSocial=null;S.error=e.message||'Could not load profile details.';}}if(v==='profile'){try{await loadSocialFeed();}catch(e){S.socialPosts=[];S.socialLikes=[];S.socialComments=[];S.error=e.message||'Could not load your posts.';}}setMobileMenu(false);if(v==='memories'){try{const [directory,rows]=await Promise.all([rpc('crew_profile_directory',{}),rpc('crew_memories_list',{})]);if(directory.error)throw directory.error;if(rows.error)throw rows.error;S.publicMembers=Array.isArray(directory.data)?directory.data:[];S.featureItems.memories=Array.isArray(rows.data)?rows.data:(rows.data||[]);}catch(e){S.error=e.message||'Could not load KC Memories.';}}else if(featureKeys.includes(v)){try{S.featureItems[v]=await featureApi('list',v,{});}catch(e){S.error=e.message||'Could not load this feature.';}}if(v==='leaderboard'){try{S.leaderboard=await featureApi('leaderboard',null,{});}catch(e){S.error=e.message||'Could not load leaderboard.';}}paint();const viewRoot=$('#app');viewRoot.classList.remove('kc-view-enter');void viewRoot.offsetWidth;viewRoot.classList.add('kc-view-enter');viewRoot.addEventListener('animationend',function done(e){if(e.target===viewRoot){viewRoot.classList.remove('kc-view-enter');viewRoot.removeEventListener('animationend',done);}},{once:false});if(v==='chat'){S.chatPoll=setInterval(async()=>{if(S.view!=='chat'||S.chatBusy)return;S.chatBusy=true;try{const rows=await featureApi('list','chat',{});const previous=S.featureItems.chat||[],previousIds=new Set(previous.map(m=>String(m.id)));const incoming=rows.filter(m=>!previousIds.has(String(m.id)));if(incoming.length){const latest=incoming[incoming.length-1];if(String(latest.author_id)!==String(S.user.auth_id)){window.dispatchEvent(new CustomEvent('kc:notification',{detail:{title:latest.author_name||'Crew chat',body:latest.body||'Sent you a new message.',target:'chat'}}));if(document.hidden&&'Notification'in window&&Notification.permission==='granted')new Notification('Kinetic Crew · Crew chat',{body:(latest.author_name||'A crew member')+': '+(latest.body||'New message'),icon:window.kcPath('kinetic-crew-logo.jpg')});}}if(rows.length!==(S.featureItems.chat||[]).length||incoming.length){S.featureItems.chat=rows;const box=$('#waMessages');if(box){const atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;box.innerHTML=chatMessagesMarkup(rows);if(atBottom)box.scrollTop=box.scrollHeight;}}}catch{}finally{S.chatBusy=false;}},5000);}window.scrollTo({top:0,behavior:'auto'});savePageState();}
 async function exportAttendance(){
  if(!S.roster?.roster?.length){notice('No attendance rows to export.');return;}
  const rows=[['KINETIC CREW · OFFICIAL ATTENDANCE REPORT'],['Generated by Kinetic Crew'],['Event ID',S.rosterEvent],[],['Member name','Email','Attendance status','Registered at'],...S.roster.roster.map(m=>[m.name,m.email,m.status||(m.attended?'present':'pending'),m.registered_at||'']),[],['KINETIC CREW · BUILT TO MOVE TOGETHER']];
@@ -839,13 +856,28 @@ document.addEventListener('submit',async e=>{
   e.preventDefault();
   const key=featureFormEl.dataset.feature,d=new FormData(featureFormEl),data={};
   ['from_date','to_date','style','media_url'].forEach(k=>{if(d.get(k))data[k]=d.get(k);});
+  if(key==='memories'){
+   const photo=d.get('memory_photo');
+   if(photo&&photo.size){
+    if(!/^image\\/(jpeg|png|webp|gif)$/.test(photo.type)) {notice('Choose a JPG, PNG, WEBP or GIF photo.');return;}
+    if(photo.size>15*1024*1024){notice('Photo must be 15 MB or smaller.');return;}
+    const safeName=String(photo.name||'memory-photo').replace(/[^a-zA-Z0-9._-]/g,'-').slice(-90);
+    const path=S.user.auth_id+'/'+Date.now()+'-'+safeName;
+    const uploaded=await client.storage.from('crew-memories').upload(path,photo,{cacheControl:'3600',upsert:false,contentType:photo.type});
+    if(uploaded.error)throw uploaded.error;
+    const publicFile=client.storage.from('crew-memories').getPublicUrl(path);
+    data.media_url=publicFile.data.publicUrl;
+   }
+   if(!data.media_url){notice('Upload a photo or paste a photo URL first.');return;}
+   data.recipient_ids=d.getAll('recipient_ids').map(String).filter(Boolean);
+  }
   if(key==='rehearsals'){data.session_at=new Date(d.get('session_at')).toISOString();data.location=d.get('location')||'';}
   if(key==='leave'&&new Date(data.from_date)>new Date(data.to_date)){notice('End date must be on or after the start date.');return;}
   try{
    const body=String(d.get('body')||'');
    const res=await featureApi('create',key,{title:d.get('title'),body,data});
    notice(res.message);
-   S.featureItems[key]=await featureApi('list',key,{});
+   S.featureItems[key]=key==='memories'?(await rpc('crew_memories_list',{})).data||[]:await featureApi('list',key,{});
    if(key==='chat'){S.view='chat';paint();$('#waMessages')?.scrollTo({top:$('#waMessages').scrollHeight,behavior:'smooth'});}
   }catch(error){S.error=error.message||'Could not save this item.';paint();}
   return;
