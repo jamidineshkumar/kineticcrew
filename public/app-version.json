@@ -1,6 +1,6 @@
 {
-  "version": "1.2.8",
-  "minimum_version": "1.2.7",
-  "updated_at": "2026-11-12T00:00:00Z",
-  "release_notes": "Fixed KC Memories photo validation; added private member sharing, searchable recipients and photo uploads."
+  "version": "1.2.9",
+  "minimum_version": "1.2.8",
+  "updated_at": "2026-11-12T10:30:00Z",
+  "release_notes": "Fixed KC Memories feature routing, private photo uploads, recipient search and selected-member confirmation."
 }
