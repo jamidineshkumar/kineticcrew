@@ -1,4 +1,26 @@
-/* Stable, low-cost navigation transitions. No canvas, blur filters or full-screen overlay. */
-#app.kc-view-enter{animation:kc-nav-settle .16s ease-out both;}
-@keyframes kc-nav-settle{from{opacity:.84;transform:translate3d(0,3px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
-@media(prefers-reduced-motion:reduce){#app.kc-view-enter{animation:none!important;}}
+/* Full-screen animated halftone vortex matching the supplied RGB wave reference. */
+.kc-transition-overlay{position:fixed;inset:0;z-index:99999;display:block;background:#050518;opacity:1;visibility:visible;pointer-events:none;overflow:hidden;transition:opacity .5s ease,visibility .5s}
+.kc-transition-overlay.is-leaving{opacity:0;visibility:hidden}
+.kc-transition-canvas{display:block;width:100%;height:100%;object-fit:cover}
+#app.kc-view-enter > *{animation:kc-view-reveal .34s cubic-bezier(.2,.72,.2,1) both}@keyframes kc-view-reveal{from{opacity:0;transform:translate3d(0,7px,0);filter:blur(2px)}to{opacity:1;transform:translate3d(0,0,0);filter:blur(0)}}
+@keyframes kc-page-reveal{from{opacity:0;transform:translateY(9px) scale(.992);filter:blur(5px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+.kc-exact-event-image,img.kc-image-reveal{animation:kc-image-reveal .55s ease both}
+@keyframes kc-image-reveal{from{opacity:.25;filter:blur(9px)}to{opacity:1;filter:blur(0)}}
+@media(prefers-reduced-motion:reduce){.kc-transition-overlay{display:none!important}#app.kc-page-enter,.kc-exact-event-image,img.kc-image-reveal{animation:none!important;transition:none!important}}
+
+/* Shared, compositor-friendly transitions. Avoid animating the app shell itself. */
+#app.kc-view-enter>.kc-liquid-profile,#app.kc-view-enter>.kc-reference-profile{animation:kc-view-reveal .38s cubic-bezier(.2,.72,.2,1) both}
+.kc-liquid-profile-card{will-change:auto;transform:translateZ(0)}
+.kc-liquid-profile-photo,.kc-liquid-profile-copy{animation:kc-profile-content-in .42s cubic-bezier(.2,.72,.2,1) both}
+.kc-liquid-profile-copy{animation-delay:.045s}
+@keyframes kc-profile-content-in{from{opacity:0;transform:translate3d(0,9px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@media(prefers-reduced-motion:reduce){#app.kc-view-enter>* ,.kc-liquid-profile-photo,.kc-liquid-profile-copy{animation:none!important}}
+
+/* Single, predictable page transition. Never animate every nested control/card. */
+.kc-transition-overlay{will-change:opacity}
+#app.kc-view-enter{animation:kc-nav-fade .22s cubic-bezier(.2,.7,.25,1) both}
+@keyframes kc-nav-fade{from{opacity:.72}to{opacity:1}}
+#app.kc-view-enter>*{animation:none!important}
+.kc-liquid-profile-photo,.kc-liquid-profile-copy{animation:none!important}
+.kc-liquid-profile-card{transform:none!important;will-change:auto!important}
+@media(prefers-reduced-motion:reduce){#app.kc-view-enter{animation:none!important}}
