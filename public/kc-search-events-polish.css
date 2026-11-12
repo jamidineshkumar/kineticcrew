@@ -1,0 +1,34 @@
+/* Kinetic Crew search refinement: one clean field, no shortcut or decorative frame. */
+.kce-event-search{
+ display:flex!important;align-items:center!important;min-height:58px!important;
+ margin:0 0 17px!important;padding:0 17px!important;
+ border:1px solid rgba(255,255,255,.16)!important;border-radius:19px!important;
+ background:linear-gradient(145deg,#1d2322,#151a19)!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 8px 22px rgba(0,0,0,.12)!important;
+ color:#f4f6f2!important;
+}
+.kce-event-search>span,.kce-event-search>kbd{display:none!important}
+.kce-event-search input{
+ width:100%!important;min-width:0!important;flex:1!important;
+ min-height:56px!important;padding:0!important;margin:0!important;
+ border:0!important;outline:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ color:#f4f6f2!important;font:inherit!important;font-size:15px!important;
+}
+.kce-event-search input::placeholder{color:#89958f!important;opacity:1}
+.kce-event-search:focus-within{border-color:rgba(70,207,190,.58)!important;box-shadow:0 0 0 3px rgba(70,207,190,.09)!important}
+.kce-event-updated{
+ display:inline-flex!important;align-items:center!important;gap:5px!important;
+ width:max-content!important;margin:1px 0 2px!important;padding:4px 7px!important;
+ border:1px solid rgba(65,202,176,.25)!important;border-radius:999px!important;
+ background:rgba(45,170,146,.10)!important;color:#79dfc6!important;
+ font-size:8px!important;font-weight:850!important;letter-spacing:.09em!important;
+}
+.kce-detail-admin-actions{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0 12px}
+.kce-detail-admin-actions>*{min-height:43px}
+.kce-detail-admin-actions .kce-admin-event{flex:1}
+.kce-qr-video-wrap{background:#080b0c!important}
+.kc-qr-video-wrap video{display:block;background:#080b0c;object-fit:cover}
+.kc-qr-upload{width:100%;min-height:52px;cursor:pointer;letter-spacing:.01em}
+.kc-qr-upload:active{transform:scale(.985)}
+@media(max-width:560px){.kce-event-search{min-height:56px;border-radius:17px!important}.kce-event-search input{min-height:54px!important;font-size:14px!important}}
