@@ -2,7 +2,7 @@
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
 window.KC_APP_VERSION='1.2.5';
-const S={user:null,view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],publicMembers:[],featureItems:{},socialPosts:[],socialLikes:[],socialComments:[],roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',error:'',peopleQuery:'',eventsFilter:'all'};
+const S={user:null,view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],publicMembers:[],featureItems:{},socialPosts:[],socialLikes:[],socialComments:[],roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',error:'',peopleQuery:'',eventsFilter:'all',sharedDraft:null};
 window.KC_SEARCH_API={
  snapshot:()=>({events:S.events||[],announcements:S.announcements||[],members:S.publicMembers||[],posts:S.socialPosts||[]}),
  load:async()=>{const jobs=[];if(!S.publicMembers?.length)jobs.push(rpc('crew_profile_directory',{}).then(({data,error})=>{if(error)throw error;S.publicMembers=Array.isArray(data)?data:[];}));if(!S.socialPosts?.length)jobs.push(loadSocialFeed());await Promise.all(jobs);},
@@ -375,7 +375,7 @@ function socialFeedPage(){
  const stories='<section class="kc-feed-stories"><div class="kc-feed-stories-head"><b>Stories</b><span>CREW MOMENTS</span></div><div class="kc-feed-story-rail"><button class="kc-feed-story own" data-view="profile"><span class="kc-story-ring"><span class="kc-story-avatar">'+avatarMarkup(S.user)+'</span><i>+</i></span><small>Your story</small></button>'+people.map((p,i)=>'<button class="kc-feed-story" data-open-profile="'+esc(p.auth_id)+'"><span class="kc-story-ring '+(i<5?'fresh':'')+'"><span class="kc-story-avatar">'+avatarMarkup(p)+'</span></span><small>'+esc((p.name||'Crew').split(' ')[0])+'</small></button>').join('')+'</div></section>';
  return '<div class="kc-feed-page"><header class="kc-feed-top"><div><span class="kc-feed-kicker">KINETIC CREW / COMMUNITY</span><h1>Kinetic Gram</h1></div><button class="kc-feed-inbox" data-view="notifications" aria-label="Notifications"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><i></i></button></header>'+
  '<div class="kc-feed-tabs"><span class="active">Feed</span><span>Following</span><span>Reels</span></div>'+stories+
- '<form id="socialPostForm" class="surface social-share-composer kc-feed-composer"><div class="kc-feed-compose-avatar">'+avatarMarkup(S.user)+'</div><div class="kc-feed-compose-main"><label class="field"><textarea name="caption" rows="2" maxlength="1200" placeholder="Share a moment with your crew…" aria-label="Caption"></textarea></label><div class="kc-feed-link-field"><span>↗</span><input name="link_url" type="url" inputmode="url" placeholder="Paste a reel, video or post link" required></div><div class="social-composer-foot"><small>Share a link for everyone in the crew.</small><button type="submit" class="primary">Post ↗</button></div></div></form>'+
+ '<form id="socialPostForm" class="surface social-share-composer kc-feed-composer"><div class="kc-feed-compose-avatar">'+avatarMarkup(S.user)+'</div><div class="kc-feed-compose-main"><label class="field"><textarea name="caption" rows="2" maxlength="1200" placeholder="Share a moment with your crew…" aria-label="Caption">'+esc(S.sharedDraft?.caption||'')+'</textarea></label><div class="kc-feed-link-field"><span>↗</span><input name="link_url" type="url" inputmode="url" value="'+esc(S.sharedDraft?.url||'')+'" placeholder="Paste a reel, video or post link" required></div>'+(S.sharedDraft?.url?'<div class="kc-share-draft-preview"><span>LINK PREVIEW · NOT POSTED</span>'+socialEmbed(S.sharedDraft.url)+'<small>The original media stays on its social platform. Kinetic Crew stores only the shared URL and your caption.</small></div>':'')+'<div class="social-composer-foot"><small>Preview first. Nothing is posted until you tap Share.</small><button type="submit" class="primary">Share ↗</button></div></div></form>'+
  '<div class="kc-feed-section-head"><b>For the crew</b><span>'+posts.length+' POSTS</span></div><div class="social-feed-list">'+(posts.map(socialPostCard).join('')||empty('Your crew feed starts here','Share the first reel, performance or moment with everyone.'))+'</div></div>';
 }
 
@@ -747,7 +747,14 @@ async function boot(){
   const session=result?.data?.session;
   if(!session||!session.user){location.replace(window.kcPath('login.html'));return;}
   const saved=readPageState();
-  if(saved&&(!saved.userId||saved.userId===(session.user.id||session.user.auth_id))){
+  const incomingShare=new URLSearchParams(location.search);
+  if(incomingShare.has('share_target')){
+   const raw=[incomingShare.get('url'),incomingShare.get('text'),incomingShare.get('title')].filter(Boolean).join(' ');
+   const match=raw.match(/https:\\/\\/[^\\s<>"']+/i);
+   const sharedUrl=safeSocialUrl(match?.[0]||'');
+   if(sharedUrl){S.sharedDraft={url:sharedUrl,caption:incomingShare.get('title')||''};S.view='feed';history.replaceState({},'',location.pathname);}
+  }
+  if(!S.sharedDraft&&saved&&(!saved.userId||saved.userId===(session.user.id||session.user.auth_id))){
    S.view=saved.view||'overview';S.selectedEvent=saved.selectedEvent||null;S.selectedProfileId=saved.selectedProfileId||null;S.navOpen=saved.navOpen||'overview';
   }
   try{
