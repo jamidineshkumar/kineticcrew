@@ -1,0 +1,251 @@
+/* KINETIC CREW — app-wide graphite neumorphic visual system.
+   Visual-only override: preserves existing DOM, routes, controls, menu structure and data flows. */
+:root:not([data-theme="light"]){
+ --bg:#0b0c0e;--panel:#202326;--panel2:#25292c;--line:rgba(255,255,255,.075);
+ --text:#f2f1ef;--muted:#9a9da0;--lime:#ff704e;--purple:#a58bce;
+ --kc-neu-base:#202326;--kc-neu-hi:#2a2e31;--kc-neu-low:#191c1f;
+ --kc-neu-shadow:7px 7px 16px rgba(0,0,0,.42),-6px -6px 16px rgba(255,255,255,.025);
+ --kc-neu-inset:inset 4px 4px 9px rgba(0,0,0,.34),inset -4px -4px 9px rgba(255,255,255,.025);
+ --kc-neu-accent:#ff6848;--kc-neu-accent2:#ff9a67;
+ color-scheme:dark;
+}
+:root:not([data-theme="light"]) body{
+ color:#f2f1ef!important;
+ background:
+  radial-gradient(ellipse at 9% 2%,rgba(103,111,124,.13),transparent 32%),
+  radial-gradient(ellipse at 92% 22%,rgba(255,103,72,.075),transparent 31%),
+  radial-gradient(ellipse at 50% 100%,rgba(120,78,139,.055),transparent 38%),
+  #0b0c0e!important;
+ background-attachment:fixed!important;
+}
+:root:not([data-theme="light"]) .shell,
+:root:not([data-theme="light"]) main,
+:root:not([data-theme="light"]) .content{background:transparent!important;color:#f2f1ef!important}
+:root:not([data-theme="light"]) .side{
+ background:linear-gradient(155deg,#202326,#191c1f)!important;
+ border-right:1px solid rgba(255,255,255,.07)!important;
+ box-shadow:9px 0 26px rgba(0,0,0,.25),inset -1px 0 rgba(255,255,255,.018)!important;
+}
+:root:not([data-theme="light"]) .topbar,
+:root:not([data-theme="light"]) .kc-mobile-topbar{
+ background:rgba(24,26,28,.9)!important;border-color:rgba(255,255,255,.075)!important;
+ box-shadow:0 8px 25px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.035)!important;
+ -webkit-backdrop-filter:blur(20px) saturate(115%)!important;backdrop-filter:blur(20px) saturate(115%)!important;
+}
+:root:not([data-theme="light"]) .workspace,
+:root:not([data-theme="light"]) .motto,
+:root:not([data-theme="light"]) .profile,
+:root:not([data-theme="light"]) .kc-mobile-topbar button,
+:root:not([data-theme="light"]) .hamburger,
+:root:not([data-theme="light"]) .topright .iconbutton{
+ background:linear-gradient(145deg,#292d30,#1b1e21)!important;
+ border:1px solid rgba(255,255,255,.065)!important;
+ box-shadow:var(--kc-neu-shadow),inset 1px 1px 0 rgba(255,255,255,.035)!important;
+ color:#efefef!important;
+}
+:root:not([data-theme="light"]) .navitem{
+ border-color:transparent!important;border-radius:14px!important;color:#a6a8aa!important;
+ transition:background .2s,border-color .2s,color .2s,box-shadow .2s!important;
+}
+:root:not([data-theme="light"]) .navitem:hover{
+ background:linear-gradient(145deg,#292d30,#1b1e21)!important;color:#fff!important;
+ box-shadow:var(--kc-neu-shadow)!important;
+}
+:root:not([data-theme="light"]) .navitem.active{
+ background:linear-gradient(145deg,#292d30,#1b1e21)!important;
+ border:1px solid rgba(255,112,78,.24)!important;color:#ff9a79!important;
+ box-shadow:inset 3px 0 #ff704e,var(--kc-neu-shadow)!important;
+}
+:root:not([data-theme="light"]) .navitem.active:before{background:#ff704e!important}
+:root:not([data-theme="light"]) .brand .flame,
+:root:not([data-theme="light"]) .mobilebrand .flame,
+:root:not([data-theme="light"]) .workspace>span:first-child,
+:root:not([data-theme="light"]) .motto>span{
+ background:linear-gradient(145deg,#3a2a28,#211d1e)!important;color:#ff9878!important;
+ border:1px solid rgba(255,135,100,.15)!important;box-shadow:var(--kc-neu-shadow)!important;
+}
+:root:not([data-theme="light"]) .brand b,
+:root:not([data-theme="light"]) .mobilebrand b,
+:root:not([data-theme="light"]) .brand i,
+:root:not([data-theme="light"]) .mobilebrand i{color:#f2efed!important}
+:root:not([data-theme="light"]) .brand small,
+:root:not([data-theme="light"]) .navtitle,
+:root:not([data-theme="light"]) .crumb,
+:root:not([data-theme="light"]) .workspace small,
+:root:not([data-theme="light"]) .motto p,
+:root:not([data-theme="light"]) .profile small,
+:root:not([data-theme="light"]) .welcome p,
+:root:not([data-theme="light"]) .sectionhead p{color:#a1a2a4!important}
+
+/* Shared raised panels across Home, Events, Community, Gram, Profiles and Admin. */
+:root:not([data-theme="light"]) .surface,
+:root:not([data-theme="light"]) .stat,
+:root:not([data-theme="light"]) .peopleStat,
+:root:not([data-theme="light"]) .event,
+:root:not([data-theme="light"]) .announcement,
+:root:not([data-theme="light"]) .feature-card,
+:root:not([data-theme="light"]) .notification-item,
+:root:not([data-theme="light"]) .crew-profile-tile,
+:root:not([data-theme="light"]) .social-post-card,
+:root:not([data-theme="light"]) .settings-card,
+:root:not([data-theme="light"]) .profile-edit,
+:root:not([data-theme="light"]) .chat-panel,
+:root:not([data-theme="light"]) .kc-detail-panel,
+:root:not([data-theme="light"]) .kc-profile-metrics,
+:root:not([data-theme="light"]) .kc-public-profile-bio,
+:root:not([data-theme="light"]) .kc-profile-hero,
+:root:not([data-theme="light"]) .kc-liquid-profile-card,
+:root:not([data-theme="light"]) .kc-home-updates,
+:root:not([data-theme="light"]) .kc-exact-quick,
+:root:not([data-theme="light"]) .kc-exact-event-card,
+:root:not([data-theme="light"]) .kc-exact-friends,
+:root:not([data-theme="light"]) .kc-exact-update,
+:root:not([data-theme="light"]) .kc-exact-gram-entry,
+:root:not([data-theme="light"]) .kc-vibe-featured,
+:root:not([data-theme="light"]) .kc-vibe-event-card,
+:root:not([data-theme="light"]) .kc-feed-composer,
+:root:not([data-theme="light"]) .kc-feed-stories,
+:root:not([data-theme="light"]) .kc-feed-story,
+:root:not([data-theme="light"]) .kc-feed-tabs,
+:root:not([data-theme="light"]) .kc-feed-inbox,
+:root:not([data-theme="light"]) .kc-more-menu-card,
+:root:not([data-theme="light"]) .kc-more-option,
+:root:not([data-theme="light"]) .kc-reference-profile,
+:root:not([data-theme="light"]) .kc-home-quick button,
+:root:not([data-theme="light"]) .kc-exact-hero{
+ color:#f0efed!important;
+ background:linear-gradient(145deg,#292d30 0%,#202326 48%,#1a1d20 100%)!important;
+ border:1px solid rgba(255,255,255,.065)!important;border-radius:20px!important;
+ box-shadow:var(--kc-neu-shadow),inset 1px 1px 0 rgba(255,255,255,.035)!important;
+}
+:root:not([data-theme="light"]) .statvalue,
+:root:not([data-theme="light"]) .welcome h1,
+:root:not([data-theme="light"]) .sectionhead h2,
+:root:not([data-theme="light"]) .sectionhead h3,
+:root:not([data-theme="light"]) .event h3,
+:root:not([data-theme="light"]) .announcement h3,
+:root:not([data-theme="light"]) .settings-card h2,
+:root:not([data-theme="light"]) .settings-card h3{color:#f4f1ee!important}
+:root:not([data-theme="light"]) .eyebrow,
+:root:not([data-theme="light"]) .textlink,
+:root:not([data-theme="light"]) .backlink,
+:root:not([data-theme="light"]) .statlabel span:last-child{color:#ff9878!important}
+:root:not([data-theme="light"]) .stat:after{background:linear-gradient(90deg,#ff704e,rgba(255,112,78,0))!important}
+:root:not([data-theme="light"]) .banner,
+:root:not([data-theme="light"]) .kc-more-banner,
+:root:not([data-theme="light"]) .kc-exact-hero,
+:root:not([data-theme="light"]) .kc-vibe-featured{
+ background:
+  radial-gradient(ellipse at 78% 48%,rgba(255,111,72,.19),transparent 34%),
+  radial-gradient(ellipse at 12% 100%,rgba(125,87,151,.13),transparent 38%),
+  linear-gradient(135deg,#303438,#202326 56%,#171a1d)!important;
+ border:1px solid rgba(255,255,255,.085)!important;
+ box-shadow:10px 12px 28px rgba(0,0,0,.42),-5px -5px 16px rgba(255,255,255,.025),inset 1px 1px 0 rgba(255,255,255,.06)!important;
+}
+:root:not([data-theme="light"]) .banner h2 em,
+:root:not([data-theme="light"]) .signhero h1 em{color:#ff9a76!important}
+:root:not([data-theme="light"]) .cover,
+:root:not([data-theme="light"]) .kc-exact-event-cover{
+ background:linear-gradient(135deg,#34383b,#222629 58%,#292326)!important;
+ border-color:rgba(255,255,255,.06)!important;
+}
+:root:not([data-theme="light"]) .coversymbol,
+:root:not([data-theme="light"]) .datechip,
+:root:not([data-theme="light"]) .pill{
+ background:linear-gradient(145deg,#303438,#202326)!important;color:#f0b19d!important;
+ border:1px solid rgba(255,255,255,.07)!important;box-shadow:var(--kc-neu-shadow)!important;
+}
+:root:not([data-theme="light"]) .primary,
+:root:not([data-theme="light"]) .kc-register-button,
+:root:not([data-theme="light"]) .kce-register-button{
+ background:linear-gradient(145deg,#ff956d,#e65d42)!important;color:#1b1110!important;
+ border:1px solid rgba(255,190,160,.38)!important;border-radius:14px!important;
+ box-shadow:0 8px 22px rgba(225,91,58,.2),inset 1px 1px 0 rgba(255,255,255,.24)!important;
+}
+:root:not([data-theme="light"]) .secondary,
+:root:not([data-theme="light"]) .outline,
+:root:not([data-theme="light"]) .installbutton,
+:root:not([data-theme="light"]) .iconbutton,
+:root:not([data-theme="light"]) .kc-more-pill,
+:root:not([data-theme="light"]) .kc-more-other{
+ background:linear-gradient(145deg,#2b2f32,#1a1d20)!important;color:#e9e8e6!important;
+ border:1px solid rgba(255,255,255,.07)!important;border-radius:15px!important;
+ box-shadow:var(--kc-neu-shadow),inset 1px 1px 0 rgba(255,255,255,.035)!important;
+}
+:root:not([data-theme="light"]) button:active,
+:root:not([data-theme="light"]) .kc-more-pill:active,
+:root:not([data-theme="light"]) .kc-more-other:active{
+ box-shadow:var(--kc-neu-inset)!important;
+}
+:root:not([data-theme="light"]) input,
+:root:not([data-theme="light"]) select,
+:root:not([data-theme="light"]) textarea,
+:root:not([data-theme="light"]) .field input,
+:root:not([data-theme="light"]) .field select,
+:root:not([data-theme="light"]) .field textarea{
+ color:#f2f0ed!important;background:linear-gradient(145deg,#191c1f,#222629)!important;
+ border:1px solid rgba(255,255,255,.08)!important;border-radius:13px!important;
+ box-shadow:var(--kc-neu-inset)!important;
+}
+:root:not([data-theme="light"]) input::placeholder,
+:root:not([data-theme="light"]) textarea::placeholder{color:#85888b!important}
+:root:not([data-theme="light"]) button:focus-visible,
+:root:not([data-theme="light"]) input:focus-visible,
+:root:not([data-theme="light"]) select:focus-visible,
+:root:not([data-theme="light"]) textarea:focus-visible{outline:2px solid rgba(255,135,99,.75)!important;outline-offset:3px!important}
+:root:not([data-theme="light"]) .kc-mobile-dock,
+:root:not([data-theme="light"]) #kcMobileDock{
+ background:rgba(27,29,31,.94)!important;border:1px solid rgba(255,255,255,.11)!important;
+ box-shadow:0 14px 32px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.07)!important;
+ -webkit-backdrop-filter:blur(22px) saturate(120%)!important;backdrop-filter:blur(22px) saturate(120%)!important;
+}
+:root:not([data-theme="light"]) #kcMobileDock .active{color:#ff9878!important}
+:root:not([data-theme="light"]) .modal,
+:root:not([data-theme="light"]) .modal-card,
+:root:not([data-theme="light"]) [role="dialog"],
+:root:not([data-theme="light"]) #modalRoot>div{
+ background:linear-gradient(145deg,#292d30,#1a1d20)!important;color:#f2f0ed!important;
+ border:1px solid rgba(255,255,255,.085)!important;
+ box-shadow:12px 14px 36px rgba(0,0,0,.5),-5px -5px 16px rgba(255,255,255,.02)!important;
+}
+:root:not([data-theme="light"]) .signart,
+:root:not([data-theme="light"]) .signinpanel,
+:root:not([data-theme="light"]) .signform{
+ background:linear-gradient(145deg,#292d30,#191c1f)!important;color:#f2f0ed!important;
+ border-color:rgba(255,255,255,.08)!important;box-shadow:var(--kc-neu-shadow)!important;
+}
+:root:not([data-theme="light"]) .signform h2,
+:root:not([data-theme="light"]) .signhero h1{color:#f6f2ef!important}
+:root:not([data-theme="light"]) .toast,
+:root:not([data-theme="light"]) .notice,
+:root:not([data-theme="light"]) .empty,
+:root:not([data-theme="light"]) .kc-empty{
+ background:linear-gradient(145deg,#292d30,#1b1e21)!important;color:#d9d7d4!important;
+ border:1px solid rgba(255,255,255,.07)!important;box-shadow:var(--kc-neu-shadow)!important;
+}
+:root:not([data-theme="light"]) hr,
+:root:not([data-theme="light"]) footer{border-color:rgba(255,255,255,.08)!important}
+@media(max-width:900px){
+ :root:not([data-theme="light"]) .content{background:transparent!important}
+ :root:not([data-theme="light"]) .kc-mobile-topbar{box-shadow:0 6px 18px rgba(0,0,0,.2)!important}
+ :root:not([data-theme="light"]) .surface,
+ :root:not([data-theme="light"]) .stat,
+ :root:not([data-theme="light"]) .event,
+ :root:not([data-theme="light"]) .announcement,
+ :root:not([data-theme="light"]) .feature-card,
+ :root:not([data-theme="light"]) .notification-item{border-radius:18px!important}
+}
+@media(prefers-reduced-motion:no-preference){
+ :root:not([data-theme="light"]) .surface,
+ :root:not([data-theme="light"]) .stat,
+ :root:not([data-theme="light"]) .event,
+ :root:not([data-theme="light"]) .announcement,
+ :root:not([data-theme="light"]) .feature-card,
+ :root:not([data-theme="light"]) .notification-item,
+ :root:not([data-theme="light"]) button{
+  transition:background .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ :root:not([data-theme="light"]) *{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
