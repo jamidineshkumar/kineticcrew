@@ -1,0 +1,26 @@
+/* More page — live event advertisement carousel */
+.kc-more-event-ads{position:relative;isolation:isolate;overflow:hidden;min-height:280px;margin:0 0 34px;border:1px solid rgba(255,255,255,.15);border-radius:27px;background:#15171a;box-shadow:0 18px 44px #0005}
+.kc-more-event-ads:before{content:"";position:absolute;inset:0;z-index:-2;background:radial-gradient(ellipse at 12% 88%,#1bb9c333,transparent 42%),radial-gradient(ellipse at 88% 8%,#ed4b9b33,transparent 44%),linear-gradient(135deg,#25232b,#111216 72%)}
+.kc-more-ad-track{position:absolute;inset:0}
+.kc-more-ad-slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;gap:14px;padding:20px;opacity:0;visibility:hidden;pointer-events:none;transform:translate3d(22px,0,0) scale(.985);animation:kc-more-ad-cycle var(--kc-ad-duration,20s) infinite both;animation-delay:var(--kc-ad-delay,0s);background:linear-gradient(180deg,#090a0b20 0%,#090a0b30 32%,#090a0bf0 100%)}
+.kc-more-ad-slide:before{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(180deg,#090a0b08 0%,#090a0b25 34%,#090a0be8 100%),var(--kc-more-ad-image);background-size:cover;background-position:center;transform:scale(1.04);animation:kc-more-ad-kenburns var(--kc-ad-duration,20s) infinite both;animation-delay:var(--kc-ad-delay,0s)}
+.kc-more-ad-slide.is-active{opacity:1;visibility:visible;pointer-events:auto}
+.kc-more-ad-top,.kc-more-ad-bottom{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.kc-more-ad-kicker,.kc-more-ad-count{display:inline-flex;align-items:center;min-height:27px;padding:6px 10px;border:1px solid #ffffff35;border-radius:999px;background:#1011168c;color:#fff;font-size:9px;font-weight:800;letter-spacing:.13em;backdrop-filter:blur(12px)}
+.kc-more-ad-copy{display:grid;gap:8px;max-width:88%;align-self:flex-start}
+.kc-more-ad-label{color:#ffb18d;font-size:9px;font-weight:850;letter-spacing:.18em}
+.kc-more-ad-copy h2{margin:0;color:#fff;font-size:clamp(25px,6vw,38px);line-height:1.02;letter-spacing:-.055em;text-shadow:0 4px 22px #0008}
+.kc-more-ad-copy p{margin:0;color:#e4e2e7;font-size:11px;line-height:1.5}
+.kc-more-ad-cta{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:42px;padding:0 16px;border:1px solid #ffffff3d;border-radius:999px;background:linear-gradient(135deg,#ffffff28,#ffffff0d);color:#fff;font:700 11px system-ui;backdrop-filter:blur(14px)}
+.kc-more-ad-cta span{color:#ff9a73;font-size:17px}
+.kc-more-ad-dots{position:absolute;z-index:5;right:17px;bottom:17px;display:flex;gap:6px;align-items:center}
+.kc-more-ad-dots i{display:block;width:6px;height:6px;border-radius:99px;background:#ffffff65;animation:kc-more-ad-dot var(--kc-ad-duration,20s) infinite both;animation-delay:var(--kc-ad-delay,0s)}
+.kc-more-ad-dots i.active{width:19px;background:#ff946f}
+.kc-more-ad-progress{position:absolute;left:0;right:0;bottom:0;height:3px;background:#ffffff20;overflow:hidden}
+.kc-more-ad-progress i{display:block;width:100%;height:100%;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,#f34b9c,#ffb35d,#35d1d0);animation:kc-more-ad-progress var(--kc-ad-duration,20s) linear infinite}
+@keyframes kc-more-ad-cycle{0%,2%{opacity:0;visibility:hidden;transform:translate3d(22px,0,0) scale(.985)}4%,18%{opacity:1;visibility:visible;transform:translate3d(0,0,0) scale(1)}20%,100%{opacity:0;visibility:hidden;transform:translate3d(-18px,0,0) scale(1.015)}}
+@keyframes kc-more-ad-kenburns{0%,4%{transform:scale(1.04)}20%,100%{transform:scale(1.12)}}
+@keyframes kc-more-ad-dot{0%,20%{background:#ff946f}21%,100%{background:#ffffff65}}
+@keyframes kc-more-ad-progress{to{transform:scaleX(1)}}
+@media(max-width:560px){.kc-more-event-ads{min-height:278px;margin-bottom:30px}.kc-more-ad-slide{padding:17px}.kc-more-ad-copy{max-width:94%}.kc-more-ad-copy h2{font-size:clamp(24px,7vw,32px)}.kc-more-ad-copy p{max-width:90%}}
+@media(prefers-reduced-motion:reduce){.kc-more-ad-slide,.kc-more-ad-slide:before,.kc-more-ad-dots i,.kc-more-ad-progress i{animation:none!important}.kc-more-ad-slide{opacity:0;visibility:hidden;transform:none}.kc-more-ad-slide:first-child{opacity:1;visibility:visible}.kc-more-ad-dots i:first-child{background:#ff946f}.kc-more-ad-progress{display:none}}
