@@ -1,0 +1,38 @@
+/* Long-press member action ring */
+.kc-member-directory-card,.crew-manage-row{position:relative;overflow:visible;isolation:isolate;transition:transform .28s cubic-bezier(.2,.8,.2,1),padding .28s ease,box-shadow .28s ease}
+.kc-member-directory-card.kc-member-action-open,.crew-manage-row.kc-member-action-open{z-index:40;padding-right:128px;transform:translateX(-5px);box-shadow:0 16px 42px rgba(0,0,0,.34),0 0 0 1px rgba(205,174,120,.22)}
+.kc-member-directory-card .crew-profile-open,.kc-member-directory-card>p,.kc-member-directory-card .kc-member-directory-footer,.crew-manage-row>*:not(.kc-member-action-ring){transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.kc-member-directory-card.kc-member-action-open .crew-profile-open,.kc-member-directory-card.kc-member-action-open>p,.kc-member-directory-card.kc-member-action-open .kc-member-directory-footer,.crew-manage-row.kc-member-action-open>*:not(.kc-member-action-ring){transform:translateX(-18px)}
+.kc-member-action-ring{position:absolute;right:10px;top:50%;width:116px;height:116px;transform:translateY(-50%) scale(.72);opacity:0;pointer-events:none;border:1px solid rgba(219,190,145,.3);border-radius:50%;background:radial-gradient(circle,rgba(196,159,111,.12) 0 34%,rgba(24,25,26,.9) 66%,rgba(13,14,16,.94) 100%);box-shadow:0 0 28px rgba(198,160,110,.13),inset 0 0 22px rgba(255,255,255,.04);transition:opacity .22s ease,transform .28s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.kc-member-action-open .kc-member-action-ring{opacity:1;transform:translateY(-50%) scale(1);pointer-events:auto}
+.kc-member-action-ring:before{content:"";position:absolute;inset:12px;border:1px dashed rgba(220,190,145,.27);border-radius:50%}
+.kc-member-action{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:43px;height:43px;padding:3px;border:1px solid rgba(220,190,145,.28);border-radius:50%;background:linear-gradient(145deg,#303032,#191a1c);color:#f1e6d5;box-shadow:0 5px 14px rgba(0,0,0,.34);cursor:pointer}
+.kc-member-action span{font-size:17px;line-height:1}
+.kc-member-action small{position:absolute;top:43px;width:76px;text-align:center;font-size:8px;line-height:1.15;font-weight:750;color:#d5c2a6;white-space:normal}
+.kc-member-action:nth-child(1){left:36px;top:-3px}
+.kc-member-action:nth-child(2){right:-3px;top:36px}
+.kc-member-action:nth-child(3){left:36px;bottom:-3px}
+.kc-member-action:nth-child(4){left:-3px;top:36px}
+.kc-member-action-favorite{color:#f0c879}
+.kc-member-action-message{color:#d7e7f5}
+.kc-member-action-block,.kc-member-action-delete{color:#ff9ca3}
+.kc-member-action-unblock{color:#9fe0b5}
+.kc-member-action:active{transform:scale(.92)}
+.kc-member-action:disabled{opacity:.55;cursor:wait}
+.kc-member-directory-card.kc-member-action-open{min-height:190px}
+.crew-manage-row.kc-member-action-open{min-height:140px}
+.kc-dm-modal{width:min(520px,calc(100vw - 28px));max-height:min(78vh,720px);display:flex;flex-direction:column;gap:12px}
+.kc-dm-thread{min-height:180px;max-height:48vh;overflow:auto;display:flex;flex-direction:column;gap:9px;padding:12px;border:1px solid rgba(190,180,160,.18);border-radius:16px;background:rgba(10,12,13,.32)}
+.kc-dm-bubble{align-self:flex-start;max-width:84%;padding:9px 12px;border:1px solid rgba(190,180,160,.18);border-radius:14px 14px 14px 4px;background:rgba(255,255,255,.07)}
+.kc-dm-bubble.own{align-self:flex-end;border-color:rgba(197,164,112,.3);border-radius:14px 14px 4px 14px;background:rgba(190,151,94,.13)}
+.kc-dm-bubble p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.kc-dm-bubble time{display:block;margin-top:5px;font-size:10px;opacity:.65;text-align:right}
+#kcDirectMessageForm{display:flex;gap:8px;align-items:flex-end}
+#kcDirectMessageForm textarea{flex:1;min-width:0;resize:vertical;max-height:110px}
+#kcDirectMessageForm button{flex:none;white-space:nowrap}
+@media(max-width:560px){
+ .kc-member-action-ring{right:5px;width:108px;height:108px}
+ .kc-member-directory-card.kc-member-action-open,.crew-manage-row.kc-member-action-open{padding-right:116px}
+ .kc-member-directory-card.kc-member-action-open .crew-profile-open,.kc-member-directory-card.kc-member-action-open>p,.kc-member-directory-card.kc-member-action-open .kc-member-directory-footer,.crew-manage-row.kc-member-action-open>*:not(.kc-member-action-ring){transform:translateX(-14px)}
+ #kcDirectMessageForm{flex-direction:column;align-items:stretch}
+}
