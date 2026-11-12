@@ -1,0 +1,22 @@
+/* Discoverable, lightweight double-tap profile-card interaction. */
+.kc-profile-flip-hint{
+ position:relative;display:flex;align-items:center;gap:12px;width:max-content;max-width:calc(100% - 20px);
+ margin:13px auto 20px;padding:10px 15px;border:1px solid rgba(221,185,137,.23);
+ border-radius:999px;background:linear-gradient(110deg,rgba(221,185,137,.09),rgba(255,255,255,.025));
+ color:#e8d0ae;box-shadow:0 8px 22px rgba(0,0,0,.1);transition:opacity .22s ease,transform .22s ease;
+}
+.kc-profile-flip-hint>span:nth-child(2){display:flex;flex-direction:column;gap:2px}
+.kc-profile-flip-hint b{font-size:10px;letter-spacing:.15em;font-weight:800}
+.kc-profile-flip-hint small{font-size:10px;letter-spacing:.015em;color:rgba(235,231,224,.62)}
+.kc-flip-hint-icon{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:rgba(221,185,137,.12);font-size:19px;animation:kc-hint-turn 2.8s ease-in-out infinite}
+.kc-flip-hint-pulse{position:absolute;inset:-4px;border:1px solid rgba(221,185,137,.15);border-radius:999px;pointer-events:none;animation:kc-hint-pulse 2.4s ease-out infinite}
+.kc-profile-flip-hint.is-dismissed{opacity:0;transform:translateY(-5px) scale(.97);pointer-events:none}
+.kc-profile-flip-return-hint{position:relative;z-index:1;align-self:center;margin-top:3px;color:rgba(244,232,210,.65);font-size:9px;font-weight:800;letter-spacing:.16em;text-align:center}
+.kc-profile-flip-shell.kc-flip-intro .kc-profile-flip-inner{animation:kc-profile-flip-intro 1.25s cubic-bezier(.2,.72,.18,1) .35s both}
+@keyframes kc-profile-flip-intro{0%,100%{transform:rotateY(0)}38%{transform:rotateY(13deg)}68%{transform:rotateY(-5deg)}}
+@keyframes kc-hint-turn{0%,72%,100%{transform:rotate(0)}84%{transform:rotate(45deg)}92%{transform:rotate(-12deg)}}
+@keyframes kc-hint-pulse{0%{opacity:.55;transform:scale(.99)}75%,100%{opacity:0;transform:scale(1.035)}}
+@media(max-width:420px){.kc-profile-flip-hint{gap:9px;margin:11px auto 17px;padding:9px 12px}.kc-profile-flip-hint b{font-size:9px}.kc-profile-flip-hint small{font-size:9px}}
+html[data-theme="light"] .kc-profile-flip-hint{background:linear-gradient(110deg,rgba(180,127,67,.09),rgba(25,31,39,.025));color:#73532f;border-color:rgba(150,103,49,.22)}
+html[data-theme="light"] .kc-profile-flip-hint small{color:#737781}
+@media(prefers-reduced-motion:reduce){.kc-profile-flip-shell.kc-flip-intro .kc-profile-flip-inner,.kc-flip-hint-icon,.kc-flip-hint-pulse{animation:none!important}.kc-profile-flip-hint{transition:none}}
