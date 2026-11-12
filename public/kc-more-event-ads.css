@@ -152,3 +152,30 @@
  .kc-brand-intro-slide p{-webkit-line-clamp:2;font-size:10px}
  .kc-brand-intro-cta{min-height:32px;font-size:8px}
 }
+
+/* Brand opener: keep KINETIC CREW on one line with a moving gradient accent. */
+.kc-brand-intro-slide h2:not(.kc-brand-content-title){
+  white-space:nowrap!important;
+  width:max-content!important;
+  max-width:100%!important;
+  font-size:clamp(25px,7.6vw,39px)!important;
+  line-height:1!important;
+  letter-spacing:-.075em!important;
+}
+.kc-brand-intro-slide h2:not(.kc-brand-content-title) em{
+  display:inline!important;
+  white-space:nowrap!important;
+  background:linear-gradient(100deg,#f24f9c 0%,#ffb46d 28%,#43d1d1 56%,#f24f9c 82%,#ffb46d 100%)!important;
+  background-size:240% 100%!important;
+  animation:kcBrandWordGradient 4s linear infinite!important;
+}
+@keyframes kcBrandWordGradient{
+  from{background-position:100% 50%}
+  to{background-position:-140% 50%}
+}
+@media(max-width:360px){
+  .kc-brand-intro-slide h2:not(.kc-brand-content-title){font-size:clamp(23px,7vw,27px)!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .kc-brand-intro-slide h2:not(.kc-brand-content-title) em{animation:none!important;background-position:50% 50%!important}
+}
