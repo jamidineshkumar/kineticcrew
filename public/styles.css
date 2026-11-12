@@ -62,3 +62,22 @@
 
 /* Minimal startup indicator */
 .kc-simple-loader{min-height:42vh;display:flex;align-items:center;justify-content:center;gap:10px;color:var(--muted);font-size:13px;letter-spacing:.01em}.kc-loader-dot{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px #c4f46b55;animation:kcSoftPulse 1.8s ease-in-out infinite}.kc-loader-dots{display:inline-flex;gap:4px;margin-left:1px}.kc-loader-dots i{width:3px;height:3px;border-radius:50%;background:var(--muted);animation:kcDotPulse 1.2s ease-in-out infinite}.kc-loader-dots i:nth-child(2){animation-delay:.16s}.kc-loader-dots i:nth-child(3){animation-delay:.32s}@keyframes kcSoftPulse{0%,100%{opacity:.45;transform:scale(.85)}50%{opacity:1;transform:scale(1)}}@keyframes kcDotPulse{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-2px)}}@media(prefers-reduced-motion:reduce){.kc-loader-dot,.kc-loader-dots i{animation:none}}
+
+/* Clean section headers: remove decorative glyph tiles and redundant helper lines. */
+.formgrid .formtitle.formtitle-clean,
+.publish .formtitle.formtitle-clean,
+.feature-form .formtitle.formtitle-clean{
+ display:block!important;
+ grid-column:1/-1!important;
+ margin:0 0 2px!important;
+ padding:0 0 12px!important;
+ border-bottom:1px solid rgba(255,255,255,.09)!important;
+}
+.formtitle.formtitle-clean .formicon,
+.formtitle.formtitle-clean p{display:none!important}
+.formtitle.formtitle-clean h3{
+ margin:0!important;
+ color:var(--text,#f5f2ef)!important;
+ font:750 clamp(19px,4.5vw,23px)/1.2 var(--display,inherit)!important;
+ letter-spacing:-.035em!important;
+}
