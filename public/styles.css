@@ -81,3 +81,12 @@
  font:750 clamp(19px,4.5vw,23px)/1.2 var(--display,inherit)!important;
  letter-spacing:-.035em!important;
 }
+
+/* Pending member approvals in Crew Management */
+.kc-pending-list{margin-bottom:20px;padding:18px}
+.kc-pending-count{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 7px;border-radius:99px;background:#e3a17e22;color:#e7a681;font-size:12px}
+.kc-pending-member{gap:14px}
+.kc-pending-avatar{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:#e3a17e20;color:#e6a17f;font-size:20px;flex:0 0 auto}
+.kc-pending-actions{display:flex;gap:8px;align-items:center;margin-left:auto}
+.kc-pending-actions button{min-height:36px;padding:0 12px;font-size:12px}
+@media(max-width:600px){.kc-pending-member{align-items:flex-start;flex-wrap:wrap}.kc-pending-actions{width:100%;margin-left:56px}.kc-pending-actions button{flex:1}}
