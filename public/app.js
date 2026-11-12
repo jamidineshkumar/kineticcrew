@@ -357,11 +357,36 @@ document.addEventListener('change',event=>{
  const summary=picker?.querySelector('summary span');
  if(summary)summary.textContent=radio.closest('.memory-recipient-option')?.querySelector('b')?.textContent||'1 member selected';
 });
+function ticketRecipientRows(members){
+ return members.map(m=>'<label class="memory-recipient-option" data-member-search="'+esc([m.name,m.username,m.email].filter(Boolean).join(' ').toLowerCase())+'"><input type="radio" name="email" value="'+esc(String(m.email).trim())+'"><span>'+avatarMarkup(m,'small')+'</span><span><b>'+esc(m.name||'Crew member')+'</b><small>'+esc(m.username?'@'+m.username:m.email)+'</small></span><i class="memory-recipient-check">✓</i></label>').join('');
+}
 function ticketRecipientPicker(eventId){
- const roster=(String(S.rosterEvent||'')===String(eventId)&&Array.isArray(S.roster?.roster))?S.roster.roster:[];
- const source=roster.length?roster:(S.publicMembers||[]);
+ const loaded=String(S.rosterEvent||'')===String(eventId)&&Array.isArray(S.roster?.roster);
+ const source=loaded?S.roster.roster:[];
  const seen=new Set(),members=source.filter(m=>m&&m.email&&String(m.email).includes('@')).filter(m=>{const email=String(m.email).trim().toLowerCase();if(seen.has(email))return false;seen.add(email);return true;});
- return '<details class="memory-recipient-picker kc-ticket-recipient-picker"><summary><span>＋ Choose registered members</span><b class="memory-recipient-count">0 selected</b></summary><div class="memory-recipient-menu"><input type="search" class="memory-member-search" data-ticket-member-search placeholder="Search by name, username or email…" aria-label="Search registered members"><div class="memory-recipient-list">'+(members.map(m=>'<label class="memory-recipient-option" data-member-search="'+esc([m.name,m.username,m.email].filter(Boolean).join(' ').toLowerCase())+'"><input type="radio" name="email" value="'+esc(String(m.email).trim())+'"><span>'+avatarMarkup(m,'small')+'</span><span><b>'+esc(m.name||'Crew member')+'</b><small>'+esc(m.username?'@'+m.username:m.email)+'</small></span><i class="memory-recipient-check">✓</i></label>').join('')||'<p class="hint memory-no-members">No registered member list is available yet. Open Attendance and load this event roster, then return here.</p>')+'</div></div></details>';
+ const content=loaded?(members.length?ticketRecipientRows(members):'<p class="hint memory-no-members">No members have registered for this event yet.</p>'):'<p class="hint memory-no-members" data-ticket-roster-status>Loading this event’s registered members…</p>';
+ return '<details class="memory-recipient-picker kc-ticket-recipient-picker" data-ticket-event-id="'+esc(eventId)+'"><summary><span>＋ Choose registered members</span><b class="memory-recipient-count">0 selected</b></summary><div class="memory-recipient-menu"><input type="search" class="memory-member-search" data-ticket-member-search placeholder="Search by name, username or email…" aria-label="Search registered members"><div class="memory-recipient-list">'+content+'</div></div></details>';
+}
+async function loadTicketRecipientRoster(eventId){
+ const id=String(eventId||'');
+ if(!id||!admin()||S.ticketRosterLoadedEvent===id||S.ticketRosterLoadingEvent===id)return;
+ S.ticketRosterLoadingEvent=id;
+ try{
+  const roster=await api('attendance?eventId='+encodeURIComponent(id));
+  if(S.view!=='event-detail'||String(S.selectedEvent)!==id)return;
+  S.rosterEvent=id;S.roster=roster;S.ticketRosterLoadedEvent=id;
+  const list=document.querySelector('.kc-ticket-recipient-picker[data-ticket-event-id="'+CSS.escape(id)+'"] .memory-recipient-list');
+  if(list){
+   const seen=new Set(),members=(roster?.roster||[]).filter(m=>m&&m.email&&String(m.email).includes('@')).filter(m=>{const email=String(m.email).trim().toLowerCase();if(seen.has(email))return false;seen.add(email);return true;});
+   list.innerHTML=members.length?ticketRecipientRows(members):'<p class="hint memory-no-members">No members have registered for this event yet.</p>';
+  }
+ }catch(error){
+  if(S.view==='event-detail'&&String(S.selectedEvent)===id){
+   const status=document.querySelector('.kc-ticket-recipient-picker[data-ticket-event-id="'+CSS.escape(id)+'"] .memory-recipient-list');
+   if(status)status.innerHTML='<p class="hint memory-no-members">Could not load registered members. Reopen this event and try again.</p>';
+  }
+  console.warn('Event ticket recipient roster could not load:',error);
+ }finally{if(S.ticketRosterLoadingEvent===id)S.ticketRosterLoadingEvent='';}
 }
 function eventDetailPage(){
  const e=S.events.find(x=>String(x.id)===String(S.selectedEvent));if(!e)return eventsPage();
@@ -763,6 +788,7 @@ return '<section class="nav-group '+(expanded?'expanded':'')+'" data-nav-group-p
 const crumb=$('#crumb');if(crumb)crumb.textContent=({overview:'Overview',more:'More',events:'Events','new-event':'Create event','event-edit':'Edit event',chat:'Crew chat',feed:'Crew Feed',memes:'Meme Zone','fun-zone-games':'Mini Games',notifications:'Notifications',people:'Discover crew','fun-zone':'Fun Zone',credits:'Credits','public-profile':'Crew profile','crew-management':'Crew management',attendance:'Attendance','brand-settings':'Brand identity',profile:'My profile',settings:'App settings',calendar:'Calendar',rehearsals:'Rehearsals',auditions:'Auditions',leaderboard:'Leaderboard'}[S.view]||'Crew management');
 const fn={overview:home,more:morePage,events:eventsPage,'event-detail':eventDetailPage,'event-edit':()=>eventForm(S.events.find(x=>String(x.id)===String(S.editingEventId))||null),'new-event':()=>eventForm(),chat:chatPage,feed:socialFeedPage,memes:memeZonePage,'fun-zone-games':miniGamesPage,notifications:notificationsPage,updates:updatesPage,profile:profilePage,'app-settings':settingsPage,people:peoplePage,'public-profile':publicProfilePage,'crew-management':crewManagementPage,attendance:attendancePage,'brand-settings':brandSettingsPage,settings:settingsPage,rehearsals:()=>featurePage('rehearsals'),calendar:calendarPage,polls:()=>featurePage('polls'),memories:()=>featurePage('memories'),achievements:()=>featurePage('achievements'),leave:()=>featurePage('leave'),'fun-zone':funZonePage,credits:creditsPage}[S.view]||home;
 $('#app').innerHTML=(S.error?'<div class="alert"><span>'+esc(S.error)+'</span><button data-clear>×</button></div>':'')+(S.offline?'<div class="offline-strip">OFFLINE · LAST SAVED DATA</div>':'')+fn();
+if(S.view==='event-detail'&&admin())loadTicketRecipientRoster(S.selectedEvent);
 renderProfileQrCards();
 const founderProfileEntry=S.view==='profile'&&superadmin()&&!document.body.classList.contains('kc-founder-profile-open');
 if(S.view!=='profile')document.body.classList.remove('kc-founder-profile-open');
