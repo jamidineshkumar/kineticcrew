@@ -245,9 +245,14 @@ function dismissedNoticeKey(){return 'kc-dismissed-notices:'+String(S.user?.auth
 function dismissedNoticeIds(){try{return new Set(JSON.parse(localStorage.getItem(dismissedNoticeKey())||'[]').map(String));}catch{return new Set();}}
 async function loadGlobalDeletedNotifications(){
  if(!S.user)return;
- const {data,error}=await client.from('crew_notification_deletions').select('notice_type,source_id');
- if(error){console.warn('Could not load globally deleted notifications:',error);return;}
- S.deletedNotifications=(data||[]).map(row=>row.notice_type+':'+row.source_id);
+ const [deleted,dismissed]=await Promise.all([
+  client.from('crew_notification_deletions').select('notice_type,source_id'),
+  client.from('crew_notification_dismissals').select('notice_type,source_id').eq('user_id',S.user.auth_id)
+ ]);
+ if(deleted.error)console.warn('Could not load globally deleted notifications:',deleted.error);
+ else S.deletedNotifications=(deleted.data||[]).map(row=>row.notice_type+':'+row.source_id);
+ if(dismissed.error)console.warn('Could not load your cleared notifications:',dismissed.error);
+ else S.dismissedNotifications=(dismissed.data||[]).map(row=>row.notice_type+':'+row.source_id);
 }
 function notificationPrefs(){try{return {sound:true,push:localStorage.getItem('kc-push-enabled')==='yes',...JSON.parse(localStorage.getItem(prefsKey())||'{}')}}catch{return {sound:true,push:false}}}
 function saveNotificationPrefs(patch){const next={...notificationPrefs(),...patch};localStorage.setItem(prefsKey(),JSON.stringify(next));return next;}
@@ -257,7 +262,7 @@ function notificationItems(){
  const announcements=(S.announcements||[]).map(a=>({...a,notice_id:'announcement:'+a.id,notice_type:'announcement',notice_time:a.created_at||a.updated_at}));
  const events=(S.events||[]).map(e=>({...e,notice_id:'event:'+e.id,notice_type:'event',notice_time:e.updated_at||e.created_at||e.starts_at,body:e.description||'A crew event has been added or updated.',author_name:e.author_name||'Kinetic Crew'}));
  const posts=(S.socialPosts||[]).map(p=>{const person=(S.publicMembers||[]).find(m=>String(m.auth_id)===String(p.author_id));return {...p,notice_id:'post:'+p.id,notice_type:'post',notice_time:p.updated_at||p.created_at, title:'New Kinetic Gram post',body:p.caption||'A crew member shared a new post.',author_name:person?.name||'Crew member'};});
- const dismissed=dismissedNoticeIds(),globallyDeleted=new Set(S.deletedNotifications||[]);
+ const dismissed=new Set([...dismissedNoticeIds(),...(S.dismissedNotifications||[])]),globallyDeleted=new Set(S.deletedNotifications||[]);
  return [...announcements,...events,...posts].filter(x=>x.notice_time&&!dismissed.has(String(x.notice_id))&&!globallyDeleted.has(String(x.notice_id))).sort((a,b)=>new Date(b.notice_time)-new Date(a.notice_time));
 }
 function unread(){return notificationItems().filter(a=>!isRead(a.notice_id||a.id)).length}
@@ -1103,9 +1108,13 @@ if(globalDelete){
 if(e.target.closest('#clearAllNotifications')){
  const ids=notificationItems().map(item=>String(item.notice_id));
  if(!ids.length){notice('Your notification inbox is already clear.');return;}
+ const items=notificationItems(),rows=items.map(item=>({user_id:S.user.auth_id,notice_type:item.notice_type,source_id:String(item.id)}));
+ const {error}=await client.from('crew_notification_dismissals').upsert(rows,{onConflict:'user_id,notice_type,source_id',ignoreDuplicates:true});
+ if(error){notice(error.message||'Could not clear notifications.');return;}
  const all=dismissedNoticeIds();ids.forEach(id=>all.add(id));
  localStorage.setItem(dismissedNoticeKey(),JSON.stringify([...all]));
- paint();notice('Your notifications have been cleared. Other members’ inboxes are unchanged.');return;
+ S.dismissedNotifications=[...(S.dismissedNotifications||[]),...rows.map(row=>row.notice_type+':'+row.source_id)];
+ paint();notice('Your notifications have been cleared on your account. Other members’ inboxes are unchanged.');return;
 }
 if(e.target.closest('#markAllRead')){localStorage.setItem(readKey(),JSON.stringify(notificationItems().map(a=>a.notice_id)));paint();notice('All notifications marked as read.');return;}if(e.target.closest('#testNoticeSound')){playNoticeSound();notice('That is your Kinetic Crew alert sound.');return;}if(e.target.closest('#enablePush')){await action(async()=>{const result=await window.kcPush.enable();saveNotificationPrefs({push:true});notice(result.message||'Push alerts enabled on this device.');});return;}});
 document.addEventListener('input',e=>{if(e.target.id==='peopleSearch'){S.peopleQuery=e.target.value;const pos=e.target.selectionStart;const grid=$('#profileDirectoryGrid');if(grid){const temp=document.createElement('div');temp.innerHTML=peoplePage();const fresh=temp.querySelector('#profileDirectoryGrid');if(fresh)grid.replaceWith(fresh);const count=$('#peopleSearchCount');if(count)count.textContent=fresh?String(fresh.querySelectorAll('.kc-member-directory-card').length)+' / '+(S.publicMembers||[]).length:count.textContent;const input=$('#peopleSearch');if(input){input.focus();input.setSelectionRange(pos,pos);}}return;}if(e.target.id==='attendanceSearch'){S.attendanceQuery=e.target.value;const body=$('#rosterBody');if(body)body.innerHTML=rosterRows(S.roster?.roster||[]);}});
