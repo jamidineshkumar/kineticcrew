@@ -26,6 +26,7 @@ jobs:
         run: |
           node --check public/app.js
           node --check public/brand-logo.js
+          node --check public/kc-transition.js
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload static app
