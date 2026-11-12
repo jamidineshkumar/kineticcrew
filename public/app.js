@@ -938,8 +938,10 @@ function kcBrandDraw(){
 function kcBrandSetControls(enabled){
  ['brandLogoZoom','brandLogoRotate','brandLogoCenter','brandLogoReset'].forEach(id=>{const el=$('#'+id);if(el)el.disabled=!enabled;});
  const publish=$('#uploadBrandLogo');if(publish)publish.disabled=!enabled;
- document.querySelectorAll('[data-brand-fit]').forEach(b=>b.disabled=!enabled);
+ const zoom=$('#brandLogoZoom');if(zoom){zoom.min=kcBrandEditor.fit==='cover'?'100':'50';zoom.value=String(Math.round(kcBrandEditor.zoom));}
+ document.querySelectorAll('[data-brand-fit]').forEach(b=>{b.disabled=!enabled;b.classList.toggle('active',b.dataset.brandFit===kcBrandEditor.fit);});
  const stage=$('.kc-brand-editor-stage');if(stage)stage.classList.toggle('has-image',enabled);
+ const status=$('#brandLogoEditorStatus');if(status&&kcBrandEditor.status)status.textContent=kcBrandEditor.status;
 }
 function kcBrandReset(){
  kcBrandEditor.zoom=100;kcBrandEditor.fit='contain';kcBrandEditor.rotation=0;kcBrandEditor.x=0;kcBrandEditor.y=0;kcBrandEditor.drag=null;kcBrandEditor.pinch=null;
