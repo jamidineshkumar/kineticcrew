@@ -121,13 +121,22 @@ function profileCardBackMarkup(user,authId,username){
  '<div class="kc-ticket-details"><div class="kc-ticket-detail"><strong>'+esc(user?.name||'Kinetic Crew Member')+'</strong><span>NAME</span></div><div class="kc-ticket-detail"><strong>@'+esc(handle)+'</strong><span>USERNAME</span></div><div class="kc-ticket-detail kc-ticket-role"><strong>'+esc(role)+'</strong><span>CREW ROLE</span></div></div>'+
  '<div class="kc-ticket-footer"><span>SCAN TO CONNECT</span><a class="kc-card-instagram-link" href="'+esc(instagram)+'" target="_blank" rel="noopener noreferrer">Instagram ↗</a></div></section>';
 }
-function renderProfileQrCards(){
- if(!window.QRCode)return;
- document.querySelectorAll('[data-profile-qr]:not([data-qr-ready])').forEach(node=>{
-  node.dataset.qrReady='yes';
-  try{new QRCode(node,{text:node.dataset.qrUrl,width:148,height:148,colorDark:'#17191d',colorLight:'#f4f1e9',correctLevel:QRCode.CorrectLevel.H});}
-  catch(error){node.textContent='QR unavailable';console.warn('Profile QR could not render:',error);}
+let kcQrLibraryPromise=null;
+function ensureKcQrLibrary(){
+ if(window.QRCode)return Promise.resolve(window.QRCode);
+ if(kcQrLibraryPromise)return kcQrLibraryPromise;
+ kcQrLibraryPromise=new Promise((resolve,reject)=>{
+  const sources=['https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js','https://unpkg.com/qrcodejs@1.0.0/qrcode.min.js'];
+  let index=0;
+  const load=()=>{if(window.QRCode)return resolve(window.QRCode);if(index>=sources.length){kcQrLibraryPromise=null;return reject(new Error('QR library could not be loaded'));}const script=document.createElement('script');script.src=sources[index++];script.async=true;script.onload=()=>window.QRCode?resolve(window.QRCode):load();script.onerror=load;document.head.appendChild(script);};
+  load();
  });
+ return kcQrLibraryPromise;
+}
+async function renderProfileQrCards(){
+ const nodes=[...document.querySelectorAll('[data-profile-qr]:not([data-qr-ready])')];if(!nodes.length)return;
+ try{const QR=await ensureKcQrLibrary();nodes.forEach(node=>{if(!node.isConnected||node.dataset.qrReady)return;try{node.innerHTML='';new QR(node,{text:node.dataset.qrUrl,width:148,height:148,colorDark:'#17191d',colorLight:'#f4f1e9',correctLevel:QR.CorrectLevel.H});node.dataset.qrReady='yes';}catch(error){node.textContent='QR unavailable';console.warn('Profile QR could not render:',error);}});}
+ catch(error){nodes.forEach(node=>{node.dataset.qrReady='';node.textContent='QR temporarily unavailable';});console.warn('Kinetic Crew QR library unavailable:',error);}
 }
 function profilePage(){
 const u=S.user||{},founder=superadmin();
@@ -657,7 +666,7 @@ function showEventQr(eventId,title){
  '<div class="kce-stub-qr-panel"><div class="kce-stub-passid">PASS ID <b>'+esc(passId)+'</b></div><div class="kce-stub-perforation"><i></i><span></span><i></i></div><div id="eventQrImage" class="kce-ticket-qr member-qr"></div><small>SCAN AT THE EVENT ENTRANCE</small></div>'+
  '<div class="kce-stub-details"><div><b>'+esc(S.user?.name||S.user?.email||'Crew member')+'</b><small>NAME</small></div><div><b>'+esc(dateLabel)+'</b><small>DATE</small></div><div><b>'+esc(event.location||'Venue to be announced')+'</b><small>VENUE</small></div><div><b>'+esc(timeLabel)+'</b><small>TIME</small></div></div>'+
  '<div class="kce-stub-status"><span>'+(event.attended?'ATTENDANCE CONFIRMED':'REGISTRATION CONFIRMED')+'</span><b>'+(event.attended?'● CHECKED IN':'● VALID PASS')+'</b></div><div class="kce-stub-actions"><button type="button" class="kce-stub-download" id="downloadEventPass" aria-label="Download ticket to phone"><svg viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 17v3h16v-3"/></svg><span>Save ticket</span></button><button type="button" class="primary full kce-stub-done" id="doneEventQr">Done</button></div></section></div>';
- if(window.QRCode)new QRCode($('#eventQrImage'),{text:payload,width:220,height:220,colorDark:'#f1ead8',colorLight:'#17201d',correctLevel:QRCode.CorrectLevel.M});
+ ensureKcQrLibrary().then(QR=>{const target=$('#eventQrImage');if(target&&target.isConnected){target.innerHTML='';new QR(target,{text:payload,width:220,height:220,colorDark:'#f1ead8',colorLight:'#17201d',correctLevel:QR.CorrectLevel.M});}}).catch(error=>{const target=$('#eventQrImage');if(target)target.textContent='QR temporarily unavailable. Reload and try again.';console.error('Event QR generation failed:',error);});
  $('#closeEventQr').onclick=$('#doneEventQr').onclick=close;
  $('#eventQrBackdrop').onclick=e=>{if(e.target.id==='eventQrBackdrop')close();};
 }
