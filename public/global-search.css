@@ -13,3 +13,20 @@
 .event-detail-grid .detail-action .event-pass-actions{display:grid!important;grid-template-columns:1fr 1fr;gap:9px}
 .event-detail-grid .detail-action .event-pass-actions button{min-width:0!important;min-height:48px}
 @media(max-width:600px){.event-detail-hero{border-radius:0 0 22px 22px!important}.event-detail-grid{padding-left:14px!important;padding-right:14px!important}.event-detail-grid .detail-action{margin-bottom:8px!important}}
+
+.kc-global-search-row{display:flex;align-items:stretch;gap:9px}
+.kc-global-search-row .kc-global-search-field{flex:1;min-width:0}
+.kc-search-scan-button{width:49px;min-width:49px;display:grid;place-items:center;border:1px solid #ffffff2c;border-radius:14px;background:linear-gradient(145deg,#34363a,#1d1f23);color:#eee;box-shadow:inset 0 1px 0 #ffffff18,0 5px 14px #0003}
+.kc-search-scan-button svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.kc-search-scan-button:active{transform:scale(.95)}
+.kc-qr-scanner{position:fixed;inset:0;z-index:25000;display:grid;place-items:center;padding:18px;background:#050609ed;backdrop-filter:blur(16px)}
+.kc-qr-scanner[hidden]{display:none}
+.kc-qr-scanner-panel{width:min(100%,440px);padding:18px;border:1px solid #ffffff2a;border-radius:24px;background:#1c1e22;color:#f4f4f4;box-shadow:0 25px 90px #000b}
+.kc-qr-scanner-panel>header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.kc-qr-scanner-panel>header b{font-size:16px;letter-spacing:.01em}
+.kc-qr-scanner-panel>header button{width:40px;height:40px;border:1px solid #ffffff25;border-radius:50%;background:#ffffff0d;color:#fff;font-size:25px}
+.kc-qr-video-wrap{position:relative;overflow:hidden;aspect-ratio:1;border-radius:18px;background:#08090b}
+.kc-qr-video-wrap video{width:100%;height:100%;object-fit:cover}
+.kc-qr-scan-frame{position:absolute;inset:16%;border:2px solid #e7c99f;border-radius:20px;box-shadow:0 0 0 999px #0004,inset 0 0 22px #e7c99f22}
+.kc-qr-scanner-panel>p{min-height:36px;margin:13px 0;color:#c6c6c6;font-size:13px;line-height:1.45}
+.kc-qr-upload{display:flex;justify-content:center;align-items:center;min-height:46px;border:1px solid #ffffff2b;border-radius:13px;background:#ffffff0a;color:#e6d4ba;font-size:13px;font-weight:650}
