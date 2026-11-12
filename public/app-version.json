@@ -1,6 +1,6 @@
 {
-  "version": "1.2.6",
-  "minimum_version": "1.2.5",
+  "version": "1.2.7",
+  "minimum_version": "1.2.6",
   "updated_at": "2026-11-12T00:00:00Z",
-  "release_notes": "Unified the mobile navigation dock and restored Kinetic Gram member discovery and crew chat loading."
+  "release_notes": "Fixed KC Memories loading, added searchable registered-member sharing and photo uploads."
 }
