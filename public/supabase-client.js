@@ -11,6 +11,6 @@
   if (!url || !key || key.includes('REPLACE_ME')) {
     window.KC_CONFIG_ERROR = 'Supabase is not configured. Edit public/config.js and add your project URL and publishable key.'; return;
   }
-  try { window.kcSupabase = window.supabase.createClient(url, key, {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}); }
+  try { window.kcSupabase = window.supabase.createClient(url, key, {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storage:window.localStorage}}); }
   catch (error) { window.KC_CONFIG_ERROR = 'Could not start Supabase: ' + (error && error.message ? error.message : 'invalid configuration'); }
 })();
