@@ -1,0 +1,20 @@
+/* Shared admin + super-admin event ticket email panel */
+.kce-admin-mailer{position:relative;margin:28px 0 22px;padding:clamp(18px,3vw,28px);border:1px solid rgba(238,180,151,.24);border-radius:24px;background:linear-gradient(145deg,rgba(37,31,35,.96),rgba(18,21,23,.98));box-shadow:0 18px 46px rgba(0,0,0,.24);color:#f7f3f1}
+.kce-admin-mailer .kc-attendance-section-title{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px}
+.kce-admin-mailer .kc-attendance-section-title h2{margin:7px 0;font-size:clamp(21px,4vw,28px);letter-spacing:-.04em}
+.kce-admin-mailer .kc-attendance-section-title p{margin:0;color:#b9b2b5;font-size:13px;line-height:1.55}
+.kce-admin-mailer .kc-ticket-mailer-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.kce-admin-mailer .kc-ticket-mailer-form label{display:grid;gap:7px;min-width:0;color:#e8deda;font-size:12px;font-weight:650}
+.kce-admin-mailer .kc-ticket-mailer-form label:nth-of-type(4),.kce-admin-mailer .kc-ticket-mailer-form label:nth-of-type(5),.kce-admin-mailer .kc-ticket-mailer-form label:nth-of-type(6),.kce-admin-mailer .kc-ticket-mailer-preview,.kce-admin-mailer .kc-attendance-verify-btn,.kce-admin-mailer .kc-attendance-note{grid-column:1/-1}
+.kce-admin-mailer .kc-ticket-mailer-form input,.kce-admin-mailer .kc-ticket-mailer-form select,.kce-admin-mailer .kc-ticket-mailer-form textarea{width:100%;min-width:0;box-sizing:border-box;padding:12px 13px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(255,255,255,.055);color:#fff;font:inherit;font-size:13px;outline:none}
+.kce-admin-mailer .kc-ticket-mailer-form select option{background:#202124;color:#fff}
+.kce-admin-mailer .kc-ticket-mailer-form input:focus,.kce-admin-mailer .kc-ticket-mailer-form select:focus,.kce-admin-mailer .kc-ticket-mailer-form textarea:focus{border-color:#eaa58f;box-shadow:0 0 0 3px rgba(234,165,143,.12)}
+.kce-admin-mailer .kc-ticket-mailer-preview{display:grid;gap:7px;padding:14px;border:1px dashed rgba(234,165,143,.4);border-radius:14px;background:rgba(234,165,143,.055)}
+.kce-admin-mailer .kc-ticket-mailer-preview span{color:#eaa58f;font-size:9px;font-weight:800;letter-spacing:.16em}
+.kce-admin-mailer .kc-ticket-mailer-preview b{font-size:14px}
+.kce-admin-mailer .kc-ticket-mailer-preview small,.kce-admin-mailer .kc-attendance-note{color:#aaa2a6;font-size:11px;line-height:1.5}
+.kce-admin-mailer .kc-attendance-verify-btn{min-height:48px;border:1px solid rgba(255,185,151,.38);border-radius:14px;background:linear-gradient(100deg,#b75d64,#d88b69);color:#fff;font-weight:750;cursor:pointer}
+.kce-admin-mailer .kc-attendance-verify-btn:disabled{opacity:.55;cursor:wait}
+.kce-admin-mailer .kc-attendance-note{margin:0}
+.kce-detail-admin{display:flex;justify-content:flex-end;margin:0 0 26px}
+@media(max-width:560px){.kce-admin-mailer .kc-ticket-mailer-form{grid-template-columns:1fr}.kce-admin-mailer .kc-ticket-mailer-form label{grid-column:1/-1}.kce-admin-mailer .kc-attendance-section-title{gap:10px}.kce-admin-mailer .kc-attendance-round-icon{flex:0 0 auto}}
