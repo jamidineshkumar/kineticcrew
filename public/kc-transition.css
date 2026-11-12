@@ -15,3 +15,12 @@
 .kc-liquid-profile-copy{animation-delay:.045s}
 @keyframes kc-profile-content-in{from{opacity:0;transform:translate3d(0,9px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
 @media(prefers-reduced-motion:reduce){#app.kc-view-enter>* ,.kc-liquid-profile-photo,.kc-liquid-profile-copy{animation:none!important}}
+
+/* Single, predictable page transition. Never animate every nested control/card. */
+.kc-transition-overlay{will-change:opacity}
+#app.kc-view-enter{animation:kc-nav-fade .22s cubic-bezier(.2,.7,.25,1) both}
+@keyframes kc-nav-fade{from{opacity:.72}to{opacity:1}}
+#app.kc-view-enter>*{animation:none!important}
+.kc-liquid-profile-photo,.kc-liquid-profile-copy{animation:none!important}
+.kc-liquid-profile-card{transform:none!important;will-change:auto!important}
+@media(prefers-reduced-motion:reduce){#app.kc-view-enter{animation:none!important}}
