@@ -4,7 +4,7 @@ const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySel
 window.KC_APP_VERSION='1.3.3';
 const S={user:null,view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],publicMembers:[],memberFavorites:[],blockedMemberIds:[],featureItems:{},socialPosts:[],socialLikes:[],socialComments:[],profileDashboard:null,profileTab:'uploads',roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',error:'',peopleQuery:'',eventsFilter:'all',eventQuery:'',editingEventId:null,sharedDraft:null};
 window.KC_SEARCH_API={
- snapshot:()=>({events:S.events||[],announcements:S.announcements||[],members:S.publicMembers||[],posts:S.socialPosts||[]}),
+ snapshot:()=>({events:S.events||[],announcements:S.announcements||[],members:S.publicMembers||[],posts:S.socialPosts||[],role:S.user?.role||'member'}),
  load:async()=>{const jobs=[];if(!S.publicMembers?.length)jobs.push(rpc('crew_profile_directory',{}).then(({data,error})=>{if(error)throw error;S.publicMembers=Array.isArray(data)?data:[];}));if(!S.socialPosts?.length)jobs.push(loadSocialFeed());await Promise.all(jobs);},
  openEvent:id=>{S.selectedEvent=id;go('event-detail');},
  openProfile:id=>{S.selectedProfileId=id;go('public-profile');},
