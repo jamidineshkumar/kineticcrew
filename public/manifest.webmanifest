@@ -18,5 +18,15 @@
       "type": "image/jpeg",
       "purpose": "any"
     }
-  ]
+  ],
+  "share_target": {
+    "action": "./?share_target=1",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
 }
