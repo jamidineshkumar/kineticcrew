@@ -724,18 +724,18 @@ if(S.view==='overview'){
 function brandSettingsPage(){
  if(!superadmin())return empty('Super Admin access required','Only the Super Admin can change the official Kinetic Crew logo.');
  const current=S.appSettings?.brand_logo_url||window.KC_BRAND_LOGO_URL||window.kcPath('kinetic-crew-logo.svg');
- setTimeout(kcBrandDraw,0);
+ setTimeout(()=>{kcBrandDraw();kcBrandSetControls(!!kcBrandEditor.image);},0);
  return welcome('Brand identity','Create and manage the official Kinetic Crew logo across the app, browser and installed experience.')+
  '<section class="surface settings-card kc-brand-settings-card">'+
  '<span class="settings-kicker">SUPER ADMIN ONLY</span><h3>Official Kinetic Crew logo</h3>'+
- '<p>Choose an image, then position and scale it inside the square brand canvas before publishing.</p>'+
+ '<p>Choose an image, then position and scale it inside the square brand canvas before publishing. Drag to move, pinch with two fingers to zoom, or use the controls below.</p>'+
  '<div class="kc-brand-editor-layout">'+
  '<div class="kc-brand-editor-stage" id="brandLogoDropStage"><canvas id="brandLogoCanvas" width="512" height="512" role="img" tabindex="0" aria-label="Logo crop preview. Drag to reposition or pinch to zoom"></canvas><span class="kc-brand-editor-hint">DRAG TO MOVE · PINCH TO ZOOM</span><span class="kc-brand-editor-drop">DROP IMAGE TO REPLACE</span></div>'+
  '<div class="kc-brand-current"><img id="brandLogoCurrent" src="'+esc(current)+'" alt="Current official Kinetic Crew logo"><span>CURRENT LIVE LOGO</span></div>'+
  '</div>'+
  '<label class="kc-brand-file-label" for="brandLogoFile"><span>＋</span> Choose image</label>'+
  '<input id="brandLogoFile" type="file" accept="image/png,image/jpeg,image/webp">'+
- '<p class="kc-brand-editor-status" id="brandLogoEditorStatus" aria-live="polite">Choose a PNG, JPG or WebP image to start editing.</p>'+
+ '<p class="kc-brand-editor-status" id="brandLogoEditorStatus" aria-live="polite">'+esc(kcBrandEditor.status||'Choose a PNG, JPG or WebP image to start editing.')+'</p>'+
  '<div class="kc-brand-editor-tools">'+
  '<div class="kc-brand-tool-head"><span>IMAGE POSITION</span><button type="button" class="kc-brand-text-btn" id="brandLogoReset">Reset</button></div>'+
  '<div class="kc-brand-mode-row"><button type="button" class="kc-brand-mode active" data-brand-fit="contain">Fit image</button><button type="button" class="kc-brand-mode" data-brand-fit="cover">Fill square</button></div>'+
@@ -904,7 +904,7 @@ async function saveCroppedImage(){
   button.disabled=false;button.textContent='Use this image →';notice(err.message||'Image upload failed.');
  }
 }
-let kcBrandEditor={image:null,file:null,zoom:100,fit:'contain',rotation:0,x:0,y:0,drag:null,pointers:new Map(),pinch:null};
+let kcBrandEditor={image:null,file:null,zoom:100,fit:'contain',rotation:0,x:0,y:0,drag:null,pointers:new Map(),pinch:null,status:''};
 function kcBrandMetrics(){
  const p=kcBrandEditor,img=p.image;if(!img)return null;
  const rot=((p.rotation%360)+360)%360,sw=rot%180===0?img.width:img.height,sh=rot%180===0?img.height:img.width;
@@ -915,8 +915,9 @@ function kcBrandClampPan(){
  const m=kcBrandMetrics();if(!m)return;
  const p=kcBrandEditor;
  if(p.fit==='cover'){
-  p.x=Math.max(-(m.width-512)/2,Math.min((m.width-512)/2,p.x));
-  p.y=Math.max(-(m.height-512)/2,Math.min((m.height-512)/2,p.y));
+  const maxX=Math.max(0,(m.width-512)/2),maxY=Math.max(0,(m.height-512)/2);
+  p.x=Math.max(-maxX,Math.min(maxX,p.x));
+  p.y=Math.max(-maxY,Math.min(maxY,p.y));
  }else{
   p.x=Math.max(-240,Math.min(240,p.x));p.y=Math.max(-240,Math.min(240,p.y));
  }
@@ -942,27 +943,29 @@ function kcBrandSetControls(enabled){
 }
 function kcBrandReset(){
  kcBrandEditor.zoom=100;kcBrandEditor.fit='contain';kcBrandEditor.rotation=0;kcBrandEditor.x=0;kcBrandEditor.y=0;kcBrandEditor.drag=null;kcBrandEditor.pinch=null;
- const zoom=$('#brandLogoZoom'),value=$('#brandLogoZoomValue');if(zoom)zoom.value='100';if(value)value.textContent='100%';
+ const zoom=$('#brandLogoZoom'),value=$('#brandLogoZoomValue');if(zoom){zoom.min='50';zoom.value='100';}if(value)value.textContent='100%';
  document.querySelectorAll('[data-brand-fit]').forEach(b=>b.classList.toggle('active',b.dataset.brandFit==='contain'));
  kcBrandDraw();
 }
 async function kcBrandLoadFile(file){
  if(!file)return;
  if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>5*1024*1024){notice('Choose a PNG, JPG or WebP image under 5 MB.');return;}
- const button=$('#uploadBrandLogo'),status=$('#brandLogoEditorStatus');
+ const button=$('#uploadBrandLogo');kcBrandEditor.status='Opening '+file.name+'…';
  if(button){button.disabled=true;button.textContent='Preparing preview…';}
- if(status)status.textContent='Opening '+file.name+'…';
+ const status=$('#brandLogoEditorStatus');if(status)status.textContent=kcBrandEditor.status;
  try{
-  const bitmap=await createImageBitmap(file);
+  let bitmap;if(typeof createImageBitmap==='function')bitmap=await createImageBitmap(file);else bitmap=await new Promise((resolve,reject)=>{const image=new Image(),url=URL.createObjectURL(file);image.onload=()=>{URL.revokeObjectURL(url);resolve(image);};image.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Image could not be opened.'));};image.src=url;});
+  if(bitmap.width*bitmap.height>80000000){bitmap.close?.();throw Error('This image is too large to edit. Choose an image under 80 megapixels.');}
   if(kcBrandEditor.image?.close)kcBrandEditor.image.close();
   kcBrandEditor.image=bitmap;kcBrandEditor.file=file;kcBrandReset();kcBrandSetControls(true);
-  if(status)status.textContent=file.name+' · Preview ready';
+  kcBrandEditor.status=file.name+' · Preview ready';
   const publish=$('#uploadBrandLogo');if(publish){publish.disabled=false;publish.textContent='Publish logo everywhere →';}
- }catch(error){if(status)status.textContent='Could not open this image. Choose another file.';notice('Could not open this image. Try another file.');kcBrandSetControls(false);}
+  if(status)status.textContent=kcBrandEditor.status;
+ }catch(error){kcBrandEditor.status=error.message||'Could not open this image. Choose another file.';if(status)status.textContent=kcBrandEditor.status;notice(kcBrandEditor.status);kcBrandSetControls(!!kcBrandEditor.image);}
 }
 document.addEventListener('change',event=>{
  if(event.target.id!=='brandLogoFile')return;
- kcBrandLoadFile(event.target.files?.[0]);
+ kcBrandLoadFile(event.target.files?.[0]);event.target.value='';
 });
 document.addEventListener('input',event=>{
  if(event.target.id==='brandLogoZoom'){
@@ -973,7 +976,7 @@ document.addEventListener('input',event=>{
 });
 document.addEventListener('click',event=>{
  const fit=event.target.closest('[data-brand-fit]');
- if(fit){kcBrandEditor.fit=fit.dataset.brandFit;document.querySelectorAll('[data-brand-fit]').forEach(b=>b.classList.toggle('active',b===fit));kcBrandClampPan();kcBrandDraw();return;}
+ if(fit){kcBrandEditor.fit=fit.dataset.brandFit;if(kcBrandEditor.fit==='cover')kcBrandEditor.zoom=Math.max(100,kcBrandEditor.zoom);const slider=$('#brandLogoZoom'),output=$('#brandLogoZoomValue');if(slider){slider.min=kcBrandEditor.fit==='cover'?'100':'50';slider.value=String(Math.round(kcBrandEditor.zoom));}if(output)output.textContent=Math.round(kcBrandEditor.zoom)+'%';document.querySelectorAll('[data-brand-fit]').forEach(b=>b.classList.toggle('active',b===fit));kcBrandClampPan();kcBrandDraw();return;}
  if(event.target.closest('#brandLogoRotate')){kcBrandEditor.rotation=(kcBrandEditor.rotation+90)%360;kcBrandClampPan();kcBrandDraw();return;}
  if(event.target.closest('#brandLogoCenter')){kcBrandEditor.x=0;kcBrandEditor.y=0;kcBrandDraw();return;}
  if(event.target.closest('#brandLogoReset')){kcBrandReset();return;}
@@ -1048,9 +1051,9 @@ document.addEventListener('click',async event=>{
   S.appSettings={...(S.appSettings||{}),brand_logo_url:publicUrl};
   window.kcApplyBrandLogo?.(publicUrl);
   const current=$('#brandLogoCurrent');if(current)current.src=publicUrl;
-  const status=$('#brandLogoEditorStatus');if(status)status.textContent='Published successfully · This logo is now live across Kinetic Crew';
+  kcBrandEditor.status='Published successfully · This logo is now live across Kinetic Crew';const status=$('#brandLogoEditorStatus');if(status)status.textContent=kcBrandEditor.status;
   notice('Official Kinetic Crew logo updated everywhere.');paint();
- }catch(error){notice(error.message||'Logo upload failed. Your current logo is unchanged.');button.disabled=false;button.textContent=oldLabel;}
+ }catch(error){kcBrandEditor.status=error.message||'Logo upload failed. Your current logo is unchanged.';const status=$('#brandLogoEditorStatus');if(status)status.textContent=kcBrandEditor.status;notice(kcBrandEditor.status);button.disabled=!kcBrandEditor.image;button.textContent=oldLabel;}
 });
 document.addEventListener('change',async e=>{
  if(e.target.id==='settingsSound'){saveNotificationPrefs({sound:e.target.checked});if(e.target.checked)playNoticeSound();notice(e.target.checked?'In-app sounds enabled.':'In-app sounds muted.');}
