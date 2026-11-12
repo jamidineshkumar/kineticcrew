@@ -30,3 +30,7 @@
 .kc-qr-scan-frame{position:absolute;inset:16%;border:2px solid #e7c99f;border-radius:20px;box-shadow:0 0 0 999px #0004,inset 0 0 22px #e7c99f22}
 .kc-qr-scanner-panel>p{min-height:36px;margin:13px 0;color:#c6c6c6;font-size:13px;line-height:1.45}
 .kc-qr-upload{display:flex;justify-content:center;align-items:center;min-height:46px;border:1px solid #ffffff2b;border-radius:13px;background:#ffffff0a;color:#e6d4ba;font-size:13px;font-weight:650}
+
+.kc-global-search-field>span{display:none!important}
+.kc-global-search-field{gap:0!important}
+.kc-global-search-field input{padding-left:0!important}
