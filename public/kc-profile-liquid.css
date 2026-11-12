@@ -153,3 +153,75 @@
 @keyframes kc-profile-orb-float{from{transform:translate3d(-12px,8px,0) scale(.88)}to{transform:translate3d(24px,-22px,0) scale(1.14)}}
 @media(max-width:640px){.kc-single-profile{padding:10px 3px calc(112px + env(safe-area-inset-bottom))!important;gap:13px!important}.kc-single-profile .kc-liquid-profile-card{width:100%!important;padding:15px 14px 25px!important}.kc-single-profile .kc-liquid-profile-photo{width:min(72%,230px)!important;margin:23px auto 16px!important;aspect-ratio:1.05!important}.kc-single-profile .kc-liquid-profile-copy h1{font-size:clamp(25px,7vw,30px)!important;overflow-wrap:anywhere!important}.kc-single-profile .kc-profile-editor{width:100%!important;padding:10px!important}.kc-single-profile .kc-profile-form{gap:10px!important}.kc-single-profile .kc-profile-upload-row>label{flex:1 1 100%!important}}
 @media(prefers-reduced-motion:reduce){.kc-single-profile .kc-liquid-profile-card:before,.kc-single-profile .kc-liquid-orb{animation:none!important}}
+
+
+/* Kinetic Crew Founder Signature Experience — Super Admin only. */
+.kc-single-profile.is-founder .kc-founder-card{isolation:isolate!important}
+.kc-single-profile.is-founder .kc-founder-card:before{
+ background:
+  radial-gradient(ellipse at 18% 28%,rgba(255,132,74,.30),transparent 34%),
+  radial-gradient(ellipse at 83% 18%,rgba(94,190,205,.23),transparent 36%),
+  radial-gradient(ellipse at 76% 88%,rgba(177,105,220,.20),transparent 39%),
+  linear-gradient(125deg,#29262a,#111316 52%,#211a1a)!important;
+ background-size:170% 170%,180% 180%,160% 160%,100% 100%!important;
+ animation:kc-profile-ambient-drift 17s ease-in-out infinite alternate!important;
+}
+.kc-single-profile.is-founder .kc-founder-card:after{
+ content:"";position:absolute;z-index:1;inset:0;pointer-events:none;border-radius:inherit;
+ background:linear-gradient(112deg,transparent 0%,transparent 38%,rgba(255,224,181,.025) 44%,rgba(255,190,126,.18) 49%,rgba(255,235,207,.07) 52%,transparent 59%,transparent 100%);
+ transform:translateX(-145%);animation:kc-founder-light-sweep 8.5s ease-in-out 1.4s infinite;
+}
+.kc-single-profile.is-founder .kc-liquid-profile-photo{
+ position:relative!important;isolation:isolate!important;
+ border:2px solid rgba(255,190,120,.78)!important;
+ box-shadow:0 0 0 5px rgba(255,165,94,.09),0 0 22px rgba(255,139,75,.28),0 0 48px rgba(255,139,75,.13)!important;
+}
+.kc-single-profile.is-founder .kc-liquid-profile-photo:before{
+ content:"";position:absolute;z-index:-1;inset:-10px;border-radius:inherit;
+ border:1.5px solid rgba(255,192,126,.72);
+ box-shadow:0 0 12px rgba(255,153,91,.35),inset 0 0 12px rgba(255,174,111,.12);
+ animation:kc-founder-halo-pulse 3.8s ease-in-out infinite;
+ pointer-events:none;
+}
+.kc-single-profile.is-founder .kc-liquid-profile-photo:after{
+ content:"";position:absolute;z-index:2;inset:-5px;border-radius:inherit;pointer-events:none;
+ background:conic-gradient(from 0deg,transparent 0 68%,rgba(255,215,164,.8) 76%,transparent 84% 100%);
+ -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+ -webkit-mask-composite:xor;mask-composite:exclude;padding:2px;
+ animation:kc-founder-halo-rotate 9s linear infinite;
+}
+.kc-single-profile.is-founder .kc-founder-particles{
+ position:absolute;z-index:2;inset:0;overflow:hidden;pointer-events:none;border-radius:inherit;
+}
+.kc-single-profile.is-founder .kc-founder-particles i{
+ position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);border-radius:50%;
+ background:radial-gradient(circle,#fff2d7 0%,#ffb36f 34%,rgba(255,139,80,.15) 75%,transparent 100%);
+ box-shadow:0 0 9px rgba(255,174,108,.62);
+ opacity:0;animation:kc-founder-particle-float var(--dur) ease-in-out var(--delay) infinite;
+}
+.kc-single-profile.is-founder .kc-founder-particles i:nth-child(1){--x:12%;--y:30%;--s:4px;--dur:8s;--delay:-2s}
+.kc-single-profile.is-founder .kc-founder-particles i:nth-child(2){--x:82%;--y:24%;--s:3px;--dur:9s;--delay:-5s}
+.kc-single-profile.is-founder .kc-founder-particles i:nth-child(3){--x:24%;--y:73%;--s:3px;--dur:10s;--delay:-7s}
+.kc-single-profile.is-founder .kc-founder-particles i:nth-child(4){--x:91%;--y:66%;--s:4px;--dur:8.5s;--delay:-3s}
+.kc-single-profile.is-founder .kc-founder-particles i:nth-child(5){--x:52%;--y:18%;--s:2px;--dur:11s;--delay:-6s}
+.kc-single-profile.is-founder .kc-founder-particles i:nth-child(6){--x:69%;--y:84%;--s:3px;--dur:9.5s;--delay:-1s}
+.kc-single-profile.is-founder .kc-founder-particles i:nth-child(7){--x:8%;--y:83%;--s:2px;--dur:10s;--delay:-4s}
+.kc-single-profile.is-founder .kc-founder-particles i:nth-child(8){--x:43%;--y:89%;--s:3px;--dur:12s;--delay:-8s}
+.kc-single-profile.is-founder .kc-founder-particles i:nth-child(9){--x:94%;--y:43%;--s:2px;--dur:9s;--delay:-6s}
+.kc-single-profile.is-founder .kc-founder-particles i:nth-child(10){--x:34%;--y:23%;--s:2px;--dur:11s;--delay:-9s}
+@keyframes kc-founder-light-sweep{0%,64%{transform:translateX(-145%);opacity:0}69%{opacity:1}83%{transform:translateX(145%);opacity:.8}84%,100%{transform:translateX(145%);opacity:0}}
+@keyframes kc-founder-halo-pulse{0%,100%{transform:scale(1);opacity:.62;box-shadow:0 0 9px rgba(255,153,91,.25)}50%{transform:scale(1.045);opacity:1;box-shadow:0 0 19px rgba(255,153,91,.52)}}
+@keyframes kc-founder-halo-rotate{to{transform:rotate(360deg)}}
+@keyframes kc-founder-particle-float{0%,100%{transform:translate3d(0,9px,0) scale(.65);opacity:0}25%{opacity:.8}65%{transform:translate3d(7px,-17px,0) scale(1.15);opacity:.7}90%{opacity:0}}
+.kc-founder-enter .kc-single-profile.is-founder .kc-liquid-profile-photo{animation:kc-founder-photo-enter .85s cubic-bezier(.2,.8,.2,1) both}
+.kc-founder-enter .kc-single-profile.is-founder .kc-liquid-profile-copy{animation:kc-founder-copy-enter .72s .32s cubic-bezier(.2,.8,.2,1) both}
+.kc-founder-enter .kc-single-profile.is-founder .kc-liquid-card-top{animation:kc-founder-top-enter .58s .12s ease-out both}
+@keyframes kc-founder-photo-enter{from{opacity:0;transform:translateY(22px) scale(.88);filter:blur(9px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes kc-founder-copy-enter{from{opacity:0;transform:translateY(15px);filter:blur(5px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
+@keyframes kc-founder-top-enter{from{opacity:0;transform:translateY(-9px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){
+ .kc-single-profile.is-founder .kc-founder-card:before,.kc-single-profile.is-founder .kc-founder-card:after,
+ .kc-single-profile.is-founder .kc-founder-particles i,.kc-single-profile.is-founder .kc-liquid-profile-photo:before,
+ .kc-single-profile.is-founder .kc-liquid-profile-photo:after,.kc-founder-enter .kc-single-profile.is-founder .kc-liquid-profile-photo,
+ .kc-founder-enter .kc-single-profile.is-founder .kc-liquid-profile-copy,.kc-founder-enter .kc-single-profile.is-founder .kc-liquid-card-top{animation:none!important}
+}
