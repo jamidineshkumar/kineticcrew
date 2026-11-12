@@ -1,27 +1,27 @@
-/* Final Kinetic Crew dock: Home, Events, Fun Zone, Search. */
+/* Kinetic Crew — unified five-item floating glass dock. */
 (() => {
   'use strict';
   if (document.getElementById('kcMobileDock')) return;
   const items = [
-    { view: 'overview', icon: '<svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-6h6v6"/></svg>', label: 'Home' },
-    { view: 'events', icon: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>', label: 'Events' },
-    { view: 'fun-zone', icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 3.4-6 8-6s7.2 2 8 6"/></svg>', label: 'Fun Zone' },
-    { search: true, icon: '<svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>', label: 'Search' }
+    { view:'overview', label:'Home', path:'<path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-6h6v6"/>' },
+    { view:'events', label:'Events', path:'<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/>' },
+    { view:'fun-zone', label:'Fun Zone', path:'<path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"/><circle cx="12" cy="12" r="4"/>' },
+    { search:true, label:'Search', path:'<circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/>' },
+    { view:'profile', label:'Profile', path:'<circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 3.4-6 8-6s7.2 2 8 6"/>' }
   ];
   const dock=document.createElement('nav');
-  dock.id='kcMobileDock';dock.className='kc-mobile-dock';
-  dock.setAttribute('aria-label','Main app navigation');
-  dock.innerHTML='<button type="button" class="kc-dock-home" data-view="'+items[0].view+'" aria-label="'+items[0].label+'"><span class="dock-icon" aria-hidden="true">'+items[0].icon+'</span><span class="dock-label">'+items[0].label+'</span></button><div class="kc-dock-group">'+items.slice(1).map(item=>'<button type="button" '+(item.search?'data-search-open':'data-view="'+item.view+'"')+' aria-label="'+item.label+'" title="'+item.label+'"><span class="dock-icon" aria-hidden="true">'+item.icon+'</span><span class="dock-label">'+item.label+'</span></button>').join('')+'</div>';
+  dock.id='kcMobileDock';dock.className='kc-mobile-dock';dock.setAttribute('aria-label','Main app navigation');
+  dock.innerHTML=items.map((item,index)=>'<button type="button" class="kc-dock-item'+(index===2?' kc-dock-center':'')+'" '+(item.search?'data-search-open':'data-view="'+item.view+'"')+' aria-label="'+item.label+'" title="'+item.label+'"><span class="dock-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+item.path+'</svg></span><span class="dock-label">'+item.label+'</span></button>').join('');
   document.body.appendChild(dock);
   function activeView(){
     const active=document.querySelector('#nav .navitem.active[data-view],#nav [data-view].active');
     if(active)return active.dataset.view;
     if(document.body.classList.contains('kc-more-open'))return 'more';
-    return '';
+    return document.body.classList.contains('kc-home-screen')?'overview':'';
   }
   function sync(){
     const view=activeView();
-    dock.querySelectorAll('button').forEach(button=>{
+    dock.querySelectorAll('button[data-view]').forEach(button=>{
       const selected=button.dataset.view===view;
       button.classList.toggle('active',selected);
       if(selected)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
