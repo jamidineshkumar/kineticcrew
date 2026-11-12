@@ -21,3 +21,27 @@
 @keyframes kgPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.75)}}
 @media(max-width:480px){.kg-tutorial-visual{height:178px;padding:8px}.kg-preview-frame{padding:8px}}
 @media(prefers-reduced-motion:reduce){.kg-preview-dot,.kg-preview-scene>*,.kg-preview-track i{animation:none!important}}
+
+
+/* One continuous tutorial player: no separate step cards or next/back controls. */
+.kg-tutorial-one-video{width:min(100%,480px);padding:20px;border-radius:28px;background:radial-gradient(110% 75% at 100% 0%,rgba(236,76,148,.18),transparent 58%),linear-gradient(155deg,#202428,#111418 72%);color:#f7f7fa}
+.kg-video-kicker{margin:18px 0 10px;color:#d8b27e;font-size:9px;font-weight:900;letter-spacing:.17em}
+.kg-tutorial-one-video .kg-tutorial-visual{height:220px;border-radius:20px;background:radial-gradient(circle at 50% 45%,rgba(112,90,225,.22),transparent 65%),#151721}
+.kg-video-scene{transition:opacity .28s ease,transform .35s ease}
+.kg-video-scene.is-playing{animation:kgVideoSceneIn .4s ease both}
+@keyframes kgVideoSceneIn{from{opacity:.25;transform:scale(.985)}to{opacity:1;transform:scale(1)}}
+.kg-video-controls{display:flex;align-items:center;gap:10px;margin:12px 2px 0}
+.kg-video-controls>[data-kg-play]{width:34px;height:34px;flex:none;border:0;border-radius:50%;background:linear-gradient(130deg,#38bce5,#bd59cf);color:#fff;font-size:15px;font-weight:900}
+.kg-video-track{min-width:0;flex:1;display:flex;align-items:center;gap:8px}
+.kg-video-progress{height:5px;flex:1;overflow:hidden;border-radius:9px;background:#ffffff25}
+.kg-video-progress i{display:block;width:0;height:100%;border-radius:9px;background:linear-gradient(90deg,#3fc5e8,#bf5acb,#f27aa7);transition:width .12s linear}
+.kg-video-time{font-size:10px;color:#b6b8c2;white-space:nowrap}
+.kg-video-scene-count{display:none}
+.kg-video-copy{padding:18px 2px 12px}
+.kg-video-copy>small{color:#d8b27e;letter-spacing:.16em;font-size:9px;font-weight:900}
+.kg-video-copy h2{font-size:clamp(22px,5.5vw,28px);line-height:1.13;letter-spacing:-.04em}
+.kg-video-copy p{min-height:44px;font-size:13px;line-height:1.6;color:#bfc2c8}
+.kg-tutorial-one-video .kg-tutorial-optout{margin:8px 0 12px}
+.kg-tutorial-one-video .kg-tutorial-footer{align-items:center}
+.kg-tutorial-one-video .kg-tutorial-next{background:linear-gradient(100deg,#ed5a9f,#f0a36d);color:#191719}
+@media(max-width:560px){.kg-tutorial-one-video{padding:17px;border-radius:25px}.kg-tutorial-one-video .kg-tutorial-visual{height:190px}.kg-video-copy{padding-top:15px}}
