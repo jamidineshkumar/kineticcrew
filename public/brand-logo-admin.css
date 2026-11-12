@@ -1,17 +1,27 @@
-/* Super Admin global brand identity controls */
-.kc-brand-settings-card{max-width:760px;padding:clamp(20px,4vw,34px)!important}
-.kc-brand-preview-wrap{
- display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;
- min-height:210px;margin:22px 0;padding:24px;border:1px solid var(--line);
- border-radius:22px;background:radial-gradient(ellipse at 50% 35%,rgba(255,116,82,.11),transparent 62%),var(--panel2);
- box-shadow:inset 5px 5px 12px rgba(0,0,0,.16),inset -4px -4px 12px rgba(255,255,255,.025);
-}
-.kc-brand-preview{width:128px;height:128px;object-fit:contain;border-radius:22px;filter:drop-shadow(0 12px 24px rgba(0,0,0,.28))}
-.kc-brand-preview-wrap span,.kc-brand-file-help,.kc-brand-security-note{font-size:11px;letter-spacing:.08em;color:var(--muted)}
-.kc-brand-file-label{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin:4px 0 10px;padding:0 16px;border:1px solid var(--line);border-radius:13px;background:var(--panel2);font-size:13px;font-weight:650;cursor:pointer}
-#brandLogoFile{display:block;width:100%;max-width:100%;padding:12px;border:1px dashed var(--line);border-radius:14px;background:var(--panel2);color:var(--text)}
-.kc-brand-file-help{display:block;margin:10px 0 18px;line-height:1.6;letter-spacing:0}
+
+/* Brand image editor */
+.kc-brand-editor-layout{display:grid;grid-template-columns:minmax(0,1fr) 112px;gap:16px;align-items:center;margin:22px 0}
+.kc-brand-editor-stage{position:relative;min-width:0;max-width:360px;justify-self:center;width:100%;aspect-ratio:1;border:1px solid var(--line);border-radius:22px;overflow:hidden;background-color:#292b31;background-image:linear-gradient(45deg,#3a3c43 25%,transparent 25%),linear-gradient(-45deg,#3a3c43 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#3a3c43 75%),linear-gradient(-45deg,transparent 75%,#3a3c43 75%);background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0;box-shadow:inset 0 0 35px #0003}
+#brandLogoCanvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+#brandLogoCanvas:active{cursor:grabbing}
+.kc-brand-editor-hint{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);padding:5px 9px;border-radius:99px;background:#090a0dcc;color:#fff;font-size:9px;letter-spacing:.1em;white-space:nowrap;pointer-events:none}
+.kc-brand-current{display:grid;justify-items:center;gap:8px;text-align:center}
+.kc-brand-current img{width:84px;height:84px;object-fit:contain;border:1px solid var(--line);border-radius:17px;background:var(--panel2);padding:8px}
+.kc-brand-current span,.kc-brand-tool-head span{font-size:9px;letter-spacing:.12em;color:var(--muted);font-weight:750}
+.kc-brand-file-label{gap:8px;width:100%;justify-content:center;margin:2px 0 12px}
+.kc-brand-editor-tools{margin:14px 0 18px;padding:16px;border:1px solid var(--line);border-radius:17px;background:var(--panel2)}
+.kc-brand-tool-head,.kc-brand-zoom-label{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.kc-brand-text-btn{border:0;background:none;color:var(--text);font-size:12px;font-weight:700;cursor:pointer}
+.kc-brand-mode-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+.kc-brand-mode,.kc-brand-editor-actions button{min-height:40px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--text);font-size:12px;font-weight:650;cursor:pointer}
+.kc-brand-mode.active{border-color:var(--accent,#f29a45);box-shadow:inset 0 0 0 1px var(--accent,#f29a45)}
+.kc-brand-zoom-label{font-size:12px;font-weight:650;margin:12px 0 8px}
+#brandLogoZoom{width:100%;accent-color:var(--accent,#f29a45)}
+.kc-brand-editor-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.kc-brand-editor-actions button:disabled,.kc-brand-mode:disabled{opacity:.4;cursor:not-allowed}
+.kc-brand-settings-card{max-width:760px;padding:clamp(18px,4vw,30px)!important}
+.kc-brand-settings-card>p{line-height:1.6}
+.kc-brand-file-help,.kc-brand-security-note{display:block;font-size:11px;color:var(--muted);line-height:1.6}
 #uploadBrandLogo{min-height:48px;width:100%;max-width:360px}
-#uploadBrandLogo:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.3)}
-.kc-brand-security-note{margin-top:18px;line-height:1.6;letter-spacing:0}
-:root[data-theme="light"] .kc-brand-preview-wrap{background:radial-gradient(ellipse at 50% 35%,rgba(255,116,82,.08),transparent 62%),var(--panel2);box-shadow:inset 4px 4px 10px rgba(30,35,38,.06),inset -4px -4px 10px rgba(255,255,255,.8)}
+#uploadBrandLogo:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:480px){.kc-brand-editor-layout{grid-template-columns:minmax(0,1fr) 84px;gap:10px}.kc-brand-current img{width:68px;height:68px}.kc-brand-editor-tools{padding:13px}.kc-brand-mode,.kc-brand-editor-actions button{font-size:11px}}
