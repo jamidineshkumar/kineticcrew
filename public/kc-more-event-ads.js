@@ -9,16 +9,16 @@ function render(root){
  const announcements=(snapshot.announcements||[]).filter(a=>a&&a.title).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  const now=Date.now(),upcoming=events.filter(e=>new Date(e.starts_at).getTime()>=now),recent=events.filter(e=>new Date(e.starts_at).getTime()<now).reverse();
  const slides=[
-  {type:'brand',eyebrow:'THE MOVEMENT STARTS HERE',title:'KINETIC<br><em>CREW.</em>',sub:'A creative community powered by dance, performance and people.',tag:'DANCE  ·  CREATE  ·  PERFORM'},
+  {type:'brand',eyebrow:'',title:'KINETIC<br><em>CREW.</em>',sub:'',tag:''},
   ...announcements.slice(0,4).map(a=>({type:'update',item:a})),
   ...upcoming.slice(0,5).map(e=>({type:'event',item:e})),
-  {type:'brand',eyebrow:'MORE THAN A CREW. A CULTURE.',title:'ONE CREW.<br>ONE <em>RHYTHM.</em>',sub:'We bring talent together, build confidence and turn shared passion into unforgettable moments.',tag:'BUILT TO MOVE TOGETHER'},
+  {type:'brand',eyebrow:'CREW IDENTITY',title:'ONE CREW.<br>ONE <em>RHYTHM.</em>',sub:'',tag:'FOUNDED BY DINUVOX'},
   ...recent.slice(0,3).map(e=>({type:'event',item:e,past:true}))
  ];
  if(slides.length===2)slides.push({type:'community'});
  const renderSlide=(s,i)=>{
   const n=String(i+1).padStart(2,'0'),total=String(slides.length).padStart(2,'0');
-  if(s.type==='brand')return '<article class="kc-brand-intro-slide is-active" data-slide="'+i+'"><small>'+safe(s.eyebrow)+'</small><h2>'+s.title+'</h2><p>'+safe(s.sub)+'</p><strong>'+safe(s.tag)+'</strong></article>';
+  if(s.type==='brand')return '<article class="kc-brand-intro-slide is-active" data-slide="'+i+'">'+(s.eyebrow?'<small>'+safe(s.eyebrow)+'</small>':'')+'<h2>'+s.title+'</h2>'+(s.sub?'<p>'+safe(s.sub)+'</p>':'')+(s.tag?'<strong>'+safe(s.tag)+'</strong>':'')+'</article>';
   if(s.type==='update'){const a=s.item;return '<article class="kc-brand-intro-slide" data-slide="'+i+'"><small>CREW UPDATE · '+safe(date(a.created_at))+'</small><h2 class="kc-brand-content-title">'+safe(a.title)+'</h2><p>'+safe(a.body||'A new update from your crew.')+'</p><button type="button" class="kc-brand-intro-cta" data-view="updates">READ CREW UPDATE <span>→</span></button></article>';}
   if(s.type==='event'){const e=s.item;return '<article class="kc-brand-intro-slide" data-slide="'+i+'"><small>'+(s.past?'FROM OUR CREW ARCHIVE':'UPCOMING CREW EVENT')+' · '+safe(String(e.category||'EVENT').toUpperCase())+'</small><h2 class="kc-brand-content-title">'+safe(e.title)+'</h2><p>'+safe(date(e.starts_at))+' · '+safe(e.location||'Venue to be announced')+'</p><button type="button" class="kc-brand-intro-cta" data-open-event="'+safe(e.id)+'">'+(e.registered?'VIEW YOUR TICKET':'EXPLORE EVENT')+' <span>→</span></button></article>';}
   return '<article class="kc-brand-intro-slide" data-slide="'+i+'"><small>THE KINETIC CREW COMMUNITY</small><h2 class="kc-brand-content-title">YOUR NEXT<br><em>CHAPTER.</em></h2><p>Discover events, crew stories and the latest announcements.</p><button type="button" class="kc-brand-intro-cta" data-view="events">EXPLORE THE CREW <span>→</span></button></article>';
