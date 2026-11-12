@@ -713,7 +713,7 @@ function memberActionRingMarkup(memberId,memberRole,memberName){
   const attrs='style="--action-angle:'+angle+'deg"';
   return action==='delete'?'<button type="button" class="kc-member-action kc-member-action-delete" '+attrs+' data-member-remove="'+esc(memberId)+'" data-member-name="'+esc(memberName||'Crew member')+'" aria-label="'+esc(label)+'" title="'+esc(label)+'"><span>'+icon+'</span><small>'+esc(label)+'</small></button>':'<button type="button" class="kc-member-action kc-member-action-'+action+'" '+attrs+' data-member-action="'+action+'" data-member-id="'+esc(memberId)+'" data-member-name="'+esc(memberName||'Crew member')+'" aria-label="'+esc(label)+'" title="'+esc(label)+'"><span>'+icon+'</span><small>'+esc(label)+'</small></button>';
  }).join('');
- return '<div class="kc-member-action-ring" role="group" aria-label="Member actions"><div class="kc-member-action-orbit">'+buttons+'</div><span class="kc-member-action-center" aria-hidden="true">KC</span></div>';
+ return '<div class="kc-member-action-ring" role="group" aria-label="Member actions" title="Drag the circle to rotate actions"><div class="kc-member-action-orbit">'+buttons+'</div><span class="kc-member-action-center" aria-hidden="true">↻</span></div>';
 }
 async function openDirectMessage(memberId){
  const id=String(memberId||'');if(!id||id===String(S.user?.auth_id))return;
