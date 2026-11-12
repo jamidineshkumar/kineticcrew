@@ -1,0 +1,70 @@
+/* Kinetic Crew mobile home visual corrections — high contrast, aligned controls, contained media and tactile buttons. */
+@media(max-width:900px){
+ /* Header controls share one centerline and never inherit oversized global button padding. */
+ header.kc-mobile-topbar{height:72px!important;min-height:72px!important;max-height:72px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;padding:0 16px!important;gap:12px!important;box-sizing:border-box!important}
+ header.kc-mobile-topbar #menuToggle,
+ header.kc-mobile-topbar .kc-header-actions,
+ header.kc-mobile-topbar .kc-header-actions button{align-self:center!important;transform:none!important;margin-block:0!important}
+ header.kc-mobile-topbar .kc-header-actions{height:100%!important;display:flex!important;align-items:center!important}
+ header.kc-mobile-topbar .kc-header-notifications svg{width:22px!important;height:22px!important;display:block!important}
+ html[data-theme="light"] header.kc-mobile-topbar .kc-header-notifications svg,
+ html[data-theme="light"] header.kc-mobile-topbar .kc-header-notifications svg path{stroke:#34363b!important;fill:none!important}
+ html[data-theme="light"] header.kc-mobile-topbar .kc-header-actions button{background:linear-gradient(145deg,#fff,#f0f1f4)!important;border:1px solid #dfe1e6!important;color:#34363b!important;box-shadow:0 5px 15px #1c243014!important}
+ html[data-theme="light"] header.kc-mobile-topbar #menuToggle{background:linear-gradient(145deg,#303238,#202227)!important;color:#fff!important}
+ /* Greeting theme switch is a real compact pill, not text overflowing a circular button. */
+ body.kc-home-screen .kc-home-reference-header{display:flex!important;align-items:center!important;justify-content:space-between!important;min-height:54px!important;gap:12px!important}
+ body.kc-home-screen .kc-home-user{display:flex!important;align-items:center!important;min-height:44px!important}
+ body.kc-home-screen .kc-home-theme-toggle{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;flex:0 0 auto!important;width:auto!important;min-width:112px!important;max-width:140px!important;height:42px!important;min-height:42px!important;padding:0 13px!important;border-radius:999px!important;white-space:nowrap!important;font:600 12px/1 Inter,system-ui,sans-serif!important;overflow:hidden!important}
+ body.kc-home-screen .kc-home-theme-toggle span{display:inline-flex!important;align-items:center!important;justify-content:center!important;line-height:1!important;white-space:nowrap!important}
+ /* Empty-state hero gets a deliberate visual instead of a dead black rectangle. */
+ body.kc-home-screen .kc-home-featured{isolation:isolate!important;overflow:hidden!important;contain:paint!important}
+ body.kc-home-screen .kc-home-feature-slide{overflow:hidden!important;min-width:0!important}
+ body.kc-home-screen .kc-home-feature-slide:before{inset:0!important;background-image:
+  linear-gradient(180deg,rgba(8,9,11,.04) 0%,rgba(8,9,11,.12) 40%,rgba(8,9,11,.86) 100%),
+  var(--kc-home-feature-image,radial-gradient(ellipse at 72% 28%,rgba(255,125,65,.72),transparent 27%),radial-gradient(ellipse at 24% 18%,rgba(196,105,60,.48),transparent 34%),linear-gradient(135deg,#343033 0%,#1e1b20 52%,#101114 100%))!important;
+  background-size:cover!important;background-position:center!important;transform:none!important}
+ body.kc-home-screen .kc-home-featured-art{box-sizing:border-box!important;min-width:0!important;overflow:hidden!important;position:relative!important}
+ body.kc-home-screen .kc-home-featured-art:after{content:"KC";position:absolute;right:16px;top:30px;font:900 clamp(100px,34vw,190px)/.8 Inter,system-ui,sans-serif;letter-spacing:-.12em;color:rgba(255,255,255,.07);pointer-events:none;transform:rotate(-10deg)}
+ body.kc-home-screen .kc-home-featured-kicker{position:relative!important;z-index:1!important;max-width:100%!important;box-sizing:border-box!important;white-space:normal!important}
+ body.kc-home-screen .kc-home-featured-glass{box-sizing:border-box!important;min-width:0!important;max-width:calc(100% - 20px)!important;overflow:hidden!important}
+ body.kc-home-screen .kc-home-featured-glass>b,
+ body.kc-home-screen .kc-home-featured-glass>small{min-width:0!important;overflow-wrap:anywhere!important}
+ body.kc-home-screen .kc-home-featured-glass>button{box-sizing:border-box!important;max-width:100%!important;min-width:0!important;min-height:46px!important;padding:0 18px!important;white-space:nowrap!important;overflow:hidden!important}
+ /* Home action controls: crisp button boundaries, consistent icon size, no image-like controls. */
+ body.kc-home-screen .kc-home-reference-actions button,
+ body.kc-home-screen .kc-exact-quick button{position:relative!important;box-sizing:border-box!important;overflow:hidden!important;cursor:pointer!important;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important}
+ body.kc-home-screen .kc-home-reference-actions button:active,
+ body.kc-home-screen .kc-exact-quick button:active{transform:scale(.96)!important;box-shadow:inset 0 2px 8px rgba(0,0,0,.18)!important}
+ body.kc-home-screen .kc-home-reference-actions button i,
+ body.kc-home-screen .kc-exact-quick button i{flex:0 0 36px!important;display:grid!important;place-items:center!important}
+ body.kc-home-screen .kc-home-reference-actions button b,
+ body.kc-home-screen .kc-exact-quick button b{display:block!important;max-width:100%!important;line-height:1.25!important;white-space:normal!important;overflow-wrap:anywhere!important;text-align:center!important}
+ /* Keep the dock fully legible over both themes and outside the Up Next content. */
+ #kcMobileDock.kc-mobile-dock{z-index:11000!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))!important}
+ #kcMobileDock .kc-dock-home{background:#292b30!important;color:#fff!important;box-shadow:0 0 0 5px rgba(255,255,255,.88),0 8px 24px rgba(0,0,0,.24)!important}
+ #kcMobileDock .kc-dock-home .dock-icon{background:transparent!important;color:#fff!important}
+ #kcMobileDock .kc-dock-home .dock-icon svg{stroke:#fff!important}
+ #kcMobileDock .kc-dock-group{background:rgba(31,33,37,.96)!important;border-color:rgba(255,255,255,.2)!important;box-shadow:0 12px 30px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.16)!important}
+ #kcMobileDock .kc-dock-group-item{color:#f4f4f5!important}
+ #kcMobileDock .kc-dock-group-item .dock-label{color:inherit!important;opacity:1!important;text-shadow:none!important}
+ #kcMobileDock .kc-dock-group-item.active{background:rgba(255,255,255,.14)!important;color:#fff!important}
+ html[data-theme="light"] #kcMobileDock .kc-dock-home{background:#24262b!important;color:#fff!important;box-shadow:0 0 0 5px rgba(255,255,255,.95),0 8px 24px rgba(0,0,0,.17)!important}
+ html[data-theme="light"] #kcMobileDock .kc-dock-group{background:rgba(250,251,253,.98)!important;border:1px solid #d8dbe1!important;box-shadow:0 12px 30px rgba(28,35,45,.16),inset 0 1px 0 #fff!important}
+ html[data-theme="light"] #kcMobileDock .kc-dock-group-item{color:#4b5059!important}
+ html[data-theme="light"] #kcMobileDock .kc-dock-group-item .dock-icon svg{stroke:#4b5059!important}
+ html[data-theme="light"] #kcMobileDock .kc-dock-group-item.active{background:#e8e9ed!important;color:#17191d!important}
+ html[data-theme="light"] #kcMobileDock .kc-dock-group-item.active .dock-icon svg{stroke:#17191d!important}
+ /* Reserve real scroll space so the dock never covers the last home card. */
+ body.kc-home-screen main{padding-bottom:calc(138px + env(safe-area-inset-bottom,0px))!important}
+ body.kc-home-screen .kc-exact-home{padding-bottom:calc(145px + env(safe-area-inset-bottom,0px))!important}
+ body.kc-home-screen .kc-home-reference-section:last-of-type{margin-bottom:24px!important}
+}
+@media(max-width:390px){
+ body.kc-home-screen .kc-home-theme-toggle{min-width:104px!important;height:40px!important;min-height:40px!important;padding:0 10px!important;font-size:11px!important}
+ body.kc-home-screen .kc-home-featured,body.kc-home-screen .kc-home-featured-track{min-height:330px!important}
+ body.kc-home-screen .kc-home-featured-art{min-height:175px!important;padding:14px!important}
+ body.kc-home-screen .kc-home-featured-glass{margin:0 8px 8px!important;padding:15px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body.kc-home-screen .kc-home-reference-actions button,body.kc-home-screen .kc-exact-quick button{transition:none!important}
+}
