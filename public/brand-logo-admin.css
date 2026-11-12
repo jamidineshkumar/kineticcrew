@@ -70,3 +70,37 @@
 .kc-developer-profile b{font-size:14px;color:var(--text)}
 .kc-developer-profile small{font-size:10px;color:var(--muted)}
 .kc-developer-details>p{font-size:12px;line-height:1.6;color:var(--muted);margin:0}
+
+/* Dock destinations use the same rounded neumorphic button language as the menu control. */
+@media(max-width:900px){
+  #kcMobileDock .kc-dock-home,
+  #kcMobileDock .kc-dock-group-item,
+  #kcMobileDock .kc-dock-group button{
+    box-sizing:border-box!important;
+    border-radius:17px!important;
+    border:1px solid rgba(255,255,255,.11)!important;
+    background:linear-gradient(145deg,rgba(54,56,62,.82),rgba(30,32,37,.88))!important;
+    box-shadow:0 4px 12px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.07)!important;
+    overflow:hidden!important;
+  }
+  #kcMobileDock .kc-dock-home.active,
+  #kcMobileDock .kc-dock-group-item.active,
+  #kcMobileDock .kc-dock-group button.active{
+    border-color:rgba(255,190,157,.38)!important;
+    background:linear-gradient(145deg,rgba(255,151,111,.24),rgba(197,111,211,.21),rgba(115,139,255,.2))!important;
+    box-shadow:0 5px 16px rgba(0,0,0,.2),0 0 15px rgba(221,135,171,.13),inset 0 1px 0 rgba(255,255,255,.15)!important;
+  }
+  html[data-theme="light"] #kcMobileDock .kc-dock-home,
+  html[data-theme="light"] #kcMobileDock .kc-dock-group-item,
+  html[data-theme="light"] #kcMobileDock .kc-dock-group button{
+    border-color:rgba(36,39,45,.12)!important;
+    background:linear-gradient(145deg,#fff,#e9ebef)!important;
+    box-shadow:0 4px 12px rgba(25,30,38,.1),inset 0 1px 0 #fff!important;
+  }
+  html[data-theme="light"] #kcMobileDock .kc-dock-home.active,
+  html[data-theme="light"] #kcMobileDock .kc-dock-group-item.active,
+  html[data-theme="light"] #kcMobileDock .kc-dock-group button.active{
+    border-color:rgba(181,116,147,.3)!important;
+    background:linear-gradient(145deg,rgba(255,178,145,.35),rgba(207,157,221,.3),rgba(150,168,255,.28))!important;
+  }
+}
