@@ -218,16 +218,13 @@ function publicProfilePage(){
  const avatar=p.avatar_url||'';
  const username=p.username||String(p.email||'crew-member').split('@')[0];
  const job=p.profession||p.designation||p.occupation||(founder?'Founder / Super Admin':'Kinetic Crew Member');
- const connections=Number(p.connections_count??S.profileSocial?.followers_count??p.followers_count??0);
- const attended=Number(p.events_attended_count??p.attended_events_count??0);
  const coverStyle=photo?' style="--kc-visitor-cover:url(&quot;'+esc(safeSocialUrl(photo))+'&quot;)"':'';
  const action=self?'<button class="kc-visitor-action" data-view="profile">Edit profile</button>':'<button type="button" class="kc-visitor-action kc-follow-action" data-follow="'+esc(p.auth_id)+'" data-following="'+(following?'true':'false')+'">'+(following?'Following':'Follow')+'</button>';
  return '<main class="kc-visitor-profile kc-visitor-profile-clean">'+
  '<section class="kc-visitor-hero"'+coverStyle+'><div class="kc-visitor-shade"></div><div class="kc-visitor-top"><button class="kc-visitor-back" data-view="people" aria-label="Back to crew">‹</button><div class="kc-visitor-actions"><button class="kc-visitor-share" type="button" data-share-profile aria-label="Share profile">⌯</button>'+action+'</div></div>'+
- '<div class="kc-visitor-identity">'+(avatar?'<img class="kc-visitor-avatar" src="'+esc(avatar)+'" alt="'+esc(p.name||'Crew member')+'">':'<span class="kc-visitor-avatar kc-visitor-avatar-fallback">'+esc(initials(p.name||p.email))+'</span>')+
+ '<div class="kc-visitor-identity">'+(avatar?'<img class="kc-visitor-avatar" src="'+esc(avatar)+'" alt="'+esc(p.name||'Crew member')+'" loading="eager">':'<span class="kc-visitor-avatar kc-visitor-avatar-fallback">'+esc(initials(p.name||p.email))+'</span>')+
  '<h1>'+esc(p.name||'Kinetic Crew Member').toUpperCase()+'</h1><p>@'+esc(username)+'</p><span class="kc-visitor-role">'+esc(job)+'</span></div></section>'+
  (p.bio?'<section class="kc-visitor-about"><span>ABOUT</span><p>'+esc(p.bio)+'</p></section>':'')+
- '<section class="kc-visitor-stats kc-visitor-stats-clean"><article><span class="kc-visitor-stat-icon">♧</span><b>'+connections+'</b><small>Connections</small></article><article><span class="kc-visitor-stat-icon">▣</span><b>'+String(attended).padStart(2,'0')+'</b><small>Events attended</small></article></section>'+
  '</main>';
 }
 function legacyPeoplePage(){const people=S.publicMembers||[];return welcome('Discover the crew','Find your people, open their profiles and follow their journey.')+'<div class="profile-directory">'+(people.length?people.map(m=>'<article class="surface crew-profile-tile"><button class="crew-profile-open" data-open-profile="'+esc(m.auth_id)+'">'+avatarMarkup(m)+'<span><b>'+esc(m.name)+'</b><small>@'+esc(m.username||'crew-member')+'</small></span></button><p>'+esc(m.bio||'Kinetic Crew member')+'</p><div class="crew-profile-stats"><b>'+Number(m.followers_count||0)+' followers</b><span>'+esc(role(m.role))+'</span></div><button class="outline full" data-open-profile="'+esc(m.auth_id)+'">View profile</button></article>').join(''):empty('No crew profiles yet','Crew members will appear here once they have signed in.'))+'</div>';}
