@@ -104,6 +104,13 @@ document.addEventListener('input',event=>{
   if(empty)empty.hidden=visible!==0;
  }
 });
+document.addEventListener('change',event=>{
+ const form=event.target.closest('[data-feature-form="memories"]');
+ if(!form||!event.target.matches('input[name="memory_photo"]'))return;
+ const preview=form.querySelector('.memory-upload-preview'),file=event.target.files?.[0],drop=form.querySelector('.memory-upload-drop');
+ if(preview){if(file){if(preview.dataset.objectUrl)URL.revokeObjectURL(preview.dataset.objectUrl);const url=URL.createObjectURL(file);preview.src=url;preview.dataset.objectUrl=url;preview.hidden=false;}else{preview.removeAttribute('src');preview.hidden=true;}}
+ if(drop){const title=drop.querySelector('b');if(title)title.textContent=file?file.name:'Choose photo from device';}
+});
 document.addEventListener('error',event=>{
  const img=event.target;
  if(!(img instanceof HTMLImageElement))return;
