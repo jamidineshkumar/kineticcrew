@@ -256,7 +256,7 @@ function home(){
   return raw?raw.toUpperCase():'CREW EVENT';
  };
  const slides=[
-  ...homeEvents.map(e=>({kind:'event',view:'events',id:e.id,kicker:'KINETIC CREW · '+category(e),label:e.featured?'FEATURED EVENT':'UPCOMING EVENT',title:e.title||'Upcoming crew event',subtitle:[ds(e.starts_at),e.location||'Venue to be announced'].filter(Boolean).join(' · '),cta:e.registered?'View your ticket':'Explore event',image:photo(e)})),
+  ...homeEvents.map(e=>({kind:'event',view:'events',id:e.id,kicker:'KINETIC CREW · '+category(e),label:new Date(e.starts_at).getTime()>=now?(e.featured?'FEATURED EVENT':'UPCOMING EVENT'):'RECENT CREW EVENT',title:e.title||'Upcoming crew event',subtitle:[ds(e.starts_at),e.location||'Venue to be announced'].filter(Boolean).join(' · '),cta:e.registered?'View your ticket':'Explore event',image:photo(e)})),
   ...rehearsals.slice(0,5).map(item=>({kind:'rehearsal',view:'rehearsals',id:item.id,kicker:'KINETIC CREW · REHEARSAL',label:'UPCOMING REHEARSAL',title:item.title||'Crew rehearsal',subtitle:[dt(item.data.session_at),item.data.location||'Practice location TBA'].filter(Boolean).join(' · '),cta:'View rehearsal',image:safeSocialUrl(item.data.cover_url||item.data.image_url||'')})),
   ...announcements.slice(0,6).map(a=>({kind:'update',view:'notifications',id:a.id,kicker:'KINETIC CREW · IMPORTANT UPDATE',label:'CREW ANNOUNCEMENT',title:a.title||'A note from your crew',subtitle:a.body||a.message||'An important update from Kinetic Crew',cta:'Read update',image:safeSocialUrl(a.image_url||a.cover_url||a.banner_url||'')}))
  ];
@@ -551,8 +551,9 @@ if(S.view==='overview'){
   const show=next=>{current=(next+homeSlides.length)%homeSlides.length;homeSlides.forEach((slide,i)=>slide.classList.toggle('is-active',i===current));homeDots.forEach((dot,i)=>dot.classList.toggle('active',i===current));};
   homeDots.forEach(dot=>dot.addEventListener('click',()=>{show(Number(dot.dataset.homeSlideTo));clearInterval(S.homeUpdateTimer);S.homeUpdateTimer=setInterval(()=>show(current+1),5200);}));
   S.homeUpdateTimer=setInterval(()=>show(current+1),5200);
-  homeCarousel.addEventListener('touchstart',()=>clearInterval(S.homeUpdateTimer),{passive:true});
-  homeCarousel.addEventListener('touchend',()=>{clearInterval(S.homeUpdateTimer);S.homeUpdateTimer=setInterval(()=>show(current+1),5200);},{passive:true});
+  let swipeStartX=0,swipeStartY=0;
+  homeCarousel.addEventListener('touchstart',event=>{clearInterval(S.homeUpdateTimer);const touch=event.changedTouches?.[0];swipeStartX=touch?.clientX||0;swipeStartY=touch?.clientY||0;},{passive:true});
+  homeCarousel.addEventListener('touchend',event=>{const touch=event.changedTouches?.[0],dx=(touch?.clientX||0)-swipeStartX,dy=(touch?.clientY||0)-swipeStartY;if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy))show(current+(dx<0?1:-1));clearInterval(S.homeUpdateTimer);S.homeUpdateTimer=setInterval(()=>show(current+1),5200);},{passive:true});
  }
  const rail=document.querySelector('.kc-home-updates'),track=rail?.querySelector('.kc-home-updates-track'),dots=[...(rail?.querySelectorAll('.kc-home-update-dots span')||[])],count=dots.length;
  if(track&&count>1){
