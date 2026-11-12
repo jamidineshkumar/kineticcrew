@@ -57,3 +57,25 @@ html[data-theme="light"] #kcMobileDock .kc-dock-group-item{color:#555965!importa
 html[data-theme="light"] #kcMobileDock .kc-dock-home.active,
 html[data-theme="light"] #kcMobileDock .kc-dock-group-item.active{color:#25212d!important}
 @media(prefers-reduced-motion:reduce){#kcMobileDock *{transition:none!important;animation:none!important}}
+
+/* Prevent persistent Android Chrome tap-focus ring on the selected dock item. */
+@media(max-width:900px){
+ #kcMobileDock button:focus{outline:none!important}
+ #kcMobileDock button:focus:not(:focus-visible){
+  outline:none!important;
+  box-shadow:none!important;
+ }
+ #kcMobileDock .kc-dock-home.active,
+ #kcMobileDock .kc-dock-group-item.active{
+  outline:0!important;
+  color:#fff!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 0 16px rgba(220,93,153,.12)!important;
+ }
+ #kcMobileDock .kc-dock-home.active .dock-label,
+ #kcMobileDock .kc-dock-group-item.active .dock-label{color:inherit!important}
+ #kcMobileDock button:focus-visible{
+  outline:2px solid rgba(236,174,111,.9)!important;outline-offset:2px!important;
+ }
+}
+html[data-theme="light"] #kcMobileDock .kc-dock-home.active,
+html[data-theme="light"] #kcMobileDock .kc-dock-group-item.active{color:#25212d!important}
