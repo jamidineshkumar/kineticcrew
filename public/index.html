@@ -32,7 +32,7 @@
 <link rel="stylesheet" href="kc-dock-reference.css?v=20261112-glassdock1">
 <link rel="stylesheet" href="kc-dock-four-reference.css?v=20261112-tapmotion2">
 <link rel="stylesheet" href="gram-onboarding.css?v=20261112-gramtutorial1">
-</head>
+<link rel="stylesheet" href="kc-header-alignment-fix.css?v=20261112-headerfix1">\n</head>
 <body>
 <div id="appRoot">
   <div class="shell">
@@ -101,5 +101,8 @@ window.addEventListener('error',function(e){
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
 </script>
-\n</body>
+<script>
+(()=>{const clean=root=>{const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];while(w.nextNode()){const n=w.currentNode;if(/^(?:\\s|\\\\[nr])+$/u.test(n.nodeValue||'')&&(n.nodeValue||'').includes('\\\\'))nodes.push(n);}nodes.forEach(n=>n.remove());};clean(document.body);new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType===Node.TEXT_NODE){if(/^(?:\\s|\\\\[nr])+$/u.test(n.nodeValue||'')&&(n.nodeValue||'').includes('\\\\'))n.remove();}else if(n.nodeType===Node.ELEMENT_NODE)clean(n);}))).observe(document.body,{childList:true,subtree:true});})();
+</script>
+</body>
 </html>
