@@ -53,3 +53,19 @@
  .kc-more-other-icon{width:46px;height:46px;flex-basis:46px;padding:12px}
  .kc-more-other b{font-size:14px;overflow-wrap:anywhere}
 }
+
+/* Six rotating Kinetic Crew identity intros — replaces static logo artwork. */
+.kc-more-logo-wrap.kc-more-intro{height:clamp(170px,25vw,220px)!important;min-height:clamp(170px,25vw,220px)!important;max-height:clamp(170px,25vw,220px)!important;margin:10px 0 28px!important;display:flex;align-items:center;justify-content:center;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse at 82% 15%,rgba(244,91,133,.12),transparent 48%),radial-gradient(ellipse at 15% 90%,rgba(29,197,213,.10),transparent 46%),linear-gradient(135deg,#202127,#17181e 65%,#202027)!important;border:1px solid rgba(255,255,255,.09);border-radius:26px}
+.kc-more-intro-track{position:relative;width:100%;height:100%;overflow:hidden}
+.kc-more-intro-slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:18px 14px;opacity:0;transform:translateY(18px) scale(.985);animation:kc-intro-cycle 30s infinite both}
+.kc-more-intro-slide:nth-child(1){animation-delay:0s}.kc-more-intro-slide:nth-child(2){animation-delay:5s}.kc-more-intro-slide:nth-child(3){animation-delay:10s}.kc-more-intro-slide:nth-child(4){animation-delay:15s}.kc-more-intro-slide:nth-child(5){animation-delay:20s}.kc-more-intro-slide:nth-child(6){animation-delay:25s}
+.kc-intro-index{margin-bottom:10px;color:#c3a49b;font-size:9px;font-weight:800;letter-spacing:.22em}
+.kc-intro-line{font-size:clamp(29px,6vw,49px);line-height:.94;letter-spacing:-.065em;font-weight:900;color:#f7f4f1;text-shadow:0 5px 24px #0004}
+.kc-intro-line em{font-style:normal;background:linear-gradient(95deg,#ff4d9b,#ffb35d 48%,#31d4d4);background-clip:text;-webkit-background-clip:text;color:transparent}
+.kc-more-intro-slide small{margin-top:12px;color:#bcb7bd;font-size:11px;letter-spacing:.025em}
+.kc-more-intro-progress{position:absolute;z-index:3;left:22%;right:22%;bottom:15px;height:2px;border-radius:9px;background:#ffffff20;overflow:hidden}
+.kc-more-intro-progress i{display:block;width:100%;height:100%;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,#ff4d9b,#ffb35d,#31d4d4);animation:kc-intro-progress 30s linear infinite}
+@keyframes kc-intro-cycle{0%{opacity:0;transform:translateY(18px) scale(.985)}2.5%{opacity:1;transform:translateY(0) scale(1)}14%{opacity:1;transform:translateY(0) scale(1)}16.66%{opacity:0;transform:translateY(-14px) scale(1.01)}100%{opacity:0;transform:translateY(-14px) scale(1.01)}}
+@keyframes kc-intro-progress{to{transform:scaleX(1)}}
+@media(max-width:560px){.kc-more-logo-wrap.kc-more-intro{height:165px!important;min-height:165px!important;max-height:165px!important;margin:9px 0 22px!important}.kc-intro-line{font-size:clamp(28px,8vw,40px)}.kc-more-intro-slide small{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.kc-more-intro-slide{animation:none;opacity:0}.kc-more-intro-slide:first-child{opacity:1;transform:none}.kc-more-intro-progress{display:none}}
