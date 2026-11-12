@@ -249,3 +249,34 @@
 @media(prefers-reduced-motion:reduce){
  :root:not([data-theme="light"]) *{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+
+/* Mobile topbar: centered floating frame with balanced left/right controls. */
+@media(max-width:900px){
+  header.kc-mobile-topbar{
+    box-sizing:border-box!important;
+    width:calc(100% - 36px)!important;
+    max-width:760px!important;
+    min-width:0!important;
+    margin:10px auto 12px!important;
+    padding-inline:16px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+  }
+  header.kc-mobile-topbar #menuToggle.kc-menu-button{
+    flex:0 0 48px!important;
+    margin-inline:0!important;
+  }
+  header.kc-mobile-topbar .kc-header-actions{
+    flex:0 0 auto!important;
+    margin-inline:0!important;
+    margin-left:auto!important;
+    justify-content:flex-end!important;
+  }
+}
+@media(max-width:380px){
+  header.kc-mobile-topbar{
+    width:calc(100% - 24px)!important;
+    padding-inline:12px!important;
+  }
+}
