@@ -1,0 +1,92 @@
+/* Kinetic Crew global editorial typography — shared across every page title. */
+:root{
+ --kc-editorial-coral:#ff9275;
+ --kc-editorial-gradient:linear-gradient(100deg,#ffc1a8 0%,#ff9b79 48%,#ff572f 100%);
+}
+.content .welcome h1,
+.content>header h1,
+.content>section>header h1,
+.kce-events .kce-events-head h1,
+.kce-event-detail .kce-detail-content h1,
+.kc-attendance-home .kc-attendance-heading h1,
+.kc-feed-page .kc-feed-top h1,
+.kc-fun-hub .kc-fun-hub-head h1,
+.kc-more-reference .kc-more-reference-header h1{
+ color:#f5f4f2!important;
+ font-size:clamp(38px,6.5vw,76px)!important;
+ font-weight:850!important;
+ line-height:.98!important;
+ letter-spacing:-.075em!important;
+ margin:12px 0 12px!important;
+ text-wrap:balance;
+}
+.content .welcome h1 em,
+.content>header h1 em,
+.content>section>header h1 em,
+.kce-events .kce-events-head h1 em,
+.kce-event-detail .kce-detail-content h1 em,
+.kc-attendance-home .kc-attendance-heading h1 em,
+.kc-feed-page .kc-feed-top h1 em,
+.kc-fun-hub .kc-fun-hub-head h1 em,
+.kc-more-reference .kc-more-reference-header h1 em{
+ font-style:normal!important;
+ font-weight:850!important;
+ color:transparent!important;
+ background:var(--kc-editorial-gradient)!important;
+ -webkit-background-clip:text!important;
+ background-clip:text!important;
+}
+.content .welcome .eyebrow,
+.content>header .eyebrow,
+.content>section>header .eyebrow,
+.kce-events .kce-eyebrow,
+.kce-event-detail .kce-eyebrow,
+.kc-attendance-home .kc-attendance-kicker,
+.kc-feed-page .kc-feed-kicker,
+.kc-fun-hub .kc-fun-kicker{
+ color:var(--kc-editorial-coral)!important;
+ font-size:clamp(9px,1.15vw,12px)!important;
+ font-weight:800!important;
+ letter-spacing:.2em!important;
+ line-height:1.5!important;
+ text-transform:uppercase!important;
+}
+.content .welcome .eyedot{
+ background:var(--kc-editorial-coral)!important;
+ box-shadow:0 0 0 4px rgba(255,146,117,.13)!important;
+}
+.content .welcome p,
+.kce-events .kce-events-head p,
+.kce-event-detail .kce-detail-content>p,
+.kc-feed-page .kc-feed-top p,
+.kc-fun-hub .kc-fun-hub-head p{
+ color:#aaa5a3!important;
+ font-size:clamp(13px,1.5vw,17px)!important;
+ line-height:1.6!important;
+}
+.kc-more-reference .kc-more-reference-header h1{
+ font-size:clamp(32px,5.5vw,54px)!important;
+ margin:0!important;
+}
+@media(max-width:600px){
+ .content .welcome h1,
+ .content>header h1,
+ .content>section>header h1,
+ .kce-events .kce-events-head h1,
+ .kce-event-detail .kce-detail-content h1,
+ .kc-attendance-home .kc-attendance-heading h1,
+ .kc-feed-page .kc-feed-top h1,
+ .kc-fun-hub .kc-fun-hub-head h1{
+  font-size:clamp(34px,9vw,46px)!important;
+  line-height:1.01!important;
+ }
+ .content .welcome p{font-size:14px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .content .welcome h1 em,.content>header h1 em,.content>section>header h1 em,
+ .kce-events .kce-events-head h1 em,.kce-event-detail .kce-detail-content h1 em,
+ .kc-attendance-home .kc-attendance-heading h1 em,.kc-feed-page .kc-feed-top h1 em,
+ .kc-fun-hub .kc-fun-hub-head h1 em,.kc-more-reference .kc-more-reference-header h1 em{
+  animation:none!important;
+ }
+}
