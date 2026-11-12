@@ -1,0 +1,24 @@
+/* Homepage uses the existing official Kinetic Crew artwork instead of a text monogram. */
+body.kc-home-screen .kc-home-greeting-mark{
+ overflow:hidden!important;
+ transform:none!important;
+ padding:5px!important;
+}
+body.kc-home-screen .kc-home-greeting-logo{
+ display:block!important;
+ width:100%!important;
+ height:100%!important;
+ max-width:100%!important;
+ max-height:100%!important;
+ object-fit:contain!important;
+ object-position:center!important;
+ border-radius:20px!important;
+ background:#05050b!important;
+ box-shadow:0 4px 18px rgba(0,0,0,.28)!important;
+}
+body.kc-home-screen .kc-home-greeting-mark:after{content:none!important}
+@media(max-width:390px){
+ body.kc-home-screen .kc-home-greeting-mark{padding:4px!important}
+ body.kc-home-screen .kc-home-greeting-logo{border-radius:17px!important}
+}
+/* The dock is the single primary destination for Kinetic Gram. */
