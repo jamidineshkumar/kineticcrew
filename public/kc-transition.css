@@ -1,17 +1,7 @@
 /* Kinetic Crew reference transition: animated particle reveal, no fabricated percentage. */
-.kc-transition-overlay{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#030305;opacity:1;visibility:visible;transition:opacity .58s cubic-bezier(.2,.7,.2,1),visibility .58s;overflow:hidden}
-.kc-transition-overlay.is-leaving{opacity:0;visibility:hidden;pointer-events:none}
-.kc-transition-core{position:relative;width:min(76vw,360px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(255,139,54,.08),transparent 28%);filter:drop-shadow(0 0 22px rgba(207,45,133,.12));animation:kc-core-breathe 2.6s ease-in-out infinite}
-.kc-transition-core:before{content:"";position:absolute;inset:0;border-radius:50%;background-image:radial-gradient(circle,rgba(246,125,60,.95) 1.7px,transparent 2.3px),radial-gradient(circle,rgba(205,73,133,.9) 1.8px,transparent 2.4px),radial-gradient(circle,rgba(143,81,158,.86) 1.5px,transparent 2.2px);background-size:22px 22px,22px 22px,22px 22px;background-position:0 0,11px 11px,5px 16px;mask-image:radial-gradient(ellipse at center,#000 0 34%,rgba(0,0,0,.8) 45%,transparent 72%);-webkit-mask-image:radial-gradient(ellipse at center,#000 0 34%,rgba(0,0,0,.8) 45%,transparent 72%);animation:kc-particle-pulse 2.8s ease-in-out infinite}
-.kc-transition-core:after{content:"";position:absolute;inset:15%;border-radius:50%;background:radial-gradient(circle at 50% 48%,rgba(255,136,50,.22),transparent 32%),radial-gradient(circle at 50% 50%,rgba(202,48,132,.15),transparent 62%);filter:blur(14px);animation:kc-glow-breathe 2.2s ease-in-out infinite}
-.kc-transition-label{position:absolute;top:calc(50% + min(38vw,180px));left:0;right:0;text-align:center;color:rgba(245,235,248,.78);font:500 13px/1.4 system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase}
-.kc-transition-overlay.is-leaving .kc-transition-core{transform:scale(1.12);transition:transform .58s cubic-bezier(.2,.7,.2,1)}
-@keyframes kc-particle-pulse{0%,100%{transform:scale(.88) rotate(0deg);opacity:.64}50%{transform:scale(1.04) rotate(8deg);opacity:1}}
-@keyframes kc-core-breathe{0%,100%{transform:scale(.96)}50%{transform:scale(1.025)}}
-@keyframes kc-glow-breathe{0%,100%{opacity:.48;transform:scale(.9)}50%{opacity:1;transform:scale(1.08)}}
 #app.kc-page-enter{animation:kc-page-reveal .42s cubic-bezier(.2,.72,.2,1) both}
 @keyframes kc-page-reveal{from{opacity:0;transform:translateY(9px) scale(.992);filter:blur(5px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
 .kc-exact-event-image{animation:kc-image-reveal .7s ease both}
 @keyframes kc-image-reveal{from{opacity:.25;filter:blur(9px)}to{opacity:1;filter:blur(0)}}
 img.kc-image-reveal{animation:kc-image-reveal .55s ease both}
-@media(prefers-reduced-motion:reduce){.kc-transition-overlay,.kc-transition-core,.kc-transition-core:before,.kc-transition-core:after,#app.kc-page-enter,.kc-exact-event-image,img.kc-image-reveal{animation:none!important;transition:none!important}.kc-transition-overlay{display:none!important}}
+@media(prefers-reduced-motion:reduce){#app.kc-page-enter,.kc-exact-event-image,img.kc-image-reveal{animation:none!important;transition:none!important}}.kc-transition-overlay{display:none!important}}
