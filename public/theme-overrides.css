@@ -1009,3 +1009,111 @@ body:has(.crop-backdrop) .kc-bottom-nav{visibility:hidden!important;pointer-even
 .kc-share-draft-preview{margin:10px 0;padding:10px;border:1px solid #f09a7255;border-radius:14px;background:#ffffff08}
 .kc-share-draft-preview>span{display:block;margin-bottom:8px;color:#f0b07f;font-size:8px;font-weight:850;letter-spacing:.14em}
 .kc-share-draft-preview>small{display:block;margin-top:8px;color:#c3b6b0;font-size:9px;line-height:1.45}
+
+/* Attendance UX refresh — clear hierarchy, readable mobile controls, compact roster rows. */
+.kc-attendance-home{
+ --att-ink:#f5f4f2;--att-muted:#aaa8a5;--att-line:rgba(255,255,255,.10);
+ max-width:980px;padding:clamp(18px,3vw,30px) clamp(14px,2.5vw,24px) calc(132px + env(safe-area-inset-bottom));
+ border:1px solid rgba(255,255,255,.06);border-radius:26px;
+ background:radial-gradient(ellipse at 90% 0%,rgba(224,133,85,.10),transparent 35%),linear-gradient(155deg,#1d1e22,#151619 70%,#191a1e);
+}
+.kc-attendance-heading{align-items:center;margin:4px 0 24px}
+.kc-attendance-kicker{font-size:10px;letter-spacing:.14em;color:#e5ad86}
+.kc-attendance-heading h1{font-size:clamp(30px,5vw,42px);letter-spacing:-.045em;margin:10px 0 8px}
+.kc-attendance-heading p{font-size:13px;line-height:1.55;color:#b6b3b0}
+.kc-attendance-live{font-size:9px;padding:9px 12px;white-space:nowrap}
+.kc-attendance-quick{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.kc-attendance-task{min-height:78px;padding:14px;border-radius:17px;gap:12px;background:linear-gradient(145deg,#292a2f,#202126);border-color:#ffffff12;box-shadow:0 7px 20px #0002;backdrop-filter:none}
+.kc-attendance-task b{font-size:13px;font-weight:650}
+.kc-attendance-task small{font-size:11px;color:#b9b6b3}
+.kc-task-icon{width:38px;height:38px;flex-basis:38px;border-radius:13px;font-size:18px;background:linear-gradient(145deg,#e8b48f,#bd7654);color:#241813}
+.kc-task-otp .kc-task-icon{background:linear-gradient(145deg,#d9c6b8,#9d8172)}
+.kc-task-roster .kc-task-icon{background:linear-gradient(145deg,#c1d3cb,#7b9c8d)}
+.kc-attendance-next,.kc-attendance-summary,.kc-attendance-verify,.kc-attendance-roster{margin-top:14px;padding:20px;border-radius:20px;background:#202126;border:1px solid #ffffff10;box-shadow:0 8px 24px #0002;backdrop-filter:none}
+.kc-attendance-next-head{margin-bottom:14px}
+.kc-attendance-event-count{font-size:10px;color:#aaa8a5}
+.kc-attendance-event-select{min-height:54px;padding:0 15px;border-radius:14px;background:#17181c;border-color:#ffffff18;color:#e6b08c}
+.kc-attendance-event-select select{font-size:14px;color:#f4f1ed}
+.kc-attendance-event-meta{padding:14px 2px 0;gap:6px}
+.kc-attendance-event-meta b{font-size:16px;font-weight:650}
+.kc-attendance-event-meta small{font-size:12px;color:#aaa8a5;line-height:1.5}
+.kc-attendance-summary-head h2{font-size:34px}
+.kc-attendance-summary-head h2 small{font-size:13px}
+.kc-attendance-lock{font-size:9px;padding:8px 11px}
+.kc-attendance-progress{height:9px;margin:16px 0}
+.kc-attendance-stat-grid{gap:10px}
+.kc-attendance-stat-grid>div{padding:13px;border-radius:13px;background:#17181c;border-color:#ffffff0d}
+.kc-attendance-stat-grid b{font-size:23px}
+.kc-attendance-stat-grid small{font-size:11px;color:#aaa8a5}
+.kc-attendance-empty h2{font-size:23px}
+.kc-attendance-empty p{font-size:13px;line-height:1.55;color:#b6b3b0}
+.kc-attendance-section-title{align-items:center;margin-bottom:17px}
+.kc-attendance-section-title h2{font-size:22px;margin:7px 0 5px}
+.kc-attendance-section-title p{font-size:12px;line-height:1.5;color:#aaa8a5}
+.kc-attendance-round-icon{width:44px;height:44px;border-radius:14px}
+.kc-attendance-otp-form{gap:12px}
+.kc-attendance-otp-form label{gap:8px}
+.kc-attendance-otp-form label span{font-size:11px;color:#c4bfba}
+.kc-attendance-otp-form input,.kc-attendance-search input{min-height:50px;padding:0 14px;border-radius:13px;background:#17181c;border-color:#ffffff18;color:#fff;font-size:14px}
+.kc-attendance-verify-btn,.kc-attendance-scan-btn{min-height:50px;border-radius:13px;font-size:13px;font-weight:700}
+.kc-attendance-scan-btn{margin-top:4px}
+.kc-attendance-note{font-size:11px;line-height:1.55;color:#aaa8a5}
+.kc-attendance-search{min-height:48px;margin:14px 0;padding:0 13px;border-radius:13px;background:#17181c;border-color:#ffffff18}
+.kc-attendance-search input{min-height:46px;font-size:13px}
+.kc-attendance-export{min-height:40px;padding:0 14px;border-radius:12px;font-size:11px}
+.kc-attendance-roster .attendance-rosterrow{grid-template-columns:42px minmax(0,1fr);gap:12px;padding:15px 0;border-bottom-color:#ffffff12}
+.kc-attendance-roster .attendance-rosterrow .avatar{width:40px;height:40px}
+.kc-attendance-roster .rosterperson{display:grid;gap:4px}
+.kc-attendance-roster .rosterperson b{font-size:13px}
+.kc-attendance-roster .rosterperson small{font-size:11px;color:#aaa8a5;overflow-wrap:anywhere}
+.kc-attendance-roster .attendance-status-actions{grid-column:2;gap:7px;margin-top:2px}
+.kc-attendance-roster .attendance-status-btn{min-height:34px;padding:0 12px;border-radius:10px;font-size:10px}
+.kc-attendance-finalize{gap:12px;margin-top:18px;padding:16px;border-radius:15px;background:#17181c}
+.kc-attendance-finalize p{font-size:11px;line-height:1.55;color:#b7b2ad}
+.kc-attendance-finalize>button:first-of-type{min-height:48px;border-radius:13px;font-size:12px}
+.kc-attendance-reopen{min-height:44px;border-radius:12px;font-size:11px}
+.kc-attendance-audit{margin-top:22px}
+.kc-attendance-audit h3{font-size:17px}
+.kc-attendance-audit .attendance-audit-row{padding:13px 0;gap:14px}
+.kc-attendance-audit .attendance-audit-row span{gap:5px;font-size:11px}
+.kc-attendance-audit .attendance-audit-row small{font-size:10px;color:#aaa8a5}
+@media(max-width:600px){
+ .kc-attendance-home{padding:18px 14px calc(128px + env(safe-area-inset-bottom));border-radius:0;border-left:0;border-right:0}
+ .kc-attendance-heading{align-items:flex-start;gap:10px;margin:4px 0 19px}
+ .kc-attendance-heading h1{font-size:31px;line-height:1.08}
+ .kc-attendance-heading p{font-size:12px;max-width:290px}
+ .kc-attendance-live{font-size:8px;padding:8px 9px;margin-top:2px}
+ .kc-attendance-quick{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+ .kc-attendance-task{min-height:82px;display:grid;grid-template-columns:30px minmax(0,1fr);gap:7px;padding:10px;border-radius:15px}
+ .kc-task-icon{width:30px;height:30px;flex-basis:30px;border-radius:10px;font-size:15px}
+ .kc-attendance-task b{font-size:11px;line-height:1.2}
+ .kc-attendance-task small{font-size:9px;line-height:1.25}
+ .kc-attendance-task>i{display:none}
+ .kc-attendance-next,.kc-attendance-summary,.kc-attendance-verify,.kc-attendance-roster{padding:16px;margin-top:12px;border-radius:18px}
+ .kc-attendance-event-select{min-height:52px}
+ .kc-attendance-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .kc-attendance-stat-grid>div{padding:12px}
+ .kc-attendance-stat-grid b{font-size:22px}
+ .kc-attendance-stat-grid small{font-size:11px}
+ .kc-attendance-section-title h2{font-size:20px}
+ .kc-attendance-section-title p{font-size:11px}
+ .kc-attendance-otp-form{grid-template-columns:1fr}
+ .kc-attendance-verify-btn{grid-column:1}
+ .kc-attendance-roster .attendance-rosterrow{grid-template-columns:38px minmax(0,1fr);gap:10px;padding:14px 0}
+ .kc-attendance-roster .attendance-rosterrow .avatar{width:36px;height:36px}
+ .kc-attendance-roster .rosterperson b{font-size:12px}
+ .kc-attendance-roster .rosterperson small{font-size:10px}
+ .kc-attendance-roster .attendance-status-actions{gap:6px}
+ .kc-attendance-roster .attendance-status-btn{min-height:36px;padding:0 10px;font-size:10px}
+ .kc-attendance-export{min-height:38px;padding:0 11px}
+ .kc-attendance-audit .attendance-audit-row{align-items:flex-start}
+}
+@media(max-width:370px){
+ .kc-attendance-live{font-size:7px;padding:7px}
+ .kc-attendance-task{padding:8px;grid-template-columns:26px minmax(0,1fr)}
+ .kc-task-icon{width:26px;height:26px;flex-basis:26px}
+ .kc-attendance-task b{font-size:10px}
+ .kc-attendance-task small{font-size:8px}
+ .kc-attendance-roster .attendance-status-btn{padding:0 8px;font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){.kc-attendance-task{transition:none!important}}
