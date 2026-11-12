@@ -108,3 +108,7 @@
  .kc-home-featured-brandmark{right:16px!important;bottom:16px!important;width:76px!important;height:76px!important;border-radius:18px!important}
 }
 @media(prefers-reduced-motion:reduce){.kc-home-featured-brandmark{transition:none!important}}
+
+
+/* The featured carousel keeps its visual progression dots; hide the numeric counter. */
+.kc-home-featured-count{display:none!important}
