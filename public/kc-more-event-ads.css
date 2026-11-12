@@ -208,3 +208,20 @@
  .kc-brand-intro-glow{animation:none!important}
  .kc-brand-intro-slide{transition:none!important}
 }
+
+/* Prevent Android text-clipping from turning the animated CREW wordmark into a gradient block. */
+.kc-brand-intro-slide h2:not(.kc-brand-content-title) em{
+ display:inline-block!important;position:relative!important;width:auto!important;min-width:0!important;
+ padding:0!important;margin:0!important;white-space:nowrap!important;
+ background-image:linear-gradient(100deg,#f24f9c 0%,#ffb46d 28%,#43d1d1 56%,#f24f9c 82%,#ffb46d 100%)!important;
+ background-size:240% 100%!important;background-clip:text!important;-webkit-background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;color:#ffb46d!important;
+ -webkit-box-decoration-break:clone;box-decoration-break:clone;
+ animation:kcBrandWordGradient 4s linear infinite!important;
+}
+@supports not (-webkit-background-clip:text){
+ .kc-brand-intro-slide h2:not(.kc-brand-content-title) em{
+  background:none!important;-webkit-text-fill-color:#ffb46d!important;color:#ffb46d!important;
+  text-shadow:0 0 18px rgba(242,79,156,.22);
+ }
+}
