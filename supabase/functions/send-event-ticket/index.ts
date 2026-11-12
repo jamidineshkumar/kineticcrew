@@ -62,8 +62,46 @@ Deno.serve(async(req)=>{
    const payload="KC_EVENT_ATTENDANCE:"+eventId+":"+recipient.email;
    const qrDataUrl=await QRCode.toDataURL(payload,{width:360,margin:2,color:{dark:"#17201d",light:"#f3ecd9"},errorCorrectionLevel:"M"});
    const qrBase64=qrDataUrl.split(",")[1];
-   const passId=String(event.id).replace(/-/g,"").slice(-8).toUpperCase();
-   const html=`<!doctype html><html><body style="margin:0;padding:28px 12px;background:#111715;font-family:Arial,sans-serif;color:#f5efdf"><div style="max-width:560px;margin:auto;border:1px solid #b79a4c;border-radius:24px;overflow:hidden;background:linear-gradient(145deg,#202722,#111715)"><div style="padding:30px 24px;text-align:center;background:linear-gradient(120deg,#143e39,#40331a)"><div style="font-size:11px;letter-spacing:4px;color:#e6c66c;font-weight:bold">KINETIC CREW · OFFICIAL PASS</div><div style="font-size:12px;letter-spacing:3px;color:#c9c2ae;margin-top:22px">MY TICKET</div><h1 style="font-size:30px;line-height:1.15;margin:12px 0 0;color:#fff8e8">${esc(event.title)}</h1></div><div style="margin:22px 22px 0;padding:18px;border:1px solid #b99c50;border-radius:18px;text-align:center;background:#17201d"><div style="font-size:11px;letter-spacing:2px;color:#d8cba9">PASS ID · ${passId}</div><div style="border-top:1px dashed #c8b987;margin:16px 0"></div><img src="cid:ticket-qr.png" width="220" height="220" alt="Event entry QR code" style="display:block;width:220px;height:220px;margin:auto;background:#f3ecd9;border-radius:10px;padding:8px"><div style="font-size:9px;letter-spacing:2px;color:#aab5a8;margin-top:12px">SCAN AT THE EVENT ENTRANCE</div></div><div style="padding:25px 28px;display:grid;grid-template-columns:1fr 1fr;gap:18px"><div><div style="font-size:10px;letter-spacing:2px;color:#aaa99c">NAME</div><b style="display:block;margin-top:7px">${esc(recipient.name)}</b></div><div><div style="font-size:10px;letter-spacing:2px;color:#aaa99c">DATE</div><b style="display:block;margin-top:7px">${esc(dateLabel(event.starts_at))}</b></div><div><div style="font-size:10px;letter-spacing:2px;color:#aaa99c">VENUE</div><b style="display:block;margin-top:7px">${esc(event.location||"To be announced")}</b></div><div><div style="font-size:10px;letter-spacing:2px;color:#aaa99c">TIME</div><b style="display:block;margin-top:7px">${esc(timeLabel(event.starts_at))}</b></div></div><div style="padding:0 26px 22px"><div style="border-top:1px dashed #8e907f;padding-top:15px;font-size:12px;color:#b9b9a9">● VALID PASS <span style="float:right">UNIQUE TO YOUR ACCOUNT</span></div></div><div style="padding:0 26px 28px"><h2 style="font-size:19px;color:#e9c76b">${esc(greeting)}</h2><p style="font-size:14px;line-height:1.65;color:#d0d0c5;white-space:pre-line">${esc(message)}</p><p style="font-size:13px;color:#bcb8a8">${esc(footer)}</p><div style="margin-top:24px;padding-top:16px;border-top:1px solid #ffffff22;text-align:center;color:#8d9a90;font-size:10px;letter-spacing:3px">KINETIC CREW · BUILT TO MOVE TOGETHER</div></div></div></body></html>`;
+   const passDigest=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(payload));
+   const passId=Array.from(new Uint8Array(passDigest)).slice(0,4).map(v=>v.toString(16).padStart(2,"0")).join("").toUpperCase();
+   const eventTitle=String(event.title||"Kinetic Crew Event").trim()||"Kinetic Crew Event";
+   const eventDate=dateLabel(event.starts_at);
+   const eventTime=timeLabel(event.starts_at);
+   const eventVenue=String(event.location||"To be announced");
+   const html=`<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:20px 10px;background:#0b1110;font-family:Arial,Helvetica,sans-serif;color:#f4f0e5">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse"><tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;border-collapse:separate;border-spacing:0;background:#121b19;border:1px solid #b69a50;border-radius:24px;overflow:hidden">
+<tr><td style="padding:24px 24px 20px;background:linear-gradient(120deg,#153b36,#282519);text-align:left">
+<div style="font-size:10px;letter-spacing:3px;color:#d7bd75;font-weight:bold">KINETIC CREW&nbsp; / &nbsp;OFFICIAL ENTRY</div>
+<div style="font-size:11px;letter-spacing:4px;color:#c7c4b4;margin-top:20px">MY TICKET</div>
+<div style="font-size:27px;line-height:1.12;font-weight:700;color:#fff8e8;margin-top:8px;word-break:break-word">${esc(eventTitle)}</div>
+</td></tr>
+<tr><td style="padding:18px 18px 0">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #77683c;border-radius:18px;background:#17211e">
+<tr><td style="padding:14px 14px 10px;text-align:center">
+<div style="font-size:10px;letter-spacing:2px;color:#d9cda9">PASS ID&nbsp; · &nbsp;${passId}</div>
+</td></tr>
+<tr><td style="padding:0 14px 12px;text-align:center">
+<img src="cid:ticket-qr.png" width="164" height="164" alt="Personal event entry QR code" style="display:block;width:164px;height:164px;max-width:100%;margin:0 auto;background:#f3ecd9;border:7px solid #302b1b;border-radius:12px">
+<div style="font-size:9px;letter-spacing:2px;color:#b8c0b5;margin-top:10px">SCAN AT THE EVENT ENTRANCE</div>
+</td></tr></table>
+</td></tr>
+<tr><td style="padding:20px 20px 8px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+<tr><td width="50%" valign="top" style="padding:0 8px 15px 0"><div style="font-size:9px;letter-spacing:2px;color:#aeb4a8">NAME</div><div style="font-size:14px;line-height:1.4;font-weight:bold;color:#f4f0e5;padding-top:5px">${esc(recipient.name)}</div></td>
+<td width="50%" valign="top" style="padding:0 0 15px 8px"><div style="font-size:9px;letter-spacing:2px;color:#aeb4a8">DATE</div><div style="font-size:14px;line-height:1.4;font-weight:bold;color:#f4f0e5;padding-top:5px">${esc(eventDate)}</div></td></tr>
+<tr><td width="50%" valign="top" style="padding:0 8px 10px 0"><div style="font-size:9px;letter-spacing:2px;color:#aeb4a8">VENUE</div><div style="font-size:14px;line-height:1.4;font-weight:bold;color:#f4f0e5;padding-top:5px">${esc(eventVenue)}</div></td>
+<td width="50%" valign="top" style="padding:0 0 10px 8px"><div style="font-size:9px;letter-spacing:2px;color:#aeb4a8">TIME</div><div style="font-size:14px;line-height:1.4;font-weight:bold;color:#f4f0e5;padding-top:5px">${esc(eventTime)}</div></td></tr>
+</table>
+</td></tr>
+<tr><td style="padding:0 20px 18px"><div style="border-top:1px dashed #777b68;padding-top:12px;font-size:10px;letter-spacing:1px;color:#c5c6b8">● VALID PERSONAL PASS <span style="float:right">ONE MEMBER · ONE QR</span></div></td></tr>
+<tr><td style="padding:0 20px 22px">
+<div style="font-size:17px;font-weight:bold;color:#dfc477;margin-bottom:8px">${esc(greeting)}</div>
+<div style="font-size:13px;line-height:1.65;color:#d0d3c8;white-space:pre-line">${esc(message)}</div>
+<div style="font-size:12px;line-height:1.5;color:#b9b9a9;margin-top:12px">${esc(footer)}</div>
+<div style="border-top:1px solid #ffffff22;margin-top:20px;padding-top:14px;text-align:center;font-size:9px;letter-spacing:3px;color:#9ba79e">KINETIC CREW&nbsp; · &nbsp;BUILT TO MOVE TOGETHER</div>
+</td></tr></table>
+</td></tr></table></body></html>`;
    try{
     await mailer.sendMail({from:'"KINETIC CREW" <'+smtpUser+'>',to:recipient.email,subject,html,attachments:[{filename:"kinetic-crew-ticket-qr.png",content:qrBase64,encoding:"base64",cid:"ticket-qr.png"}]});
     sendResults.push({email:recipient.email,ok:true});
