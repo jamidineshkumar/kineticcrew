@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="kc-home-glass-tiles.css?v=20261111-tileglass1">
 <link rel="stylesheet" href="kc-exact-home.css?v=20261112-home-polish2">
 <link rel="stylesheet" href="more-menu-reference.css?v=20261111-more-ref3">
-<link rel="stylesheet" href="kc-more-neumorphic.css?v=20261112-kc-watermark1">
+<link rel="stylesheet" href="kc-more-neumorphic.css?v=20261112-kc-watermark2">
 <link rel="stylesheet" href="kc-transition.css?v=20261112-rgbhalftone1">
 <link rel="stylesheet" href="kc-profile-liquid.css?v=20261112-profile-motion1">
 <link rel="stylesheet" href="student-tribe-interface.css?v=20261111-stcomplete3">
@@ -80,5 +80,26 @@ window.addEventListener('error',function(e){
 <script src="global-search.js?v=20261111-search1" defer></script>
 <script src="crew-enhancements.js?v=20261110-autoupdate1" defer></script>
 <script src="mobile-dock.js?v=20261112-fourdock1" defer></script>
-</body>
+<script>
+(function(){
+ function clean(node){
+  if(!node)return;
+  const walker=document.createTreeWalker(node,NodeFilter.SHOW_TEXT);
+  const remove=[];
+  while(walker.nextNode()){
+   const t=walker.currentNode;
+   if(/\\\\[nr]/.test(t.nodeValue||'') && /^[\\s\\\\nr]+$/.test(t.nodeValue||''))remove.push(t);
+  }
+  remove.forEach(t=>t.parentNode&&t.parentNode.removeChild(t));
+ }
+ function start(){
+  clean(document.body);
+  new MutationObserver(records=>records.forEach(r=>{
+   r.addedNodes.forEach(n=>{if(n.nodeType===Node.TEXT_NODE){if(/\\\\[nr]/.test(n.nodeValue||'')&&/^[\\s\\\\nr]+$/.test(n.nodeValue||''))n.remove();}else if(n.nodeType===Node.ELEMENT_NODE)clean(n);});
+  })).observe(document.body,{childList:true,subtree:true});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})();
+</script>
+\n</body>
 </html>
