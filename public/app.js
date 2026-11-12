@@ -745,7 +745,7 @@ function brandSettingsPage(){
  '</div>'+
  '<small class="kc-brand-file-help">PNG, JPG or WebP · maximum 5 MB · transparent areas are preserved. The final icon is exported at 512 × 512.</small>'+
  '<button type="button" class="primary" id="uploadBrandLogo" disabled>Publish logo everywhere →</button>'+
- '<p class="kc-brand-security-note">Publishing is restricted by Supabase to the Super Admin account.</p>'+
+ '<p class="kc-brand-security-note">Your Super Admin account can publish the official logo. PNG, JPG or WebP images up to 5 MB are supported.</p>'+
  '</section>';
 }
 function settingsPage(){
@@ -1050,7 +1050,7 @@ document.addEventListener('click',async event=>{
   if(uploaded.error)throw uploaded.error;
   const publicUrl=storage.getPublicUrl(uploaded.data.path).data.publicUrl+'?v='+Date.now();
   button.textContent='Applying everywhere…';
-  const saved=await rpc('crew_set_app_setting',{p_key:'brand_logo_url',p_value:JSON.stringify(publicUrl)});
+  const saved=await rpc('crew_set_app_setting',{p_key:'brand_logo_url',p_value:publicUrl});
   if(saved.error)throw saved.error;
   S.appSettings={...(S.appSettings||{}),brand_logo_url:publicUrl};
   window.kcApplyBrandLogo?.(publicUrl);
