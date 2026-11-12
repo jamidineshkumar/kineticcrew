@@ -1,6 +1,6 @@
 {
   "version": "1.3.2",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-12T18:05:00Z",
-  "release_notes": "Fixed startup and navigation transitions; improved the Super Admin logo editor with pinch-to-zoom and drag-and-drop."
+  "updated_at": "2026-11-12T18:45:00Z",
+  "release_notes": "Improved the More carousel gradient text and watermark animation; simplified event search; added gallery QR scanning; added event editing and updated labels; improved automatic app update checks."
 }
