@@ -64,7 +64,7 @@ declare v_role text; v_rows jsonb;
 begin
  if auth.uid() is null then raise exception 'Sign in required.'; end if;
  select role into v_role from public.crew_profiles where auth_id=auth.uid()::text and approval_status='approved';
- if v_role not in ('admin','super_admin') then raise exception 'Admin access required.'; end if;
+ if coalesce(v_role,'') not in ('admin','super_admin') then raise exception 'Admin access required.'; end if;
  select coalesce(jsonb_agg(jsonb_build_object('auth_id',auth_id,'name',name,'email',email,'username',username,'requested_at',approval_requested_at) order by approval_requested_at asc),'[]'::jsonb)
  into v_rows from public.crew_profiles where approval_status='pending';
  return v_rows;
@@ -79,11 +79,11 @@ declare v_actor_role text; v_target_role text;
 begin
  if auth.uid() is null then raise exception 'Sign in required.'; end if;
  select role into v_actor_role from public.crew_profiles where auth_id=auth.uid()::text and approval_status='approved';
- if v_actor_role not in ('admin','super_admin') then raise exception 'Admin access required.'; end if;
- if p_decision not in ('approve','reject') then raise exception 'Choose approve or reject.'; end if;
+ if coalesce(v_actor_role,'') not in ('admin','super_admin') then raise exception 'Admin access required.'; end if;
+ if coalesce(p_decision,'') not in ('approve','reject') then raise exception 'Choose approve or reject.'; end if;
  select role into v_target_role from public.crew_profiles where auth_id=p_auth_id and approval_status='pending' for update;
  if not found then raise exception 'This pending membership request no longer exists.'; end if;
- if v_target_role<>'member' then raise exception 'Only pending member accounts can be reviewed.'; end if;
+ if coalesce(v_target_role,'')<>'member' then raise exception 'Only pending member accounts can be reviewed.'; end if;
  update public.crew_profiles set
   approval_status=case when p_decision='approve' then 'approved' else 'rejected' end,
   approved_at=case when p_decision='approve' then now() else null end,
