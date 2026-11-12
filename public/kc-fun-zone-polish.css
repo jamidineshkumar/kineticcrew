@@ -1,0 +1,72 @@
+/* Kinetic Crew Fun Zone — complete visual pass, shared light/dark design tokens. */
+.kc-fun-hub,.kc-meme-page,.kc-games-page{width:min(100%,900px)!important;margin:0 auto!important;color:var(--kc-ref-text,#f4f4f2)!important}
+.kc-fun-hub-head{padding:12px 0 22px!important}
+.kc-fun-kicker,.kc-fun-subhead>span{color:#ff8b61!important;font-size:9px!important;letter-spacing:.2em!important;font-weight:800!important}
+.kc-fun-hub-head h1,.kc-fun-subhead h1{font-size:clamp(32px,7vw,46px)!important;letter-spacing:-.055em!important;color:var(--kc-ref-text,#f4f4f2)!important}
+.kc-fun-hub-head p,.kc-fun-subhead p{color:var(--kc-ref-muted,#a1a3a4)!important;font-size:13px!important;line-height:1.55!important}
+.kc-fun-spark{color:#ff7445!important;text-shadow:0 0 18px #ff744555!important}
+.kc-fun-featured{min-height:158px!important;padding:22px!important;gap:16px!important;border:1px solid rgba(255,122,76,.28)!important;border-radius:25px!important;background:radial-gradient(ellipse at 88% 0,rgba(255,100,49,.22),transparent 44%),linear-gradient(145deg,#292a2c,#141618 72%)!important;box-shadow:0 18px 44px #0006,inset 0 1px 0 #ffffff13!important}
+.kc-fun-featured-orb{flex:0 0 58px!important;width:58px!important;height:58px!important;border-radius:19px!important;background:linear-gradient(145deg,#ff9b68,#f0521b)!important;color:white!important;box-shadow:0 8px 24px #ff5b1f38!important}
+.kc-fun-featured small,.kc-fun-section-title small,.kc-dance-challenge small{color:#ff9a72!important;letter-spacing:.17em!important}
+.kc-fun-featured h2{color:#fff!important;font-size:23px!important;letter-spacing:-.045em!important}
+.kc-fun-featured p{color:#b6b7b7!important;font-size:11px!important}
+.kc-fun-featured>button{align-self:center!important;margin-left:auto!important;padding:11px 14px!important;border:1px solid #ff875b66!important;border-radius:999px!important;background:linear-gradient(135deg,#ff713c,#f04b13)!important;color:#fff!important;font-size:10px!important;font-weight:750!important;box-shadow:0 7px 20px #ff5b1f24!important}
+.kc-fun-section-title{margin:25px 0 12px!important;align-items:center!important}
+.kc-fun-section-title h2{color:var(--kc-ref-text,#f4f4f2)!important;font-size:19px!important}
+.kc-fun-section-title>span{color:var(--kc-ref-muted,#a1a3a4)!important}
+.kc-fun-grid{gap:11px!important}
+.kc-fun-card{min-height:154px!important;padding:17px!important;border:1px solid var(--kc-ref-line,rgba(255,255,255,.12))!important;border-radius:21px!important;background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.025))!important;color:var(--kc-ref-text,#f4f4f2)!important;box-shadow:0 12px 32px #0003,inset 0 1px 0 #ffffff0b!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important}
+.kc-fun-card:after{background:#ff6a35!important;opacity:.12!important}
+.kc-fun-card:active{transform:scale(.975)!important}
+.kc-fun-card-icon{width:42px!important;height:42px!important;border-radius:15px!important;background:rgba(255,105,56,.13)!important;color:#ff9a72!important;box-shadow:inset 0 0 0 1px rgba(255,132,88,.25)!important}
+.kc-fun-card-memes .kc-fun-card-icon,.kc-fun-card-games .kc-fun-card-icon,.kc-fun-card-polls .kc-fun-card-icon{background:rgba(255,105,56,.13)!important;color:#ff9a72!important;box-shadow:inset 0 0 0 1px rgba(255,132,88,.25)!important}
+.kc-fun-card-copy b{color:var(--kc-ref-text,#f4f4f2)!important;font-size:15px!important}
+.kc-fun-card-copy small{color:var(--kc-ref-muted,#a1a3a4)!important;font-size:10px!important;line-height:1.45!important}
+.kc-fun-card-arrow{color:#ff9a72!important}
+.kc-fun-card em,.kc-fun-card-memes em,.kc-fun-card-games em,.kc-fun-card-polls em{color:#ff9a72!important;font-size:8px!important}
+.kc-fun-people-rail{gap:14px!important}
+.kc-fun-person{color:var(--kc-ref-text,#f4f4f2)!important}
+.kc-fun-person .avatar,.kc-fun-person img{border:1px solid var(--kc-ref-line,rgba(255,255,255,.12))!important;box-shadow:0 5px 15px #0004!important}
+.kc-fun-person-add{border-color:#ff8b61!important;color:#ff9a72!important;background:rgba(255,105,56,.1)!important}
+.kc-fun-people .kc-fun-section-title button,.kc-fun-hub-foot button{color:#ff9a72!important}
+.kc-fun-hub-foot{color:var(--kc-ref-muted,#a1a3a4)!important}
+.kc-fun-hub-foot span{color:#ff9a72!important}
+.kc-fun-back{border:1px solid var(--kc-ref-line,rgba(255,255,255,.12))!important;border-radius:999px!important;background:rgba(255,255,255,.06)!important;color:var(--kc-ref-text,#f4f4f2)!important}
+.kc-game-panel,.kc-dance-challenge{border:1px solid var(--kc-ref-line,rgba(255,255,255,.12))!important;border-radius:24px!important;background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.025))!important;color:var(--kc-ref-text,#f4f4f2)!important;box-shadow:0 16px 40px #0004,inset 0 1px 0 #ffffff0c!important;backdrop-filter:blur(20px)!important}
+.kc-game-panel h2,.kc-dance-challenge h2{color:var(--kc-ref-text,#f4f4f2)!important}
+.kc-game-panel>p,.kc-dance-challenge p{color:var(--kc-ref-muted,#a1a3a4)!important}
+.kc-reaction-target{border:1px solid #ff8b6166!important;background:radial-gradient(circle at 50% 35%,#4a2920,#171719 72%)!important;color:#fff!important;box-shadow:0 0 0 9px #ff6a3510,0 0 40px #ff6a3522!important}
+.kc-reaction-target.go{background:radial-gradient(circle,#ff8b42,#c63c16 72%)!important;box-shadow:0 0 0 10px #ff6a3520,0 0 45px #ff6a3566!important}
+.kc-reaction-target small{color:#fff!important}
+.kc-game-stats>div{border:1px solid var(--kc-ref-line,rgba(255,255,255,.12))!important;border-radius:15px!important;background:rgba(255,255,255,.045)!important}
+.kc-game-stats small{color:var(--kc-ref-muted,#a1a3a4)!important}.kc-game-stats b{color:var(--kc-ref-text,#f4f4f2)!important}
+.kc-game-reset,.kc-dance-challenge>button{border:1px solid #ff8b6166!important;border-radius:999px!important;background:linear-gradient(135deg,#ff713c,#f04b13)!important;color:#fff!important;padding:11px 16px!important;font-weight:750!important}
+@media(max-width:600px){
+ .kc-fun-featured{display:grid!important;grid-template-columns:48px minmax(0,1fr)!important;gap:12px!important;padding:16px!important}
+ .kc-fun-featured-orb{width:48px!important;height:48px!important;flex-basis:48px!important;border-radius:15px!important}
+ .kc-fun-featured>div:nth-child(2){min-width:0!important}.kc-fun-featured h2{font-size:19px!important}
+ .kc-fun-featured>button{grid-column:1/-1!important;justify-self:start!important;margin:2px 0 0!important}
+ .kc-fun-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+ .kc-fun-card{min-height:150px!important;padding:14px!important;border-radius:18px!important}
+ .kc-fun-card-copy b{font-size:13px!important}.kc-fun-card-copy small{font-size:9px!important}
+ .kc-dance-challenge{display:grid!important;gap:14px!important}
+}
+@media(max-width:360px){.kc-fun-grid{grid-template-columns:1fr!important}.kc-fun-card{min-height:125px!important}}
+html[data-theme="light"] .kc-fun-hub,html[data-theme="light"] .kc-meme-page,html[data-theme="light"] .kc-games-page{color:#202226!important}
+html[data-theme="light"] .kc-fun-hub-head h1,html[data-theme="light"] .kc-fun-subhead h1,html[data-theme="light"] .kc-fun-section-title h2{color:#202226!important}
+html[data-theme="light"] .kc-fun-hub-head p,html[data-theme="light"] .kc-fun-subhead p,html[data-theme="light"] .kc-fun-section-title>span{color:#747981!important}
+html[data-theme="light"] .kc-fun-featured{background:radial-gradient(ellipse at 88% 0,rgba(255,100,49,.17),transparent 44%),linear-gradient(145deg,#292a2c,#141618)!important}
+html[data-theme="light"] .kc-fun-card{background:linear-gradient(145deg,#fff,#f1f2f4)!important;border-color:rgba(20,22,25,.1)!important;box-shadow:0 10px 28px rgba(20,25,30,.08),inset 0 1px 0 #fff!important;color:#202226!important}
+html[data-theme="light"] .kc-fun-card-copy b,html[data-theme="light"] .kc-fun-person{color:#202226!important}
+html[data-theme="light"] .kc-fun-card-copy small,html[data-theme="light"] .kc-fun-hub-foot{color:#737981!important}
+html[data-theme="light"] .kc-game-panel,html[data-theme="light"] .kc-dance-challenge{background:linear-gradient(145deg,#fff,#f0f1f3)!important;border-color:rgba(20,22,25,.1)!important;color:#202226!important}
+html[data-theme="light"] .kc-game-panel h2,html[data-theme="light"] .kc-dance-challenge h2{color:#202226!important}
+html[data-theme="light"] .kc-game-panel>p,html[data-theme="light"] .kc-dance-challenge p{color:#737981!important}
+@media(max-width:900px){
+ #kcMobileDock .kc-dock-item .dock-label{display:block!important;color:inherit!important;font-size:8px!important;line-height:1!important;font-weight:650!important;letter-spacing:0!important;margin-top:1px!important;white-space:nowrap!important}
+ #kcMobileDock .kc-dock-item .dock-icon{flex-basis:29px!important;width:29px!important;height:29px!important;min-width:29px!important;min-height:29px!important}
+ #kcMobileDock .kc-dock-item .dock-icon svg{width:20px!important;height:20px!important}
+ #kcMobileDock .kc-dock-center .dock-icon{flex-basis:32px!important;width:32px!important;height:32px!important}
+ #kcMobileDock .kc-dock-item{height:52px!important;gap:1px!important}
+ #kcMobileDock.kc-mobile-dock{height:70px!important;min-height:70px!important;max-height:70px!important;padding:6px 7px!important}
+}
