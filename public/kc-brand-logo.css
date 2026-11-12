@@ -1,9 +1,0 @@
-.brand-logo.brand-logo-fallback{display:grid;place-items:center;border:1px solid #b89a4e66;border-radius:11px;background:linear-gradient(145deg,#25232a,#111116);color:#e4c47b;font:800 15px/1 system-ui,sans-serif;letter-spacing:-.06em;box-shadow:inset 0 1px 0 #ffffff18;}
-[data-kc-brand-placeholder] img.brand-logo{width:100%;height:100%;object-fit:contain;}
-.kc-brand-mark-placeholder{display:grid;place-items:center;border:1px solid #c9a65e88;border-radius:24%;background:linear-gradient(145deg,#24232a,#101014);color:#e6c77f;font:900 30px/1 system-ui,sans-serif;letter-spacing:-.08em;box-shadow:0 12px 30px #0005,inset 0 1px 0 #ffffff18;}
-.kc-brand-settings .kc-brand-logo-preview{width:112px;height:112px;display:grid;place-items:center;margin:16px 0;padding:12px;border:1px solid #b89a4e55;border-radius:20px;background:linear-gradient(145deg,#24232a,#111116);}
-.kc-brand-logo-preview img{display:block;width:100%;height:100%;object-fit:contain;}
-.kc-brand-logo-preview span{font:900 34px/1 system-ui,sans-serif;letter-spacing:-.08em;color:#e6c77f;}
-.kc-brand-upload-label{display:inline-flex;cursor:pointer;margin:0 0 10px;}
-.kc-brand-settings .hint{display:block;margin-top:4px;line-height:1.5;}
-@media(prefers-reduced-motion:reduce){.kc-brand-settings *{transition:none!important;animation:none!important;}}
