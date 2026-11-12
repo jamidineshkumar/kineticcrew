@@ -102,7 +102,7 @@ window.addEventListener('error',function(e){
 })();
 </script>
 <script>
-(()=>{const clean=root=>{const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];while(w.nextNode()){const n=w.currentNode;if(/^(?:\\s|\\\\[nr])+$/u.test(n.nodeValue||'')&&(n.nodeValue||'').includes('\\\\'))nodes.push(n);}nodes.forEach(n=>n.remove());};clean(document.body);new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType===Node.TEXT_NODE){if(/^(?:\\s|\\\\[nr])+$/u.test(n.nodeValue||'')&&(n.nodeValue||'').includes('\\\\'))n.remove();}else if(n.nodeType===Node.ELEMENT_NODE)clean(n);}))).observe(document.body,{childList:true,subtree:true});})();
+(()=>{const slash=String.fromCharCode(92);const clean=root=>{const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];while(w.nextNode()){const n=w.currentNode,v=n.nodeValue||'';const z=v.split(slash+'n').join('').split(slash+'r').join('');if(z.trim()===''&&z!==v)nodes.push(n);}nodes.forEach(n=>n.remove());};clean(document.body);new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType===Node.TEXT_NODE){const v=n.nodeValue||'',z=v.split(slash+'n').join('').split(slash+'r').join('');if(z.trim()===''&&z!==v)n.remove();}else if(n.nodeType===Node.ELEMENT_NODE)clean(n);}))).observe(document.body,{childList:true,subtree:true});})();
 </script>
 </body>
 </html>
