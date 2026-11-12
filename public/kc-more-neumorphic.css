@@ -98,3 +98,11 @@
   .kc-more-reference-footer{font-size:16px!important}
 }
 @media(prefers-reduced-motion:reduce){.kc-more-pill{transition:none!important}}
+
+/* Blend the dark raster logo background into the More surface. */
+.kc-more-reference-logo,.kc-more-logo-wrap img{
+  background:transparent!important;
+  mix-blend-mode:screen;
+  filter:drop-shadow(0 5px 14px rgba(224,71,55,.12));
+}
+.kc-more-logo-wrap{isolation:isolate;background:linear-gradient(145deg,rgba(39,41,48,.92),rgba(25,26,31,.88));}
