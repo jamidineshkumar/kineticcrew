@@ -621,9 +621,18 @@ window.kcCelebrateSave=celebrateSave;
 async function action(fn){try{S.error='';await fn();}catch(e){S.error=e.message||'Something went wrong.';}paint();}
 function showEventQr(eventId,title){
  const event=S.events.find(x=>String(x.id)===String(eventId))||{},payload='KC_EVENT_ATTENDANCE:'+eventId+':'+S.user.email;
+ const startDate=event.starts_at?new Date(event.starts_at):null;
+ const dateLabel=startDate&&!Number.isNaN(startDate.getTime())?startDate.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'To be announced';
+ const timeLabel=startDate&&!Number.isNaN(startDate.getTime())?startDate.toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'}):'To be announced';
+ const passId=String(event.id||eventId).replace(/[^a-z0-9]/gi,'').slice(-8).toUpperCase()||'KC-PASS';
  const close=()=>{$('#modalRoot').innerHTML='';};
- $('#modalRoot').innerHTML='<div class="modalback" id="eventQrBackdrop"><section class="modal kce-ticket-modal" role="dialog" aria-modal="true" aria-labelledby="kcTicketTitle"><div class="kce-ticket-top"><button type="button" class="iconbutton modalclose" id="closeEventQr" aria-label="Close ticket">×</button><span class="eyebrow">KINETIC CREW / DIGITAL PASS</span><h2 id="kcTicketTitle">'+esc(title)+'</h2><p>Show this personal QR code at the event entrance.</p></div><div class="kce-ticket-body"><div id="eventQrImage" class="kce-ticket-qr member-qr"></div><div class="kce-ticket-code"><span>Ticket holder<b>'+esc(S.user?.name||S.user?.email||'Crew member')+'</b></span><span>Event date<b>'+esc(dt(event.starts_at))+'</b></span><span>Venue<b>'+esc(event.location||'To be announced')+'</b></span><span>Ticket status<b>'+(event.attended?'Attendance confirmed':'Registration confirmed')+'</b></span></div><div class="kce-ticket-foot"><span>Unique to your account · Do not share</span><strong>● '+(event.attended?'CHECKED IN':'VALID PASS')+'</strong></div><button type="button" class="primary full" id="doneEventQr">Done</button></div></section></div>';
- if(window.QRCode)new QRCode($('#eventQrImage'),{text:payload,width:220,height:220,colorDark:'#17131e',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+ $('#modalRoot').innerHTML='<div class="modalback kce-ticket-backdrop" id="eventQrBackdrop"><section class="modal kce-ticket-modal kce-ticket-stub" role="dialog" aria-modal="true" aria-labelledby="kcTicketTitle">'+
+ '<button type="button" class="iconbutton modalclose" id="closeEventQr" aria-label="Close ticket">×</button>'+
+ '<header class="kce-stub-heading"><span>MY TICKET</span><h2 id="kcTicketTitle">'+esc(title||event.title||'Kinetic Crew Event')+'</h2></header>'+
+ '<div class="kce-stub-qr-panel"><div class="kce-stub-passid">PASS ID <b>'+esc(passId)+'</b></div><div class="kce-stub-perforation"><i></i><span></span><i></i></div><div id="eventQrImage" class="kce-ticket-qr member-qr"></div><small>SCAN AT THE EVENT ENTRANCE</small></div>'+
+ '<div class="kce-stub-details"><div><b>'+esc(S.user?.name||S.user?.email||'Crew member')+'</b><small>NAME</small></div><div><b>'+esc(dateLabel)+'</b><small>DATE</small></div><div><b>'+esc(event.location||'Venue to be announced')+'</b><small>VENUE</small></div><div><b>'+esc(timeLabel)+'</b><small>TIME</small></div></div>'+
+ '<div class="kce-stub-status"><span>'+(event.attended?'ATTENDANCE CONFIRMED':'REGISTRATION CONFIRMED')+'</span><b>'+(event.attended?'● CHECKED IN':'● VALID PASS')+'</b></div><button type="button" class="primary full kce-stub-done" id="doneEventQr">Done</button></section></div>';
+ if(window.QRCode)new QRCode($('#eventQrImage'),{text:payload,width:220,height:220,colorDark:'#f1ead8',colorLight:'#17201d',correctLevel:QRCode.CorrectLevel.M});
  $('#closeEventQr').onclick=$('#doneEventQr').onclick=close;
  $('#eventQrBackdrop').onclick=e=>{if(e.target.id==='eventQrBackdrop')close();};
 }
