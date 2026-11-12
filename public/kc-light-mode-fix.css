@@ -33,3 +33,68 @@ html[data-theme="light"] #kcMobileDock .kc-dock-home.active,html[data-theme="lig
 html[data-theme="light"] #kcMobileDock .kc-dock-home.active .dock-icon,html[data-theme="light"] #kcMobileDock .kc-dock-group-item.active .dock-icon{background:rgba(255,255,255,.65)!important;color:#342b3b!important;box-shadow:inset 0 1px 0 #fff,0 2px 7px rgba(54,45,68,.1)!important}
 html[data-theme="light"] #kcMobileDock .dock-label{color:#4d515a!important}
 html[data-theme="light"] #kcMobileDock .kc-dock-home.active .dock-label,html[data-theme="light"] #kcMobileDock .kc-dock-group-item.active .dock-label{color:#28232d!important}
+
+
+/* More screen: explicit light-theme surfaces, readable labels and restrained elevation. */
+html[data-theme="light"] .kc-more-reference{
+ color:#252832!important;
+ background:linear-gradient(160deg,#f5f6f9 0%,#eceef3 58%,#f7f7f9 100%)!important;
+ border-color:rgba(35,40,50,.10)!important;
+ box-shadow:inset 0 1px 0 #fff,0 18px 42px rgba(30,35,48,.08)!important;
+}
+html[data-theme="light"] .kc-more-reference:before{color:rgba(45,52,66,.035)!important;text-shadow:none!important}
+html[data-theme="light"] .kc-more-reference-header h1,
+html[data-theme="light"] .kc-more-reference-footer{color:#252832!important}
+html[data-theme="light"] .kc-more-reference-group h2{color:#626875!important}
+html[data-theme="light"] .kc-more-pill,
+html[data-theme="light"] .kc-more-other{
+ color:#292d36!important;
+ background:linear-gradient(145deg,#fff,#f0f1f5)!important;
+ border:1px solid rgba(35,40,50,.12)!important;
+ box-shadow:0 5px 14px rgba(31,37,49,.07),inset 0 1px 0 #fff!important;
+ text-shadow:none!important;
+}
+html[data-theme="light"] .kc-more-pill b,
+html[data-theme="light"] .kc-more-other b{color:#292d36!important;font-weight:650!important;opacity:1!important}
+html[data-theme="light"] .kc-more-pill-icon{color:#b87972!important}
+html[data-theme="light"] .kc-more-other-icon{
+ color:#b87972!important;background:linear-gradient(145deg,#f7f7fa,#e9ebf0)!important;
+ border-color:rgba(35,40,50,.10)!important;box-shadow:inset 0 1px 0 #fff!important;
+}
+html[data-theme="light"] .kc-more-signout{
+ color:#292d36!important;background:linear-gradient(145deg,#fff,#f0f1f5)!important;
+ border:1px solid rgba(35,40,50,.12)!important;
+ box-shadow:0 5px 14px rgba(31,37,49,.07),inset 0 1px 0 #fff!important;
+}
+html[data-theme="light"] .kc-more-signout b{color:#292d36!important}
+html[data-theme="light"] .kc-more-signout small{color:#69707c!important}
+html[data-theme="light"] .kc-more-signout>span{color:#d36c5d!important;background:#f9e5e1!important}
+html[data-theme="light"] .kc-more-reference-watermark{color:rgba(40,45,55,.035)!important;text-shadow:none!important}
+html[data-theme="light"] .kc-more-reference-sparkle{color:rgba(130,100,120,.22)!important}
+
+/* Fixed dock must never cover the final More or Home content. */
+@media(max-width:900px){
+ html[data-theme] .kc-more-reference{padding-bottom:calc(220px + env(safe-area-inset-bottom,0px))!important;scroll-margin-bottom:180px}
+ .kc-exact-home{padding-bottom:calc(132px + env(safe-area-inset-bottom,0px))!important}
+ #app:has(.kc-more-reference){padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))!important}
+}
+
+/* Updated event marker — compact, animated, and only shown on edited events. */
+.kc-event-updated-chip{
+ position:absolute!important;z-index:5!important;top:15px!important;right:15px!important;
+ display:inline-flex!important;align-items:center!important;gap:4px!important;
+ min-height:23px!important;padding:4px 9px!important;
+ border:1px solid rgba(255,174,116,.48)!important;border-radius:999px!important;
+ background:linear-gradient(110deg,rgba(255,111,83,.92),rgba(228,83,126,.92))!important;
+ color:#fff!important;font:800 8px/1 system-ui,sans-serif!important;letter-spacing:.11em!important;
+ box-shadow:0 3px 12px rgba(238,91,83,.24)!important;
+ animation:kcUpdatedChipPulse 2.2s ease-in-out infinite!important;
+}
+.kc-home-featured-art{position:relative!important}
+.kc-home-featured-art .kc-event-updated-chip{top:17px!important;right:17px!important}
+.kc-brand-intro-slide .kc-event-updated-chip{top:15px!important;right:15px!important}
+@keyframes kcUpdatedChipPulse{
+ 0%,100%{transform:translateY(0) scale(1);box-shadow:0 3px 12px rgba(238,91,83,.22)}
+ 50%{transform:translateY(-1px) scale(1.035);box-shadow:0 5px 16px rgba(238,91,83,.38)}
+}
+@media(prefers-reduced-motion:reduce){.kc-event-updated-chip{animation:none!important}}
