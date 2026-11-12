@@ -150,3 +150,26 @@ html[data-theme="light"] .kc-home-featured-art .kc-event-updated-chip{
  -webkit-backdrop-filter:blur(18px) saturate(145%)!important;
  backdrop-filter:blur(18px) saturate(145%)!important;
 }
+
+
+/* Restore the live Latest from your crew feed below the featured carousel. */
+.kc-home-latest-section{position:relative!important;display:block!important;margin:26px 0 30px!important}
+.kc-home-latest-section .kc-home-reference-section-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:0 4px 14px!important}
+.kc-home-latest-section .kc-home-reference-section-head h2{margin:0!important}
+.kc-home-latest-section .kc-exact-update-row{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:10px!important}
+.kc-home-latest-section .kc-exact-update{
+ display:flex!important;align-items:center!important;gap:13px!important;width:100%!important;min-width:0!important;
+ padding:15px 16px!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:19px!important;
+ background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.025))!important;
+ color:inherit!important;text-align:left!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.07)!important;
+ -webkit-backdrop-filter:blur(18px)!important;backdrop-filter:blur(18px)!important;
+}
+.kc-home-latest-section .kc-exact-update-icon{
+ display:grid!important;place-items:center!important;flex:0 0 36px!important;width:36px!important;height:36px!important;
+ border-radius:12px!important;background:rgba(255,151,112,.13)!important;color:#ffad8c!important;font-size:19px!important
+}
+.kc-home-latest-section .kc-exact-update>span:last-child{display:grid!important;gap:4px!important;min-width:0!important}
+.kc-home-latest-section .kc-exact-update b{display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:14px!important}
+.kc-home-latest-section .kc-exact-update small{display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;overflow:hidden!important;color:var(--muted,#a8a8ad)!important;font-size:12px!important;line-height:1.45!important}
+.kc-home-latest-section .kc-exact-empty{cursor:default!important;opacity:.8!important}
+html[data-theme="light"] .kc-home-latest-section .kc-exact-update{background:linear-gradient(135deg,rgba(255,255,255,.9),rgba(245,241,239,.82))!important;border-color:rgba(60,50,55,.12)!important;color:#202024!important}
