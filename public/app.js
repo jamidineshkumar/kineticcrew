@@ -86,21 +86,51 @@ function section(title,sub,act=''){return '<div class="sectionhead"><div><h2>'+t
 function empty(title,sub){return '<div class="empty"><div class="emptyicon">✳</div><b>'+title+'</b><p>'+sub+'</p></div>';}
 function stat(title,value,foot,ico){return '<div class="stat"><div class="statlabel"><span>'+title+'</span><span>'+ico+'</span></div><b class="statvalue">'+value+'</b><small>'+foot+'</small></div>';}
 
+function updateMemoryRecipientSummary(form){
+ if(!form)return;
+ const selected=[...form.querySelectorAll('input[name="recipient_ids"]:checked')];
+ const count=form.querySelector('.memory-recipient-count');
+ if(count)count.textContent=selected.length+' selected';
+ const host=form.querySelector('[data-memory-selected]');
+ if(!host)return;
+ if(!selected.length){host.innerHTML='<span class="memory-selected-empty">No recipients selected yet</span>';return;}
+ host.innerHTML=selected.map(input=>{
+  const option=input.closest('.memory-recipient-option'),name=option?.querySelector('b')?.textContent||'Crew member';
+  return '<button type="button" class="memory-selected-chip" data-memory-remove="'+esc(input.value)+'"><span>'+esc(name)+'</span><i>×</i></button>';
+ }).join('');
+}
 document.addEventListener('input',event=>{
  const search=event.target.closest('.memory-member-search');
- if(search){const q=search.value.trim().toLowerCase();search.closest('.memory-recipient-picker')?.querySelectorAll('.memory-recipient-option').forEach(row=>{row.hidden=!row.dataset.memberName.includes(q)||!row.textContent.toLowerCase().includes(q);});}
+ if(search){
+  const q=search.value.trim().toLowerCase(),picker=search.closest('.memory-recipient-picker');
+  let visible=0;
+  picker?.querySelectorAll('.memory-recipient-option').forEach(row=>{
+   const haystack=row.dataset.memberSearch||row.textContent.toLowerCase();
+   row.hidden=!haystack.includes(q);
+   if(!row.hidden)visible++;
+  });
+  const list=picker?.querySelector('.memory-recipient-list');
+  let empty=list?.querySelector('.memory-search-empty');
+  if(!empty&&list){empty=document.createElement('p');empty.className='hint memory-search-empty';empty.textContent='No registered members match your search.';list.append(empty);}
+  if(empty)empty.hidden=visible!==0;
+ }
 });
 document.addEventListener('change',event=>{
  const form=event.target.closest('[data-feature-form="memories"]');
  if(!form)return;
- if(event.target.matches('input[name="recipient_ids"]')){
-  const count=form.querySelectorAll('input[name="recipient_ids"]:checked').length;
-  const label=form.querySelector('.memory-recipient-count');if(label)label.textContent=count+' selected';
- }
+ if(event.target.matches('input[name="recipient_ids"]'))updateMemoryRecipientSummary(form);
  if(event.target.matches('input[name="memory_photo"]')){
-  const preview=form.querySelector('.memory-upload-preview'),file=event.target.files?.[0];
-  if(preview){if(file){preview.src=URL.createObjectURL(file);preview.hidden=false;}else{preview.removeAttribute('src');preview.hidden=true;}}
+  const preview=form.querySelector('.memory-upload-preview'),file=event.target.files?.[0],drop=form.querySelector('.memory-upload-drop');
+  if(preview){if(file){if(preview.dataset.objectUrl)URL.revokeObjectURL(preview.dataset.objectUrl);const url=URL.createObjectURL(file);preview.src=url;preview.dataset.objectUrl=url;preview.hidden=false;}else{preview.removeAttribute('src');preview.hidden=true;}}
+  if(drop){const title=drop.querySelector('b');if(title)title.textContent=file?file.name:'Choose photo from device';}
  }
+});
+document.addEventListener('click',event=>{
+ const remove=event.target.closest('[data-memory-remove]');
+ if(!remove)return;
+ const form=remove.closest('[data-feature-form="memories"]')||document.querySelector('[data-feature-form="memories"]');
+ const input=form?.querySelector('input[name="recipient_ids"][value="'+CSS.escape(remove.dataset.memoryRemove)+'"]');
+ if(input){input.checked=false;updateMemoryRecipientSummary(form);}
 });
 document.addEventListener('error',event=>{
  const img=event.target;
@@ -464,6 +494,21 @@ async function loadSocialFeed(){
  S.socialPosts=posts.data||[];S.socialLikes=likes.data||[];S.socialComments=comments.data||[];
  S.publicMembers=Array.isArray(people.data)?people.data:[];
 }
+async function loadMemories(){
+ const {data,error}=await rpc('crew_memories_list',{});
+ if(error)throw error;
+ const rows=Array.isArray(data)?data:[];
+ S.featureItems.memories=await Promise.all(rows.map(async item=>{
+  const details={...(item.data||{})};
+  if(details.storage_path){
+   const {data:signed,error:signError}=await client.storage.from('crew-memories').createSignedUrl(details.storage_path,7200);
+   if(signError)details.media_error=signError.message||'Photo could not be opened.';
+   else details.signed_media_url=signed?.signedUrl||'';
+  }
+  return {...item,data:details};
+ }));
+ return S.featureItems.memories;
+}
 function socialPostCard(post){
  const people=S.publicMembers||[],author=people.find(m=>String(m.auth_id)===String(post.author_id))||{name:post.author_id===S.user.auth_id?S.user.name:'Crew member',role:'member'};
  const url=safeSocialUrl(post.link_url),host=url?new URL(url).hostname.replace(/^www[.]/,''):'Shared link';
@@ -508,7 +553,7 @@ function featureForm(key){
  (isRehearsal?'<label class="field">Date & time<input name="session_at" type="datetime-local" required></label><label class="field">Location<input name="location" maxlength="160" placeholder="Practice room / studio"></label>':'')+
  
  (isAudition?'<label class="field">Dance style<input name="style" maxlength="80" placeholder="Hip-hop / freestyle / classical"></label><label class="field">Audition video URL<input name="media_url" type="url" placeholder="https://…"></label>':'')+
- (isMemory?'<section class="memory-share-panel"><div class="memory-share-heading"><b>Share with registered members</b><small>Choose one or more people. Only you, admins and selected members can view this memory.</small></div><details class="memory-recipient-picker"><summary><span>Choose crew members</span><b class="memory-recipient-count">0 selected</b></summary><input type="search" class="memory-member-search" placeholder="Search registered people…" aria-label="Search registered people"><div class="memory-recipient-list">'+((S.publicMembers||[]).filter(p=>String(p.auth_id)!==String(S.user?.auth_id)).map(p=>'<label class="memory-recipient-option" data-member-name="'+esc(p.name||'').toLowerCase()+'"><input type="checkbox" name="recipient_ids" value="'+esc(p.auth_id)+'"><span>'+avatarMarkup(p,'small')+'</span><span><b>'+esc(p.name||'Crew member')+'</b><small>'+esc(p.username?'@'+p.username:(p.email||''))+'</small></span></label>').join('')||'<p class="hint">No other registered members found.</p>')+'</div></details></section><label class="field">Upload a photo<input name="memory_photo" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><small class="hint">JPG, PNG, WEBP or GIF · up to 15 MB</small></label><label class="field">Or paste a photo URL<input name="media_url" type="url" placeholder="https://… (optional if uploading)"></label><img class="memory-upload-preview" alt="Selected photo preview" hidden>':'')+
+ (isMemory?'<section class="memory-share-panel"><div class="memory-share-heading"><b>Share with registered members</b><small>Select the people who should receive this memory. Your memory stays private to you, selected members and crew admins.</small></div><details class="memory-recipient-picker"><summary><span>＋ Choose registered members</span><b class="memory-recipient-count">0 selected</b></summary><div class="memory-recipient-menu"><input type="search" class="memory-member-search" placeholder="Search by name, username or email…" aria-label="Search registered people"><div class="memory-recipient-list">'+((S.publicMembers||[]).filter(p=>String(p.auth_id)!==String(S.user?.auth_id)).map(p=>'<label class="memory-recipient-option" data-member-search="'+esc([p.name,p.username,p.email].filter(Boolean).join(' ').toLowerCase())+'"><input type="checkbox" name="recipient_ids" value="'+esc(p.auth_id)+'"><span>'+avatarMarkup(p,'small')+'</span><span><b>'+esc(p.name||'Crew member')+'</b><small>'+esc(p.username?'@'+p.username:(p.email||''))+'</small></span><i class="memory-recipient-check">✓</i></label>').join('')||'<p class="hint memory-no-members">No other registered members found.</p>')+'</div></div></details><div class="memory-selected-section"><div><b>Selected recipients</b><small>These members will be able to view this memory.</small></div><div class="memory-selected-list" data-memory-selected><span class="memory-selected-empty">No recipients selected yet</span></div></div></section><section class="memory-upload-panel"><div class="memory-upload-title"><b>📷 Add a photo</b><small>Upload a JPG, PNG, WEBP or GIF image · maximum 15 MB</small></div><label class="memory-upload-drop"><span>＋</span><b>Choose photo from device</b><small>Tap to browse your gallery</small><input name="memory_photo" type="file" accept="image/jpeg,image/png,image/webp,image/gif"></label><img class="memory-upload-preview" alt="Selected photo preview" hidden><label class="field">Or paste an image URL<input name="media_url" type="url" inputmode="url" placeholder="https://… (optional if uploading)"></label></section>':'')+
  '<button class="primary full">'+meta[4]+' →</button></form>';
 }
 function featureCard(key,item){
@@ -524,7 +569,8 @@ function featureCard(key,item){
    if(admin()&&key==='auditions'&&status==='open')extra+='<div class="feature-actions"><button class="outline" data-moderate="'+esc(item.id)+'" data-status="selected" data-feature="'+key+'">Select</button><button class="outline" data-moderate="'+esc(item.id)+'" data-status="rejected" data-feature="'+key+'">Not selected</button></div>';
  }
  
- if(data.media_url){const media=String(data.media_url),safe=esc(media);if(/\.(jpe?g|png|gif|webp|avif)(\?.*)?$/i.test(media))extra+='<a class="feature-media-link" href="'+safe+'" target="_blank" rel="noopener"><img class="feature-media-preview" src="'+safe+'" alt="'+esc(item.title)+'" loading="lazy" decoding="async" onerror="this.closest(\'a\').classList.add(\'media-unavailable\');this.remove();"><span>Open image ↗</span></a>';else if(/\.(mp4|webm|ogg)(\?.*)?$/i.test(media))extra+='<video class="feature-video-preview" src="'+safe+'" controls preload="metadata" playsinline></video>';else extra+='<p><a class="feature-link" href="'+safe+'" target="_blank" rel="noopener">Open shared media ↗</a></p>';}
+ const mediaValue=data.signed_media_url||data.media_url;
+ if(mediaValue){const media=String(mediaValue),safe=esc(media),isImage=String(data.media_type||'').startsWith('image/')||/\.(jpe?g|png|gif|webp|avif)(\?.*)?($|#)/i.test(media);if(isImage)extra+='<a class="feature-media-link" href="'+safe+'" target="_blank" rel="noopener"><img class="feature-media-preview" src="'+safe+'" alt="'+esc(item.title)+'" loading="lazy" decoding="async" onerror="this.closest(\'a\').classList.add(\'media-unavailable\');this.remove();"><span>Open photo ↗</span></a>';else if(/\.(mp4|webm|ogg)(\?.*)?$/i.test(media))extra+='<video class="feature-video-preview" src="'+safe+'" controls preload="metadata" playsinline></video>';else extra+='<p><a class="feature-link" href="'+safe+'" target="_blank" rel="noopener">Open shared media ↗</a></p>';}
  if(data.from_date)extra+='<p class="feature-meta">'+esc(data.from_date)+' → '+esc(data.to_date||data.from_date)+'</p>';
  if(key==='rehearsals'&&data.session_at)extra+='<p class="feature-meta">◷ '+esc(dt(data.session_at))+' · '+esc(data.location||'Location TBA')+'</p>';
  
@@ -664,7 +710,7 @@ function settingsPage(){
  '<section class="surface settings-card"><span class="settings-kicker">DEVICE</span><h3>App maintenance</h3><p>Clear temporary cached files without signing you out.</p><button class="outline" id="clearAppCache">Clear app cache</button><button class="outline" data-view="notifications">Notification settings</button></section>'+
  '<section class="surface settings-card settings-danger"><span class="settings-kicker">SESSION</span><h3>Sign out</h3><p>Sign out of this device. Your crew account remains active.</p><button class="outline" id="settingsSignOut">Sign out ↗</button></section></div>';
 }
-async function go(v){S.view=v;S.error='';S.navOpen=({overview:'overview',events:'events','event-detail':'events',chat:'chat',notifications:'notifications',people:'chat',feed:'chat','public-profile':'chat','crew-management':'management',attendance:'management',profile:'settings',settings:superadmin()?'management':'settings',rehearsals:'chat',calendar:'events',polls:'chat',memories:'chat',achievements:'chat',leave:'chat',auditions:'chat',more:'overview'}[v]||'overview');if(S.chatPoll){clearInterval(S.chatPoll);S.chatPoll=null;}if(v==='crew-management'&&admin()){try{S.members=await api('members');}catch(e){S.error=e.message||'Could not load crew members.';}}if(v==='people'||v==='feed'||v==='fun-zone'){try{const {data,error}=await rpc('crew_profile_directory',{});if(error)throw error;S.publicMembers=Array.isArray(data)?data:[];}catch(e){S.publicMembers=[];S.error=e.message||'Could not load crew profiles.';}}if(v==='feed'||v==='fun-zone'||v==='memes'){try{await loadSocialFeed();}catch(e){S.error=e.message||'Could not load the crew feed.';}}if(v==='profile'||v==='public-profile'||v==='settings'){try{const {data,error}=await rpc('crew_profile_social',{p_auth_id:v==='public-profile'?S.selectedProfileId:S.user.auth_id});if(error)throw error;S.profileSocial=data||null;if(v!=='public-profile'&&S.profileSocial?.profile)S.user={...S.user,...S.profileSocial.profile};}catch(e){S.profileSocial=null;S.error=e.message||'Could not load profile details.';}}if(v==='profile'){try{await loadSocialFeed();}catch(e){S.socialPosts=[];S.socialLikes=[];S.socialComments=[];S.error=e.message||'Could not load your posts.';}}setMobileMenu(false);if(v==='memories'){try{const [directory,rows]=await Promise.all([rpc('crew_profile_directory',{}),rpc('crew_memories_list',{})]);if(directory.error)throw directory.error;if(rows.error)throw rows.error;S.publicMembers=Array.isArray(directory.data)?directory.data:[];S.featureItems.memories=Array.isArray(rows.data)?rows.data:(rows.data||[]);}catch(e){S.error=e.message||'Could not load KC Memories.';}}else if(featureKeys.includes(v)){try{S.featureItems[v]=await featureApi('list',v,{});}catch(e){S.error=e.message||'Could not load this feature.';}}if(v==='leaderboard'){try{S.leaderboard=await featureApi('leaderboard',null,{});}catch(e){S.error=e.message||'Could not load leaderboard.';}}paint();const viewRoot=$('#app');viewRoot.classList.remove('kc-view-enter');void viewRoot.offsetWidth;viewRoot.classList.add('kc-view-enter');viewRoot.addEventListener('animationend',function done(e){if(e.target===viewRoot){viewRoot.classList.remove('kc-view-enter');viewRoot.removeEventListener('animationend',done);}},{once:false});if(v==='chat'){S.chatPoll=setInterval(async()=>{if(S.view!=='chat'||S.chatBusy)return;S.chatBusy=true;try{const rows=await featureApi('list','chat',{});const previous=S.featureItems.chat||[],previousIds=new Set(previous.map(m=>String(m.id)));const incoming=rows.filter(m=>!previousIds.has(String(m.id)));if(incoming.length){const latest=incoming[incoming.length-1];if(String(latest.author_id)!==String(S.user.auth_id)){window.dispatchEvent(new CustomEvent('kc:notification',{detail:{title:latest.author_name||'Crew chat',body:latest.body||'Sent you a new message.',target:'chat'}}));if(document.hidden&&'Notification'in window&&Notification.permission==='granted')new Notification('Kinetic Crew · Crew chat',{body:(latest.author_name||'A crew member')+': '+(latest.body||'New message'),icon:window.kcPath('kinetic-crew-logo.jpg')});}}if(rows.length!==(S.featureItems.chat||[]).length||incoming.length){S.featureItems.chat=rows;const box=$('#waMessages');if(box){const atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;box.innerHTML=chatMessagesMarkup(rows);if(atBottom)box.scrollTop=box.scrollHeight;}}}catch{}finally{S.chatBusy=false;}},5000);}window.scrollTo({top:0,behavior:'auto'});savePageState();}
+async function go(v){S.view=v;S.error='';S.navOpen=({overview:'overview',events:'events','event-detail':'events',chat:'chat',notifications:'notifications',people:'chat',feed:'chat','public-profile':'chat','crew-management':'management',attendance:'management',profile:'settings',settings:superadmin()?'management':'settings',rehearsals:'chat',calendar:'events',polls:'chat',memories:'chat',achievements:'chat',leave:'chat',auditions:'chat',more:'overview'}[v]||'overview');if(S.chatPoll){clearInterval(S.chatPoll);S.chatPoll=null;}if(v==='crew-management'&&admin()){try{S.members=await api('members');}catch(e){S.error=e.message||'Could not load crew members.';}}if(v==='people'||v==='feed'||v==='fun-zone'){try{const {data,error}=await rpc('crew_profile_directory',{});if(error)throw error;S.publicMembers=Array.isArray(data)?data:[];}catch(e){S.publicMembers=[];S.error=e.message||'Could not load crew profiles.';}}if(v==='feed'||v==='fun-zone'||v==='memes'){try{await loadSocialFeed();}catch(e){S.error=e.message||'Could not load the crew feed.';}}if(v==='profile'||v==='public-profile'||v==='settings'){try{const {data,error}=await rpc('crew_profile_social',{p_auth_id:v==='public-profile'?S.selectedProfileId:S.user.auth_id});if(error)throw error;S.profileSocial=data||null;if(v!=='public-profile'&&S.profileSocial?.profile)S.user={...S.user,...S.profileSocial.profile};}catch(e){S.profileSocial=null;S.error=e.message||'Could not load profile details.';}}if(v==='profile'){try{await loadSocialFeed();}catch(e){S.socialPosts=[];S.socialLikes=[];S.socialComments=[];S.error=e.message||'Could not load your posts.';}}setMobileMenu(false);if(v==='memories'){try{const [directory]=await Promise.all([rpc('crew_profile_directory',{}),loadMemories()]);if(directory.error)throw directory.error;S.publicMembers=Array.isArray(directory.data)?directory.data:[];}catch(e){S.error=e.message||'Could not load KC Memories.';}}else if(featureKeys.includes(v)){try{S.featureItems[v]=await featureApi('list',v,{});}catch(e){S.error=e.message||'Could not load this feature.';}}if(v==='leaderboard'){try{S.leaderboard=await featureApi('leaderboard',null,{});}catch(e){S.error=e.message||'Could not load leaderboard.';}}paint();const viewRoot=$('#app');viewRoot.classList.remove('kc-view-enter');void viewRoot.offsetWidth;viewRoot.classList.add('kc-view-enter');viewRoot.addEventListener('animationend',function done(e){if(e.target===viewRoot){viewRoot.classList.remove('kc-view-enter');viewRoot.removeEventListener('animationend',done);}},{once:false});if(v==='chat'){S.chatPoll=setInterval(async()=>{if(S.view!=='chat'||S.chatBusy)return;S.chatBusy=true;try{const rows=await featureApi('list','chat',{});const previous=S.featureItems.chat||[],previousIds=new Set(previous.map(m=>String(m.id)));const incoming=rows.filter(m=>!previousIds.has(String(m.id)));if(incoming.length){const latest=incoming[incoming.length-1];if(String(latest.author_id)!==String(S.user.auth_id)){window.dispatchEvent(new CustomEvent('kc:notification',{detail:{title:latest.author_name||'Crew chat',body:latest.body||'Sent you a new message.',target:'chat'}}));if(document.hidden&&'Notification'in window&&Notification.permission==='granted')new Notification('Kinetic Crew · Crew chat',{body:(latest.author_name||'A crew member')+': '+(latest.body||'New message'),icon:window.kcPath('kinetic-crew-logo.jpg')});}}if(rows.length!==(S.featureItems.chat||[]).length||incoming.length){S.featureItems.chat=rows;const box=$('#waMessages');if(box){const atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;box.innerHTML=chatMessagesMarkup(rows);if(atBottom)box.scrollTop=box.scrollHeight;}}}catch{}finally{S.chatBusy=false;}},5000);}window.scrollTo({top:0,behavior:'auto'});savePageState();}
 async function exportAttendance(){
  if(!S.roster?.roster?.length){notice('No attendance rows to export.');return;}
  const rows=[['KINETIC CREW · OFFICIAL ATTENDANCE REPORT'],['Generated by Kinetic Crew'],['Event ID',S.rosterEvent],[],['Member name','Email','Attendance status','Registered at'],...S.roster.roster.map(m=>[m.name,m.email,m.status||(m.attended?'present':'pending'),m.registered_at||'']),[],['KINETIC CREW · BUILT TO MOVE TOGETHER']];
@@ -857,19 +903,40 @@ document.addEventListener('submit',async e=>{
   const key=featureFormEl.dataset.feature,d=new FormData(featureFormEl),data={};
   ['from_date','to_date','style','media_url'].forEach(k=>{if(d.get(k))data[k]=d.get(k);});
   if(key==='memories'){
-   const photo=d.get('memory_photo');
-   if(photo&&photo.size){
-    if(!/^image\/(jpeg|png|webp|gif)$/.test(photo.type)) {notice('Choose a JPG, PNG, WEBP or GIF photo.');return;}
-    if(photo.size>15*1024*1024){notice('Photo must be 15 MB or smaller.');return;}
-    const safeName=String(photo.name||'memory-photo').replace(/[^a-zA-Z0-9._-]/g,'-').slice(-90);
-    const path=S.user.auth_id+'/'+Date.now()+'-'+safeName;
-    const uploaded=await client.storage.from('crew-memories').upload(path,photo,{cacheControl:'3600',upsert:false,contentType:photo.type});
-    if(uploaded.error)throw uploaded.error;
-    const publicFile=client.storage.from('crew-memories').getPublicUrl(path);
-    data.media_url=publicFile.data.publicUrl;
+   let uploadedPath='';
+   try{
+    const title=String(d.get('title')||'').trim(),body=String(d.get('body')||'').trim(),photo=d.get('memory_photo');
+    if(!title){notice('Enter a memory title.');return;}
+    const recipients=d.getAll('recipient_ids').map(String).filter(Boolean);
+    data.recipient_ids=[...new Set(recipients)];
+    if(photo&&photo.size){
+     if(!/^image\/(jpeg|png|webp|gif)$/.test(photo.type)){notice('Choose a JPG, PNG, WEBP or GIF photo.');return;}
+     if(photo.size>15*1024*1024){notice('Photo must be 15 MB or smaller.');return;}
+     const safeName=String(photo.name||'memory-photo').replace(/[^a-zA-Z0-9._-]/g,'-').slice(-90);
+     uploadedPath=S.user.auth_id+'/'+Date.now()+'-'+safeName;
+     const uploaded=await client.storage.from('crew-memories').upload(uploadedPath,photo,{cacheControl:'3600',upsert:false,contentType:photo.type});
+     if(uploaded.error)throw uploaded.error;
+     data.storage_path=uploadedPath;
+     data.media_type=photo.type;
+    }else{
+     const url=String(d.get('media_url')||'').trim();
+     if(!url){notice('Choose a photo from your device or paste an image URL.');return;}
+     let parsed;try{parsed=new URL(url);}catch{throw Error('Enter a valid image URL.');}
+     if(parsed.protocol!=='https:')throw Error('Use a secure HTTPS image URL.');
+     data.media_url=parsed.href;
+     data.media_type='image/external';
+    }
+    const {data:created,error:createError}=await rpc('crew_memories_create',{p_title:title,p_body:body,p_data:data});
+    if(createError)throw createError;
+    uploadedPath='';
+    await loadMemories();
+    notice(created?.message||'Memory shared successfully.');
+    paint();
+   }catch(error){
+    if(uploadedPath)await client.storage.from('crew-memories').remove([uploadedPath]).catch(()=>{});
+    notice('Memory could not be shared: '+(error.message||'Please try again.'));
    }
-   if(!data.media_url){notice('Upload a photo or paste a photo URL first.');return;}
-   data.recipient_ids=d.getAll('recipient_ids').map(String).filter(Boolean);
+   return;
   }
   if(key==='rehearsals'){data.session_at=new Date(d.get('session_at')).toISOString();data.location=d.get('location')||'';}
   if(key==='leave'&&new Date(data.from_date)>new Date(data.to_date)){notice('End date must be on or after the start date.');return;}
@@ -877,7 +944,7 @@ document.addEventListener('submit',async e=>{
    const body=String(d.get('body')||'');
    const res=await featureApi('create',key,{title:d.get('title'),body,data});
    notice(res.message);
-   S.featureItems[key]=key==='memories'?(await rpc('crew_memories_list',{})).data||[]:await featureApi('list',key,{});
+   S.featureItems[key]=await featureApi('list',key,{});
    if(key==='chat'){S.view='chat';paint();$('#waMessages')?.scrollTo({top:$('#waMessages').scrollHeight,behavior:'smooth'});}
   }catch(error){S.error=error.message||'Could not save this item.';paint();}
   return;
