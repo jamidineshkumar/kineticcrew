@@ -27,7 +27,7 @@
 .kce-detail-admin-actions{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0 12px}
 .kce-detail-admin-actions>*{min-height:43px}
 .kce-detail-admin-actions .kce-admin-event{flex:1}
-.kce-qr-video-wrap{background:#080b0c!important}
+.kc-qr-video-wrap{background:#080b0c!important}
 .kc-qr-video-wrap video{display:block;background:#080b0c;object-fit:cover}
 .kc-qr-upload{width:100%;min-height:52px;cursor:pointer;letter-spacing:.01em}
 .kc-qr-upload:active{transform:scale(.985)}
