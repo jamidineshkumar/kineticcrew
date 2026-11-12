@@ -104,7 +104,7 @@ function avatarMarkup(user,size='') {const src=user?.avatar_url;return src?'<img
 function profileCover(url){return url?' style="background-image:url(&quot;'+esc(url)+'&quot;)':'';}
 function profilePage(){
 const u=S.user||{},founder=superadmin();
-const photo=u.avatar_url||'',banner=u.banner_url||photo;
+const photo=u.avatar_url||'';
 const job=u.profession||u.designation||u.occupation||u.job_title||(founder?'Founder & President':'Kinetic Crew Member');
 const username=u.username||String(u.email||'crew-member').split('@')[0];
 const editForm='<details class="kc-profile-editor" id="profileEditor"><summary>Edit profile details</summary><form id="profileForm" class="kc-profile-form">'+
@@ -112,10 +112,10 @@ const editForm='<details class="kc-profile-editor" id="profileEditor"><summary>E
 '<label class="field">About you<textarea name="bio" maxlength="500" rows="3">'+esc(u.bio||'')+'</textarea></label>'+
 '<label class="field">Email address<input value="'+esc(u.email||'')+'" disabled></label>'+
 '<label class="field">Username<input name="username" id="profileUsername" minlength="3" maxlength="24" pattern="[a-zA-Z0-9_]{3,24}" value="'+esc(u.username||'')+'" placeholder="your_username" required></label>'+
-'<div class="kc-profile-upload-row"><label for="profilePhotoInput">Change profile photo<input id="profilePhotoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden></label><label for="profileBannerInput">Change cover photo<input id="profileBannerInput" type="file" accept="image/png,image/jpeg,image/webp" hidden></label></div>'+
-'<p class="hint">JPG, PNG or WebP · Maximum 5 MB each.</p><button class="primary full">Save changes</button></form></details>';
+'<div class="kc-profile-upload-row"><label for="profilePhotoInput">Change profile photo<input id="profilePhotoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden></label></div>'+
+'<p class="hint">JPG, PNG or WebP · Maximum 5 MB.</p><button class="primary full">Save changes</button></form></details>';
 return '<div class="kc-reference-profile kc-liquid-profile kc-single-profile">'+
-'<section class="kc-liquid-profile-card" '+(banner?'style="--kc-liquid-cover:url(&quot;'+esc(banner)+'&quot;)"':'')+'>'+
+'<section class="kc-liquid-profile-card">
 '<div class="kc-liquid-card-top"><button class="kc-profile-back" data-view="overview" aria-label="Back home">‹</button><span class="kc-liquid-wordmark">KINETIC <b>CREW</b></span><div class="kc-profile-hero-right"><button class="kc-profile-share-button" type="button" data-share-profile aria-label="Share profile">↗</button><button class="kc-profile-edit-button" data-profile-edit>Edit</button></div></div>'+
 '<div class="kc-liquid-profile-photo">'+(photo?'<img src="'+esc(photo)+'" alt="'+esc(u.name||'Profile photo')+'" loading="eager">':'<span>'+esc(initials(u.name||u.email))+'</span>')+'</div>'+
 '<div class="kc-liquid-profile-copy"><span class="kc-liquid-eyebrow">'+(founder?'FOUNDER':'KINETIC CREW MEMBER')+'</span><h1>'+esc(u.name||'Kinetic Crew Member')+'</h1><p>@'+esc(username)+'</p><div class="kc-single-profile-tags"><span>'+esc(String(job).toUpperCase())+'</span>'+(u.profession&&u.designation?'<span>'+esc(String(u.designation).toUpperCase())+'</span>':'')+'</div>'+(u.bio?'<p class="kc-liquid-bio">'+esc(u.bio)+'</p>':'')+'</div>'+
@@ -128,10 +128,10 @@ function publicProfilePage(){
  const self=String(p.auth_id)===String(S.user?.auth_id),founder=p.role==='super_admin';
  const following=Boolean(S.profileSocial?.is_following??S.profileSocial?.following??S.profileSocial?.viewer_follows);
  const followers=Number(S.profileSocial?.followers_count??p.followers_count??0);
- const photo=p.avatar_url||'',banner=p.banner_url||photo;
+ const photo=p.avatar_url||'';
  const job=p.profession||p.designation||p.occupation||(founder?'Founder & President':'Kinetic Crew Member');
  return '<div class="kc-reference-profile kc-public-reference-profile '+(founder?'is-founder':'')+'">'+
- '<section class="kc-profile-hero" '+(banner?'style="--kc-profile-cover:url(\''+esc(banner)+'\')"':'')+'>'+
+ '<section class="kc-profile-hero">
  '<div class="kc-profile-hero-actions"><button class="kc-profile-back" data-view="people" aria-label="Back to crew">‹</button><div class="kc-profile-hero-right">'+(self?'<button class="kc-profile-edit-button" data-view="profile">Edit profile</button>':'<button type="button" class="kc-profile-edit-button kc-follow-action" data-follow="'+esc(p.auth_id)+'" data-following="'+(following?'true':'false')+'">'+(following?'Following':'Follow')+'</button>')+'</div></div>'+
  '<div class="kc-profile-identity">'+(photo?'<img class="kc-public-profile-avatar" src="'+esc(photo)+'" alt="'+esc(p.name||'Crew member')+' profile photo">':'<span class="kc-public-profile-avatar">'+esc(initials(p.name||p.email))+'</span>')+
  '<h1>'+esc(p.name||'Kinetic Crew Member').toUpperCase()+'</h1><p>@'+esc(p.username||String(p.email||'crew-member').split('@')[0])+'</p><span class="kc-profile-role">'+(founder?'FOUNDER / SUPER ADMIN':esc(String(job).toUpperCase()))+'</span></div></section>'+
