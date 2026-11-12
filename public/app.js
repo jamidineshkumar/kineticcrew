@@ -1012,7 +1012,7 @@ function setMobileMenu(open){
  if(toggle){toggle.setAttribute('aria-expanded',open?'true':'false');toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');}
  document.body.classList.toggle('kc-menu-open',!!open);
 }
-document.addEventListener('click',event=>{const toggle=event.target.closest('#menuToggle');if(!toggle)return;event.preventDefault();event.stopPropagation();setMobileMenu(!$('#sidebar')?.classList.contains('open'));});
+document.addEventListener('click',event=>{const toggle=event.target.closest('#menuToggle');if(!toggle)return;event.preventDefault();event.stopPropagation();go('more');});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('#sidebar')?.classList.contains('open'))setMobileMenu(false);});
 window.addEventListener('popstate',()=>{if($('#sidebar')?.classList.contains('open'))setMobileMenu(false);});
 $('#nav')?.addEventListener('click',event=>{if(event.target.closest('[data-view]'))setMobileMenu(false);});
