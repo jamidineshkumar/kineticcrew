@@ -31,6 +31,7 @@ jobs:
       - name: Validate application JavaScript
         run: |
           node --check public/app.js
+          node --check public/brand-logo.js
           node --check public/global-search.js
           node --check public/theme.js
           node --check public/sw.js
