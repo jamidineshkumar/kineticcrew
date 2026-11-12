@@ -9,7 +9,7 @@ function render(root){
  const announcements=(snapshot.announcements||[]).filter(a=>a&&a.title).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  const now=Date.now(),upcoming=events.filter(e=>new Date(e.starts_at).getTime()>=now),recent=events.filter(e=>new Date(e.starts_at).getTime()<now).reverse();
  const slides=[
-  {type:'brand',eyebrow:'',title:'KINETIC<br><em>CREW.</em>',sub:'',tag:''},
+  {type:'brand',eyebrow:'',title:'KINETIC <em>CREW</em>',sub:'',tag:''},
   ...announcements.slice(0,4).map(a=>({type:'update',item:a})),
   ...upcoming.slice(0,5).map(e=>({type:'event',item:e})),
   {type:'brand',eyebrow:'CREW IDENTITY',title:'ONE CREW.<br>ONE <em>RHYTHM.</em>',sub:'',tag:'FOUNDED BY DINUVOX'},
