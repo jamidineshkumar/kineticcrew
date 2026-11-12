@@ -1117,3 +1117,31 @@ body:has(.crop-backdrop) .kc-bottom-nav{visibility:hidden!important;pointer-even
  .kc-attendance-roster .attendance-status-btn{padding:0 8px;font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){.kc-attendance-task{transition:none!important}}
+
+/* Night Pulse ticket stub — based on the supplied perforated ticket reference. */
+.kce-ticket-backdrop{padding:18px 14px;overflow-y:auto;align-items:center}
+.kce-ticket-modal.kce-ticket-stub{position:relative;width:min(100%,470px);max-width:470px;max-height:calc(100dvh - 36px);overflow:auto;padding:0;border-radius:25px;background:radial-gradient(ellipse at 100% 0%,rgba(214,164,54,.17),transparent 42%),radial-gradient(ellipse at 0% 54%,rgba(18,167,158,.17),transparent 48%),linear-gradient(145deg,#1d201e,#141a18 64%,#111715);border:1px solid rgba(223,193,104,.28);box-shadow:0 28px 90px #0009;color:#f6f0e2}
+.kce-ticket-stub .modalclose{z-index:5;top:13px;right:13px;width:36px;height:36px;border-radius:50%;background:#ffffff0c;border:1px solid #ffffff20;color:#f4efdf}
+.kce-stub-heading{padding:29px 24px 23px;text-align:center;background:linear-gradient(125deg,rgba(16,131,119,.17),rgba(197,148,44,.13))}
+.kce-stub-heading>span{display:block;color:#d6b65f;font-size:12px;letter-spacing:.18em;font-weight:800;margin-bottom:13px}
+.kce-stub-heading h2{margin:0 auto;max-width:90%;font-size:clamp(25px,6vw,35px);line-height:1.12;letter-spacing:-.035em;font-weight:850;color:#fff8e9}
+.kce-stub-qr-panel{position:relative;margin:0 24px;padding:18px 16px 17px;border:1px solid rgba(216,182,82,.76);border-radius:20px;background:linear-gradient(135deg,rgba(29,36,31,.98),rgba(21,30,28,.98));text-align:center}
+.kce-stub-passid{font-size:13px;letter-spacing:.14em;color:#e8dcbf;font-weight:700}
+.kce-stub-passid b{font-size:17px;color:#fff8e9;margin-left:8px;letter-spacing:.12em}
+.kce-stub-perforation{display:flex;align-items:center;gap:10px;margin:16px -16px 17px}
+.kce-stub-perforation i{width:15px;height:30px;background:#171b19;border:1px solid rgba(216,182,82,.6)}
+.kce-stub-perforation i:first-child{border-left:0;border-radius:0 18px 18px 0}
+.kce-stub-perforation i:last-child{border-right:0;border-radius:18px 0 0 18px}
+.kce-stub-perforation span{height:1px;flex:1;background:repeating-linear-gradient(90deg,rgba(235,224,190,.75) 0 13px,transparent 13px 27px)}
+.kce-stub-qr-panel .kce-ticket-qr{display:flex;justify-content:center;align-items:center;width:min(100%,230px);aspect-ratio:1;margin:0 auto;padding:10px;background:#17201d;border-radius:10px;overflow:hidden}
+.kce-stub-qr-panel .kce-ticket-qr img,.kce-stub-qr-panel .kce-ticket-qr canvas{display:block;width:100%!important;height:auto!important;max-width:210px;aspect-ratio:1;image-rendering:pixelated}
+.kce-stub-qr-panel>small{display:block;margin-top:12px;color:#a9b4a9;font-size:9px;letter-spacing:.2em;font-weight:700}
+.kce-stub-details{display:grid;grid-template-columns:1fr 1fr;gap:23px 18px;padding:25px 29px 22px}
+.kce-stub-details>div{min-width:0;display:flex;flex-direction:column;gap:7px}
+.kce-stub-details b{font-size:14px;line-height:1.35;color:#fff8e9;overflow-wrap:anywhere}
+.kce-stub-details small{font-size:10px;letter-spacing:.17em;color:#a6a69b}
+.kce-stub-status{margin:0 24px 18px;padding-top:15px;border-top:1px dashed rgba(223,214,183,.34);display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:10px;letter-spacing:.06em;color:#b8b7aa}
+.kce-stub-status b{font-size:10px;white-space:nowrap;color:#79d9c1}
+.kce-stub-done{margin:0 24px 23px;width:calc(100% - 48px)!important;min-height:51px;border-radius:14px!important;background:linear-gradient(100deg,#e7b94d,#bd8730)!important;color:#1c1a13!important;font-weight:800}
+@media(max-width:390px){.kce-ticket-backdrop{padding:10px}.kce-ticket-modal.kce-ticket-stub{max-height:calc(100dvh - 20px);border-radius:21px}.kce-stub-heading{padding:24px 18px 19px}.kce-stub-qr-panel{margin:0 15px;padding:15px 12px}.kce-stub-details{padding:21px 20px;gap:18px 12px}.kce-stub-details b{font-size:12px}.kce-stub-status{margin-left:15px;margin-right:15px}.kce-stub-done{margin-left:15px;margin-right:15px;width:calc(100% - 30px)!important}}
+@media(prefers-reduced-motion:reduce){.kce-ticket-stub{animation:none!important}}
