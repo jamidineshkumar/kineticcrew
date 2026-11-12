@@ -998,7 +998,7 @@ function closeMemberActionRings(except){
 }
 document.addEventListener('pointerdown',event=>{
  const card=event.target.closest('[data-member-action-card]');
- if(!card||event.target.closest('.kc-member-action-ring'))return;
+ if(!card||String(card.dataset.memberActionCard)===String(S.user?.auth_id)||event.target.closest('.kc-member-action-ring'))return;
  clearTimeout(kcMemberPressTimer);
  kcMemberPressTimer=setTimeout(()=>{
   if(!card.isConnected)return;
