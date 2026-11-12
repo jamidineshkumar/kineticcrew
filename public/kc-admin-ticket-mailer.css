@@ -32,3 +32,24 @@
 .kce-admin-mailer .kc-ticket-mailer-form button.kc-attendance-verify-btn:active{transform:scale(.985)!important;filter:brightness(.96)!important}
 .kce-admin-mailer .kc-ticket-mailer-form button.kc-attendance-verify-btn:focus-visible{outline:2px solid #f3c58d!important;outline-offset:3px!important}
 .kce-admin-mailer .kc-ticket-mailer-form button.kc-attendance-verify-btn:disabled{opacity:.58!important;filter:grayscale(.25)!important}
+
+/* Event-ticket recipient selector mirrors the KC Memories member picker. */
+.kc-ticket-recipient-picker{grid-column:1/-1;min-width:0;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:rgba(255,255,255,.045);color:#f4f0ed;overflow:visible}
+.kc-ticket-recipient-picker>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:13px 16px;cursor:pointer;list-style:none;font-size:13px;font-weight:750}
+.kc-ticket-recipient-picker>summary::-webkit-details-marker{display:none}
+.kc-ticket-recipient-picker>summary:after{content:"⌄";color:#b9b2b5;font-size:18px}
+.kc-ticket-recipient-picker[open]>summary:after{content:"⌃"}
+.kc-ticket-recipient-picker .memory-recipient-count{margin-left:auto;color:#d9b27e;font-size:12px;white-space:nowrap}
+.kc-ticket-recipient-picker .memory-recipient-menu{padding:0 12px 12px}
+.kc-ticket-recipient-picker .memory-member-search{width:100%;box-sizing:border-box;margin:0 0 9px;padding:12px;border:1px solid rgba(255,255,255,.13);border-radius:12px;background:#171a1d;color:#fff;font:inherit;font-size:12px}
+.kc-ticket-recipient-picker .memory-recipient-list{display:grid;gap:6px;max-height:240px;overflow:auto}
+.kc-ticket-recipient-picker .memory-recipient-option{display:flex!important;align-items:center!important;gap:10px!important;padding:10px!important;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.035);cursor:pointer}
+.kc-ticket-recipient-picker .memory-recipient-option[hidden]{display:none!important}
+.kc-ticket-recipient-picker .memory-recipient-option input{width:17px!important;height:17px!important;flex:0 0 17px;accent-color:#e5a77e}
+.kc-ticket-recipient-picker .memory-recipient-option>span:nth-of-type(2){display:grid;gap:3px;min-width:0}
+.kc-ticket-recipient-picker .memory-recipient-option b{font-size:12px;color:#f4f0ed}
+.kc-ticket-recipient-picker .memory-recipient-option small{font-size:10px;color:#aaa2a6;overflow-wrap:anywhere}
+.kc-ticket-recipient-picker .memory-recipient-check{margin-left:auto;color:#e5a77e;font-style:normal;opacity:0}
+.kc-ticket-recipient-picker .memory-recipient-option:has(input:checked){border-color:rgba(229,167,126,.5);background:rgba(229,167,126,.1)}
+.kc-ticket-recipient-picker .memory-recipient-option:has(input:checked) .memory-recipient-check{opacity:1}
+@media(max-width:560px){.kc-ticket-recipient-picker{grid-column:1/-1}}
