@@ -643,15 +643,17 @@ function celebrateSave(){if(window.matchMedia?.('(prefers-reduced-motion: reduce
 window.kcCelebrateSave=celebrateSave;
 async function action(fn){try{S.error='';await fn();}catch(e){S.error=e.message||'Something went wrong.';}paint();}
 function showEventQr(eventId,title){
- const event=S.events.find(x=>String(x.id)===String(eventId))||{},payload='KC_EVENT_ATTENDANCE:'+eventId+':'+S.user.email;
+ const event=S.events.find(x=>String(x.id)===String(eventId))||{},ticketTitle=String(event.title||title||'Kinetic Crew Event').trim(),payload='KC_EVENT_ATTENDANCE:'+eventId+':'+S.user.email;
  const startDate=event.starts_at?new Date(event.starts_at):null;
  const dateLabel=startDate&&!Number.isNaN(startDate.getTime())?startDate.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'To be announced';
  const timeLabel=startDate&&!Number.isNaN(startDate.getTime())?startDate.toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'}):'To be announced';
  const passId=String(event.id||eventId).replace(/[^a-z0-9]/gi,'').slice(-8).toUpperCase()||'KC-PASS';
- const close=()=>{$('#modalRoot').innerHTML='';};
- $('#modalRoot').innerHTML='<div class="modalback kce-ticket-backdrop" id="eventQrBackdrop"><section class="modal kce-ticket-modal kce-ticket-stub" role="dialog" aria-modal="true" aria-labelledby="kcTicketTitle">'+
+ const close=()=>{$('#modalRoot').innerHTML='';document.body.classList.remove('kc-ticket-open');document.removeEventListener('keydown',ticketEscape);};
+ const ticketEscape=event=>{if(event.key==='Escape')close();};
+ document.body.classList.add('kc-ticket-open');document.addEventListener('keydown',ticketEscape);
+ $('#modalRoot').innerHTML='<div class="modalback kce-ticket-backdrop" id="eventQrBackdrop"><section class="modal kce-ticket-modal kce-ticket-stub" role="dialog" aria-modal="true" aria-labelledby="kcTicketTitle" tabindex="-1">'+
  '<button type="button" class="iconbutton modalclose" id="closeEventQr" aria-label="Close ticket">×</button>'+
- '<header class="kce-stub-heading"><span>MY TICKET</span><h2 id="kcTicketTitle">'+esc(title||event.title||'Kinetic Crew Event')+'</h2></header>'+
+ '<header class="kce-stub-heading"><span>MY TICKET</span><h2 id="kcTicketTitle">'+esc(ticketTitle)+'</h2></header>'+
  '<div class="kce-stub-qr-panel"><div class="kce-stub-passid">PASS ID <b>'+esc(passId)+'</b></div><div class="kce-stub-perforation"><i></i><span></span><i></i></div><div id="eventQrImage" class="kce-ticket-qr member-qr"></div><small>SCAN AT THE EVENT ENTRANCE</small></div>'+
  '<div class="kce-stub-details"><div><b>'+esc(S.user?.name||S.user?.email||'Crew member')+'</b><small>NAME</small></div><div><b>'+esc(dateLabel)+'</b><small>DATE</small></div><div><b>'+esc(event.location||'Venue to be announced')+'</b><small>VENUE</small></div><div><b>'+esc(timeLabel)+'</b><small>TIME</small></div></div>'+
  '<div class="kce-stub-status"><span>'+(event.attended?'ATTENDANCE CONFIRMED':'REGISTRATION CONFIRMED')+'</span><b>'+(event.attended?'● CHECKED IN':'● VALID PASS')+'</b></div><div class="kce-stub-actions"><button type="button" class="kce-stub-download" id="downloadEventPass" aria-label="Download ticket to phone"><svg viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 17v3h16v-3"/></svg><span>Save ticket</span></button><button type="button" class="primary full kce-stub-done" id="doneEventQr">Done</button></div></section></div>';
