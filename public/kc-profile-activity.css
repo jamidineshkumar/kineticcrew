@@ -9,7 +9,7 @@
 .kc-profile-activity-head>div:first-child>span{font-size:9px;letter-spacing:.18em;font-weight:850;color:#d9ad77}
 .kc-profile-activity-head h2{margin:5px 0 0;font-size:27px;line-height:1.05;letter-spacing:-.045em}
 .kc-profile-activity-tabs{display:flex;gap:5px;padding:4px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:#17191c}
-.kc-profile-activity-tabs button{border:0;border-radius:999px;padding:9px 11px;background:transparent;color:#a9a9ae;font:700 11px inherit;white-space:nowrap}
+.kc-profile-activity-tabs button{border:0;border-radius:999px;padding:9px 11px;background:transparent;color:#a9a9ae;font-family:inherit;font-size:11px;font-weight:700;white-space:nowrap}
 .kc-profile-activity-tabs button.active{background:linear-gradient(110deg,#e94f9b,#f1a36d);color:#171719}
 .kc-profile-activity-tabs i{font-style:normal;opacity:.75;margin-left:3px}
 .kc-profile-activity-panel{display:grid;gap:9px}
