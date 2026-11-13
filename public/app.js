@@ -601,7 +601,7 @@ function home(){
  const contentSlides=slides.splice(0);
  contentSlides.forEach(slide=>{slides.push(slide,{...crewPromo});});
  const pollItems=[...(S.featureItems?.polls||[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
- const updateItems=[...announcements.map(a=>({kind:'announcement',created_at:a.created_at,item:a})),...pollItems.map(p=>({kind:'poll',created_at:p.created_at,item:p}))].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0)).slice(0,3);
+ const updateItems=[...announcements.slice(0,2).map(a=>({kind:'announcement',created_at:a.created_at,item:a})),...(pollItems.length?[{kind:'poll',created_at:pollItems[0].created_at,item:pollItems[0]}]:[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
  const updates=updateItems.map((entry,i)=>{
   const item=entry.item;
   if(entry.kind==='poll'){
