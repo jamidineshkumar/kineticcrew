@@ -51,6 +51,13 @@
       card.append(element);
     }
   }
+  function appendChat(name, message, own) {
+    const log = $("#kcml-chat-log"); if (!log) return;
+    const row = document.createElement("p"); row.className = own ? "kcml-chat-own" : "";
+    const author = document.createElement("b"); author.textContent = name;
+    const text = document.createElement("span"); text.textContent = message;
+    row.append(author, text); log.append(row); log.scrollTop = log.scrollHeight;
+  }
   function removeTrack(track) {
     track.detach().forEach(element => element.remove());
   }
@@ -59,10 +66,17 @@
     isHost = !!data.isHost; activeCode = data.code || payload.code || ""; activeTitle = data.title || "Kinetic Crew Meeting";
     const { Room, RoomEvent, Track } = await sdk();
     room = new Room({ adaptiveStream: true, dynacast: true, videoCaptureDefaults: { resolution: { width: 1280, height: 720 }, facingMode: "user" } });
-    showDialog('<header class="kcml-head"><div><span>KINETIC CREW / LIVE</span><h2>' + esc(activeTitle) + '</h2><small>Meeting code: <b>' + esc(activeCode) + '</b></small></div><button data-kcml-close aria-label="Leave meeting">×</button></header><div id="kcml-status" class="kcml-status" hidden></div><div id="kcml-grid" class="kcml-grid"><div class="kcml-connecting">Connecting to your crew…</div></div><footer class="kcml-controls"><button data-kcml-mic>Mute mic</button><button data-kcml-camera>Turn camera off</button><button data-kcml-screen>Share screen</button><button data-kcml-copy>Copy invite code</button><button data-kcml-leave class="kcml-leave">' + (isHost ? 'End meeting' : 'Leave') + '</button></footer>');
+    showDialog('<header class="kcml-head"><div><span>KINETIC CREW / LIVE</span><h2>' + esc(activeTitle) + '</h2><small>Meeting code: <b>' + esc(activeCode) + '</b></small></div><button data-kcml-close aria-label="Leave meeting">×</button></header><div id="kcml-status" class="kcml-status" hidden></div><div class="kcml-layout"><div id="kcml-grid" class="kcml-grid"><div class="kcml-connecting">Connecting to your crew…</div></div><aside class="kcml-chat"><b>Meeting chat</b><div id="kcml-chat-log" aria-live="polite"><p>Messages are visible to everyone in this meeting.</p></div><form id="kcml-chat-form"><input id="kcml-chat-input" maxlength="1000" placeholder="Message your crew…" autocomplete="off"><button type="submit">Send</button></form></aside></div><footer class="kcml-controls"><button data-kcml-mic>Mute mic</button><button data-kcml-camera>Turn camera off</button><button data-kcml-screen>Share screen</button><button data-kcml-copy>Copy invite code</button><button data-kcml-leave class="kcml-leave">' + (isHost ? 'End meeting' : 'Leave') + '</button></footer>');
     const grid = $("#kcml-grid");
     room.on(RoomEvent.TrackSubscribed, (track, publication, participant) => tile(participant, track));
     room.on(RoomEvent.TrackUnsubscribed, track => removeTrack(track));
+    room.on(RoomEvent.DataReceived, (payload, participant) => {
+      try {
+        const message = JSON.parse(new TextDecoder().decode(payload));
+        if (message.type !== "chat" || typeof message.text !== "string") return;
+        appendChat(participant?.name || "Crew member", message.text, false);
+      } catch {}
+    });
     room.on(RoomEvent.ParticipantConnected, participant => { const empty = $(".kcml-connecting"); if (empty) empty.remove(); tile(participant); });
     room.on(RoomEvent.ParticipantDisconnected, participant => document.getElementById("kcml-p-" + participant.identity.replace(/[^a-zA-Z0-9_-]/g, "_"))?.remove());
     room.on(RoomEvent.Disconnected, () => { if ($("#kcMeetLiveRoot .kcml-dialog")) closeRoom(false); });
@@ -74,6 +88,15 @@
     room.remoteParticipants.forEach(participant => participant.trackPublications.forEach(pub => { if (pub.track) tile(participant, pub.track); }));
     if (!grid.children.length) grid.innerHTML = '<div class="kcml-connecting">You are first in the room. Share the code to invite your crew.</div>';
     $("#kcml-grid")?.classList.add("ready");
+    $("#kcMeetLiveRoot").querySelector("#kcml-chat-form").onsubmit = async e => {
+      e.preventDefault();
+      const input = $("#kcml-chat-input"), text = input.value.trim();
+      if (!text || !room) return;
+      try {
+        await room.localParticipant.publishData(new TextEncoder().encode(JSON.stringify({type:"chat",text})), { reliable: true });
+        appendChat("You", text, true); input.value = "";
+      } catch { showError("Message could not be sent. Check your connection."); }
+    };
     $("#kcMeetLiveRoot").querySelector("[data-kcml-mic]").onclick = async e => { const enabled = room.localParticipant.isMicrophoneEnabled; await room.localParticipant.setMicrophoneEnabled(!enabled); e.currentTarget.textContent = enabled ? "Unmute mic" : "Mute mic"; };
     $("#kcMeetLiveRoot").querySelector("[data-kcml-camera]").onclick = async e => { const enabled = room.localParticipant.isCameraEnabled; await room.localParticipant.setCameraEnabled(!enabled); e.currentTarget.textContent = enabled ? "Turn camera on" : "Turn camera off"; };
     $("#kcMeetLiveRoot").querySelector("[data-kcml-screen]").onclick = async e => { try { const enabled = room.localParticipant.isScreenShareEnabled; await room.localParticipant.setScreenShareEnabled(!enabled); e.currentTarget.textContent = enabled ? "Share screen" : "Stop sharing"; } catch { showError("Screen sharing is not supported in this browser or device."); } };
