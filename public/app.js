@@ -581,15 +581,17 @@ function socialEmbed(url){
  return '';
 }
 
-async function loadSocialFeed(){
- const [posts,likes,comments,people]=await Promise.all([
-  client.from('crew_social_posts').select('*').order('created_at',{ascending:false}).limit(100),
-  client.from('crew_social_likes').select('post_id,user_id'),
-  client.from('crew_social_comments').select('*').order('created_at',{ascending:true}).limit(1000),
+async async function loadSocialFeed(){
+ const posts=await client.from('crew_social_posts').select('*').order('created_at',{ascending:false}).limit(30);
+ if(posts.error)throw posts.error;
+ const rows=posts.data||[],ids=rows.map(post=>post.id);
+ const [likes,comments,people]=await Promise.all([
+  ids.length?client.from('crew_social_likes').select('post_id,user_id').in('post_id',ids):Promise.resolve({data:[],error:null}),
+  ids.length?client.from('crew_social_comments').select('*').in('post_id',ids).order('created_at',{ascending:true}).limit(150):Promise.resolve({data:[],error:null}),
   rpc('crew_profile_directory',{})
  ]);
- for(const result of [posts,likes,comments,people])if(result.error)throw result.error;
- S.socialPosts=posts.data||[];S.socialLikes=likes.data||[];S.socialComments=comments.data||[];
+ for(const result of [likes,comments,people])if(result.error)throw result.error;
+ S.socialPosts=rows;S.socialLikes=likes.data||[];S.socialComments=comments.data||[];
  S.publicMembers=Array.isArray(people.data)?people.data:[];
 }
 
@@ -1747,6 +1749,7 @@ async function boot(){
   }
   // Start the opt-in immediately after the account is verified, before dashboard data loads.
   S.user={auth_id:session.user.id,id:session.user.id};
+  kcAccessGuard={userId:session.user.id,checkedAt:Date.now()};
   setupCrewPushForSignedInMember();
   rpc('crew_profile_login_touch',{}).catch(error=>console.warn('Could not record today’s profile login:',error));
   const saved=readPageState();
@@ -1813,7 +1816,7 @@ if(reloadButton)reloadButton.addEventListener('click',async()=>{
  }catch(error){notice(error.message||'Refresh failed.');}
  finally{reloadButton.disabled=false;reloadButton.innerHTML=original;}
 });
-window.addEventListener('online',()=>{if(S.user){kcAccessGuard={userId:'',checkedAt:0};kcThrottledSnapshotSync(true);refresh().then(()=>notice('Connection restored. Crew data refreshed.')).catch(e=>{S.error=e.message||'Could not refresh crew data.';paint();});}});
+window.addEventListener('online',()=>{if(S.user){kcAccessGuard={userId:'',checkedAt:0};refresh().then(()=>notice('Connection restored. Crew data refreshed.')).catch(e=>{S.error=e.message||'Could not refresh crew data.';paint();});}});
 window.addEventListener('offline',()=>{if(S.user){S.offline=true;S.error='You are offline. Showing the last available crew information.';paint();}});
 window.addEventListener('error',event=>{console.error('Kinetic Crew runtime error:',event.error||event.message);});
 window.addEventListener('unhandledrejection',event=>{console.error('Kinetic Crew async error:',event.reason);});
