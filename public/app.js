@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
-window.KC_APP_VERSION='1.3.7';
+window.KC_APP_VERSION='1.3.9';
 let kcUpdatePending=false,kcUpdateReloading=false;
 function kcSafeToReload(){const el=document.activeElement;if(el&&(/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)||el.isContentEditable))return false;return !document.querySelector('#modalRoot .modal, #modalRoot [role="dialog"], .kc-modal:not([hidden])');}
 function kcApplyPendingUpdate(){if(!kcUpdatePending||kcUpdateReloading||!kcSafeToReload())return;kcUpdateReloading=true;try{savePageState();}catch{}const url=new URL(location.href);url.searchParams.set('kc_refresh',String(Date.now()));location.replace(url.toString());}
