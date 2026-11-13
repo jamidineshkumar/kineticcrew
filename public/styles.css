@@ -117,3 +117,50 @@
 .kc-developer-link b{font-size:13px}
 .kc-developer-link i{margin-left:auto;font-style:normal;opacity:.65}
 @media(max-width:640px){.kc-settings-hub{grid-template-columns:1fr;gap:10px}.kc-settings-tile{min-height:78px;padding:13px 15px}.kc-developer-links{grid-template-columns:1fr}.kc-page-back{font-size:12px;padding:10px 12px}}
+
+
+/* Settings menu consistency + profile-led developer page */
+.kc-settings-hub{grid-template-columns:1fr;gap:12px;margin:22px 0 16px}
+.kc-settings-tile{min-height:104px;padding:18px 20px;border:1px solid rgba(255,255,255,.085);border-radius:23px;background:rgba(255,255,255,.075);box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 10px 28px rgba(0,0,0,.12)}
+.kc-settings-tile:hover{transform:translateY(-1px);border-color:rgba(198,162,255,.38);background:rgba(255,255,255,.095)}
+.kc-settings-tile-icon{width:58px;height:58px;flex:0 0 58px;border-radius:19px;background:#393447;color:#f1eaff}
+.kc-settings-tile-icon svg{width:25px;height:25px;display:block}
+.kc-settings-tile-copy{gap:7px}
+.kc-settings-tile-copy b{font-size:16px;font-weight:700;letter-spacing:-.015em}
+.kc-settings-tile-copy small{font-size:13px;color:#a4a5ad}
+.kc-settings-tile-arrow{font-size:26px;font-weight:300;color:#b8bac2;opacity:.9}
+.kc-settings-signout{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:18px 0 8px;padding:17px 19px;border:1px solid rgba(255,105,105,.25);border-radius:20px;background:rgba(255,80,80,.055)}
+.kc-settings-signout>span{display:grid;gap:4px}
+.kc-settings-signout b{font-size:14px}
+.kc-settings-signout small{font-size:11px;color:var(--muted)}
+.kc-settings-signout button{border:1px solid rgba(255,110,110,.42);border-radius:13px;padding:11px 15px;background:rgba(255,75,75,.12);color:#ffaaaa;font-size:12px;font-weight:700}
+.kc-settings-version{margin:13px 3px 24px}
+.kc-developer-profile{position:relative;max-width:850px;min-height:calc(100svh - 125px);margin:-34px auto -20px;overflow:hidden;background:#171719;border-radius:0 0 28px 28px}
+.kc-developer-cover{position:relative;height:min(58svh,590px);min-height:380px;display:flex;align-items:flex-end;padding:26px;background:linear-gradient(180deg,rgba(0,0,0,.04) 35%,rgba(0,0,0,.82) 100%),radial-gradient(ellipse at 72% 20%,#705143 0,transparent 36%),radial-gradient(ellipse at 25% 28%,#293d43 0,transparent 45%),linear-gradient(135deg,#243137,#57463f 54%,#171719)}
+.kc-developer-cover:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(17,17,19,.55),transparent 55%);pointer-events:none}
+.kc-developer-back{position:absolute;z-index:2;top:24px;left:22px;width:48px;height:48px;border:1px solid rgba(255,255,255,.15);border-radius:50%;background:rgba(0,0,0,.48);backdrop-filter:blur(12px);color:white;font-size:34px;line-height:1}
+.kc-developer-cover-mark{position:relative;z-index:1;color:#ffffffa8;font:600 10px var(--mono);letter-spacing:.22em}
+.kc-developer-profile-body{position:relative;padding:0 28px 34px;background:#171719}
+.kc-developer-avatar{position:relative;width:112px;height:112px;margin-top:-56px;border:5px solid #171719;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#8673a9,#292432 70%);box-shadow:0 8px 28px #0008;color:#fff;font-size:34px;font-weight:800;letter-spacing:.04em}
+.kc-developer-profile-body h1{margin:20px 0 5px;font:700 clamp(25px,5vw,40px)/1.12 var(--display);letter-spacing:-.035em}
+.kc-developer-handle{margin:0;color:#c3c3c9;font-size:15px}
+.kc-developer-role{display:inline-flex;margin:17px 0 0;padding:9px 15px;border-radius:99px;background:#c51f3d;color:white;font-size:12px;font-weight:700;letter-spacing:.04em}
+.kc-developer-bio{margin:17px 0 22px;color:#b6b6bd;font-size:14px}
+.kc-developer-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:18px}
+.kc-developer-link{min-height:58px;padding:13px 15px;border:1px solid rgba(255,255,255,.075);border-radius:17px;background:#222327}
+.kc-developer-link>span{width:34px;height:34px;border-radius:50%;background:#303238;color:#fff;font-size:13px}
+.kc-developer-link b{font-size:14px}
+.kc-developer-link i{color:#aeb0b8}
+@media(max-width:640px){
+ .kc-settings-hub{gap:10px;margin-top:18px}
+ .kc-settings-tile{min-height:96px;padding:15px 16px;border-radius:22px}
+ .kc-settings-tile-icon{width:54px;height:54px;flex-basis:54px;border-radius:18px}
+ .kc-settings-tile-copy b{font-size:15px}
+ .kc-settings-tile-copy small{font-size:12px}
+ .kc-developer-profile{min-height:calc(100svh - 70px);margin:-22px -13px -16px;border-radius:0}
+ .kc-developer-cover{height:56svh;min-height:370px;padding:22px}
+ .kc-developer-profile-body{padding:0 22px 30px}
+ .kc-developer-avatar{width:100px;height:100px;margin-top:-50px}
+ .kc-developer-links{grid-template-columns:1fr;gap:9px}
+ .kc-settings-signout{margin-top:16px}
+}
