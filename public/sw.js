@@ -32,7 +32,7 @@ if(messaging)messaging.onBackgroundMessage(async payload=>{
     // full-colour crew logo in the expanded notification.
     icon:logo||BASE+"kinetic-crew-logo.jpg",
     image:logo||BASE+"kinetic-crew-logo.jpg",
-    badge:BASE+"icon.svg",
+    badge:logo||BASE+"kinetic-crew-logo.jpg",
     data:{url:payload.data?.url||BASE}
   });
 });
