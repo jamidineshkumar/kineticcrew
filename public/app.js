@@ -1,7 +1,15 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
-window.KC_APP_VERSION='1.3.3';
+window.KC_APP_VERSION='1.3.4';
+let kcUpdatePending=false,kcUpdateReloading=false;
+function kcSafeToReload(){const el=document.activeElement;if(el&&(/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)||el.isContentEditable))return false;return !document.querySelector('#modalRoot .modal, #modalRoot [role="dialog"], .kc-modal:not([hidden])');}
+function kcApplyPendingUpdate(){if(!kcUpdatePending||kcUpdateReloading||!kcSafeToReload())return;kcUpdateReloading=true;try{savePageState();}catch{}const url=new URL(location.href);url.searchParams.set('kc_refresh',String(Date.now()));location.replace(url.toString());}
+async function kcCheckAppVersion(){if(!navigator.onLine||kcUpdateReloading)return;try{const response=await fetch(window.kcPath('app-version.json')+'?check='+Date.now(),{cache:'no-store',credentials:'same-origin'});if(!response.ok)return;const data=await response.json();if(data?.version&&data.version!==window.KC_APP_VERSION){kcUpdatePending=true;kcApplyPendingUpdate();}}catch{}}
+function kcRegisterAutoUpdates(){if(!('serviceWorker'in navigator))return;const hadController=!!navigator.serviceWorker.controller;navigator.serviceWorker.register(window.kcPath('sw.js'),{scope:window.kcPath(''),updateViaCache:'none'}).then(async registration=>{const check=()=>{if(navigator.onLine)registration.update().catch(()=>{});};check();window.addEventListener('focus',check);window.addEventListener('pageshow',check);window.addEventListener('online',check);document.addEventListener('visibilitychange',()=>{if(!document.hidden)check();});setInterval(()=>{if(!document.hidden)check();},5*60*1000);if(hadController)navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!kcUpdateReloading){kcUpdateReloading=true;try{savePageState();}catch{}location.reload();}},{once:true});}).catch(()=>{});}
+window.addEventListener('focus',kcApplyPendingUpdate);window.addEventListener('pageshow',kcApplyPendingUpdate);document.addEventListener('visibilitychange',()=>{if(!document.hidden)kcApplyPendingUpdate();});document.addEventListener('focusout',()=>setTimeout(kcApplyPendingUpdate,250));
+setInterval(kcCheckAppVersion,60*1000);
+window.addEventListener('load',()=>{kcCheckAppVersion();kcRegisterAutoUpdates();},{once:true});
 const S={user:null,view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],pendingMembers:[],publicMembers:[],memberFavorites:[],blockedMemberIds:[],featureItems:{},socialPosts:[],socialLikes:[],socialComments:[],profileDashboard:null,profileTab:'uploads',roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',error:'',peopleQuery:'',eventsFilter:'all',eventQuery:'',editingEventId:null,sharedDraft:null};
 window.KC_SEARCH_API={
  snapshot:()=>({events:S.events||[],announcements:S.announcements||[],members:S.publicMembers||[],posts:S.socialPosts||[],role:S.user?.role||'member'}),
@@ -1709,6 +1717,6 @@ document.addEventListener('click',async event=>{
 });
 document.addEventListener('click',event=>{if(event.target.closest('[data-install-close]'))$('#modalRoot').innerHTML='';});
 syncInstallButtons();
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register(window.kcPath('sw.js'),{scope:window.kcPath('')}).catch(()=>{}));
+
 boot().finally(()=>{});
 })();
