@@ -49,6 +49,17 @@
     if (track?.kind === "audio") {
       const element = track.attach(); element.autoplay = true; element.style.display = "none";
       card.append(element);
+      if (isHost && !local && publication?.trackSid && !card.querySelector("[data-kcml-mute]")) {
+        const mute = document.createElement("button");
+        mute.type = "button"; mute.dataset.kcmlMute = "1"; mute.className = "kcml-mute";
+        mute.textContent = "Mute participant";
+        mute.onclick = async () => {
+          mute.disabled = true;
+          try { await issueToken("mute", { code: activeCode, identity: participant.identity, trackSid: publication.trackSid }); mute.textContent = "Muted"; }
+          catch (error) { mute.disabled = false; showError(error?.message || "Could not mute participant."); }
+        };
+        card.querySelector(".kcml-person")?.append(mute);
+      }
     }
   }
   function appendChat(name, message, own) {
