@@ -1,6 +1,6 @@
 {
-  "version": "1.4.6",
+  "version": "1.4.7",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-13T19:28:44.796Z",
-  "release_notes": "Kinetic Crew 1.4.6 improves automatic installed-app updates, refreshes the service-worker shell cache, and makes the Crew Management and Waiting List shortcuts available on the Admin/Super Admin home screen."
+  "updated_at": "2026-11-14T00:00:00.000Z",
+  "release_notes": "Kinetic Crew 1.4.7 adds a click-to-open event creation form, a redesigned KC Meet interface with participant and chat panels, reliable Home-first fresh launches, refresh-page restoration, and an on-Home profile completion prompt."
 }
