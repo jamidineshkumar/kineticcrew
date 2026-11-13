@@ -119,8 +119,29 @@ async function enable() {
   localStorage.setItem("kc-push-enabled", "yes");
   return result;
 }
-async function send(title, body, audience = "all") {
-  return invoke("send", { title, body, audience });
+async function invokeEmail(title, body, audience, emailKey, emailType) {
+  const client = window.kcSupabase;
+  const { data: sessionData } = await client.auth.getSession();
+  const token = sessionData?.session?.access_token;
+  if (!token) throw new Error("Please sign in again.");
+  const response = await fetch(window.KC_CONFIG.supabaseUrl + "/functions/v1/send-crew-email", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", apikey: window.KC_CONFIG.supabaseAnonKey, Authorization: "Bearer " + token },
+    body: JSON.stringify({ title, body, audience, emailKey, emailType })
+  });
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error || "Crew email delivery failed.");
+  return result;
+}
+async function send(title, body, audience = "all", options = {}) {
+  const pushResult = await invoke("send", { title, body, audience });
+  if (options?.sendEmail === true) {
+    const emailKey = String(options.emailKey || "").trim();
+    if (!emailKey) throw new Error("Email could not be sent because the release key is missing.");
+    const emailResult = await invokeEmail(title, body, audience, emailKey, options.emailType || "crew-update");
+    return { ...pushResult, email: emailResult };
+  }
+  return pushResult;
 }
 window.kcPush = { enable, send, syncExistingPermission };
 window.dispatchEvent(new Event('kc:push-ready'));

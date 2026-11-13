@@ -124,6 +124,7 @@
   async function closeRoom(disconnect = true) {
     const old = room; room = null;
     if (old && disconnect) { try { await old.disconnect(); } catch {} }
+    isHost = false; activeCode = ""; activeTitle = "";
     shell().innerHTML = "";
   }
   document.addEventListener("click", async event => {

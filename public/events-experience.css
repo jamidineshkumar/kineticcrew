@@ -233,3 +233,9 @@
 .kc-confirm-danger{border:1px solid #df8b65!important;background:linear-gradient(110deg,#c66e4d,#e18b61)!important;color:#1b100d!important;box-shadow:0 7px 20px rgba(195,102,68,.18)}
 .kc-confirm-actions button:hover{filter:brightness(1.08)}
 @media(max-width:480px){.kc-confirm-modal{padding:25px 21px 20px!important;border-radius:24px!important}.kc-confirm-actions{gap:8px}.kc-confirm-actions button{flex:1;padding:0 10px}}
+
+/* Explicit email opt-in for event, rehearsal and announcement publishing. */
+.kc-email-optin{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:7px!important;padding:13px 15px!important;border:1px solid rgba(226,190,139,.24)!important;border-radius:14px!important;background:rgba(226,190,139,.055)!important}
+.kc-email-optin>span{display:flex!important;align-items:center!important;gap:10px!important;color:var(--text,#f4f0ed)!important;font-size:13px!important;font-weight:750!important}
+.kc-email-optin input[type=checkbox]{width:18px!important;height:18px!important;flex:0 0 18px!important;accent-color:#d9a76e!important}
+.kc-email-optin small{color:var(--muted,#a9a2a5)!important;font-size:11px!important;line-height:1.45!important}

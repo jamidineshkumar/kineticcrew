@@ -1,5 +1,5 @@
 const BASE=new URL(self.registration.scope).pathname.replace(/\/?$/,'/');
-const CACHE='kinetic-crew-shell-v153';
+const CACHE='kinetic-crew-shell-v154';
 const CORE=['','index.html','connect.html','login.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','icon.svg','kinetic-crew-logo.svg','kinetic-crew-logo.jpg','theme.js','theme-overrides.css','stumagz-redesign.css','mobile-dock.js','push-notifications.js','crew-enhancements.js','crew-enhancements.css','app-version.json','kc-meet.js','kc-meet.css','vibe-home.css', 'approved-mobile-shell.css','kc-home-glass-tiles.css','kc-exact-home.css','icon.svg','founder-crown.svg','onboarding.css','more-menu-reference.css','kc-more-neumorphic.css','kc-dock-final.css','kinetic-gram-experience.css','kinetic-gram-experience.js','kc-home-featured-carousel.css','kc-profile-liquid.css','kc-header-alignment-fix.css','kc-home-header-greeting-refresh.css','kc-transition.css','kc-transition.js','student-tribe-interface.css','global-search.js','global-search.css','events-experience.css','gram-onboarding.js','gram-onboarding.css','kc-memories-sharing.css','kc-notifications-inbox.css','kc-home-logo-menu-dedupe.css','kc-profile-single-edit.css','kc-profile-flip-hint.css','kc-app-neumorphic-system.css','kc-attendance-report.css','kc-search-events-polish.css','kc-more-event-ads.css','kc-more-event-ads.js','brand-logo.js','brand-logo-admin.css'];
 const ASSETS=CORE.map(path=>BASE+path);
 const CDN_ASSETS=["https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2","https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js","https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"];
@@ -87,17 +87,13 @@ self.addEventListener("fetch",event=>{
   if(request.mode==="navigate"){
     event.respondWith((async()=>{
       const cache=await caches.open(CACHE);
-      const cached=await cache.match(request)||await cache.match(BASE+"index.html");
-      const network=fetch(request).then(response=>{
-        if(response.ok)cache.put(request,response.clone()).catch(()=>{});
+      try{
+        const response=await Promise.race([fetch(request,{cache:"no-store"}),new Promise((_,reject)=>setTimeout(()=>reject(new Error("navigation timeout")),8000))]);
+        if(response&&response.ok)cache.put(request,response.clone()).catch(()=>{});
         return response;
-      });
-      if(cached){
-        event.waitUntil(network.catch(()=>{}));
-        return cached;
+      }catch(error){
+        return (await cache.match(request))||(await cache.match(BASE+"index.html"))||(await cache.match(BASE+"login.html"))||Response.error();
       }
-      try{return await Promise.race([network,new Promise((_,reject)=>setTimeout(()=>reject(new Error("navigation timeout")),4500))]);}
-      catch(error){return (await cache.match(BASE+"index.html"))||(await cache.match(BASE+"login.html"))||Response.error();}
     })());
     return;
   }
@@ -105,17 +101,13 @@ self.addEventListener("fetch",event=>{
     event.respondWith((async()=>{
       const cache=await caches.open(CACHE);
       const key=url.pathname;
-      const cached=await cache.match(key);
-      const network=fetch(request,{cache:"no-store"}).then(response=>{
-        if(response.ok)cache.put(key,response.clone()).catch(()=>{});
+      try{
+        const response=await Promise.race([fetch(request,{cache:"no-store"}),new Promise((_,reject)=>setTimeout(()=>reject(new Error("asset timeout")),8000))]);
+        if(response&&response.ok)cache.put(key,response.clone()).catch(()=>{});
         return response;
-      });
-      if(cached){
-        event.waitUntil(network.catch(()=>{}));
-        return cached;
+      }catch(error){
+        return (await cache.match(key))||Response.error();
       }
-      try{return await Promise.race([network,new Promise((_,reject)=>setTimeout(()=>reject(new Error("asset timeout")),7000))]);}
-      catch(error){return Response.error();}
     })());
   }
 });
