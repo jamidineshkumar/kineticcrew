@@ -581,7 +581,7 @@ function socialEmbed(url){
  return '';
 }
 
-async async function loadSocialFeed(){
+async function loadSocialFeed(){
  const posts=await client.from('crew_social_posts').select('*').order('created_at',{ascending:false}).limit(30);
  if(posts.error)throw posts.error;
  const rows=posts.data||[],ids=rows.map(post=>post.id);
