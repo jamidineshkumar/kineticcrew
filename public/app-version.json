@@ -1,6 +1,6 @@
 {
-  "version": "1.3.5",
+  "version": "1.3.6",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-13T04:15:00Z",
-  "release_notes": "Improved background sync efficiency and app responsiveness."
+  "updated_at": "2026-11-13T05:20:00Z",
+  "release_notes": "Crew background sync interval set to 3 seconds."
 }
