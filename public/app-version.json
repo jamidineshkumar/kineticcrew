@@ -1,6 +1,6 @@
 {
-  "version": "1.4.2",
+  "version": "1.4.3",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-13T16:25:00Z",
-  "release_notes": "Improved low-connectivity performance with cached static assets, faster startup, fewer background requests and adaptive notification sync."
+  "updated_at": "2026-11-13T16:40:00Z",
+  "release_notes": "Further reduced low-network data usage by limiting social feed payloads and avoiding repeated access checks."
 }
