@@ -50,47 +50,61 @@ self.addEventListener("message",event=>{if(event.data?.type==="SKIP_WAITING")sel
 self.addEventListener("install",event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE);
-    await Promise.all(ASSETS.map(async url=>{try{const response=await fetch(url,{cache:"reload"});if(response.ok)await cache.put(url,response);}catch(error){console.warn("Offline asset not cached:",url);}}));
-    const cdn=await caches.open(CDN_CACHE); 
-    await Promise.all(CDN_ASSETS.map(async url=>{try{const response=await fetch(url,{mode:"no-cors",cache:"reload"});await cdn.put(url,response);}catch(error){console.warn("Optional library not cached:",url);}})); 
+    const essential=["","index.html","login.html","styles.css","app.js","config.js","supabase-client.js","app-version.json"];
+    await Promise.all(essential.map(async path=>{
+      const url=BASE+path;
+      try{const response=await fetch(url,{cache:"reload"});if(response.ok)await cache.put(url,response);}
+      catch(error){console.warn("Essential offline asset not refreshed:",path);}
+    }));
     await self.skipWaiting();
   })());
 });
 self.addEventListener("activate",event=>{
-  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith("kinetic-crew-shell-")&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
+  event.waitUntil((async()=>{
+    const keys=await caches.keys();
+    await Promise.all(keys.filter(key=>key.startsWith("kinetic-crew-shell-")&&key!==CACHE).map(key=>caches.delete(key)));
+    await self.clients.claim();
+  })());
 });
 self.addEventListener("fetch",event=>{
   const request=event.request;
   if(request.method!=="GET")return;
   const url=new URL(request.url);
-  if(url.origin!==self.location.origin){if(CDN_ASSETS.includes(url.href)){event.respondWith((async()=>{const cache=await caches.open(CDN_CACHE);const cached=await cache.match(url.href);if(cached)return cached;const response=await fetch(request);if(response)await cache.put(url.href,response.clone());return response;})());}return;} 
+  if(url.origin!==self.location.origin)return;
   if(!url.pathname.startsWith(BASE))return;
+  const cacheable=url.pathname===BASE+"app.js"||ASSETS.includes(url.pathname);
   if(request.mode==="navigate"){
     event.respondWith((async()=>{
-      try{const response=await fetch(request);if(response.ok){const cache=await caches.open(CACHE);await cache.put(request,response.clone());}return response;}
-      catch(error){return (await caches.match(request))||(await caches.match(BASE+"index.html"))||(await caches.match(BASE+"login.html"));}
-    })());
-    return;
-  }
-  if(url.pathname===BASE+'app.js'){
-    event.respondWith((async()=>{
       const cache=await caches.open(CACHE);
-      try{const response=await fetch(request,{cache:'no-store'});if(response.ok)await cache.put(BASE+'app.js',response.clone());return response;}
-      catch(error){return (await cache.match(BASE+'app.js'))||Response.error();}
-    })());
-    return;
-  }
-  if(ASSETS.includes(url.pathname)){
-    event.respondWith((async()=>{
-      const cache=await caches.open(CACHE);
-      // Prefer the newest deployed asset; use the cached copy only when offline.
-      try{
-        const response=await fetch(request,{cache:"no-store"});
-        if(response.ok)await cache.put(url.pathname,response.clone());
+      const cached=await cache.match(request)||await cache.match(BASE+"index.html");
+      const network=fetch(request).then(response=>{
+        if(response.ok)cache.put(request,response.clone()).catch(()=>{});
         return response;
-      }catch(error){
-        return (await cache.match(url.pathname))||(await cache.match(request,{ignoreSearch:true}))||Response.error();
+      });
+      if(cached){
+        event.waitUntil(network.catch(()=>{}));
+        return cached;
       }
+      try{return await Promise.race([network,new Promise((_,reject)=>setTimeout(()=>reject(new Error("navigation timeout")),4500))]);}
+      catch(error){return (await cache.match(BASE+"index.html"))||(await cache.match(BASE+"login.html"))||Response.error();}
+    })());
+    return;
+  }
+  if(cacheable){
+    event.respondWith((async()=>{
+      const cache=await caches.open(CACHE);
+      const key=url.pathname;
+      const cached=await cache.match(key);
+      const network=fetch(request,{cache:"no-store"}).then(response=>{
+        if(response.ok)cache.put(key,response.clone()).catch(()=>{});
+        return response;
+      });
+      if(cached){
+        event.waitUntil(network.catch(()=>{}));
+        return cached;
+      }
+      try{return await Promise.race([network,new Promise((_,reject)=>setTimeout(()=>reject(new Error("asset timeout")),7000))]);}
+      catch(error){return Response.error();}
     })());
   }
 });
