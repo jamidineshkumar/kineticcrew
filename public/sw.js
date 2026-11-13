@@ -70,7 +70,18 @@ self.addEventListener("fetch",event=>{
   const request=event.request;
   if(request.method!=="GET")return;
   const url=new URL(request.url);
-  if(url.origin!==self.location.origin)return;
+  if(url.origin!==self.location.origin){
+    if(CDN_ASSETS.includes(url.href)){
+      event.respondWith((async()=>{
+        const cache=await caches.open(CDN_CACHE);
+        const cached=await cache.match(url.href);
+        const network=fetch(request).then(response=>{if(response&&response.ok)cache.put(url.href,response.clone()).catch(()=>{});return response;});
+        if(cached){event.waitUntil(network.catch(()=>{}));return cached;}
+        return network;
+      })());
+    }
+    return;
+  }
   if(!url.pathname.startsWith(BASE))return;
   const cacheable=url.pathname===BASE+"app.js"||ASSETS.includes(url.pathname);
   if(request.mode==="navigate"){
