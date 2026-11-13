@@ -58,6 +58,19 @@ async function enableNativePush() {
   await PushNotifications.register();
   return { ok: true, message: "Android push registration started. This device will receive crew alerts after Firebase registration completes." };
 }
+async function syncExistingPermission() {
+  if (window.Capacitor?.isNativePlatform?.()) return { ok: true, skipped: true };
+  if (!("Notification" in window) || Notification.permission !== "granted" || !("serviceWorker" in navigator)) {
+    return { ok: true, skipped: true };
+  }
+  const registration = await navigator.serviceWorker.register(window.kcPath("sw.js"), { scope: window.kcPath("") });
+  const { messaging, getToken } = await getMessaging();
+  const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: registration });
+  if (!token) throw new Error("Firebase did not return a device token.");
+  const result = await invoke("register", { token, platform: "web" });
+  localStorage.setItem("kc-push-enabled", "yes");
+  return result;
+}
 async function enable() {
   if (window.Capacitor?.isNativePlatform?.()) return enableNativePush();
   if (!("Notification" in window) || !("serviceWorker" in navigator)) throw new Error("Push notifications are not supported in this browser.");
@@ -103,4 +116,4 @@ async function enable() {
 async function send(title, body, audience = "all") {
   return invoke("send", { title, body, audience });
 }
-window.kcPush = { enable, send };
+window.kcPush = { enable, send, syncExistingPermission };
