@@ -288,10 +288,11 @@ async function syncCrewSnapshot(){
  if(kcSnapshotBusy||!S.user||!navigator.onLine)return;
  kcSnapshotBusy=true;
  try{
-  const [snapshot,metaResult,rehearsalRows,postRows]=await Promise.all([
+  const [snapshot,metaResult,rehearsalRows,pollRows,postRows]=await Promise.all([
    api('bootstrap'),
    rpc('crew_event_metadata',{}).catch(()=>({data:[]})),
    featureApi('list','rehearsals',{}).catch(()=>S.featureItems.rehearsals||[]),
+   featureApi('list','polls',{}).catch(()=>S.featureItems.polls||[]),
    Promise.resolve().then(()=>client.from('crew_social_posts').select('*').order('created_at',{ascending:false}).limit(100)).catch(()=>({data:S.socialPosts||[],error:null}))
   ]);
   if(snapshot?.user)S.user={...S.user,...snapshot.user};
@@ -299,6 +300,7 @@ async function syncCrewSnapshot(){
   const nextEvents=(snapshot?.events||[]).map(event=>({...event,...(eventMeta.get(String(event.id))||{})})),nextAnnouncements=snapshot?.announcements||[],nextMembers=snapshot?.members||[];
   const rows=Array.isArray(nextAnnouncements)?nextAnnouncements:[];
   const previous=kcKnownAnnouncementIds||new Set((S.announcements||[]).map(a=>String(a.id)));
+  const nextPolls=Array.isArray(pollRows)?pollRows:(pollRows?.data||[]);
   const nextPostRows=postRows.error?(S.socialPosts||[]):(postRows.data||[]);
   const previousPostIds=new Set((S.socialPosts||[]).map(p=>String(p.id)));
   const previousAnnouncements=new Map((S.announcements||[]).map(a=>[String(a.id),a]));
@@ -307,13 +309,15 @@ async function syncCrewSnapshot(){
   const incomingEvents=nextEvents.filter(e=>{const old=previousEvents.get(String(e.id));return !old||String(old.updated_at||old.created_at||'')!==String(e.updated_at||e.created_at||'')||['title','description','location','starts_at','category','cover_url'].some(key=>String(old[key]??'')!==String(e[key]??''));});
   const incomingPosts=nextPostRows.filter(p=>!previousPostIds.has(String(p.id)));
   kcKnownAnnouncementIds=new Set(rows.map(a=>String(a.id)));
-  const changed=JSON.stringify(S.events)!==JSON.stringify(nextEvents)||JSON.stringify(S.announcements)!==JSON.stringify(rows)||JSON.stringify(S.members)!==JSON.stringify(nextMembers)||JSON.stringify(S.socialPosts)!==JSON.stringify(nextPostRows);
+  const changed=JSON.stringify(S.events)!==JSON.stringify(nextEvents)||JSON.stringify(S.announcements)!==JSON.stringify(rows)||JSON.stringify(S.members)!==JSON.stringify(nextMembers)||JSON.stringify(S.socialPosts)!==JSON.stringify(nextPostRows)||JSON.stringify(S.featureItems.polls||[])!==JSON.stringify(nextPolls);
   const nextRehearsals=Array.isArray(rehearsalRows)?rehearsalRows:(rehearsalRows?.data||[]);
   const rehearsalChanged=JSON.stringify(S.featureItems.rehearsals||[])!==JSON.stringify(nextRehearsals);
-  S.events=nextEvents;S.announcements=rows;S.members=nextMembers;S.socialPosts=nextPostRows;S.featureItems.rehearsals=nextRehearsals;
+  S.events=nextEvents;S.announcements=rows;S.members=nextMembers;S.socialPosts=nextPostRows;S.featureItems.rehearsals=nextRehearsals;S.featureItems.polls=nextPolls;
   await loadGlobalDeletedNotifications();
   if(changed||rehearsalChanged){paintUser();paint();}
-  const fresh=[...incomingAnnouncements.map(a=>({type:'announcement',title:a.title,body:a.body})),...incomingEvents.map(a=>({type:'event',title:a.title,body:a.description||'A new event was added.'})),...incomingPosts.map(a=>({type:'post',title:'New Kinetic Gram post',body:a.caption||'A crew member shared a post.'}))];
+  const previousPollIds=new Set((S.featureItems.polls||[]).map(p=>String(p.id)));
+  const incomingPolls=nextPolls.filter(p=>!previousPollIds.has(String(p.id)));
+  const fresh=[...incomingAnnouncements.map(a=>({type:'announcement',title:a.title,body:a.body})),...incomingEvents.map(a=>({type:'event',title:a.title,body:a.description||'A new event was added.'})),...incomingPosts.map(a=>({type:'post',title:'New Kinetic Gram post',body:a.caption||'A crew member shared a post.'})),...incomingPolls.map(p=>({type:'poll',title:'New crew poll: '+p.title,body:'A new poll is ready for your vote.'}))];
   if(fresh.length){
    const latest=fresh[0];
    window.dispatchEvent(new CustomEvent('kc:notification',{detail:{title:latest.title||'Kinetic Crew update',body:latest.body||'New crew activity is available.',target:'notifications'}}));
