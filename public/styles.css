@@ -164,3 +164,11 @@
  .kc-developer-links{grid-template-columns:1fr;gap:9px}
  .kc-settings-signout{margin-top:16px}
 }
+
+/* Profile page sign-out action */
+.kc-profile-signout{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:18px 0 28px;padding:17px 19px;border:1px solid rgba(255,105,105,.24);border-radius:19px;background:rgba(255,80,80,.055)}
+.kc-profile-signout>div{display:grid;gap:5px}
+.kc-profile-signout b{font-size:14px}
+.kc-profile-signout small{font-size:11px;color:var(--muted,#999);line-height:1.45}
+.kc-profile-signout button{flex:0 0 auto;border:1px solid rgba(255,110,110,.42);border-radius:13px;padding:11px 15px;background:rgba(255,75,75,.12);color:#ffaaaa;font-size:12px;font-weight:700}
+@media(max-width:600px){.kc-profile-signout{margin:16px 0 24px;padding:15px;border-radius:17px}.kc-profile-signout button{padding:10px 12px}}
