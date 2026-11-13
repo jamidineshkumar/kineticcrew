@@ -68,7 +68,7 @@ function notice(text){const t=$('#toast');if(!t){console.warn('Kinetic Crew toas
 function cacheKey(userId){return 'kc-bootstrap-v2:'+userId;}
 function paintUser(){if(!S.user)return;const name=$('#profileName'),userRole=$('#profileRole'),avatar=$('#avatar'),topAvatar=$('#topAvatar');if(name)name.textContent=S.user.name||S.user.email||'Crew Member';if(userRole)userRole.textContent=role(S.user.role);if(avatar)avatar.innerHTML=avatarMarkup(S.user);if(topAvatar)topAvatar.innerHTML=avatarMarkup(S.user,'small');}
 async function refresh(){
- const results=await Promise.all([api('bootstrap'),rpc('crew_get_app_settings',{}).catch(error=>({error})),rpc('crew_event_metadata',{}).catch(error=>({error,data:[]})),featureApi('list','rehearsals',{}).catch(()=>[]),featureApi('list','chat',{}).catch(()=>[])]);
+ const results=await Promise.all([api('bootstrap'),rpc('crew_get_app_settings',{}).catch(error=>({error})),rpc('crew_event_metadata',{}).catch(error=>({error,data:[]})),featureApi('list','rehearsals',{}).catch(()=>[]),featureApi('list','chat',{}).catch(()=>[]),featureApi('list','polls',{}).catch(()=>[])]);
  const d=results[0],cfg=results[1],meta=Array.isArray(results[2]?.data)?results[2].data:[];
  S.featureItems.rehearsals=Array.isArray(results[3])?results[3]:(results[3]?.data||[]);
  S.featureItems.chat=Array.isArray(results[4])?results[4]:(results[4]?.data||[]);
