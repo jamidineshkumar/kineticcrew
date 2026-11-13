@@ -941,7 +941,7 @@ const groups=[
  ['events','EVENTS','Performances & sessions',[['events','▦','Events'],['calendar','▦','Calendar'],['attendance','◎','Attendance report']]],
  ['chat',admin()?'CREW COMMUNITY':'CREW SPACE',admin()?'Member community and activity':'Talk, vote and share',communityItems],
  ['notifications','NOTIFICATIONS','Updates & alerts',[['notifications','♧','Notifications']]],
- ...(admin()?[['management',superadmin()?'SUPER ADMIN CONTROLS':'ADMIN TOOLS',superadmin()?'Roles and platform settings':'Member administration',...(superadmin()?[['crew-management','♙','Crew Management']]:[]).concat([['member-requests','⌛','Member Requests'],['meet','◉','KC Meet']])]]:[]),
+ ...(admin()?[['management',superadmin()?'SUPER ADMIN CONTROLS':'ADMIN TOOLS',superadmin()?'Roles and platform settings':'Member administration',[...(superadmin()?[['crew-management','♙','Crew Management']]:[]),['member-requests','⌛','Member Requests'],['meet','◉','KC Meet']]]]:[]),
  ['settings','MY ACCOUNT','Your preferences',[['profile','◉','My profile'],['settings','⚙','App settings'],['credits','✧','Credits']]]
 ]
 $('#nav').innerHTML=groups.map(([id,label,sub,items])=>{
@@ -1194,7 +1194,7 @@ document.addEventListener('click',event=>{
  if(card&&Date.now()<kcMemberSuppressClickUntil&&!event.target.closest('.kc-member-action-ring')){event.preventDefault();event.stopImmediatePropagation();kcMemberSuppressClickUntil=0;}
 },true);
 document.addEventListener('click',async e=>{
- const review=e.target.closest('[data-review-member]');if(review){const action=review.dataset.reviewMember,id=review.dataset.memberId;if(!admin()||!id)return;review.disabled=true;try{if(action==='reject'&&!confirm('Reject this membership request?')){review.disabled=false;return;}const {data,error}=await rpc('crew_review_member',{p_auth_id:id,p_decision:action,p_reason:action==='reject'?'Not approved by crew administration.':null});if(error)throw error;if(action==='approve'){const {data:mail,error:mailError}=await client.functions.invoke('send-member-welcome',{body:{authId:id}});if(mailError||mail?.error)throw Error(mail?.error||mailError?.message||'Member approved, but welcome email failed.');notice(mail?.message||'Member approved and welcome email sent.');}else notice('Membership request rejected.');await go('crew-management');}catch(error){notice(error.message||'Could not review this request.');review.disabled=false;}return;}
+ const review=e.target.closest('[data-review-member]');if(review){const action=review.dataset.reviewMember,id=review.dataset.memberId;if(!admin()||!id)return;review.disabled=true;try{if(action==='reject'&&!confirm('Reject this membership request?')){review.disabled=false;return;}const {data,error}=await rpc('crew_review_member',{p_auth_id:id,p_decision:action,p_reason:action==='reject'?'Not approved by crew administration.':null});if(error)throw error;if(action==='approve'){const {data:mail,error:mailError}=await client.functions.invoke('send-member-welcome',{body:{authId:id}});if(mailError||mail?.error)throw Error(mail?.error||mailError?.message||'Member approved, but welcome email failed.');notice(mail?.message||'Member approved and welcome email sent.');}else notice('Membership request rejected.');await go('member-requests');}catch(error){notice(error.message||'Could not review this request.');review.disabled=false;}return;}
  const memberAction=e.target.closest('[data-member-action]');
  if(memberAction){
   const action=memberAction.dataset.memberAction,id=memberAction.dataset.memberId,name=memberAction.dataset.memberName||'Crew member';
