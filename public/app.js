@@ -85,7 +85,7 @@ async function refresh(){
  S.user=d.user;S.events=d.events||[];S.announcements=d.announcements||[];S.members=d.members||[];
  S.offline=false;S.error='';
  paintUser();paint();
- if(!S.profileSetupRedirected&&!S.user.date_of_birth){S.profileSetupRedirected=true;S.view='profile';paint();}
+ if(!S.profileSetupRedirected&&!(S.user.name&&S.user.username&&S.user.date_of_birth&&S.user.instagram_username&&S.user.profession&&S.user.designation&&S.user.bio&&S.user.avatar_url)){S.profileSetupRedirected=true;S.view='profile';paint();}
  try{
   const sessionResult=await auth.getSession();
   const cacheUserId=sessionResult?.data?.session?.user?.id||S.user.auth_id||S.user.id;
