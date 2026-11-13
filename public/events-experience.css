@@ -215,3 +215,21 @@
 .kc-meet-hero h1{margin:8px 0;font-size:clamp(35px,7vw,58px);font-weight:950;letter-spacing:-.06em}.kc-meet-hero h1 em{color:#65d9c9;font-style:normal}.kc-meet-hero p{max-width:470px;margin:0 auto 22px;color:#b0c7c2;font-size:14px;line-height:1.6}.kc-meet-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.kc-meet-primary,.kc-meet-join button{min-height:46px;padding:0 20px;border:0;border-radius:13px;background:linear-gradient(110deg,#55dfcb,#23a99b);color:#06201c;font-size:12px;font-weight:900}.kc-meet-join{display:flex;min-width:min(100%,280px);overflow:hidden;border:1px solid #ffffff2c;border-radius:13px;background:#ffffff0b}.kc-meet-join input{width:100%;min-width:0;padding:0 13px;border:0;outline:0;background:transparent;color:#fff;font-size:12px}.kc-meet-join button{border-radius:0}
 .kc-meet-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}.kc-meet-info-grid article{display:grid;gap:8px;padding:18px;border:1px solid #ffffff19;border-radius:18px;background:linear-gradient(145deg,#ffffff0c,#ffffff04)}.kc-meet-info-grid article>span{color:#69d9c9;font-size:22px}.kc-meet-info-grid b{font-size:13px}.kc-meet-info-grid small{color:var(--muted,#a0aaa7);font-size:11px;line-height:1.5}.kc-meet-note{padding:19px 20px;border:1px solid #ffffff18;border-radius:18px;background:#ffffff08}.kc-meet-note b{font-size:13px}.kc-meet-note p,.kc-meet-note small{display:block;color:var(--muted,#a0aaa7);font-size:11px;line-height:1.65}.kc-meet-note p{margin:8px 0}.kc-meet-note small{color:#69cdbf}
 @media(max-width:640px){.kc-meet-hero{min-height:330px;padding:25px 16px;border-radius:22px}.kc-meet-actions{display:grid}.kc-meet-join{min-height:46px}.kc-meet-info-grid{grid-template-columns:1fr;gap:8px}.kc-meet-info-grid article{grid-template-columns:30px 1fr;align-items:center;padding:13px}.kc-meet-info-grid article>span{grid-row:span 2}.kc-meet-info-grid small{grid-column:2}}
+
+
+/* Kinetic Crew branded confirmation dialog — replaces native browser alerts */
+.kc-confirm-open{overflow:hidden}
+.kc-confirm-backdrop{z-index:10050;background:rgba(3,6,7,.78);backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px);padding:16px}
+.kc-confirm-modal{width:min(100%,440px);padding:30px 27px 24px!important;overflow:hidden;border:1px solid rgba(225,190,143,.2)!important;border-radius:27px!important;background:radial-gradient(ellipse at 50% 0,rgba(194,111,70,.19),transparent 58%),linear-gradient(155deg,#1a1b1d,#101213 78%)!important;color:#f5f1e9!important;text-align:left!important;box-shadow:0 30px 100px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,255,255,.055)!important}
+.kc-confirm-mark{display:grid;place-items:center;width:52px;height:52px;margin:0 0 19px;border:1px solid rgba(238,139,104,.3);border-radius:17px;background:linear-gradient(145deg,rgba(222,126,89,.2),rgba(255,255,255,.035));color:#f0a17e;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.kc-confirm-mark span{font-size:24px;font-weight:800}
+.kc-confirm-kicker{color:#c99a79;font-size:10px;font-weight:800;letter-spacing:.2em}
+.kc-confirm-modal h2{margin:10px 0 9px;color:#f5f1e9;font-size:clamp(23px,5vw,28px);font-weight:750;letter-spacing:-.04em;line-height:1.12}
+.kc-confirm-modal p{margin:0;color:#b7b6b0;font-size:14px;line-height:1.65}
+.kc-confirm-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:27px}
+.kc-confirm-actions button{min-height:45px;padding:0 17px;border-radius:13px;font-size:13px;font-weight:750;cursor:pointer;transition:transform .16s ease,filter .16s ease}
+.kc-confirm-actions button:active{transform:scale(.97)}
+.kc-confirm-cancel{border:1px solid rgba(255,255,255,.13)!important;background:rgba(255,255,255,.055)!important;color:#e9e7e1!important}
+.kc-confirm-danger{border:1px solid #df8b65!important;background:linear-gradient(110deg,#c66e4d,#e18b61)!important;color:#1b100d!important;box-shadow:0 7px 20px rgba(195,102,68,.18)}
+.kc-confirm-actions button:hover{filter:brightness(1.08)}
+@media(max-width:480px){.kc-confirm-modal{padding:25px 21px 20px!important;border-radius:24px!important}.kc-confirm-actions{gap:8px}.kc-confirm-actions button{flex:1;padding:0 10px}}
