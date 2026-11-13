@@ -428,3 +428,18 @@ body.kc-home-screen .kc-exact-update small{font:400 10px/1.4 Inter,system-ui,san
  body.kc-home-screen .kc-home-reference-section{margin-bottom:24px}
 }
 @media(prefers-reduced-motion:reduce){body.kc-home-screen .kc-home-feature-slide{transition:none!important}}
+
+
+/* Poll cards in the home Crew Updates rail. */
+@media(max-width:900px){
+ .kc-exact-poll-update{grid-column:1/-1!important;display:block!important;min-height:0!important;padding:12px!important;}
+ .kc-exact-poll-head{display:flex;align-items:center;gap:8px;min-width:0;}
+ .kc-exact-poll-head>span:nth-child(2){display:grid;gap:4px;flex:1;min-width:0;}
+ .kc-exact-poll-head b{font-size:11px!important;line-height:1.25!important;}
+ .kc-exact-poll-head small{font-size:9px!important;color:rgba(239,226,255,.72)!important;}
+ .kc-exact-poll-open,.kc-exact-poll-results{border:0;background:transparent;color:#e8b9ff;font:600 10px inherit;padding:6px;white-space:nowrap;}
+ .kc-home-poll-options{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 4px;}
+ .kc-home-poll-options button{min-height:32px;padding:6px 10px;border:1px solid rgba(255,255,255,.24);border-radius:11px;background:rgba(255,255,255,.10);color:#fff;font:600 10px inherit;}
+ .kc-home-poll-options button:disabled{opacity:.45;}
+ .kc-exact-poll-results{padding:5px 0 0;}
+}
