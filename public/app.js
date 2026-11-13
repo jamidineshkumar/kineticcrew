@@ -72,6 +72,7 @@ async function refresh(){
  const d=results[0],cfg=results[1],meta=Array.isArray(results[2]?.data)?results[2].data:[];
  S.featureItems.rehearsals=Array.isArray(results[3])?results[3]:(results[3]?.data||[]);
  S.featureItems.chat=Array.isArray(results[4])?results[4]:(results[4]?.data||[]);
+ S.featureItems.polls=Array.isArray(results[5])?results[5]:(results[5]?.data||[]);
  const eventMeta=new Map(meta.map(item=>[String(item.id),item]));
  S.user=d.user;S.events=(d.events||[]).map(event=>({...event,...(eventMeta.get(String(event.id))||{})}));S.announcements=d.announcements||[];S.members=d.members||[];
  await loadGlobalDeletedNotifications();
@@ -537,7 +538,7 @@ function featureCard(key,item){
  let extra='';
  if(key==='polls'){
    const opts=String(item.body||'').split(',').map(x=>x.trim()).filter(Boolean);
-   extra='<div class="poll-options">'+opts.map(o=>'<button class="outline poll-vote" data-vote-id="'+esc(item.id)+'" data-choice="'+esc(o)+'">'+esc(o)+'</button>').join('')+'</div><button class="textlink" data-poll-results="'+esc(item.id)+'">View results</button>';
+   extra='<div class="poll-options">'+opts.map(o=>'<button class="outline poll-vote" data-vote-id="'+esc(item.id)+'" data-choice="'+esc(o)+'" '+(status==='open'?'':'disabled')+'>'+esc(o)+'</button>').join('')+'</div><button class="textlink" data-poll-results="'+esc(item.id)+'">View results</button>'+(admin()&&status==='open'?'<button type="button" class="textlink" data-moderate="'+esc(item.id)+'" data-status="closed" data-feature="polls">Close poll</button>':'');
  }
  if(key==='leave'||key==='auditions'){
    extra='<div class="feature-status">Status: <b>'+esc(status.toUpperCase())+'</b></div>';
@@ -595,7 +596,16 @@ function home(){
  const crewPromo={kind:'promo',view:'more',kicker:'KINETIC CREW · ONE CREW, ONE RHYTHM',label:'ONE CREW · ONE RHYTHM',title:'Kinetic Crew',subtitle:'Events, rehearsals, auditions and every moment that brings the crew together.',cta:'Explore the crew',image:''};
  const contentSlides=slides.splice(0);
  contentSlides.forEach(slide=>{slides.push(slide,{...crewPromo});});
- const updates=announcements.slice(0,3).map((a,i)=>'<button class="kc-exact-update" data-view="notifications"><span class="kc-exact-update-icon">'+(['•','↗','▧'][i%3])+'</span><span><b>'+esc(a.title||'Crew update')+'</b><small>'+esc(a.body||a.message||'A new update from your crew')+'</small></span></button>').join('')||'<div class="kc-exact-update kc-exact-empty">Crew announcements and rehearsal updates will appear here.</div>';
+ const pollItems=[...(S.featureItems?.polls||[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+ const updateItems=[...announcements.map(a=>({kind:'announcement',created_at:a.created_at,item:a})),...pollItems.map(p=>({kind:'poll',created_at:p.created_at,item:p}))].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0)).slice(0,3);
+ const updates=updateItems.map((entry,i)=>{
+  const item=entry.item;
+  if(entry.kind==='poll'){
+   const options=String(item.body||'').split(',').map(x=>x.trim()).filter(Boolean),closed=item.status!=='open';
+   return '<article class="kc-exact-update kc-exact-poll-update"><div class="kc-exact-poll-head"><span class="kc-exact-update-icon">◉</span><span><b>Poll · '+esc(item.title||'Crew poll')+'</b><small>'+esc(closed?'Voting closed':(item.vote_count||0)+' votes · Tap an option to vote')+'</small></span><button type="button" class="kc-exact-poll-open" data-view="polls">Open ↗</button></div><div class="kc-home-poll-options">'+options.map(option=>'<button type="button" class="outline" data-vote-id="'+esc(item.id)+'" data-choice="'+esc(option)+'" '+(closed?'disabled':'')+'>'+esc(option)+'</button>').join('')+'</div><button type="button" class="kc-exact-poll-results" data-poll-results="'+esc(item.id)+'">View results</button></article>';
+  }
+  return '<button class="kc-exact-update" data-view="notifications"><span class="kc-exact-update-icon">'+(['•','↗','▧'][i%3])+'</span><span><b>'+esc(item.title||'Crew update')+'</b><small>'+esc(item.body||item.message||'A new update from your crew')+'</small></span></button>';
+ }).join('')||'<div class="kc-exact-update kc-exact-empty">Crew announcements, polls and rehearsal updates will appear here.</div>';
  const slideMarkup=slides.map((slide,i)=>'<article class="kc-home-feature-slide '+(i===0?'is-active':'')+'" data-home-slide="'+i+'" '+(slide.image?'style="--kc-home-feature-image:url(&quot;'+esc(slide.image)+'&quot;)"':'')+'><div class="kc-home-featured-art">'+(slide.kind==='promo'?'<img class="kc-home-featured-brandmark" src="'+window.kcPath('kinetic-crew-logo.svg')+'" alt="Kinetic Crew">':'')+'<span class="kc-home-featured-kicker">'+esc(slide.kicker)+'</span>'+(slide.updated?'<span class="kc-event-updated-chip"><span class="kc-event-updated-fire" aria-hidden="true">🔥</span><span>UPDATED</span></span>':'')+'<span class="kc-home-featured-count">'+String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0')+'</span></div><div class="kc-home-featured-glass"><span class="kc-home-featured-label">'+esc(slide.label)+'</span><b>'+esc(slide.title)+'</b><small>'+esc(slide.subtitle)+'</small><button type="button" '+(slide.kind==='event'?'data-open-event="'+esc(slide.id)+'"':'data-view="'+slide.view+'"')+'>'+esc(slide.cta)+' <i>→</i></button></div></article>').join('');
  return '<div class="kc-exact-home kc-home-reference">'+
  '<header class="kc-home-reference-header"><div class="kc-home-user"><span><small>YOUR KINETIC CREW SPACE</small><b>Welcome back, '+esc(name)+'</b></span></div><button type="button" class="kc-home-theme-toggle" data-theme-toggle aria-label="Switch colour theme" title="Switch colour theme"><span aria-hidden="true">'+(document.documentElement.dataset.theme==='dark'?'☀':'☾')+'</span></button></header>'+
@@ -617,6 +627,7 @@ gigs:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v3m-5 2h10l3 4v8
 bookmark:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12a2 2 0 0 1 2 2v17l-8-5-8 5V5a2 2 0 0 1 2-2Z"/></svg>',
 meetings:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><path d="M2 21v-2a6 6 0 0 1 12 0v2m1-6a5 5 0 0 1 7 4v2"/></svg>',
 rehearsal:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><path d="M3 9h3m-3 4h3"/></svg>',
+polls:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10m8 10V4m8 16v-7"/><path d="M2 20h20"/></svg>',
 attendance:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 2v4m8-4v4M8 13l2.5 2.5L16 10"/></svg>',
 chat:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-4-.9L3 21l1.8-4.4a8 8 0 1 1 16.2-5.1Z"/><path d="M8 11h8m-8 4h5"/></svg>',
 feed:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>',
@@ -642,7 +653,7 @@ return '<div class="kc-more-reference">'+
 '</div><div class="kc-more-intro-progress" aria-hidden="true"><i></i></div></div>'+
 '<section class="kc-more-reference-group"><h2>My Crew</h2><div class="kc-more-reference-pills">'+
 pill('events','events','Events')+
-pill('rehearsals','rehearsal','Rehearsals')+pill('attendance','attendance','Attendance')+
+pill('rehearsals','rehearsal','Rehearsals')+pill('polls','polls','Polls & voting')+pill('attendance','attendance','Attendance')+
 pill('people','people','Crew Members')+
 pill('memories','bookmark','Memories')+
 '</div></section>'+
@@ -1455,8 +1466,14 @@ document.addEventListener('submit',async e=>{
   }
   if(key==='rehearsals'){data.session_at=new Date(d.get('session_at')).toISOString();data.location=d.get('location')||'';}
   if(key==='leave'&&new Date(data.from_date)>new Date(data.to_date)){notice('End date must be on or after the start date.');return;}
+  const body=String(d.get('body')||'');
+  if(key==='polls'){
+   const options=body.split(',').map(value=>value.trim()).filter(Boolean),unique=[...new Set(options.map(value=>value.toLowerCase()))];
+   if(unique.length<2){notice('Add at least two different poll options, separated by commas.');return;}
+   if(unique.length>10){notice('A poll can have up to 10 options.');return;}
+   if(options.some(value=>value.length>120)){notice('Each poll option must be 120 characters or fewer.');return;}
+  }
   try{
-   const body=String(d.get('body')||'');
    const res=await featureApi('create',key,{title:d.get('title'),body,data});
    notice(res.message);
    S.featureItems[key]=await featureApi('list',key,{});
