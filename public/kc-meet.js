@@ -32,7 +32,7 @@
     if (!data?.token || !data?.serverUrl) throw new Error(data?.error || "Meeting service returned an incomplete response.");
     return data;
   }
-  function tile(participant, track, local = false) {
+  function tile(participant, track, local = false, publication = null) {
     const id = "kcml-p-" + String(participant.identity).replace(/[^a-zA-Z0-9_-]/g, "_");
     let card = document.getElementById(id);
     if (!card) {
@@ -68,7 +68,7 @@
     room = new Room({ adaptiveStream: true, dynacast: true, videoCaptureDefaults: { resolution: { width: 1280, height: 720 }, facingMode: "user" } });
     showDialog('<header class="kcml-head"><div><span>KINETIC CREW / LIVE</span><h2>' + esc(activeTitle) + '</h2><small>Meeting code: <b>' + esc(activeCode) + '</b></small></div><button data-kcml-close aria-label="Leave meeting">×</button></header><div id="kcml-status" class="kcml-status" hidden></div><div class="kcml-layout"><div id="kcml-grid" class="kcml-grid"><div class="kcml-connecting">Connecting to your crew…</div></div><aside class="kcml-chat"><b>Meeting chat</b><div id="kcml-chat-log" aria-live="polite"><p>Messages are visible to everyone in this meeting.</p></div><form id="kcml-chat-form"><input id="kcml-chat-input" maxlength="1000" placeholder="Message your crew…" autocomplete="off"><button type="submit">Send</button></form></aside></div><footer class="kcml-controls"><button data-kcml-mic>Mute mic</button><button data-kcml-camera>Turn camera off</button><button data-kcml-screen>Share screen</button><button data-kcml-copy>Copy invite code</button><button data-kcml-leave class="kcml-leave">' + (isHost ? 'End meeting' : 'Leave') + '</button></footer>');
     const grid = $("#kcml-grid");
-    room.on(RoomEvent.TrackSubscribed, (track, publication, participant) => tile(participant, track));
+    room.on(RoomEvent.TrackSubscribed, (track, publication, participant) => tile(participant, track, false, publication));
     room.on(RoomEvent.TrackUnsubscribed, track => removeTrack(track));
     room.on(RoomEvent.DataReceived, (payload, participant) => {
       try {
@@ -85,7 +85,7 @@
     try { await room.localParticipant.setCameraEnabled(true); } catch (e) { showError("Camera is unavailable or permission was denied. You can still listen and join."); }
     try { await room.localParticipant.setMicrophoneEnabled(true); } catch (e) { showError("Microphone permission was denied. Check your browser or device settings."); }
     room.localParticipant.videoTrackPublications.forEach(pub => { if (pub.track) tile(room.localParticipant, pub.track, true); });
-    room.remoteParticipants.forEach(participant => participant.trackPublications.forEach(pub => { if (pub.track) tile(participant, pub.track); }));
+    room.remoteParticipants.forEach(participant => participant.trackPublications.forEach(pub => { if (pub.track) tile(participant, pub.track, false, pub); }));
     if (!grid.children.length) grid.innerHTML = '<div class="kcml-connecting">You are first in the room. Share the code to invite your crew.</div>';
     $("#kcml-grid")?.classList.add("ready");
     $("#kcMeetLiveRoot").querySelector("#kcml-chat-form").onsubmit = async e => {
