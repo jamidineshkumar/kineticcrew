@@ -308,6 +308,8 @@ async function syncCrewSnapshot(){
   const previousEvents=new Map((S.events||[]).map(x=>[String(x.id),x]));
   const incomingEvents=nextEvents.filter(e=>{const old=previousEvents.get(String(e.id));return !old||String(old.updated_at||old.created_at||'')!==String(e.updated_at||e.created_at||'')||['title','description','location','starts_at','category','cover_url'].some(key=>String(old[key]??'')!==String(e[key]??''));});
   const incomingPosts=nextPostRows.filter(p=>!previousPostIds.has(String(p.id)));
+  const previousPollIds=new Set((S.featureItems.polls||[]).map(p=>String(p.id)));
+  const incomingPolls=nextPolls.filter(p=>!previousPollIds.has(String(p.id)));
   kcKnownAnnouncementIds=new Set(rows.map(a=>String(a.id)));
   const changed=JSON.stringify(S.events)!==JSON.stringify(nextEvents)||JSON.stringify(S.announcements)!==JSON.stringify(rows)||JSON.stringify(S.members)!==JSON.stringify(nextMembers)||JSON.stringify(S.socialPosts)!==JSON.stringify(nextPostRows)||JSON.stringify(S.featureItems.polls||[])!==JSON.stringify(nextPolls);
   const nextRehearsals=Array.isArray(rehearsalRows)?rehearsalRows:(rehearsalRows?.data||[]);
@@ -315,8 +317,6 @@ async function syncCrewSnapshot(){
   S.events=nextEvents;S.announcements=rows;S.members=nextMembers;S.socialPosts=nextPostRows;S.featureItems.rehearsals=nextRehearsals;S.featureItems.polls=nextPolls;
   await loadGlobalDeletedNotifications();
   if(changed||rehearsalChanged){paintUser();paint();}
-  const previousPollIds=new Set((S.featureItems.polls||[]).map(p=>String(p.id)));
-  const incomingPolls=nextPolls.filter(p=>!previousPollIds.has(String(p.id)));
   const fresh=[...incomingAnnouncements.map(a=>({type:'announcement',title:a.title,body:a.body})),...incomingEvents.map(a=>({type:'event',title:a.title,body:a.description||'A new event was added.'})),...incomingPosts.map(a=>({type:'post',title:'New Kinetic Gram post',body:a.caption||'A crew member shared a post.'})),...incomingPolls.map(p=>({type:'poll',title:'New crew poll: '+p.title,body:'A new poll is ready for your vote.'}))];
   if(fresh.length){
    const latest=fresh[0];
