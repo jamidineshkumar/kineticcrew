@@ -48,6 +48,7 @@ async function rpc(name,args){
 }
 const role=r=>({super_admin:'Super Admin',admin:'Admin',member:'Member'}[r]||'Member');
 const admin=()=>['admin','super_admin'].includes(String(S.user?.role||'')), superadmin=()=>S.user&&S.user.role==='super_admin';
+const profileIsComplete=u=>Boolean(u&&u.name&&u.username&&u.date_of_birth&&u.instagram_username&&u.profession&&u.bio&&u.avatar_url);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const initials=s=>String(s||'KC').trim().split(/\s+/).map(p=>p[0]||'').join('').slice(0,2).toUpperCase()||'KC';
 const dt=s=>{let d=new Date(s);return Number.isNaN(+d)?'Date TBA':d.toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});};
@@ -109,9 +110,9 @@ async function refresh(){
  paintUser();paint();
  // Profile metadata is useful but must never delay the first dashboard render.
  rpc('crew_profile_social',{p_auth_id:S.user.auth_id||S.user.id}).then(profile=>{
-  if(!profile.error&&profile.data?.profile&&S.user){S.user={...S.user,...profile.data.profile};paintUser();if(S.view==='profile')paint();}
+  if(!profile.error&&profile.data?.profile&&S.user){S.user={...S.user,...profile.data.profile};S.profileCompletionPending=!profileIsComplete(S.user);paintUser();if(S.view==='profile'||S.view==='overview')paint();}
  }).catch(error=>console.warn('Extended profile details will load when the connection improves:',error));
- if(!S.profileSetupRedirected&&!(S.user.name&&S.user.username&&S.user.date_of_birth&&S.user.instagram_username&&S.user.profession&&S.user.bio&&S.user.avatar_url)){S.profileSetupRedirected=true;S.view='profile';paint();}
+ S.profileCompletionPending=!profileIsComplete(S.user);
  try{
   const sessionResult=await auth.getSession();
   const cacheUserId=sessionResult?.data?.session?.user?.id||S.user.auth_id||S.user.id;
@@ -267,7 +268,7 @@ const followers=Number(S.profileSocial?.followers_count??dash.followers_count??0
 const streak=Number(dash.login_streak||0),tab=S.profileTab||'uploads';
 const firstFlipIntro=(()=>{try{return localStorage.getItem('kc_profile_flip_intro_v1')!=='1';}catch{return false;}})();
 const showFlipHint=(()=>{try{return localStorage.getItem('kc_profile_flip_hint_seen_v1')!=='1';}catch{return true;}})();
-const profileComplete=Boolean(u.name&&u.username&&u.date_of_birth&&u.instagram_username&&u.profession&&u.designation&&u.bio&&u.avatar_url);
+const profileComplete=profileIsComplete(u);
 const editForm='<section class="kc-profile-editor kc-profile-edit-panel" id="profileEditor" '+(profileComplete?'hidden':'')+'><div class="kc-profile-edit-panel-head"><div><span>PROFILE COMPLETION</span><h2>'+(profileComplete?'Edit your profile':'Complete your profile')+'</h2><p class="hint">Short setup. Your DOB is also your birthday date for crew recognition.</p></div>'+(profileComplete?'<button type="button" class="kc-profile-editor-close" data-profile-editor-close aria-label="Close editor">×</button>':'')+'</div><form id="profileForm" class="kc-profile-form kc-profile-wizard">'+
 '<details open class="kc-profile-step"><summary>01 · Personal details</summary><label class="field">Full name<input name="name" maxlength="100" required value="'+esc(u.name||'')+'"></label><label class="field">Date of birth / Birthday<input name="date_of_birth" type="date" required max="'+new Date().toISOString().slice(0,10)+'" value="'+esc(u.date_of_birth||'')+'"></label><div class="kc-profile-upload-row"><label for="profilePhotoInput">Profile photo · '+(u.avatar_url?'Photo added':'Required')+'<input id="profilePhotoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden></label></div><p class="hint">JPG, PNG or WebP · Maximum 8 MB. '+(u.avatar_url?'Your current photo is saved.':'Add a profile photo to finish setup.')+'</p></details>'+
 '<details class="kc-profile-step"><summary>02 · Social profile</summary><label class="field">Instagram username<input name="instagram_username" maxlength="30" pattern="[A-Za-z0-9._]{1,30}" required value="'+esc(u.instagram_username||'')+'" placeholder="your_instagram"></label><p class="hint">Enter the username only; do not include @.</p></details>'+
@@ -838,7 +839,7 @@ function eventsPage(){
  '<div class="kce-discover-label"><div><span class="kce-eyebrow">'+(filter==='tickets'?'YOUR WALLET':'CURATED FOR YOU')+'</span><h2>'+(filter==='tickets'?'Your tickets':filter==='past'?'Past experiences':filter==='all'?'Recommended for you':tabs.find(x=>x[0]===filter)?.[1]||'Events')+'</h2></div><span>'+pool.length+' '+(pool.length===1?'EVENT':'EVENTS')+'</span></div>'+
  '<div class="kce-tabs" role="tablist" aria-label="Event filters">'+tabs.map(([key,label])=>'<button type="button" role="tab" aria-selected="'+(filter===key)+'" class="'+(filter===key?'active':'')+'" data-event-filter="'+key+'">'+label+(key==='tickets'&&registered.length?' <small>'+registered.length+'</small>':'')+'</button>').join('')+'</div>'+
  '<div class="kce-events-grid">'+(pool.length?pool.map(cardUI).join(''):'<div class="kce-empty-state"><span>✦</span><b>'+(filter==='tickets'?'Your ticket wallet is waiting':filter==='past'?'No past events yet':query?'No matching events':'No events here yet')+'</b><small>'+(filter==='tickets'?'Register for an event and your ticket will appear here.':query?'Try another event name, category or venue.':'New Kinetic Crew experiences will appear here.')+'</small>'+(filter==='tickets'?'<button type="button" data-event-filter="all">Discover events →</button>':'')+'</div>')+'</div>'+
- (admin()?eventForm():'')+'</div>';
+ '</div>';
 }
 
 function chatPage(){
@@ -1814,13 +1815,15 @@ async function boot(){
   rpc('crew_profile_login_touch',{}).catch(error=>console.warn('Could not record today’s profile login:',error));
   const saved=readPageState();
   const incomingShare=new URLSearchParams(location.search);
+  const navigationType=performance.getEntriesByType?.('navigation')?.[0]?.type||'navigate';
+  const restoreSavedPage=navigationType==='reload'||incomingShare.has('kc_refresh');
   if(incomingShare.has('share_target')){
    const raw=[incomingShare.get('url'),incomingShare.get('text'),incomingShare.get('title')].filter(Boolean).join(' ');
    const match=raw.match(/https:\/\/[^\s<>"']+/i);
    const sharedUrl=safeSocialUrl(match?.[0]||'');
    if(sharedUrl){S.sharedDraft={url:sharedUrl,caption:incomingShare.get('title')||''};S.view='feed';history.replaceState({},'',location.pathname);}
   }
-  if(!pendingProfileId&&!S.sharedDraft&&saved&&(!saved.userId||saved.userId===(session.user.id||session.user.auth_id))){
+  if(restoreSavedPage&&!pendingProfileId&&!S.sharedDraft&&saved&&(!saved.userId||saved.userId===(session.user.id||session.user.auth_id))){
    S.view=saved.view||'overview';S.selectedEvent=saved.selectedEvent||null;S.selectedProfileId=saved.selectedProfileId||null;S.navOpen=saved.navOpen||'overview';
   }
   try{
@@ -1848,14 +1851,14 @@ async function boot(){
   startCrewNotificationPolling();
   loadSocialFeed().then(()=>{if(S.view==='overview'||S.view==='feed'||S.view==='fun-zone'||S.view==='memes')paint();})
    .catch(error=>console.warn('Home stories unavailable:',error));
-  if(saved&&S.view!=='overview'){
+  if(restoreSavedPage&&saved&&S.view!=='overview'){
    const target=S.view;
    go(target).catch(error=>{console.warn('Saved page restore failed:',error);S.view='overview';paint();});
   }
 
   if(pendingProfileId){try{localStorage.removeItem('kc_pending_profile');}catch{}S.selectedProfileId=pendingProfileId;await go('public-profile');}
-  else if(saved&&(!saved.userId||saved.userId===(session.user.id||session.user.auth_id)))restorePageScroll(saved);
-  else savePageState();
+  else if(restoreSavedPage&&saved&&(!saved.userId||saved.userId===(session.user.id||session.user.auth_id)))restorePageScroll(saved);
+  else {S.view='overview';S.selectedEvent=null;S.selectedProfileId=null;S.navOpen='overview';paint();savePageState();}
  }catch(e){
   S.error=e.message||'Could not load your crew.';
   $('#app').innerHTML='<div class="load-error"><div class="emptyicon">!</div><h2>Could not load Kinetic Crew</h2><p>'+esc(S.error)+'</p><div class="load-actions"><button class="primary" id="retryBoot">Try again</button><button class="outline" id="switchAccount">Use another account</button></div></div>';
