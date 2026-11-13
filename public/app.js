@@ -1046,6 +1046,16 @@ document.addEventListener('animationend',event=>{
  try{localStorage.setItem('kc_profile_flip_intro_v1','1');}catch{}
 });
 document.addEventListener('click',event=>{const edit=event.target.closest('[data-edit-event]');if(!edit)return;event.preventDefault();if(!admin()){notice('Admin access required to edit events.');return;}S.editingEventId=edit.dataset.editEvent;go('event-edit');});
+document.addEventListener('click',event=>{
+ const create=event.target.closest('[data-kc-meet-create]');
+ const join=event.target.closest('[data-kc-meet-join]');
+ if(!create&&!join)return;
+ event.preventDefault();
+ if(create){notice('KC Meet room service is being connected. Live video is not available yet.');return;}
+ const code=String(document.querySelector('#kcMeetCode')?.value||'').trim();
+ if(!code){notice('Enter a meeting code to continue.');return;}
+ notice('Meeting room service is not connected yet. Please try again after setup.');
+});
 let kcMemberPressTimer=null,kcMemberSuppressClickUntil=0;
 let kcRingDrag=null;
 document.addEventListener('pointerdown',event=>{
