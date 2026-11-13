@@ -328,7 +328,7 @@ async function syncCrewSnapshot(){
 }
 function startCrewNotificationPolling(){
  if(kcAnnouncementPoll)clearInterval(kcAnnouncementPoll);
- kcAnnouncementPoll=setInterval(syncCrewSnapshot,10000);
+ kcAnnouncementPoll=setInterval(()=>{if(!document.hidden&&navigator.onLine)syncCrewSnapshot();},1000);
  if(!window.kcSnapshotVisibilityBound){
   window.kcSnapshotVisibilityBound=true;
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncCrewSnapshot();});
