@@ -984,20 +984,34 @@ function appSuggestionsSettingsMarkup(){
  const statusLabel={new:'New',reviewing:'Reviewing',planned:'Planned',implemented:'Implemented',declined:'Declined'};
  return '<section class="surface settings-card kc-app-suggestions"><span class="settings-kicker">HELP SHAPE KINETIC CREW</span><h3>App suggestions</h3><p>Suggest a feature, report a bug or share an improvement idea. Available to every crew role.</p><form id="appSuggestionForm" class="kc-app-suggestion-form"><label>Suggestion type<select name="category"><option value="feature">New feature</option><option value="bug">Report a bug</option><option value="design">Design & usability</option><option value="performance">Performance</option><option value="other">Other</option></select></label><label>Title<input name="title" maxlength="120" minlength="3" required placeholder="What should we improve?"></label><label>Details<textarea name="details" rows="3" minlength="10" maxlength="3000" required placeholder="Describe the idea or issue…"></textarea></label><button class="primary" type="submit">Send app suggestion ↗</button></form><div class="kc-app-suggestion-list"><h4>'+(admin()?'Crew suggestions':'Your suggestions')+'</h4>'+(rows.length?rows.map(row=>'<article class="kc-app-suggestion-item"><div class="kc-app-suggestion-meta"><span>'+esc(String(row.category||'other').toUpperCase())+'</span><b class="kc-suggestion-status kc-status-'+esc(row.status)+'">'+esc(statusLabel[row.status]||row.status)+'</b></div><h5>'+esc(row.title)+'</h5><p>'+esc(row.details)+'</p>'+(admin()?'<form class="kc-suggestion-review-form" data-suggestion-admin-form="'+esc(row.id)+'"><label>Status<select name="status">'+Object.entries(statusLabel).map(([value,label])=>'<option value="'+value+'" '+(row.status===value?'selected':'')+'>'+label+'</option>').join('')+'</select></label><label>Admin note<textarea name="admin_note" rows="2" maxlength="1000" placeholder="Optional reply to the member…">'+esc(row.admin_note||'')+'</textarea></label><button class="outline" type="submit">Save review</button></form>':(row.admin_note?'<p class="kc-suggestion-admin-note"><b>Admin response:</b> '+esc(row.admin_note)+'</p>':''))+'</article>').join(''):'<p class="hint">No suggestions yet. Your ideas can help improve the app.</p>')+'</div></section>';
 }
+function settingsIcon(name){
+ const paths={
+  profile:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20c.7-3.2 3-5 7-5s6.3 1.8 7 5"/>',
+  appearance:'<path d="M12 3a9 9 0 1 0 0 18z"/><path d="M12 3a9 9 0 0 1 0 18"/>',
+  notifications:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/>',
+  device:'<rect x="6" y="2.8" width="12" height="18.4" rx="2.4"/><path d="M10 18h4"/>',
+  about:'<path d="m12 2 2.8 7.2L22 12l-7.2 2.8L12 22l-2.8-7.2L2 12l7.2-2.8z"/>',
+  brand:'<path d="m12 2 9 10-9 10L3 12z"/>',
+  developer:'<circle cx="12" cy="8" r="3.5"/><path d="M4 21c.8-4 3.4-6 8-6s7.2 2 8 6"/>',
+  suggestions:'<path d="m4 20 4.5-1 10.8-10.8a2.1 2.1 0 0 0-3-3L5.5 16z"/><path d="m14.5 6.5 3 3M4 20l-1 1"/>'
+ };
+ return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+(paths[name]||paths.about)+'</svg>';
+}
 function settingsPage(){
- const settings=S.appSettings||{},version=window.KC_APP_VERSION||'1.2.2';
+ const version=window.KC_APP_VERSION||'1.2.2';
  const tiles=[
-  ['profile','◉','My profile','Photo, name and crew identity'],
-  ['appearance-settings','◐','Appearance','Theme and display preferences'],
-  ['notification-settings','♧','Notifications','Push alerts and in-app sound'],
-  ['device-settings','⌁','Device & session','Cache maintenance and sign out'],
-  ['app-info','✦','About Kinetic Crew','App version and developer'],
-  ['developer','DV','Meet the developer','The person behind the app'],
-  ['app-suggestions','✎','App suggestions','Share an idea or report an issue']
+  ['profile','profile','My profile','Photo, name and crew identity'],
+  ['appearance-settings','appearance','Appearance','Theme and display preferences'],
+  ['notification-settings','notifications','Notifications','Push alerts and in-app sound'],
+  ['device-settings','device','Device & session','Cache maintenance'],
+  ['app-info','about','About Kinetic Crew','App version and information'],
+  ['developer','developer','Meet the developer','The person behind the app'],
+  ['app-suggestions','suggestions','App suggestions','Share an idea or report an issue']
  ];
- if(superadmin())tiles.splice(5,0,['brand-settings','◇','App icon & logo','Update the official app identity']);
+ if(superadmin())tiles.splice(5,0,['brand-settings','brand','App icon & logo','Update the official app identity']);
  return welcome('App settings','Choose a section. Each option opens its own focused page.')+
- '<div class="kc-settings-hub">'+tiles.map(([view,icon,title,sub])=>'<button type="button" class="surface kc-settings-tile" data-view="'+view+'"><span class="kc-settings-tile-icon">'+icon+'</span><span class="kc-settings-tile-copy"><b>'+title+'</b><small>'+sub+'</small></span><span class="kc-settings-tile-arrow">↗</span></button>').join('')+'</div>'+
+ '<div class="kc-settings-hub">'+tiles.map(([view,icon,title,sub])=>'<button type="button" class="kc-settings-tile" data-view="'+view+'"><span class="kc-settings-tile-icon">'+settingsIcon(icon)+'</span><span class="kc-settings-tile-copy"><b>'+title+'</b><small>'+sub+'</small></span><span class="kc-settings-tile-arrow" aria-hidden="true">↗</span></button>').join('')+'</div>'+
+ '<div class="kc-settings-signout"><span><b>Sign out</b><small>End your session on this device</small></span><button type="button" id="settingsSignOut" aria-label="Sign out">Sign out <span aria-hidden="true">↗</span></button></div>'+
  '<p class="kc-settings-version">KINETIC CREW · v'+esc(version)+'</p>';
 }
 function settingsSubpage(title,sub,body){
@@ -1013,20 +1027,22 @@ function notificationSettingsPage(){
  '<section class="surface settings-card kc-settings-detail"><span class="settings-kicker">ALERT PREFERENCES</span><h3>Stay in the loop</h3><label class="settings-toggle"><span><b>In-app sound</b><small>Play a sound for crew activity.</small></span><input id="settingsSound" type="checkbox" '+(prefs.sound?'checked':'')+'></label><label class="settings-toggle"><span><b>Push notifications</b><small>Receive alerts when Kinetic Crew is not open.</small></span><button type="button" class="outline" id="enablePush">'+(prefs.push?'Enabled ✓':'Enable')+'</button></label><button type="button" class="outline" data-view="notifications">Open notification inbox →</button></section>');
 }
 function deviceSettingsPage(){
- return settingsSubpage('Device & session','Manage temporary app files and your current sign-in.',
- '<section class="surface settings-card kc-settings-detail"><span class="settings-kicker">DEVICE MAINTENANCE</span><h3>App cache</h3><p>Clear temporary cached files without changing your crew account.</p><button type="button" class="outline" id="clearAppCache">Clear app cache</button></section>'+
- '<section class="surface settings-card kc-settings-detail settings-danger"><span class="settings-kicker">SESSION</span><h3>Sign out</h3><p>Sign out of this device. Your crew account remains active.</p><button type="button" class="outline" id="settingsSignOut">Sign out ↗</button></section>');
+ return settingsSubpage('Device & session','Manage temporary app files on this device.',
+ '<section class="surface settings-card kc-settings-detail"><span class="settings-kicker">DEVICE MAINTENANCE</span><h3>App cache</h3><p>Clear temporary cached files without changing your crew account.</p><button type="button" class="outline" id="clearAppCache">Clear app cache</button></section>');
 }
 function appInfoPage(){
  const settings=S.appSettings||{},version=window.KC_APP_VERSION||'1.2.2';
- return settingsSubpage('About Kinetic Crew','App information and the people behind the experience.',
- '<section class="surface settings-card kc-settings-detail"><span class="settings-kicker">APP VERSION</span><h3>Kinetic Crew · v'+esc(version)+'</h3><p>Developer: '+esc(settings.developer||'Kinetic Crew Development Team')+'</p><p class="settings-update-state">App updates install automatically in the background. No action is needed.</p><button type="button" class="primary" data-view="developer">Meet the developer →</button></section>');
+ return settingsSubpage('About Kinetic Crew','App information.',
+ '<section class="surface settings-card kc-settings-detail"><span class="settings-kicker">APP VERSION</span><h3>Kinetic Crew · v'+esc(version)+'</h3><p>Developer: '+esc(settings.developer||'Kinetic Crew Development Team')+'</p><p class="settings-update-state">App updates install automatically in the background. No action is needed.</p></section>');
 }
 function developerPage(){
- const photo='<div class="kc-developer-photo kc-developer-photo-placeholder" aria-label="Jami Dinesh Kumar profile photo space">JD</div>';
- const links=[['GitHub','https://github.com/jamidineshkumar','⌘'],['LinkedIn','https://in.linkedin.com/in/jami-dinesh-kumar-696478358','in'],['Instagram','https://www.instagram.com/dinuvox/','◎'],['YouTube','https://www.youtube.com/@Dinuvoxx','▶']];
- return settingsSubpage('Meet the developer','The person behind the Kinetic Crew app.',
- '<section class="surface kc-developer-full-card"><div class="kc-developer-photo-wrap">'+photo+'</div><span class="settings-kicker">FOUNDER · DEVELOPER · KINETIC CREW</span><h2>Jami Dinesh Kumar</h2><p>Building and maintaining digital experiences for the Kinetic Crew community.</p><p class="kc-developer-photo-hint">PROFILE PHOTO</p><div class="kc-developer-links">'+links.map(([name,url,mark])=>'<a class="kc-developer-link" href="'+url+'" target="_blank" rel="noopener noreferrer"><span>'+mark+'</span><b>'+name+'</b><i>↗</i></a>').join('')+'</div></section>');
+ const links=[['GitHub','https://github.com/jamidineshkumar','GH'],['LinkedIn','https://in.linkedin.com/in/jami-dinesh-kumar-696478358','in'],['Instagram','https://www.instagram.com/dinuvox/','◎'],['YouTube','https://www.youtube.com/@Dinuvoxx','▶']];
+ return '<section class="kc-developer-profile" aria-label="Developer profile">'+
+ '<div class="kc-developer-cover"><button type="button" class="kc-developer-back" data-view="settings" aria-label="Back to settings">‹</button><span class="kc-developer-cover-mark">KINETIC CREW</span></div>'+
+ '<div class="kc-developer-profile-body"><div class="kc-developer-avatar">JD</div>'+
+ '<h1>JAMI DINESH KUMAR</h1><p class="kc-developer-handle">@dinuvox</p><span class="kc-developer-role">FOUNDER · DEVELOPER</span>'+
+ '<p class="kc-developer-bio">The person behind Kinetic Crew.</p>'+
+ '<div class="kc-developer-links">'+links.map(([name,url,mark])=>'<a class="kc-developer-link" href="'+url+'" target="_blank" rel="noopener noreferrer"><span>'+mark+'</span><b>'+name+'</b><i aria-hidden="true">↗</i></a>').join('')+'</div></div></section>';
 }
 function appSuggestionsPage(){
  return settingsSubpage('App suggestions','Help improve Kinetic Crew by sharing an idea or reporting an issue.',appSuggestionsSettingsMarkup());
