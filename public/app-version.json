@@ -1,6 +1,6 @@
 {
-  "version": "1.3.8",
+  "version": "1.3.9",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-13T13:00:00Z",
-  "release_notes": "Faster authenticated startup; optional crew sections now hydrate after the dashboard opens."
+  "updated_at": "2026-11-13T16:00:00Z",
+  "release_notes": "KC Meet admin-only room creation, approved-member joining, live chat, host controls and meeting invitations."
 }
