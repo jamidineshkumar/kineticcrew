@@ -117,3 +117,4 @@ async function send(title, body, audience = "all") {
   return invoke("send", { title, body, audience });
 }
 window.kcPush = { enable, send, syncExistingPermission };
+window.dispatchEvent(new Event('kc:push-ready'));
