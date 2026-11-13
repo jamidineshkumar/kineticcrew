@@ -83,6 +83,7 @@ async function refresh(){
  // Load it first, render immediately, and hydrate optional sections in the background.
  const d=await api('bootstrap');
  S.user=d.user;S.events=d.events||[];S.announcements=d.announcements||[];S.members=d.members||[];
+ try{const profile=await rpc('crew_profile_social',{p_auth_id:S.user.auth_id||S.user.id});if(!profile.error&&profile.data?.profile)S.user={...S.user,...profile.data.profile};}catch(error){console.warn('Extended profile details could not be loaded:',error);}
  S.offline=false;S.error='';
  paintUser();paint();
  if(!S.profileSetupRedirected&&!(S.user.name&&S.user.username&&S.user.date_of_birth&&S.user.instagram_username&&S.user.profession&&S.user.designation&&S.user.bio&&S.user.avatar_url)){S.profileSetupRedirected=true;S.view='profile';paint();}
@@ -185,7 +186,7 @@ function profileCardBackMarkup(user,authId,username){
  qrTarget.searchParams.set('u',handle);
  qrTarget.searchParams.set('n',String(user?.name||'Kinetic Crew Member'));
  if(user?.avatar_url)qrTarget.searchParams.set('p',String(user.avatar_url));
- const instagram='https://www.instagram.com/'+encodeURIComponent(handle)+'/';
+ const instagram='https://www.instagram.com/'+encodeURIComponent(String(user?.instagram_username||handle).replace(/^@/,''))+'/';
  const displayId='KC-'+(profileId.replace(/[^a-zA-Z0-9]/g,'').slice(-8)||handle.slice(0,8)).toUpperCase();
  const role=String(user?.role==='super_admin'?'FOUNDER / SUPER ADMIN':user?.profession||user?.designation||user?.occupation||'CREW MEMBER').toUpperCase();
  return '<section class="kc-profile-card-back" aria-label="Kinetic Crew digital profile ticket">'+
