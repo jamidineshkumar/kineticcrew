@@ -1517,6 +1517,31 @@ async function showCrewIntro(force){
  overlay.querySelector('#kcIntroEnter').addEventListener('click',()=>finish(true));
  overlay.querySelector('#kcIntroSkip').addEventListener('click',()=>finish(false));
 }
+function setupCrewPushForSignedInMember(){
+ if(!S.user||S.offline||!window.kcPush)return;
+ const userId=String(S.user.auth_id||S.user.id||'guest');
+ const dismissedKey='kc-push-optin-dismissed:'+userId;
+ const sync=()=>window.kcPush.syncExistingPermission?.().catch(error=>console.warn('Push subscription refresh failed:',error));
+ if('Notification'in window&&Notification.permission==='granted'){sync();return;}
+ if(!('Notification'in window)||!('serviceWorker'in navigator)||!window.isSecureContext||Notification.permission==='denied')return;
+ if(localStorage.getItem('kc-push-enabled')==='yes'||localStorage.getItem(dismissedKey)==='yes')return;
+ if(document.getElementById('kcPushOptin'))return;
+ const panel=document.createElement('section');
+ panel.id='kcPushOptin';
+ panel.setAttribute('role','dialog');
+ panel.setAttribute('aria-label','Enable Kinetic Crew notifications');
+ panel.innerHTML='<div class="kc-push-optin-copy"><span class="kc-push-optin-icon">✦</span><div><strong>Stay in the crew loop</strong><p>Get important announcements, event changes and crew updates even when Kinetic Crew is closed.</p></div></div><div class="kc-push-optin-actions"><button type="button" class="kc-push-optin-enable" id="kcPushOptinEnable">Enable notifications</button><button type="button" class="kc-push-optin-later" id="kcPushOptinLater">Not now</button></div>';
+ panel.style.cssText='position:fixed;z-index:9998;left:16px;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));max-width:520px;margin:auto;padding:18px;border:1px solid rgba(255,255,255,.18);border-radius:22px;background:rgba(20,22,30,.96);color:#fff;box-shadow:0 18px 60px rgba(0,0,0,.35);backdrop-filter:blur(20px);font:inherit';
+ const style=document.createElement('style');
+ style.textContent='#kcPushOptin .kc-push-optin-copy{display:flex;gap:12px;align-items:flex-start}#kcPushOptin .kc-push-optin-icon{display:grid;place-items:center;width:38px;height:38px;flex:none;border-radius:13px;background:rgba(255,255,255,.1);font-size:20px}#kcPushOptin strong{display:block;font-size:15px}#kcPushOptin p{margin:5px 0 0;color:rgba(255,255,255,.72);font-size:13px;line-height:1.45}#kcPushOptin .kc-push-optin-actions{display:flex;gap:9px;margin-top:15px}#kcPushOptin button{min-height:42px;border:0;border-radius:12px;padding:0 15px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}#kcPushOptinEnable{background:#e8ff75;color:#171a12;flex:1}#kcPushOptinLater{background:rgba(255,255,255,.1);color:#fff}';
+ document.head.appendChild(style);document.body.appendChild(panel);
+ panel.querySelector('#kcPushOptinLater').addEventListener('click',()=>{localStorage.setItem(dismissedKey,'yes');panel.remove();style.remove();});
+ panel.querySelector('#kcPushOptinEnable').addEventListener('click',async event=>{
+  const button=event.currentTarget;button.disabled=true;button.textContent='Enabling…';
+  try{const result=await window.kcPush.enable();saveNotificationPrefs({push:true});localStorage.setItem('kc-push-enabled','yes');localStorage.setItem(dismissedKey,'yes');panel.remove();style.remove();notice(result.message||'Notifications are enabled on this device.');}
+  catch(error){button.disabled=false;button.textContent='Try again';notice(error.message||'Could not enable notifications.');}
+ });
+}
 async function boot(){
  const loadingWatch=setTimeout(()=>{
   const el=$('#app');
@@ -1580,6 +1605,7 @@ async function boot(){
   // Render the authenticated shell before optional community queries. A slow feed must
   // never hold the entire app on its launch screen.
   paint();
+  setupCrewPushForSignedInMember();
   seedAnnouncementNotifications();
   startCrewNotificationPolling();
   loadSocialFeed().then(()=>{if(S.view==='overview'||S.view==='feed'||S.view==='fun-zone'||S.view==='memes')paint();})
