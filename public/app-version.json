@@ -1,6 +1,6 @@
 {
-  "version": "1.3.3",
+  "version": "1.3.4",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-12T23:45:00Z",
-  "release_notes": "Profile activity now shows uploads, event registrations, follower/following counts and daily login streaks; QR scanning moved from Search to Profile; Kinetic Gram guidance combined into one continuous walkthrough; repaired the animated Kinetic Crew wordmark and cleaned search UI."
+  "updated_at": "2026-11-13T03:55:00Z",
+  "release_notes": "Automatic app updates: checks for new releases, refreshes the service worker, and reloads safely without requiring members to reinstall."
 }
