@@ -1,6 +1,6 @@
 {
-  "version": "1.4.5",
+  "version": "1.4.6",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-13T18:30:00Z",
-  "release_notes": "Kinetic Crew 1.4.5 adds the optional Also send email control to event, rehearsal and announcement publishing; fixes approved-member KC Meet access and meeting invitations; combines Crew Members, role management and pending requests; and improves page refresh persistence, release history and automatic app asset updates."
+  "updated_at": "2026-11-13T19:28:44.796Z",
+  "release_notes": "Kinetic Crew 1.4.6 improves automatic installed-app updates, refreshes the service-worker shell cache, and makes the Crew Management and Waiting List shortcuts available on the Admin/Super Admin home screen."
 }
