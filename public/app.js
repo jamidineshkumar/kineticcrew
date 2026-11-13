@@ -779,7 +779,7 @@ async function toggleMemberFavorite(id){
 }
 function memberActionRingMarkup(memberId,memberRole,memberName){
  const canManage=admin()&&(superadmin()||memberRole==='member'),blocked=(S.blockedMemberIds||[]).includes(String(memberId));
- const actions=[['favorite',memberFavorite(memberId)?'★':'☆',memberFavorite(memberId)?'Remove favourite':'Add to favourites']];
+ const actions=[['favorite',memberFavorite(memberId)?'★':'☆',memberFavorite(memberId)?'Remove favourite':'Add to favourites'],['message','✉','Message']];
  if(canManage&&memberRole!=='super_admin')actions.push([blocked?'unblock':'block',blocked?'↗':'⊘',blocked?'Unblock member':'Block member']);
  if(canManage&&memberRole!=='super_admin')actions.push(['delete','⌫','Delete member']);
  const buttons=actions.map(([action,icon,label])=>{
