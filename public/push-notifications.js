@@ -86,7 +86,13 @@ async function enable() {
     const title = payload.notification?.title || "Kinetic Crew";
     const body = payload.notification?.body || "You have a new crew update.";
     window.dispatchEvent(new CustomEvent("kc:notification", { detail: { title, body, target: payload.data?.url?.includes("chat") ? "chat" : "notifications" } }));
-    if (Notification.permission === "granted") new Notification(title, { body, icon: window.kcPath("kinetic-crew-logo.svg"), tag: payload.data?.id || "kinetic-crew-update" });
+    if (Notification.permission === "granted") new Notification(title, {
+      body,
+      icon: window.kcPath("kinetic-crew-logo.jpg"),
+      image: window.kcPath("kinetic-crew-logo.jpg"),
+      badge: window.kcPath("icon.svg"),
+      tag: payload.data?.id || "kinetic-crew-update"
+    });
     try {
       const session = window.kcSupabase.auth.getSession();
       session.then(({data}) => {
