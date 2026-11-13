@@ -1521,9 +1521,12 @@ function setupCrewPushForSignedInMember(){
  if(!S.user||S.offline||!window.kcPush)return;
  const userId=String(S.user.auth_id||S.user.id||'guest');
  const dismissedKey='kc-push-optin-dismissed:'+userId;
+ const isNative=!!window.Capacitor?.isNativePlatform?.();
  const sync=()=>window.kcPush.syncExistingPermission?.().catch(error=>console.warn('Push subscription refresh failed:',error));
- if('Notification'in window&&Notification.permission==='granted'){sync();return;}
- if(!('Notification'in window)||!('serviceWorker'in navigator)||!window.isSecureContext||Notification.permission==='denied')return;
+ if(!isNative&&'Notification'in window&&Notification.permission==='granted'){sync();return;}
+ // Native Capacitor builds use the Android permission API, not the browser
+ // Notification/service-worker APIs. Web builds must be served over HTTPS.
+ if(!isNative&&(!('Notification'in window)||!('serviceWorker'in navigator)||!window.isSecureContext||Notification.permission==='denied'))return;
  if(localStorage.getItem('kc-push-enabled')==='yes'||localStorage.getItem(dismissedKey)==='yes')return;
  if(document.getElementById('kcPushOptin'))return;
  const panel=document.createElement('section');
