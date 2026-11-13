@@ -32,13 +32,19 @@ window.addEventListener('scroll',savePageState,{passive:true});
 window.addEventListener('pagehide',savePageState);
 
 function withTimeout(promise,ms,label){let timer;return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(label||'Request timed out. Check your connection and retry.')),ms);})]).finally(()=>clearTimeout(timer));}
+let kcAccessGuard={userId:'',checkedAt:0};
 async function rpc(name,args){
- const guard=await withTimeout(client.rpc('crew_assert_not_blocked',{}),12000,'The crew access check timed out.');
- if(guard.error&&!/could not find the function|schema cache|PGRST202|404/i.test(guard.error.message||'')){
-  if(/blocked|suspended/i.test(guard.error.message||'')){try{await auth.signOut({scope:'local'});}catch{}location.replace(window.kcPath('login.html'));throw Error(guard.error.message);}
-  throw Error(guard.error.message||'Crew access check failed.');
+ const userId=S.user?.auth_id||S.user?.id||'';
+ const guardFresh=userId&&kcAccessGuard.userId===userId&&(Date.now()-kcAccessGuard.checkedAt)<30000;
+ if(!guardFresh){
+  const guard=await withTimeout(client.rpc('crew_assert_not_blocked',{}),18000,'The crew access check timed out. Check your connection and retry.');
+  if(guard.error&&!/could not find the function|schema cache|PGRST202|404/i.test(guard.error.message||'')){
+   if(/blocked|suspended/i.test(guard.error.message||'')){kcAccessGuard={userId:'',checkedAt:0};try{await auth.signOut({scope:'local'});}catch{}location.replace(window.kcPath('login.html'));throw Error(guard.error.message);}
+   throw Error(guard.error.message||'Crew access check failed.');
+  }
+  kcAccessGuard={userId,checkedAt:Date.now()};
  }
- return withTimeout(client.rpc(name,args),12000,'The crew service is taking too long. Check your connection and retry.');
+ return withTimeout(client.rpc(name,args),25000,'The crew service is taking too long. Your connection may be weak; retry when it stabilizes.');
 }
 const role=r=>({super_admin:'Super Admin',admin:'Admin',member:'Member'}[r]||'Member');
 const admin=()=>['admin','super_admin'].includes(String(S.user?.role||'')), superadmin=()=>S.user&&S.user.role==='super_admin';
@@ -99,9 +105,12 @@ async function refresh(){
  // Load it first, render immediately, and hydrate optional sections in the background.
  const d=await api('bootstrap');
  S.user=d.user;S.events=d.events||[];S.announcements=d.announcements||[];S.members=d.members||[];
- try{const profile=await rpc('crew_profile_social',{p_auth_id:S.user.auth_id||S.user.id});if(!profile.error&&profile.data?.profile)S.user={...S.user,...profile.data.profile};}catch(error){console.warn('Extended profile details could not be loaded:',error);}
  S.offline=false;S.error='';
  paintUser();paint();
+ // Profile metadata is useful but must never delay the first dashboard render.
+ rpc('crew_profile_social',{p_auth_id:S.user.auth_id||S.user.id}).then(profile=>{
+  if(!profile.error&&profile.data?.profile&&S.user){S.user={...S.user,...profile.data.profile};paintUser();if(S.view==='profile')paint();}
+ }).catch(error=>console.warn('Extended profile details will load when the connection improves:',error));
  if(!S.profileSetupRedirected&&!(S.user.name&&S.user.username&&S.user.date_of_birth&&S.user.instagram_username&&S.user.profession&&S.user.designation&&S.user.bio&&S.user.avatar_url)){S.profileSetupRedirected=true;S.view='profile';paint();}
  try{
   const sessionResult=await auth.getSession();
@@ -399,14 +408,29 @@ async function syncCrewSnapshot(){
  }catch(error){console.warn('Background crew sync failed:',error);}
  finally{kcSnapshotBusy=false;}
 }
+let kcLastSnapshotSync=0,kcSnapshotSyncBusy=false;
+function kcSnapshotPollInterval(){
+ const connection=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+ const slow=connection?.saveData||/^(slow-2g|2g)$/.test(connection?.effectiveType||'');
+ return slow?60000:30000;
+}
+async function kcThrottledSnapshotSync(force=false){
+ if(!navigator.onLine||document.hidden||kcSnapshotSyncBusy)return;
+ const now=Date.now(),interval=kcSnapshotPollInterval();
+ if(!force&&now-kcLastSnapshotSync<interval-1000)return;
+ kcSnapshotSyncBusy=true;kcLastSnapshotSync=now;
+ try{await syncCrewSnapshot();}catch(error){console.warn('Background sync deferred:',error);}
+ finally{kcSnapshotSyncBusy=false;}
+}
 function startCrewNotificationPolling(){
  if(kcAnnouncementPoll)clearInterval(kcAnnouncementPoll);
- kcAnnouncementPoll=setInterval(()=>{if(!document.hidden&&navigator.onLine)syncCrewSnapshot();},7000);
+ kcAnnouncementPoll=setInterval(()=>kcThrottledSnapshotSync(false),kcSnapshotPollInterval());
  if(!window.kcSnapshotVisibilityBound){
   window.kcSnapshotVisibilityBound=true;
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncCrewSnapshot();});
-  window.addEventListener('focus',()=>syncCrewSnapshot());
-  window.addEventListener('pageshow',()=>syncCrewSnapshot());
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)kcThrottledSnapshotSync(false);});
+  window.addEventListener('focus',()=>kcThrottledSnapshotSync(false));
+  window.addEventListener('pageshow',()=>kcThrottledSnapshotSync(false));
+  window.addEventListener('online',()=>kcThrottledSnapshotSync(true));
  }
 }
 
@@ -1745,12 +1769,12 @@ async function boot(){
   // is signed out on this device even if its access token has not expired yet.
   if(!window.__kcBlockWatch){
    window.__kcBlockWatch=setInterval(async()=>{
-    if(!S.user||document.hidden)return;
-    try{const result=await client.rpc('crew_assert_not_blocked',{});if(result.error&&/blocked|suspended/i.test(result.error.message||'')){await auth.signOut({scope:'local'});location.replace(window.kcPath('login.html?blocked=1'));}}
-    catch(error){console.warn('Crew account status re-check failed:',error);}
-   },30000);
+    if(!S.user||document.hidden||!navigator.onLine)return;
+    try{const result=await client.rpc('crew_assert_not_blocked',{});if(result.error&&/blocked|suspended/i.test(result.error.message||'')){kcAccessGuard={userId:'',checkedAt:0};await auth.signOut({scope:'local'});location.replace(window.kcPath('login.html?blocked=1'));}}
+    catch(error){console.warn('Crew account status re-check deferred:',error);}
+   },60000);
    document.addEventListener('visibilitychange',async()=>{
-    if(!document.hidden&&S.user){try{const result=await client.rpc('crew_assert_not_blocked',{});if(result.error&&/blocked|suspended/i.test(result.error.message||'')){await auth.signOut({scope:'local'});location.replace(window.kcPath('login.html?blocked=1'));}}catch(error){console.warn('Crew access check failed:',error);}}
+    if(!document.hidden&&S.user&&navigator.onLine){try{const result=await client.rpc('crew_assert_not_blocked',{});if(result.error&&/blocked|suspended/i.test(result.error.message||'')){kcAccessGuard={userId:'',checkedAt:0};await auth.signOut({scope:'local'});location.replace(window.kcPath('login.html?blocked=1'));}}catch(error){console.warn('Crew access check deferred:',error);}}
    });
   }
   // Render the authenticated shell before optional community queries. A slow feed must
@@ -1789,7 +1813,7 @@ if(reloadButton)reloadButton.addEventListener('click',async()=>{
  }catch(error){notice(error.message||'Refresh failed.');}
  finally{reloadButton.disabled=false;reloadButton.innerHTML=original;}
 });
-window.addEventListener('online',()=>{if(S.user)refresh().then(()=>notice('Connection restored. Crew data refreshed.')).catch(e=>{S.error=e.message||'Could not refresh crew data.';paint();});});
+window.addEventListener('online',()=>{if(S.user){kcAccessGuard={userId:'',checkedAt:0};kcThrottledSnapshotSync(true);refresh().then(()=>notice('Connection restored. Crew data refreshed.')).catch(e=>{S.error=e.message||'Could not refresh crew data.';paint();});}});
 window.addEventListener('offline',()=>{if(S.user){S.offline=true;S.error='You are offline. Showing the last available crew information.';paint();}});
 window.addEventListener('error',event=>{console.error('Kinetic Crew runtime error:',event.error||event.message);});
 window.addEventListener('unhandledrejection',event=>{console.error('Kinetic Crew async error:',event.reason);});
