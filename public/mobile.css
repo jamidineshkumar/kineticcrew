@@ -196,3 +196,14 @@
 .leader-row>strong{font:600 13px var(--display)}
 .leader-row>strong small{font:10px 'DM Sans',sans-serif;color:var(--muted)}
 @media(max-width:700px){.feature-grid{grid-template-columns:1fr}.feature-form{padding:15px}.feature-form .primary{width:100%}}
+
+
+/* Mobile-app ergonomics: prevent Android Chrome's focus zoom on small form controls. */
+@media (max-width: 900px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea,
+  [contenteditable="true"] {
+    font-size: 16px !important;
+  }
+}

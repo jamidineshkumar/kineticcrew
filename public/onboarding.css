@@ -450,3 +450,11 @@ body.kc-auth-verify #kcAuthScreen .signinpanel{padding-top:clamp(210px,26vh,290p
 #kcAuthScreen[hidden]{display:none!important;visibility:hidden!important;pointer-events:none!important}
 body.kc-welcome-open #kcAuthScreen[hidden]{display:none!important}
 body.kc-auth-open #kcAuthScreen:not([hidden]){display:block!important;visibility:visible!important}
+
+
+/* Prevent Android Chrome from zooming into small authentication fields. */
+@media (max-width: 900px) {
+  input:not([type="checkbox"]):not([type="radio"]), select, textarea {
+    font-size: 16px !important;
+  }
+}
