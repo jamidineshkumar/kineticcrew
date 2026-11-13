@@ -1,6 +1,6 @@
 {
-  "version": "1.3.6",
+  "version": "1.3.7",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-13T05:20:00Z",
-  "release_notes": "Crew background sync interval set to 3 seconds."
+  "updated_at": "2026-11-13T12:30:00Z",
+  "release_notes": "Crew background sync interval set to 7 seconds."
 }
