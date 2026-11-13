@@ -1,6 +1,6 @@
 {
-  "version": "1.4.0",
+  "version": "1.4.1",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-13T14:30:00Z",
-  "release_notes": "Fixed startup failure fallback and app version synchronization; retained 7-second background sync and current crew features."
+  "updated_at": "2026-11-13T16:00:00Z",
+  "release_notes": "Added compact profile completion with birthday, Instagram and crew details; automatic pending member refresh and post-approval welcome email."
 }
