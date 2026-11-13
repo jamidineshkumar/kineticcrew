@@ -1542,6 +1542,7 @@ function setupCrewPushForSignedInMember(){
   catch(error){button.disabled=false;button.textContent='Try again';notice(error.message||'Could not enable notifications.');}
  });
 }
+window.addEventListener('kc:push-ready',()=>{if(S.user)setupCrewPushForSignedInMember();});
 async function boot(){
  const loadingWatch=setTimeout(()=>{
   const el=$('#app');
