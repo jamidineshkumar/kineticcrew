@@ -1,6 +1,6 @@
 {
-  "version": "1.4.3",
+  "version": "1.4.4",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-13T16:40:00Z",
-  "release_notes": "Further reduced low-network data usage by limiting social feed payloads and avoiding repeated access checks."
+  "updated_at": "2026-11-13T17:05:00Z",
+  "release_notes": "Rebuilt attendance check-in: QR auto-identifies event and member, OTP uses event and registered-member dropdowns, with success tick confirmation and duplicate-scan protection."
 }
