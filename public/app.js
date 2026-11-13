@@ -1577,6 +1577,9 @@ async function boot(){
    }
    throw accessCheck.error;
   }
+  // Start the opt-in immediately after the account is verified, before dashboard data loads.
+  S.user={auth_id:session.user.id,id:session.user.id};
+  setupCrewPushForSignedInMember();
   rpc('crew_profile_login_touch',{}).catch(error=>console.warn('Could not record today’s profile login:',error));
   const saved=readPageState();
   const incomingShare=new URLSearchParams(location.search);
