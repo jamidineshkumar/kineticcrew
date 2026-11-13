@@ -1,7 +1,6 @@
 (() => {
 'use strict';
-const APP_VERSION='1.3.2';
-window.KC_APP_VERSION=APP_VERSION;
+const APP_VERSION=window.KC_APP_VERSION||'1.4.0';
 const client=()=>window.kcSupabase;
 const $=(s,root=document)=>root.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
