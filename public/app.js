@@ -76,18 +76,43 @@ function notice(text){const t=$('#toast');if(!t){console.warn('Kinetic Crew toas
 function cacheKey(userId){return 'kc-bootstrap-v2:'+userId;}
 function paintUser(){if(!S.user)return;const name=$('#profileName'),userRole=$('#profileRole'),avatar=$('#avatar'),topAvatar=$('#topAvatar');if(name)name.textContent=S.user.name||S.user.email||'Crew Member';if(userRole)userRole.textContent=role(S.user.role);if(avatar)avatar.innerHTML=avatarMarkup(S.user);if(topAvatar)topAvatar.innerHTML=avatarMarkup(S.user,'small');}
 async function refresh(){
- const results=await Promise.all([api('bootstrap'),rpc('crew_get_app_settings',{}).catch(error=>({error})),rpc('crew_event_metadata',{}).catch(error=>({error,data:[]})),featureApi('list','rehearsals',{}).catch(()=>[]),featureApi('list','chat',{}).catch(()=>[]),featureApi('list','polls',{}).catch(()=>[])]);
- const d=results[0],cfg=results[1],meta=Array.isArray(results[2]?.data)?results[2].data:[];
- S.featureItems.rehearsals=Array.isArray(results[3])?results[3]:(results[3]?.data||[]);
- S.featureItems.chat=Array.isArray(results[4])?results[4]:(results[4]?.data||[]);
- S.featureItems.polls=Array.isArray(results[5])?results[5]:(results[5]?.data||[]);
- const eventMeta=new Map(meta.map(item=>[String(item.id),item]));
- S.user=d.user;S.events=(d.events||[]).map(event=>({...event,...(eventMeta.get(String(event.id))||{})}));S.announcements=d.announcements||[];S.members=d.members||[];
- await loadGlobalDeletedNotifications();
+ // The authenticated bootstrap is the only data dependency required to open the app.
+ // Load it first, render immediately, and hydrate optional sections in the background.
+ const d=await api('bootstrap');
+ S.user=d.user;S.events=d.events||[];S.announcements=d.announcements||[];S.members=d.members||[];
  S.offline=false;S.error='';
- S.appSettings=cfg.error?{}:(cfg.data||{});
- try{const sessionResult=await auth.getSession();const cacheUserId=sessionResult?.data?.session?.user?.id||S.user.auth_id||S.user.id;if(cacheUserId)localStorage.setItem(cacheKey(cacheUserId),JSON.stringify({savedAt:Date.now(),user:S.user,events:S.events,announcements:S.announcements}));}catch{}
- const keepX=window.scrollX||0,keepY=window.scrollY||0;paintUser();paint();requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({left:keepX,top:keepY,behavior:'auto'})));
+ paintUser();paint();
+ try{
+  const sessionResult=await auth.getSession();
+  const cacheUserId=sessionResult?.data?.session?.user?.id||S.user.auth_id||S.user.id;
+  if(cacheUserId)localStorage.setItem(cacheKey(cacheUserId),JSON.stringify({savedAt:Date.now(),user:S.user,events:S.events,announcements:S.announcements}));
+ }catch(error){console.warn('Could not refresh the local crew cache:',error);}
+ const keepX=window.scrollX||0,keepY=window.scrollY||0;
+ const hydrate=async()=>{
+  const jobs=await Promise.allSettled([
+   rpc('crew_get_app_settings',{}),
+   rpc('crew_event_metadata',{}),
+   featureApi('list','rehearsals',{}),
+   featureApi('list','chat',{}),
+   featureApi('list','polls',{}),
+   loadGlobalDeletedNotifications()
+  ]);
+  const cfg=jobs[0].status==='fulfilled'?jobs[0].value:null;
+  const metaResult=jobs[1].status==='fulfilled'?jobs[1].value:null;
+  const meta=Array.isArray(metaResult?.data)?metaResult.data:[];
+  if(cfg&&!cfg.error)S.appSettings=cfg.data||{};
+  const eventMeta=new Map(meta.map(item=>[String(item.id),item]));
+  if(meta.length)S.events=(S.events||[]).map(event=>({...event,...(eventMeta.get(String(event.id))||{})}));
+  const featureNames=['rehearsals','chat','polls'];
+  for(let i=0;i<featureNames.length;i++){
+   const result=jobs[i+2];
+   if(result.status!=='fulfilled')continue;
+   const value=result.value;
+   S.featureItems[featureNames[i]]=Array.isArray(value)?value:(value?.data||[]);
+  }
+  if(S.user){paintUser();paint();requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({left:keepX,top:keepY,behavior:'auto'})));}
+ };
+ hydrate().catch(error=>console.warn('Optional crew data could not be refreshed:',error));
 }
 function restoreOffline(user){
  const id=user?.id||user?.auth_id;if(!id)return false;
@@ -1606,6 +1631,15 @@ async function boot(){
    return;
   }
   const result=await withTimeout(auth.getSession(),10000,'Authentication is taking too long. Reload the page or sign in again.');
+  if(result?.error){
+   const authMessage=String(result.error.message||'');
+   if(/invalid refresh token|refresh token not found|session not found/i.test(authMessage)){
+    await auth.signOut({scope:'local'}).catch(()=>{});
+    location.replace(window.kcPath('login.html?session=expired'));
+    return;
+   }
+   throw result.error;
+  }
   const session=result?.data?.session;
   const incomingProfile=new URLSearchParams(location.search).get('kc_profile');
   let pendingProfileId=incomingProfile||localStorage.getItem('kc_pending_profile')||'';
