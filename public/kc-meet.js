@@ -78,7 +78,14 @@
     $("#kcMeetLiveRoot").querySelector("[data-kcml-camera]").onclick = async e => { const enabled = room.localParticipant.isCameraEnabled; await room.localParticipant.setCameraEnabled(!enabled); e.currentTarget.textContent = enabled ? "Turn camera on" : "Turn camera off"; };
     $("#kcMeetLiveRoot").querySelector("[data-kcml-screen]").onclick = async e => { try { const enabled = room.localParticipant.isScreenShareEnabled; await room.localParticipant.setScreenShareEnabled(!enabled); e.currentTarget.textContent = enabled ? "Share screen" : "Stop sharing"; } catch { showError("Screen sharing is not supported in this browser or device."); } };
     $("#kcMeetLiveRoot").querySelector("[data-kcml-copy]").onclick = async () => { await navigator.clipboard.writeText(activeCode); showError("Meeting code copied. Share it with approved crew members."); };
-    $("#kcMeetLiveRoot").querySelector("[data-kcml-leave]").onclick = () => closeRoom(true);
+    $("#kcMeetLiveRoot").querySelector("[data-kcml-leave]").onclick = async () => {
+      const leaveButton = $("#kcMeetLiveRoot").querySelector("[data-kcml-leave]");
+      leaveButton.disabled = true;
+      try {
+        if (isHost) await issueToken("end", { code: activeCode });
+        await closeRoom(true);
+      } catch (error) { showError(error?.message || "Could not end the meeting."); leaveButton.disabled = false; }
+    };
   }
   async function closeRoom(disconnect = true) {
     const old = room; room = null;
