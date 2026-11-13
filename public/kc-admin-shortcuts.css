@@ -1,0 +1,12 @@
+/* Admin shortcuts: always visible in the mobile home dashboard for authorized roles. */
+.kc-admin-shortcuts{margin:18px 0;padding:18px;border:1px solid rgba(229,151,86,.28);border-radius:22px;background:linear-gradient(135deg,rgba(43,46,47,.96),rgba(20,23,25,.96));box-shadow:0 12px 30px rgba(0,0,0,.16);color:var(--text,#f4f1eb)}
+.kc-admin-shortcuts-heading{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.kc-admin-shortcuts-heading>span{font-size:10px;font-weight:800;letter-spacing:2px;color:#e6a36c}
+.kc-admin-shortcuts-heading>b{font-size:19px;font-weight:750}
+.kc-admin-shortcuts-heading>small{font-size:12px;line-height:1.5;color:var(--muted,#a8adae)}
+.kc-admin-shortcuts-actions{display:grid;grid-template-columns:1fr;gap:9px}
+.kc-admin-shortcuts-actions button{display:flex;align-items:center;gap:11px;width:100%;min-height:52px;padding:12px 14px;border:1px solid rgba(255,255,255,.1);border-radius:15px;background:rgba(255,255,255,.045);color:inherit;text-align:left}
+.kc-admin-shortcuts-actions button>span{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:rgba(230,151,86,.14);color:#efaa70;font-size:18px}
+.kc-admin-shortcuts-actions button>b{flex:1;font-size:13px;font-weight:700}
+.kc-admin-shortcuts-actions button>i{font-style:normal;color:#e6a36c;font-size:18px}
+.kc-admin-shortcuts-actions button:active{transform:scale(.985);background:rgba(230,151,86,.12)}
