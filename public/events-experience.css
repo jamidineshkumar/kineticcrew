@@ -98,7 +98,7 @@
  .kce-detail-facts{gap:8px}
  .kce-detail-facts>div{padding:10px}
 }
-@media(min-width:701px){.kce-category-mosaic{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:130px}.kce-featured-event{min-height:360px}.kce-art-featured{min-height:360px}.kce-events-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:701px){.kce-category-mosaic{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:130px}.kce-nightpulse .kce-event-shortcuts{grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:130px}.kce-featured-event{min-height:360px}.kce-art-featured{min-height:360px}.kce-events-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 /* Event publishing, ticket wallet and compact mobile polish */
 .kce-featured-check{display:flex;align-items:center;min-height:44px;padding:12px 14px;border:1px solid var(--line,#39333f);border-radius:13px;background:var(--panel2,#292430)}
@@ -161,7 +161,7 @@
 .kce-nightpulse .kce-art-featured{min-height:300px!important}
 .kce-nightpulse .kce-featured-info{left:24px;bottom:22px;max-width:72%}
 .kce-nightpulse .kce-discover-label{margin-top:25px}
-.kce-nightpulse .kce-event-shortcuts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:104px;gap:10px;margin:16px 0 22px}
+.kce-nightpulse .kce-event-shortcuts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:104px;gap:10px;margin:16px 0 22px}
 .kce-nightpulse .kce-event-shortcuts .kce-category{min-height:0;border-radius:18px;background-color:#18211f;border-color:#ffffff18;box-shadow:inset 3px 3px 9px #0005,inset -2px -2px 8px #ffffff08}
 .kce-nightpulse .kce-events-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;scroll-snap-type:none;padding:0}
 .kce-nightpulse .kce-event-card{min-width:0;flex:initial;max-width:none}
@@ -195,3 +195,11 @@
  .kce-wallet-qr{width:calc(100% - 20px);margin:0 10px 10px;padding:0 10px;font-size:10px}
 }
 @media(min-width:701px){.kce-nightpulse .kce-events-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* Dedicated KC Meet entry tile */
+.kce-nightpulse .kce-kc-meet-tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:7px;overflow:hidden;padding:14px;border:1px solid #d7a75b66;background:radial-gradient(circle at 100% 0%,#d7a75b35,transparent 58%),linear-gradient(145deg,#26312e,#171c1b);color:#f6f2e9}
+.kce-nightpulse .kce-kc-meet-tile>i{display:grid;place-items:center;width:29px;height:29px;border:1px solid #d7a75b66;border-radius:10px;color:#e4bc78;font-size:17px;font-style:normal}
+.kce-nightpulse .kce-kc-meet-tile>b{font-size:13px;font-weight:850}
+.kce-nightpulse .kce-kc-meet-tile>small{font-size:10px;color:#c5c7bf}
+.kce-nightpulse .kce-kc-meet-tile>span{font-size:8px;letter-spacing:.12em;font-weight:900;color:#e4bc78}
+@media(max-width:700px){.kce-nightpulse .kce-event-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(100px,1fr))}.kce-nightpulse .kce-kc-meet-tile{min-height:104px}}
