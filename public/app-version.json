@@ -1,6 +1,6 @@
 {
-  "version": "1.5.2",
+  "version": "1.5.3",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T08:30:00.000Z",
-  "release_notes": "Fixed Crew Members action menus: added visible tap controls, reliable click-to-open behavior, working action menu stacking, and PWA cache refresh for the updated member controls."
+  "updated_at": "2026-11-14T12:00:00.000Z",
+  "release_notes": "Added dedicated Crew Administration shortcuts in the More menu for Crew Members & Roles and Pending Requests. Admins can review registrations; Super Admins can manage access roles."
 }
