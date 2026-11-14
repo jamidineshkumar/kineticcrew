@@ -1,6 +1,6 @@
 {
-  "version": "1.6.5",
+  "version": "1.6.6",
   "minimum_version": "1.2.7",
   "updated_at": "2026-11-14T00:00:00.000Z",
-  "release_notes": "Removed Profession and Designation from member profile setup."
+  "release_notes": "Profile role visibility, Custom App Alert shortcut in notifications, and dedicated Create Event page."
 }
