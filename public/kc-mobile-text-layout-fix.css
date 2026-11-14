@@ -1,0 +1,59 @@
+/* Kinetic Crew — mobile typography, profile controls and safe-area layout correction. */
+@media(max-width:640px){
+  /* Keep labels intact instead of breaking words at arbitrary characters. */
+  #app :is(h1,h2,h3,h4,p,span,b,strong,small,a,button,label){
+    word-break:normal!important;
+    hyphens:none!important;
+  }
+  #app button,#app a{overflow-wrap:normal}
+  .kc-single-profile .kc-liquid-card-top{
+    display:flex!important;align-items:center!important;gap:5px!important;
+    width:100%!important;min-width:0!important;
+  }
+  .kc-single-profile .kc-liquid-wordmark{
+    flex:1 1 auto!important;min-width:0!important;max-width:100%!important;
+    overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+    font-size:clamp(7px,2.1vw,9px)!important;letter-spacing:.075em!important;
+  }
+  .kc-single-profile .kc-liquid-card-top .kc-profile-back,
+  .kc-single-profile .kc-liquid-card-top .kc-profile-share-button{
+    flex:0 0 34px!important;width:34px!important;min-width:34px!important;height:38px!important;
+    border-radius:13px!important;
+  }
+  .kc-single-profile .kc-liquid-card-top .kc-profile-hero-right{
+    display:flex!important;align-items:center!important;gap:5px!important;flex:0 0 auto!important;
+  }
+  .kc-single-profile .kc-liquid-card-top .kc-profile-scan-button{
+    flex:0 0 auto!important;min-width:0!important;padding:9px 8px!important;
+    white-space:nowrap!important;font-size:9px!important;letter-spacing:0!important;
+  }
+  .kc-single-profile .kc-liquid-card-top .kc-profile-edit-button{
+    flex:0 0 auto!important;min-width:48px!important;padding:9px 9px!important;
+    white-space:nowrap!important;word-break:keep-all!important;font-size:10px!important;
+  }
+  .kc-profile-metrics{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
+  .kc-profile-metrics>button,.kc-profile-metrics>div{min-width:0!important;padding:13px 7px!important}
+  .kc-profile-metrics>button span,.kc-profile-metrics>div span{
+    white-space:nowrap!important;word-break:keep-all!important;overflow-wrap:normal!important;
+    font-size:clamp(7px,2.25vw,9px)!important;letter-spacing:.055em!important;
+    line-height:1.2!important;
+  }
+  .kc-profile-metrics>button b,.kc-profile-metrics>div b{font-size:clamp(20px,6vw,25px)!important}
+  .kc-profile-activity-head h2{font-size:clamp(24px,7vw,29px)!important}
+  /* Reserve space for the fixed bottom dock on every app page. */
+  #app.content{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))!important}
+  #kcMobileDock .dock-label{
+    display:block!important;max-width:100%!important;white-space:nowrap!important;
+    overflow:hidden!important;text-overflow:clip!important;word-break:keep-all!important;
+    font-size:clamp(8px,2.1vw,9px)!important;letter-spacing:0!important;
+  }
+}
+@media(max-width:390px){
+  .kc-single-profile .kc-liquid-card-top{gap:4px!important}
+  .kc-single-profile .kc-liquid-card-top .kc-profile-back,
+  .kc-single-profile .kc-liquid-card-top .kc-profile-share-button{
+    flex-basis:32px!important;width:32px!important;min-width:32px!important;
+  }
+  .kc-single-profile .kc-liquid-card-top .kc-profile-scan-button{padding-inline:7px!important}
+  .kc-single-profile .kc-liquid-card-top .kc-profile-edit-button{min-width:44px!important;padding-inline:7px!important}
+}
