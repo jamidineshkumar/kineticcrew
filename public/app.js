@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
-window.KC_APP_VERSION='1.5.5';
+window.KC_APP_VERSION='1.5.6';
 let kcUpdatePending=false,kcUpdateReloading=false,kcPendingVersion='';
 const KC_UPDATE_GUARD='kc_update_reload_guard_v1';
 function kcReloadAlreadyUsed(version=''){try{return sessionStorage.getItem(KC_UPDATE_GUARD)===String(version||'service-worker');}catch{return new URL(location.href).searchParams.has('kc_refresh');}}
@@ -939,7 +939,7 @@ function peoplePage(){
  const filtered=people.filter(m=>(String(m.name||'')+' '+String(m.username||'')+' '+String(m.role||'')+' '+String(m.bio||'')).toLowerCase().includes(query));
  return welcome('Find your crew','Search members and connect with your crew.')+
  '<section class="profile-discovery-bar"><label class="profile-search"><span aria-hidden="true">⌕</span><input id="peopleSearch" type="search" value="'+esc(S.peopleQuery||'')+'" placeholder="Search members…" autocomplete="off"></label><span class="profile-search-count" id="peopleSearchCount">'+filtered.length+' / '+people.length+'</span></section>'+
- '<div class="profile-directory" id="profileDirectoryGrid">'+(filtered.length?filtered.map(m=>'<article class="surface crew-profile-tile kc-member-directory-card" data-member-action-card="'+esc(m.auth_id)+'" data-member-role="'+esc(m.role||'member')+'" data-member-name="'+esc(m.name||'Crew member')+'"><button class="crew-profile-open" data-open-profile="'+esc(m.auth_id)+'">'+avatarMarkup(m)+'<span><b>'+esc(m.name||'Crew member')+'</b><small>@'+esc(m.username||'crew-member')+'</small></span></button><p>'+esc(m.bio||'Kinetic Crew member')+'</p><div class="kc-member-directory-footer"><span class="role-pill '+esc(m.role)+'">'+esc(role(m.role))+'</span><button type="button" class="outline" data-open-profile="'+esc(m.auth_id)+'">View profile <span aria-hidden="true">→</span></button><button type="button" class="outline kc-member-actions-toggle" data-member-actions-toggle aria-label="Member actions" title="Member actions">•••</button></div></article>').join(''):empty(query?'No matching members':'No crew members yet',query?'Try a different name or username.':'Crew members will appear here after they join.'))+'</div>';
+ '<div class="profile-directory" id="profileDirectoryGrid">'+(filtered.length?filtered.map(m=>'<article class="surface crew-profile-tile kc-member-directory-card" data-member-action-card="'+esc(m.auth_id)+'" data-member-role="'+esc(m.role||'member')+'" data-member-name="'+esc(m.name||'Crew member')+'"><div class="kc-member-card-heading"><button class="crew-profile-open" data-open-profile="'+esc(m.auth_id)+'">'+avatarMarkup(m)+'<span><b>'+esc(m.name||'Crew member')+'</b><small>@'+esc(m.username||'crew-member')+'</small></span></button><span class="role-pill '+esc(m.role)+'">'+esc(role(m.role))+'</span></div><p>'+esc(m.bio||'Kinetic Crew member')+'</p><div class="kc-member-directory-footer"><button type="button" class="outline" data-open-profile="'+esc(m.auth_id)+'">View profile <span aria-hidden="true">→</span></button>'+(admin()&&m.auth_id!==S.user.auth_id?'<button type="button" class="outline kc-member-actions-toggle" data-member-actions-toggle aria-label="Member actions" title="Member actions">•••</button>':'')+'</div></article>').join(''):empty(query?'No matching members':'No crew members yet',query?'Try a different name or username.':'Crew members will appear here after they join.'))+'</div>';
 }
 
 function attendancePage(){
