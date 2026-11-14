@@ -1,6 +1,6 @@
 {
-  "version": "1.5.3",
+  "version": "1.5.4",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T12:00:00.000Z",
-  "release_notes": "Added dedicated Crew Administration shortcuts in the More menu for Crew Members & Roles and Pending Requests. Admins can review registrations; Super Admins can manage access roles."
+  "updated_at": "2026-11-14T12:50:00.000Z",
+  "release_notes": "Member profile updates now persist all editable details and the visitor profile uses the member photo as a full-bleed background instead of a circular avatar."
 }
