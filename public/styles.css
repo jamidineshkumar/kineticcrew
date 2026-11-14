@@ -216,3 +216,33 @@
 @keyframes kcConfirmRise{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
 @media(max-width:520px){.kc-confirm-modal{padding:23px 19px 19px;border-radius:22px}.kc-confirm-modal h2{font-size:21px}.kc-confirm-actions button{flex:1}}
 @media(prefers-reduced-motion:reduce){.modalback.kc-confirm-backdrop,.kc-confirm-modal{animation:none}}
+
+
+/* Native poll composer */
+.kc-poll-builder{padding:22px!important;display:grid;gap:22px;max-width:760px;margin:18px auto 32px;border:1px solid rgba(255,255,255,.12)!important;border-radius:26px!important;background:linear-gradient(145deg,rgba(34,38,42,.96),rgba(18,20,23,.98))!important;box-shadow:0 18px 48px rgba(0,0,0,.24)}
+.kc-poll-builder-top{display:flex;align-items:center;gap:14px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.1)}
+.kc-poll-builder-icon{width:48px;height:48px;flex:0 0 48px;display:grid;place-items:center;border-radius:16px;background:linear-gradient(140deg,#ff9b79,#e85c45);color:#171313;font-size:24px;font-weight:800}
+.kc-poll-eyebrow{font-size:10px;letter-spacing:.18em;font-weight:800;color:#ff9877}
+.kc-poll-builder-top h2{font-size:21px;margin:3px 0 4px}
+.kc-poll-builder-top p{font-size:13px;line-height:1.45;color:var(--muted,#aaa);margin:0}
+.kc-poll-builder .field{display:grid;gap:9px;margin:0}
+.kc-poll-builder .field>span,.kc-poll-options-title b{font-size:14px;font-weight:750}
+.kc-poll-builder input[name=title],.kc-poll-option-input input{width:100%;min-width:0;min-height:52px;border:1px solid rgba(255,255,255,.12);border-radius:15px;background:rgba(255,255,255,.045);color:inherit;padding:0 15px;outline:none}
+.kc-poll-builder input:focus{border-color:rgba(255,145,111,.8);box-shadow:0 0 0 3px rgba(255,132,99,.12)}
+.kc-poll-options-editor{display:grid;gap:13px}
+.kc-poll-options-title{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.kc-poll-options-title small{font-size:11px;color:var(--muted,#aaa)}
+.kc-poll-option-inputs{display:grid;gap:10px}
+.kc-poll-option-input{display:flex;align-items:center;gap:10px;min-width:0}
+.kc-poll-option-input>span{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.08);font-size:12px;font-weight:750;color:var(--muted,#aaa)}
+.kc-poll-option-input input{flex:1}
+.kc-poll-remove-option{width:38px;height:38px;flex:0 0 38px;border:0;border-radius:12px;background:rgba(255,255,255,.07);color:#bbb;font-size:22px}
+.kc-poll-add-option{justify-self:start;border:1px dashed rgba(255,145,111,.5);background:rgba(255,145,111,.07);color:#ff9a7a;border-radius:13px;padding:11px 15px;font-weight:700;font-size:13px}
+.kc-poll-settings{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid rgba(255,255,255,.09);border-radius:16px;background:rgba(255,255,255,.035)}
+.kc-poll-settings-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:rgba(255,255,255,.08);font-size:19px}
+.kc-poll-settings>span:nth-child(2){display:grid;gap:3px;flex:1}
+.kc-poll-settings b{font-size:13px}.kc-poll-settings small{font-size:11px;color:var(--muted,#aaa);line-height:1.4}
+.kc-poll-setting-state{font-size:10px;letter-spacing:.1em;font-weight:800;color:#75d7a0}
+.kc-poll-publish{min-height:54px!important;border-radius:16px!important;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800}
+.kc-poll-publish span{font-size:18px}
+@media(max-width:600px){.kc-poll-builder{padding:18px!important;margin:14px 0 24px;border-radius:22px!important;gap:19px}.kc-poll-builder-top{align-items:flex-start}.kc-poll-builder-icon{width:42px;height:42px;flex-basis:42px}.kc-poll-options-title{align-items:flex-start;flex-direction:column;gap:4px}}
