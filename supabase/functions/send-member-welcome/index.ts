@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import nodemailer from "npm:nodemailer@6.9.16";
+import { brandedEmail } from "../_shared/email-template.ts";
 
 const cors = {"Access-Control-Allow-Origin":"*", "Access-Control-Allow-Headers":"authorization, x-client-info, apikey, content-type", "Access-Control-Allow-Methods":"POST, OPTIONS"};
 const json = (body: unknown, status=200) => new Response(JSON.stringify(body), {status, headers:{...cors,"Content-Type":"application/json"}});
@@ -57,49 +58,16 @@ Open the Kinetic Crew app and sign in with your username and password.
 Welcome aboard,
 KINETIC CREW
 Move together. Create together.`;
-    const html=`<!doctype html>
-<html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"><title>Welcome to Kinetic Crew</title></head>
-<body style="margin:0;padding:0;background:#080a0c;color:#f4f3ef;font-family:Arial,Helvetica,sans-serif;">
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#080a0c;padding:34px 12px;">
-<tr><td align="center">
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;background:#171b1e;border:1px solid #34393b;border-radius:26px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.35);">
-<tr><td style="padding:30px 30px 22px;background:linear-gradient(135deg,#242a2e 0%,#111518 100%);border-bottom:1px solid #34393b;">
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr>
-<td align="left" style="font-size:12px;letter-spacing:4px;font-weight:700;color:#e8a15f;">KINETIC CREW</td>
-<td align="right"><span style="display:inline-block;padding:7px 11px;border:1px solid #76563b;border-radius:30px;color:#f0b77d;font-size:10px;letter-spacing:1.5px;">MEMBERSHIP UPDATE</span></td>
-</tr></table>
-<div style="padding-top:34px;">
-<div style="width:42px;height:4px;border-radius:5px;background:#f08b3e;margin-bottom:18px;"></div>
-<div style="font-size:30px;line-height:1.16;font-weight:700;letter-spacing:-.7px;color:#f7f5ef;">You're officially<br>part of the crew.</div>
-<p style="margin:15px 0 0;color:#aeb4b5;font-size:15px;line-height:1.7;">Your registration is approved. Welcome to a community built around movement, creativity and showing up for one another.</p>
-</div>
-</td></tr>
-<tr><td style="padding:28px 30px 30px;">
-<p style="margin:0 0 8px;color:#f2eee8;font-size:17px;font-weight:700;">Hey ${safeName},</p>
-<p style="margin:0 0 23px;color:#aeb4b5;font-size:14px;line-height:1.7;">Your Kinetic Crew membership is now active. You can sign in to the app and explore your crew space.</p>
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#202629;border:1px solid #3b4244;border-radius:18px;">
-<tr><td style="padding:19px 20px 8px;">
-<div style="font-size:10px;letter-spacing:2px;color:#e8a15f;font-weight:700;">YOUR CREW LOGIN</div>
-<div style="padding-top:16px;color:#929b9d;font-size:11px;letter-spacing:1px;">USERNAME</div>
-<div style="padding-top:5px;color:#f4f3ef;font-size:18px;font-weight:700;">@${safeUsername}</div>
-<div style="height:1px;background:#3a4143;margin:17px 0 13px;"></div>
-<div style="color:#929b9d;font-size:11px;letter-spacing:1px;">PASSWORD</div>
-<div style="padding:5px 0 13px;color:#e9e7e1;font-size:14px;">The password you created during registration</div>
-</td></tr></table>
-<p style="margin:23px 0 0;color:#aeb4b5;font-size:14px;line-height:1.7;">Open the Kinetic Crew app and sign in using the credentials above. Keep your password private — the crew team will never ask you to share it.</p>
-<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:25px 0 8px;"><tr><td style="background:#e9893f;border-radius:13px;">
-<a href="https://kineticcrew.vercel.app" style="display:inline-block;padding:15px 24px;color:#171411;text-decoration:none;font-size:14px;font-weight:700;">Enter the crew&nbsp; →</a>
-</td></tr></table>
-<div style="margin-top:27px;padding-top:21px;border-top:1px solid #343b3d;">
-<p style="margin:0;color:#f0eee8;font-size:14px;line-height:1.7;">Welcome aboard,<br><strong style="letter-spacing:1.5px;">KINETIC CREW TEAM</strong></p>
-<p style="margin:13px 0 0;color:#d89b65;font-size:11px;letter-spacing:2px;">MOVE TOGETHER. CREATE TOGETHER.</p>
-</div>
-</td></tr>
-</table>
-<p style="margin:18px 0 0;color:#666e70;font-size:10px;line-height:1.6;text-align:center;">This is an automated membership email from Kinetic Crew.<br>Please do not reply with your password or sensitive account details.</p>
-</td></tr></table>
-</body></html>`;
+    const html=brandedEmail({
+      eyebrow:"MEMBERSHIP APPROVED",
+      title:"You're officially part of the crew.",
+      subtitle:"Your registration is approved. Welcome to Kinetic Crew.",
+      contentHtml:'<p style="margin:0 0 8px;color:#f2eee8;font-size:17px;font-weight:700;">Hey '+safeName+',</p><p style="margin:0 0 22px;color:#c2bec8;font-size:14px;line-height:1.7;">Your membership is now active. Sign in to the app and explore your crew space.</p><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #55515e;border-radius:18px;background:#20212a;"><tr><td style="padding:18px 20px;"><div style="font-size:10px;letter-spacing:2px;color:#ff955d;font-weight:700;">YOUR CREW LOGIN</div><div style="padding-top:14px;color:#aaa5b1;font-size:11px;letter-spacing:1px;">USERNAME</div><div style="padding-top:5px;color:#f4f3ef;font-size:18px;font-weight:700;">@'+safeUsername+'</div><div style="height:1px;background:#ffffff22;margin:15px 0 12px;"></div><div style="color:#aaa5b1;font-size:11px;letter-spacing:1px;">PASSWORD</div><div style="padding-top:5px;color:#e9e7e1;font-size:14px;">The password you created during registration</div></td></tr></table><p style="margin:22px 0 0;color:#c2bec8;font-size:14px;line-height:1.7;">Keep your password private. The crew team will never ask you to share it.</p><p style="margin:22px 0 0;color:#f0eee8;font-size:14px;line-height:1.7;">Welcome aboard,<br><strong>KINETIC CREW TEAM</strong></p>',
+      buttonLabel:"Enter the crew",
+      buttonUrl:"https://kineticcrew.vercel.app",
+      footerNote:"This is an automated membership email from Kinetic Crew. Never share your password."
+    });
+
     await mailer.sendMail({
       from:{name:"Kinetic Crew",address:smtpUser},
       to:member.email,
