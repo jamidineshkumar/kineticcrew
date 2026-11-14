@@ -116,7 +116,7 @@ Deno.serve(async (req) => {
           message: {
             token,
             notification: { title, body: message },
-            webpush: { notification: { title, body: message, icon: "/kinetic-crew-logo.jpg", image: "/kinetic-crew-logo.jpg", badge: "/kinetic-crew-logo.svg", tag: notificationId, renotify: false }, fcmOptions: { link: "/" } },
+            webpush: { notification: { title, body: message, icon: "/icon.svg", image: "/kinetic-crew-logo.jpg", badge: "/kc-notification-badge.svg", tag: notificationId, renotify: false }, fcmOptions: { link: "/" } },
             android: { priority: "HIGH", notification: { channel_id: "crew_updates", sound: "default", tag: notificationId } },
             data: { url: "/", notificationId },
           },
