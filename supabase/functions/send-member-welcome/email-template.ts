@@ -32,7 +32,6 @@ ${subtitle ? `<p style="margin:10px 0 0;color:#b6b3bd;font-size:17px;line-height
 ${options.contentHtml ? `<tr><td style="padding:16px 16px 6px;color:#e9e6ed;font-size:14px;line-height:1.4;">${options.contentHtml}</td></tr>` : ""}
 ${code}
 </table></td></tr>
-<tr><td style="padding:0 6px;"><p style="margin:0;color:#aaa7b0;font-size:13px;line-height:1.4;">${esc(options.footerNote || "If you didn't request this, you can safely ignore this email.")}</p>
-<div style="margin-top:10px;color:#f5f3f6;font-family:'Segoe Script','Brush Script MT','Lucida Handwriting',cursive;font-size:32px;font-style:italic;font-weight:400;letter-spacing:-1px;line-height:1.1;">Kinetic Crew</div><div style="width:170px;height:2px;margin-top:3px;margin-left:8px;background:#f5f3f6;border-radius:100%;transform:rotate(-5deg);"></div></td></tr>
+<tr><td style="padding:0 6px;"><p style="margin:0;color:#aaa7b0;font-size:13px;line-height:1.4;">${esc(options.footerNote || "If you didn't request this, you can safely ignore this email.")}</p></td></tr>
 </table></td></tr></table></body></html>`;
 }
