@@ -1,6 +1,6 @@
 {
-  "version": "1.6.1",
+  "version": "1.6.2",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T15:15:00.000Z",
-  "release_notes": "Reduced excess vertical spacing on More page, compacted intro banner, headings, feature tiles and section gaps while preserving accessible tap targets."
+  "updated_at": "2026-11-14T15:27:00.000Z",
+  "release_notes": "Removed duplicate welcome-screen install controls and only show the install action when the browser provides a working install prompt."
 }
