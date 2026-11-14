@@ -1,6 +1,6 @@
 {
-  "version": "1.5.1",
+  "version": "1.5.2",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T06:48:00.000Z",
-  "release_notes": "Improved automatic PWA update detection, visible update-ready feedback, safe refresh after active forms/dialogs, and removed duplicate service-worker reload handling."
+  "updated_at": "2026-11-14T08:30:00.000Z",
+  "release_notes": "Fixed Crew Members action menus: added visible tap controls, reliable click-to-open behavior, working action menu stacking, and PWA cache refresh for the updated member controls."
 }
