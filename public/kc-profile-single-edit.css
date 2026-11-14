@@ -29,3 +29,9 @@ html[data-theme="light"] .kc-profile-detail-grid>div{background:rgba(30,35,45,.0
 html[data-theme="light"] .kc-profile-detail-grid small,html[data-theme="light"] .kc-profile-member-details-head b{color:#6b707b}
 html[data-theme="light"] .kc-profile-editor-close{color:#20232a;border-color:#20232a20;background:#20232a08}
 @media(max-width:390px){.kc-profile-member-details{padding:15px!important}.kc-profile-detail-grid{gap:10px}.kc-profile-detail-grid>div{padding:11px}.kc-profile-detail-grid strong{font-size:12px}}
+
+.kc-profile-photo-upload{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 14px;margin-top:12px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.035)}
+.kc-profile-photo-upload-copy{display:grid;gap:4px;min-width:0}.kc-profile-photo-upload-copy b{color:var(--text,#f4f2ee);font-size:13px}.kc-profile-photo-upload-copy small{color:var(--muted,#aaa);font-size:11px;line-height:1.4}
+.kc-profile-photo-upload-button{flex:0 0 auto;border:1px solid rgba(236,132,103,.38);border-radius:12px;padding:11px 14px;background:linear-gradient(110deg,rgba(237,133,103,.18),rgba(255,255,255,.06));color:#f2b89e;font-size:12px;font-weight:800}
+html[data-theme="light"] .kc-profile-photo-upload-copy b{color:#252832}
+@media(max-width:390px){.kc-profile-photo-upload{align-items:flex-start;flex-direction:column}.kc-profile-photo-upload-button{width:100%}}
