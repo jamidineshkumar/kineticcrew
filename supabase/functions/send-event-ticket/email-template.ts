@@ -26,8 +26,7 @@ export function brandedEmail(options: BrandedEmailOptions): string {
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#08090d;"><tr><td align="center" style="padding:24px 12px 30px;">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:620px;">
 <tr><td style="padding:4px 8px 18px;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>
-<td align="left" valign="middle"><span style="display:inline-block;padding:11px 17px;border:1px solid #55545b;border-radius:30px;background:linear-gradient(145deg,#292a30,#111217);color:#f6f5f7;font-size:15px;font-weight:800;letter-spacing:1px;">KINETIC CREW</span></td>
-<td align="right" valign="middle"><img src="${BRAND_LOGO}" width="66" height="66" alt="KC" style="display:block;width:66px;height:66px;object-fit:contain;border:1px solid #66616e;border-radius:22px;background:linear-gradient(145deg,#44434d,#171820);box-shadow:0 0 22px #ffffff18;padding:4px;"></td>
+<td align="center" valign="middle" colspan="2"><img src="${BRAND_LOGO}" width="66" height="66" alt="KC" style="display:block;width:66px;height:66px;object-fit:contain;border:1px solid #66616e;border-radius:22px;background:linear-gradient(145deg,#44434d,#171820);box-shadow:0 0 22px #ffffff18;padding:4px;"></td>
 </tr></table></td></tr>
 <tr><td style="padding:0 8px 16px;">
 <h1 style="margin:0;font-size:clamp(36px,8vw,52px);line-height:1.03;font-weight:800;letter-spacing:-2px;color:#f7f6f8;">${title}</h1>
