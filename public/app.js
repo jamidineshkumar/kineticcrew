@@ -459,7 +459,7 @@ function startCrewNotificationPolling(){
  }
 }
 
-function playNoticeSound(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const ctx=new C(),now=ctx.currentTime;[660,880].forEach((hz,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='sine';osc.frequency.value=hz;gain.gain.setValueAtTime(.0001,now+i*.12);gain.gain.exponentialRampToValueAtTime(.11,now+i*.12+.025);gain.gain.exponentialRampToValueAtTime(.0001,now+i*.12+.22);osc.connect(gain);gain.connect(ctx.destination);osc.start(now+i*.12);osc.stop(now+i*.12+.24);});setTimeout(()=>ctx.close(),700);}catch{}}
+function playNoticeSound(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const ctx=new C();const play=()=>{const start=ctx.currentTime;const notes=[880,1175,988,1318,880,1175,988,1318];notes.forEach((hz,i)=>{const t=start+i*.19,osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='triangle';osc.frequency.setValueAtTime(hz,t);gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.32,t+.018);gain.gain.setValueAtTime(.32,t+.115);gain.gain.exponentialRampToValueAtTime(.0001,t+.17);osc.connect(gain);gain.connect(ctx.destination);osc.start(t);osc.stop(t+.18);});setTimeout(()=>ctx.close().catch(()=>{}),1900);};if(ctx.state==='suspended')ctx.resume().then(play).catch(()=>ctx.close().catch(()=>{}));else play();}catch(error){console.warn('Kinetic Crew alert sound unavailable:',error);}}
 function notificationCard(a){
  const id=a.notice_id||('announcement:'+a.id),read=isRead(id),type=a.notice_type||'announcement';
  const label=type==='event'?'EVENT UPDATE':type==='post'?'POST':'ANNOUNCEMENT';
@@ -483,7 +483,7 @@ function notificationsPage(){
  '<section class="notice-layout"><div class="notice-feed"><div class="notice-feed-head"><div><b>Activity</b><small>'+filtered.length+' updates</small></div><span class="notice-live"><i></i> LIVE CREW FEED</span></div>'+
  (filtered.length?filtered.map(notificationCard).join(''):empty(query?'No matching updates':'You are all caught up',query?'Try a different search.':'New announcements, events and posts will appear here.'))+'</div>'+
  '<aside class="notice-settings"><div class="notice-settings-head"><span>✦</span><div><b>Notification settings</b><small>Make alerts work your way</small></div></div>'+
- '<label class="notice-pref"><span><b>In-app sound</b><small>Play a soft chime for alerts</small></span><input type="checkbox" id="noticeSound" '+(prefs.sound?'checked':'')+'><i></i></label>'+
+ '<label class="notice-pref"><span><b>In-app sound</b><small>Play a louder, longer alert tone</small></span><input type="checkbox" id="noticeSound" '+(prefs.sound?'checked':'')+'><i></i></label>'+
  '<div class="notice-pref notice-push-pref"><span><b>Device notifications</b><small>Get crew alerts outside the app</small></span><button class="outline" id="enablePush">'+(prefs.push?'Manage':'Enable')+'</button></div>'+
  '<button class="notice-test-sound" id="testNoticeSound">♫ &nbsp; Test notification sound</button>'+
  '<p class="notice-settings-foot">Device permissions are controlled by your browser or Android settings.</p></aside></section>';
@@ -1166,7 +1166,7 @@ function appearanceSettingsPage(){
 function notificationSettingsPage(){
  const prefs=notificationPrefs();
  return settingsSubpage('Notification settings','Control how Kinetic Crew alerts you.',
- '<section class="surface settings-card kc-settings-detail"><span class="settings-kicker">ALERT PREFERENCES</span><h3>Stay in the loop</h3><label class="settings-toggle"><span><b>In-app sound</b><small>Play a sound for crew activity.</small></span><input id="settingsSound" type="checkbox" '+(prefs.sound?'checked':'')+'></label><label class="settings-toggle"><span><b>Push notifications</b><small>Receive alerts when Kinetic Crew is not open.</small></span><button type="button" class="outline" id="enablePush">'+(prefs.push?'Enabled ✓':'Enable')+'</button></label><button type="button" class="outline" data-view="notifications">Open notification inbox →</button></section>');
+ '<section class="surface settings-card kc-settings-detail"><span class="settings-kicker">ALERT PREFERENCES</span><h3>Stay in the loop</h3><label class="settings-toggle"><span><b>In-app sound</b><small>Play a louder, longer alert tone for crew activity.</small></span><input id="settingsSound" type="checkbox" '+(prefs.sound?'checked':'')+'></label><label class="settings-toggle"><span><b>Push notifications</b><small>Receive alerts when Kinetic Crew is not open.</small></span><button type="button" class="outline" id="enablePush">'+(prefs.push?'Enabled ✓':'Enable')+'</button></label><button type="button" class="outline" data-view="notifications">Open notification inbox →</button></section>');
 }
 function deviceSettingsPage(){
  return settingsSubpage('Device & session','Manage temporary app files on this device.',
