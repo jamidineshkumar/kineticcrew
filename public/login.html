@@ -7,7 +7,7 @@
  <div class="kc-welcome-orb" aria-hidden="true"></div>
  <div class="kc-welcome-brand"><img src="kinetic-crew-logo.jpg" alt=""><span>KINETIC CREW</span></div>
  <div class="kc-welcome-copy"><span class="kc-welcome-kicker">YOUR CREW</span><h1>Discover<br><em>Inner Peace</em></h1><p>Find your people. Share your passion. Make every moment count with Kinetic Crew.</p></div>
- <div class="kc-welcome-actions"><button type="button" class="kc-glow-button" data-auth-open="signup">Sign Up</button><button type="button" class="kc-quiet-button" data-auth-open="login">Sign In</button></div>
+ <div class="kc-welcome-actions"><button type="button" class="kc-glow-button" data-auth-open="signup">Sign Up</button><button type="button" class="kc-quiet-button" data-auth-open="login">Sign In</button><button type="button" class="kc-entry-install" id="kcWelcomeInstall" hidden>↓ Install App</button></div><p class="kc-entry-install-status" id="kcWelcomeInstallStatus" role="status" aria-live="polite"></p>
  <p class="kc-welcome-audition">Not a crew member yet? <a href="https://kinetic-crew-audition.base44.app/" target="_blank" rel="noopener noreferrer">Give an audition ↗</a></p><div class="kc-welcome-footer"><span>MOVE TOGETHER</span><span>KINETIC CREW</span></div>
 </section>
 <div class="signinscreen" id="kcAuthScreen" hidden><section class="signinpanel"><button class="kc-auth-back" type="button" id="kcAuthBack" aria-label="Back to welcome">←</button><button class="theme-toggle auth-theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode"><span class="theme-icon" aria-hidden="true">☾</span><span class="theme-label">Dark mode</span></button><div class="signform"><div class="eyebrow"><span class="eyedot"></span> SECURE ACCESS</div><h2 id="title">Sign Up to Begin</h2><p id="subtitle">Create your account to explore the crew, events and memories.</p>
@@ -16,8 +16,30 @@
 <form id="signupForm" hidden><label class="field">Full name<input id="fullName" autocomplete="name" maxlength="100" required placeholder="Your full name"></label><label class="field">Username<input id="newUsername" autocomplete="username" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]+" required placeholder="letters, numbers, underscore"></label><p id="signupUsernameHint" class="username-hint" aria-live="polite">Choose a unique crew username.</p><label class="field">Email address<input id="newEmail" type="email" autocomplete="email" required placeholder="you@example.com"></label><label class="field">Password<input id="newPassword" type="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"></label><label class="field">Confirm password<input id="confirmPassword" type="password" autocomplete="new-password" minlength="8" required placeholder="Re-enter password"></label><button class="primary full" id="signupSubmit">Send verification code →</button></form>
 <form id="verifyForm" hidden><label class="field">Email verification code<input id="verifyCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required placeholder="000000"></label><button class="primary full" id="verifySubmit">Verify email & create account →</button><button class="secondary full" type="button" id="resendCode">Resend code</button></form>
 <p class="kc-auth-switch" id="kcAuthSwitch">Already have an account? <button type="button" id="kcSwitchAuth">Sign in</button></p><p id="message" class="msg" role="status" aria-live="polite"></p><p class="auth-footnote">Email verification required · Access is subject to crew approval.</p></div></section></div>
+<style>
+.kc-entry-install{display:block;width:min(100%,280px);margin:14px auto 0;padding:13px 20px;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(255,255,255,.09);color:#fff;font:600 14px system-ui,sans-serif;letter-spacing:.02em;cursor:pointer;backdrop-filter:blur(14px)}
+.kc-entry-install[hidden]{display:none}
+.kc-entry-install-status{min-height:18px;margin:7px 0 0;text-align:center;color:rgba(255,255,255,.72);font:12px system-ui,sans-serif}
+</style>
 <script>
 (()=>{'use strict';
+const installButton=document.getElementById('kcWelcomeInstall'),installStatus=document.getElementById('kcWelcomeInstallStatus');
+let installPrompt=null;
+const isInstalled=()=>window.matchMedia?.('(display-mode: standalone)').matches||window.navigator.standalone===true;
+if(installButton&&!isInstalled())installButton.hidden=false;
+window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;if(installButton&&!isInstalled())installButton.hidden=false;});
+window.addEventListener('appinstalled',()=>{installPrompt=null;if(installButton)installButton.hidden=true;if(installStatus)installStatus.textContent='Kinetic Crew is installed.';});
+installButton?.addEventListener('click',async()=>{
+ if(isInstalled()){installButton.hidden=true;return;}
+ if(!installPrompt){if(installStatus)installStatus.textContent='The one-tap install option is not available in this browser yet.';return;}
+ const promptEvent=installPrompt;installPrompt=null;
+ try{await promptEvent.prompt();const choice=await promptEvent.userChoice;if(choice?.outcome==='accepted'){installButton.hidden=true;if(installStatus)installStatus.textContent='Installation started.';}else if(installStatus)installStatus.textContent='Installation cancelled.';}
+ catch{if(installStatus)installStatus.textContent='Could not start installation. Please try again.';}
+});
+})();
+</script>
+<script>
+(()=>{
 const splash=document.getElementById('kcEntrySplash'),auth=document.getElementById('kcAuthScreen');
 function openAuth(mode){document.body.classList.add('kc-auth-open');document.body.classList.remove('kc-welcome-open');if(auth)auth.hidden=false;const tab=document.getElementById(mode==='signup'?'signupTab':'loginTab');if(tab)tab.click();window.scrollTo(0,0);}
 function showWelcome(){document.body.classList.remove('kc-auth-open');document.body.classList.add('kc-welcome-open');if(auth)auth.hidden=true;window.scrollTo(0,0);}
