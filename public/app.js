@@ -1100,11 +1100,11 @@ if(S.view==='overview'){
  if(homeSlides.length>1){
   let current=0;
   const show=next=>{current=(next+homeSlides.length)%homeSlides.length;homeSlides.forEach((slide,i)=>slide.classList.toggle('is-active',i===current));homeDots.forEach((dot,i)=>dot.classList.toggle('active',i===current));};
-  homeDots.forEach(dot=>dot.addEventListener('click',()=>{show(Number(dot.dataset.homeSlideTo));clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=setInterval(()=>show(current+1),5200);}));
-  S.homeCarouselTimer=setInterval(()=>show(current+1),5200);
+  homeDots.forEach(dot=>dot.addEventListener('click',()=>{show(Number(dot.dataset.homeSlideTo));clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=setInterval(()=>show(current+1),3000);}));
+  S.homeCarouselTimer=setInterval(()=>show(current+1),3000);
   let swipeStartX=0,swipeStartY=0;
   homeCarousel.addEventListener('touchstart',event=>{clearInterval(S.homeCarouselTimer);const touch=event.changedTouches?.[0];swipeStartX=touch?.clientX||0;swipeStartY=touch?.clientY||0;},{passive:true});
-  homeCarousel.addEventListener('touchend',event=>{const touch=event.changedTouches?.[0],dx=(touch?.clientX||0)-swipeStartX,dy=(touch?.clientY||0)-swipeStartY;if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy))show(current+(dx<0?1:-1));clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=setInterval(()=>show(current+1),5200);},{passive:true});
+  homeCarousel.addEventListener('touchend',event=>{const touch=event.changedTouches?.[0],dx=(touch?.clientX||0)-swipeStartX,dy=(touch?.clientY||0)-swipeStartY;if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy))show(current+(dx<0?1:-1));clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=setInterval(()=>show(current+1),3000);},{passive:true});
  }
  const rail=document.querySelector('.kc-home-updates'),track=rail?.querySelector('.kc-home-updates-track'),dots=[...(rail?.querySelectorAll('.kc-home-update-dots span')||[])],count=dots.length;
  if(track&&count>1){
