@@ -1359,9 +1359,13 @@ function appInfoPage(){
 }
 function developerPage(){
  const links=[['GitHub','https://github.com/jamidineshkumar','GH'],['LinkedIn','https://in.linkedin.com/in/jami-dinesh-kumar-696478358','in'],['Instagram','https://www.instagram.com/dinuvox/','◎'],['YouTube','https://www.youtube.com/@Dinuvoxx','▶']];
+ const photo=S.appSettings?.developer_photo_url||S.user?.avatar_url||'';
  return '<section class="kc-developer-profile" aria-label="Developer profile">'+
- '<div class="kc-developer-cover"><button type="button" class="kc-developer-back" data-view="settings" aria-label="Back to settings">‹</button><span class="kc-developer-cover-mark">KINETIC CREW</span></div>'+
- '<div class="kc-developer-profile-body"><div class="kc-developer-avatar">JD</div>'+
+ '<div class="kc-developer-cover">'+(photo?'<img class="kc-developer-cover-photo" src="'+esc(photo)+'" alt="Jami Dinesh Kumar" loading="eager" onerror="this.hidden=true">':'<div class="kc-developer-cover-placeholder" aria-hidden="true"></div>')+
+ '<button type="button" class="kc-developer-back" data-view="settings" aria-label="Back to settings">‹</button>'+
+ (superadmin()?'<label class="kc-developer-photo-edit" for="kcDeveloperPhotoInput">✎ Edit photo</label><input id="kcDeveloperPhotoInput" class="kc-developer-photo-input" type="file" accept="image/jpeg,image/png,image/webp">':'')+
+ '<span class="kc-developer-cover-mark">KINETIC CREW</span></div>'+
+ '<div class="kc-developer-profile-body">'+
  '<h1>JAMI DINESH KUMAR</h1><p class="kc-developer-handle">@dinuvox</p><span class="kc-developer-role">FOUNDER · DEVELOPER</span>'+
  '<p class="kc-developer-bio">The person behind Kinetic Crew.</p>'+
  '<div class="kc-developer-links">'+links.map(([name,url,mark])=>'<a class="kc-developer-link" href="'+url+'" target="_blank" rel="noopener noreferrer"><span>'+mark+'</span><b>'+name+'</b><i aria-hidden="true">↗</i></a>').join('')+'</div></div></section>';
@@ -2139,6 +2143,41 @@ window.addEventListener('online',()=>{if(S.user){kcAccessGuard={userId:'',checke
 window.addEventListener('offline',()=>{if(S.user){S.offline=true;S.error='You are offline. Showing the last available crew information.';paint();}});
 window.addEventListener('error',event=>{console.error('Kinetic Crew runtime error:',event.error||event.message);});
 window.addEventListener('unhandledrejection',event=>{console.error('Kinetic Crew async error:',event.reason);});
+
+
+/* Developer cover photo: upload and persist the full, uncropped image. */
+document.addEventListener('change',async event=>{
+ const input=event.target.closest('#kcDeveloperPhotoInput');
+ if(!input)return;
+ const file=input.files?.[0];
+ if(!file)return;
+ if(!superadmin()){notice('Only the Super Admin can edit the developer photo.');input.value='';return;}
+ if(!/^image\/(jpeg|png|webp)$/.test(file.type)){notice('Choose a JPG, PNG or WebP image.');input.value='';return;}
+ if(file.size>8*1024*1024){notice('Photo must be 8 MB or smaller.');input.value='';return;}
+ const label=document.querySelector('.kc-developer-photo-edit');
+ const oldText=label?.textContent||'✎ Edit photo';
+ let uploadedPath='';
+ if(label){label.textContent='Uploading…';label.style.pointerEvents='none';}
+ try{
+  const userId=S.user?.auth_id||S.user?.id;
+  if(!userId)throw Error('Your crew session expired. Sign in again.');
+  const ext=file.type==='image/jpeg'?'jpg':file.type==='image/png'?'png':'webp';
+  uploadedPath=userId+'/developer-cover-'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
+  const uploaded=await client.storage.from('crew-avatars').upload(uploadedPath,file,{upsert:false,contentType:file.type,cacheControl:'3600'});
+  if(uploaded.error)throw uploaded.error;
+  const publicUrl=client.storage.from('crew-avatars').getPublicUrl(uploadedPath).data.publicUrl+'?v='+Date.now();
+  const saved=await rpc('crew_set_app_setting',{p_key:'developer_photo_url',p_value:publicUrl});
+  if(saved.error)throw saved.error;
+  S.appSettings={...(S.appSettings||{}),developer_photo_url:publicUrl};
+  uploadedPath='';
+  notice('Developer photo updated successfully.');
+  paint();
+ }catch(error){
+  if(uploadedPath){try{await client.storage.from('crew-avatars').remove([uploadedPath]);}catch{}}
+  notice(error.message||'Could not update the developer photo.');
+  if(label){label.textContent=oldText;label.style.pointerEvents='';}
+ }finally{input.value='';}
+});
 
 window.addEventListener('kc:app-version-updated',()=>{if(S.view==='app-info')paint();});
 window.addEventListener('kc:release-feed-updated',()=>{if(S.view==='app-info')paint();});
