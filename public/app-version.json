@@ -1,6 +1,6 @@
 {
-  "version": "1.6.13",
+  "version": "1.6.14",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T13:15:00.000Z",
-  "release_notes": "Fixed logo publishing failure caused by destination initialization order; selected destinations are validated before upload."
+  "updated_at": "2026-11-14T13:22:00.000Z",
+  "release_notes": "Attendance reports now cover the complete recorded event history instead of requiring one event selection."
 }
