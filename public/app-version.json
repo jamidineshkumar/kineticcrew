@@ -1,6 +1,6 @@
 {
-  "version": "1.5.0",
+  "version": "1.5.1",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T06:50:00.000Z",
-  "release_notes": "Restored Super Admin Crew Members and Member Requests access, added separate custom crew-title controls, removed stray home-screen text, and wired server-triggered FCM alerts for new pending approvals, including background delivery."
+  "updated_at": "2026-11-14T06:48:00.000Z",
+  "release_notes": "Improved automatic PWA update detection, visible update-ready feedback, safe refresh after active forms/dialogs, and removed duplicate service-worker reload handling."
 }
