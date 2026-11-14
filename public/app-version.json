@@ -1,6 +1,6 @@
 {
-  "version": "1.6.9",
+  "version": "1.6.10",
   "minimum_version": "1.2.7",
   "updated_at": "2026-11-14T12:00:00.000Z",
-  "release_notes": "Updated the Kinetic Crew PWA app icon and branded notification badge."
+  "release_notes": "Improved Android and PWA back gestures: one back returns to the previous screen; a second back from Home exits."
 }
