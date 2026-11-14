@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
-window.KC_APP_VERSION='1.5.4';
+window.KC_APP_VERSION='1.5.5';
 let kcUpdatePending=false,kcUpdateReloading=false,kcPendingVersion='';
 const KC_UPDATE_GUARD='kc_update_reload_guard_v1';
 function kcReloadAlreadyUsed(version=''){try{return sessionStorage.getItem(KC_UPDATE_GUARD)===String(version||'service-worker');}catch{return new URL(location.href).searchParams.has('kc_refresh');}}
@@ -319,13 +319,13 @@ function publicProfilePage(){
  const photo=p.banner_url||p.cover_url||p.cover_photo_url||p.avatar_url||'';
  const avatar=p.avatar_url||'';
  const username=p.username||String(p.email||'crew-member').split('@')[0];
- const job=p.profession||p.designation||p.occupation||(founder?'Founder / Super Admin':'Kinetic Crew Member');
+ const job=p.profession||p.designation||p.occupation||(founder?'Founder / Super Admin':'Kinetic Crew Member');\n const profession=String(p.profession||'').trim(),designation=String(p.designation||p.crew_title||'').trim(),instagram=String(p.instagram_username||'').replace(/^@/,'').trim();
  const coverStyle=photo?' style="--kc-visitor-cover:url(&quot;'+esc(safeSocialUrl(photo))+'&quot;)"':'';
  const action=self?'<button class="kc-visitor-action" data-view="profile">Edit profile</button>':'<button type="button" class="kc-visitor-action kc-follow-action" data-follow="'+esc(p.auth_id)+'" data-following="'+(following?'true':'false')+'">'+(following?'Following':'Follow')+'</button>';
  return '<main class="kc-visitor-profile kc-visitor-profile-clean">'+
  '<section class="kc-visitor-hero"'+coverStyle+'><div class="kc-visitor-shade"></div><div class="kc-visitor-top"><button class="kc-visitor-back" data-view="people" aria-label="Back to crew">‹</button><div class="kc-visitor-actions"><button class="kc-visitor-share" type="button" data-share-profile aria-label="Share profile">⌯</button>'+action+'</div></div>'+
  '<div class="kc-visitor-identity">'+(avatar?'<img class="kc-visitor-avatar" src="'+esc(avatar)+'" alt="'+esc(p.name||'Crew member')+'" loading="eager">':'<span class="kc-visitor-avatar kc-visitor-avatar-fallback">'+esc(initials(p.name||p.email))+'</span>')+
- '<h1>'+esc(p.name||'Kinetic Crew Member').toUpperCase()+'</h1><p>@'+esc(username)+'</p><span class="kc-visitor-role">'+esc(job)+'</span></div></section>'+
+ '<h1>'+esc(p.name||'Kinetic Crew Member').toUpperCase()+'</h1><p>@'+esc(username)+'</p><div class="kc-visitor-role-stack"><span class="kc-visitor-role">'+esc(profession||job)+'</span>'+(designation&&designation.toLowerCase()!==(profession||job).toLowerCase()?'<span class="kc-visitor-role kc-visitor-role-secondary">'+esc(designation)+'</span>':'')+'</div>'+(instagram?'<a class="kc-visitor-instagram" href="https://www.instagram.com/'+encodeURIComponent(instagram)+'/" target="_blank" rel="noopener noreferrer">Instagram · @'+esc(instagram)+' ↗</a>':'')+'</div></section>'+
  '<section class="kc-visitor-stats"><button type="button" data-profile-connections="followers" data-profile-owner="'+esc(p.auth_id)+'"><b>'+Number(S.profileSocial?.followers_count||0)+'</b><span>FOLLOWERS</span></button><button type="button" data-profile-connections="following" data-profile-owner="'+esc(p.auth_id)+'"><b>'+Number(S.profileSocial?.following_count||0)+'</b><span>FOLLOWING</span></button></section>'+(p.bio?'<section class="kc-visitor-about"><span>ABOUT</span><p>'+esc(p.bio)+'</p></section>':'')+
  '</main>';
 }
