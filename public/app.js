@@ -505,50 +505,75 @@ function notificationsPage(){
  '<p class="notice-settings-foot">Device permissions are controlled by your browser or Android settings.</p></aside></section>';
 }
 function loadOptionalScript(src){return new Promise((resolve,reject)=>{const existing=[...document.scripts].find(s=>s.src===src);if(existing){if(existing.dataset.loaded==="yes")return resolve();existing.addEventListener("load",resolve,{once:true});existing.addEventListener("error",reject,{once:true});return;}const script=document.createElement("script");script.src=src;script.async=true;script.onload=()=>{script.dataset.loaded="yes";resolve();};script.onerror=reject;document.head.appendChild(script);});} 
+function kcQrSetState(state,title,message,showRoster=false){
+ const stage=$('#kcQrStage');if(!stage)return;
+ stage.dataset.state=state;
+ const mark=$('#kcQrMark'),heading=$('#kcQrTitle'),copy=$('#kcQrMessage'),roster=$('#kcQrViewRoster');
+ if(mark)mark.textContent=state==='success'?'✓':state==='error'?'×':'⌗';
+ if(heading)heading.textContent=title;
+ if(copy)copy.textContent=message;
+ if(roster)roster.hidden=!showRoster;
+}
 async function startQr(){
  if(S.qrScanning)return;
- if(!("BarcodeDetector" in window)&&!window.jsQR){try{await loadOptionalScript("https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js");}catch{notice("QR scanner could not load. Check your connection and try again.");return;}}
+ if(!window.jsQR){try{await loadOptionalScript("https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js");}catch{notice("QR scanner could not load. Check your connection and try again.");return;}}
  if(!navigator.mediaDevices?.getUserMedia){notice('Camera access is unavailable in this browser. Use OTP verification instead.');return;}
  try{
   S.qrScanning=true;S.qrProcessing=false;
+  const scanner=$('#qrScanner'),video=$('#qrVideo');
+  if(!scanner||!video)throw Error('Scanner view is unavailable.');
+  scanner.hidden=false;
+  kcQrSetState('scanning','Align QR code inside the square','Keep the ticket steady and within the frame.');
   S.qrStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
-  const video=$('#qrVideo');if(!video)throw Error('Scanner view is unavailable.');
-  video.srcObject=S.qrStream;$('#qrScanner').hidden=false;await video.play();
+  video.srcObject=S.qrStream;await video.play();
   const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});
-  const detector='BarcodeDetector'in window?new BarcodeDetector({formats:['qr_code']}):null;
-  const scan=async()=>{
-   if(!S.qrStream||S.qrProcessing)return;
+  let lastScanAt=0,invalidUntil=0,frameBusy=false;
+  const scan=async now=>{
+   if(!S.qrStream||S.qrProcessing||frameBusy)return;
+   if(now-lastScanAt<130){requestAnimationFrame(scan);return;}
+   lastScanAt=now;frameBusy=true;
    try{
-    let raw='';
-    if(video.readyState>=2&&video.videoWidth){
-     if(detector){const codes=await detector.detect(video);raw=codes.find(code=>code.rawValue)?.rawValue||'';}
-     else if(window.jsQR){canvas.width=video.videoWidth;canvas.height=video.videoHeight;ctx.drawImage(video,0,0,canvas.width,canvas.height);raw=window.jsQR(ctx.getImageData(0,0,canvas.width,canvas.height).data,canvas.width,canvas.height,{inversionAttempts:'attemptBoth'})?.data||'';}
-    }
-    if(raw){
-     const parts=raw.trim().split(':');
-     if(parts.length===3&&parts[0]==='KC_EVENT_ATTENDANCE'&&/^[0-9a-f-]{36}$/i.test(parts[1])&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(parts[2])){
-      S.qrProcessing=true;
-      const eventId=parts[1],memberEmail=parts[2];
-      stopQr();$('#qrScanner').hidden=true;
-      try{
-       const result=await api('qr-attendance','POST',{eventId,memberEmail});
-       S.rosterEvent=eventId;
-       S.roster=await api('attendance?eventId='+encodeURIComponent(eventId));
-       const member=(S.roster?.roster||[]).find(m=>String(m.email).toLowerCase()===memberEmail.toLowerCase());
-       const event=S.events.find(e=>String(e.id)===String(eventId));
-       S.attendanceAudit=await rpc('crew_attendance_audit',{p_event_id:eventId}).then(x=>x.error?[]:x.data||[]);
-       paint();
-       showAttendanceSuccess(member?.name||result.member||memberEmail,event?.title||'Kinetic Crew event',event?.starts_at,result.message||'Attendance marked successfully.');
-      }catch(error){S.qrProcessing=false;notice(error.message||'Could not mark attendance.');}
-      return;
+    if(video.readyState>=2&&video.videoWidth&&window.jsQR){
+     const edge=Math.floor(Math.min(video.videoWidth,video.videoHeight)*0.76);
+     const sx=Math.floor((video.videoWidth-edge)/2),sy=Math.floor((video.videoHeight-edge)/2);
+     canvas.width=420;canvas.height=420;
+     ctx.drawImage(video,sx,sy,edge,edge,0,0,420,420);
+     const result=window.jsQR(ctx.getImageData(0,0,420,420).data,420,420,{inversionAttempts:'attemptBoth'});
+     const raw=String(result?.data||'').trim();
+     if(raw&&now>=invalidUntil){
+      const parts=raw.split(':');
+      if(parts.length!==3||parts[0]!=='KC_EVENT_ATTENDANCE'||!/^[0-9a-f-]{36}$/i.test(parts[1])||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(parts[2])){
+       invalidUntil=now+1700;
+       kcQrSetState('error','QR code not recognized','This is not a valid Kinetic Crew event ticket. Try another QR code.');
+      }else{
+       S.qrProcessing=true;
+       kcQrSetState('scanning','Verifying ticket…','Checking the event and registered member.');
+       const eventId=parts[1],memberEmail=parts[2];
+       try{
+        const result=await api('qr-attendance','POST',{eventId,memberEmail});
+        S.rosterEvent=eventId;
+        S.roster=await api('attendance?eventId='+encodeURIComponent(eventId));
+        const member=(S.roster?.roster||[]).find(m=>String(m.email).toLowerCase()===memberEmail.toLowerCase());
+        const event=S.events.find(e=>String(e.id)===String(eventId));
+        S.attendanceAudit=await rpc('crew_attendance_audit',{p_event_id:eventId}).then(x=>x.error?[]:x.data||[]);
+        stopQr();
+        kcQrSetState('success','Attendance verified',(member?.name||result.member||memberEmail)+' · '+(event?.title||'Kinetic Crew event'),true);
+       }catch(error){
+        S.qrProcessing=false;invalidUntil=now+1900;
+        kcQrSetState('error','Unable to verify ticket',error.message||'The ticket could not be verified. Try again or use OTP.');
+       }
+      }
      }
-     notice('This QR is not a valid Kinetic Crew member event ticket.');
     }
    }catch(err){console.warn('QR scan frame failed:',err);}
+   finally{frameBusy=false;}
    if(S.qrStream&&!S.qrProcessing)requestAnimationFrame(scan);
   };
   requestAnimationFrame(scan);
- }catch(err){stopQr();notice(err?.name==='NotAllowedError'?'Allow camera access to scan member QR codes.':'Camera unavailable. Use OTP verification instead.');}
+ }catch(err){
+  stopQr();
+  notice(err?.name==='NotAllowedError'?'Allow camera access to scan member QR codes.':'Camera unavailable. Use OTP verification instead.');
+ }
 }
 function stopQr(){if(S.qrStream){S.qrStream.getTracks().forEach(t=>t.stop());S.qrStream=null;}S.qrScanning=false;}
 
@@ -991,7 +1016,7 @@ function attendancePage(){
  const pending=rows.filter(m=>(m.status||(m.attended?'present':'pending'))==='pending').length;
  const notAttending=rows.filter(m=>(m.status||(m.attended?'present':'pending'))==='not_attending').length;
  const pct=total?Math.round(present/total*100):0;
- if(section==='scan')return '<main class="kc-attendance-home kc-attendance-subpage">'+attendanceSubpageHead('Scan QR','Scan a member ticket to identify the event and mark attendance automatically.')+'<section class="kc-attendance-feature-panel"><div class="kc-attendance-section-title"><div><span class="kc-attendance-kicker">INSTANT CHECK-IN</span><h2>Member QR scanner</h2><p>Point the camera at the QR code on the member’s event ticket. The event and member are detected automatically.</p></div><span class="kc-attendance-round-icon">▦</span></div><button type="button" class="kc-attendance-scan-btn" id="openQrScanner">▦ &nbsp; Start QR scanner</button><div id="qrScanner" class="qr-scanner kc-attendance-scanner" hidden><video id="qrVideo" autoplay playsinline></video><button type="button" class="outline full" id="closeQrScanner">Close scanner</button></div><p class="kc-attendance-note">Camera permission is required. QR check-in does not require choosing an event or member manually.</p></section></main>';
+ if(section==='scan')return '<main class="kc-attendance-home kc-attendance-subpage">'+attendanceSubpageHead('Scan QR','Scan a member ticket to identify the event and mark attendance automatically.')+'<section class="kc-attendance-feature-panel"><div class="kc-attendance-section-title"><div><span class="kc-attendance-kicker">INSTANT CHECK-IN</span><h2>Member QR scanner</h2><p>Point the camera at the QR code on the member’s event ticket. The event and member are detected automatically.</p></div><span class="kc-attendance-round-icon">▦</span></div><button type="button" class="kc-attendance-scan-btn" id="openQrScanner">▦ &nbsp; Start QR scanner</button><div id="qrScanner" class="qr-scanner kc-attendance-scanner" hidden><div class="kc-qr-stage" id="kcQrStage" data-state="scanning"><video id="qrVideo" autoplay playsinline muted></video><div class="kc-qr-mask" aria-hidden="true"><span class="kc-qr-corner tl"></span><span class="kc-qr-corner tr"></span><span class="kc-qr-corner bl"></span><span class="kc-qr-corner br"></span><i class="kc-qr-scan-line"></i></div><div class="kc-qr-state" id="kcQrState" role="status" aria-live="polite"><span class="kc-qr-state-mark" id="kcQrMark">⌗</span><b id="kcQrTitle">Align QR code inside the square</b><small id="kcQrMessage">Keep the ticket steady and within the frame.</small><button type="button" id="kcQrViewRoster" data-attendance-section="roster" hidden>View event roster →</button></div></div><button type="button" class="outline full" id="closeQrScanner">Close scanner</button></div><p class="kc-attendance-note">Camera permission is required. QR check-in does not require choosing an event or member manually.</p></section></main>';
  if(section==='otp')return '<main class="kc-attendance-home kc-attendance-subpage">'+attendanceSubpageHead('Verify with OTP','Choose the event and registered member, then enter their six-digit code.')+'<section class="kc-attendance-feature-panel"><div class="kc-attendance-section-title"><div><span class="kc-attendance-kicker">MANUAL CHECK-IN</span><h2>Verify event OTP</h2><p>Use the member’s six-digit code to confirm attendance.</p></div><span class="kc-attendance-round-icon">⌗</span></div><form id="attendanceOtpForm" class="kc-attendance-otp-form"><label><span>Event</span><select name="eventId" id="otpEventSelect" required>'+eventOptions+'</select></label><label><span>Registered member</span><select name="memberEmail" id="otpMemberSelect" required '+(!S.roster?.roster?.length?'disabled':'')+'><option value="">'+(S.roster?.roster?.length?'Select registered member':'Select an event first')+'</option>'+(S.roster?.roster||[]).filter(m=>!['present'].includes(m.status||(m.attended?'present':'pending'))).map(m=>'<option value="'+esc(m.email)+'">'+esc(m.name)+' · '+esc(m.email)+'</option>').join('')+'</select></label><label><span>Event OTP</span><input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" required></label><button type="submit" class="kc-attendance-verify-btn" '+(!S.rosterEvent||finalized?'disabled':'')+'>Verify & check in <span>→</span></button></form><p class="kc-attendance-note">If the member has a ticket QR code, use Scan QR instead for automatic event and member detection.</p></section></main>';
  if(section==='roster')return '<main class="kc-attendance-home kc-attendance-subpage">'+attendanceSubpageHead('Event roster','Choose an event to review check-in progress, update member statuses and finalize attendance.')+'<section class="kc-attendance-feature-panel"><div class="kc-attendance-next-head"><span class="kc-attendance-kicker">EVENT SELECTION</span><span class="kc-attendance-event-count">'+S.events.length+' EVENTS</span></div><label class="kc-attendance-event-select"><span>◷</span><select id="rosterSelect">'+eventOptions+'</select><span>⌄</span></label>'+(selected?'<div class="kc-attendance-event-meta"><b>'+esc(selected.title)+'</b><small>'+esc(dt(selected.starts_at))+' · '+esc(selected.location||'Venue to be announced')+'</small></div>':'<div class="kc-attendance-event-meta"><b>Choose your event</b><small>The event roster and check-in summary will appear here.</small></div>')+'</section>'+(S.roster?'<section class="kc-attendance-summary"><div class="kc-attendance-summary-head"><div><span class="kc-attendance-kicker">CHECK-IN PROGRESS</span><h2>'+pct+'% <small>present</small></h2></div><span class="kc-attendance-lock '+(finalized?'locked':'')+'">'+(finalized?'▣ LOCKED':'● OPEN')+'</span></div><div class="kc-attendance-progress"><span style="width:'+pct+'%"></span></div><div class="kc-attendance-stat-grid"><div><b>'+present+'</b><small>Present</small></div><div><b>'+pending+'</b><small>Pending</small></div><div><b>'+absent+'</b><small>Absent</small></div><div><b>'+notAttending+'</b><small>Not attending</small></div></div></section><section class="kc-attendance-roster"><div class="kc-attendance-section-title"><div><span class="kc-attendance-kicker">YOUR PEOPLE</span><h2>Registered members</h2><p>'+total+' registered '+(total===1?'member':'members')+' · Tap a status to update it.</p></div><button type="button" class="kc-attendance-export" id="exportAttendance">↓ CSV</button></div><label class="kc-attendance-search"><span>⌕</span><input id="attendanceSearch" type="search" value="'+esc(S.attendanceQuery||'')+'" placeholder="Find a member…" autocomplete="off"></label><div id="rosterBody">'+rosterRows(rows)+'</div><div class="kc-attendance-finalize"><p>'+(finalized?'This event is locked. Only the Super Admin can reopen attendance.':'Finalizing marks all remaining pending members absent and locks the roster.')+'</p><button type="button" id="finalizeAttendance" '+(finalized?'disabled':'')+'>'+(finalized?'Attendance locked':'Finalize attendance <span>→</span>')+'</button>'+(finalized&&superadmin()?'<button type="button" id="reopenAttendance" class="kc-attendance-reopen">Reopen attendance</button>':'')+'</div><section class="kc-attendance-audit"><span class="kc-attendance-kicker">ACTIVITY</span><h3>Recent changes</h3>'+((S.attendanceAudit||[]).length?S.attendanceAudit.slice(0,12).map(a=>'<div class="attendance-audit-row"><span><b>'+esc(a.member_name)+'</b><small>'+esc(a.actor_name)+' · '+esc(String(a.action||'').replace('_',' '))+'</small></span><span>'+esc((a.previous_status||'—')+' → '+a.new_status)+'<small>'+esc(dt(a.changed_at))+'</small></span></div>').join(''):'<p class="kc-attendance-note">No changes recorded yet.</p>')+'</section></section>':'<section class="kc-attendance-summary kc-attendance-empty"><h2>Select an event to load its roster.</h2><p>Attendance progress, member statuses and activity history will appear here.</p></section>')+'</main>';
  if(section==='report')return '<main class="kc-attendance-home kc-attendance-subpage">'+attendanceSubpageHead('Attendance report','One complete report covering all recorded events and attendance from the beginning of Kinetic Crew through today.')+'<section class="kc-attendance-feature-panel"><div class="kc-attendance-next-head"><span class="kc-attendance-kicker">FULL CREW HISTORY</span><span class="kc-attendance-event-count">'+S.events.length+' EVENTS</span></div><div class="kc-attendance-event-meta"><b>All events · All recorded attendance</b><small>No event selection required. The report includes the complete available history.</small></div>'+attendanceReportCard(false)+'</section></main>';
