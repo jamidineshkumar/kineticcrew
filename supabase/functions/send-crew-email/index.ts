@@ -1,6 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import nodemailer from "npm:nodemailer@6.9.16";
-import { brandedEmail } from "../_shared/email-template.ts";
+import { brandedEmail } from "./email-template.ts";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
