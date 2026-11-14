@@ -1758,9 +1758,10 @@ document.addEventListener('click',async event=>{
   if(saved.error)throw saved.error;
   S.appSettings={...(S.appSettings||{}),brand_logo_url:publicUrl,brand_logo_targets:targets};
   window.kcApplyBrandLogo?.(publicUrl,targets);
-  const current=$('#brandLogoCurrent');if(current)current.src=publicUrl;
+  const current=$('#brandLogoCurrent');if(current){current.onerror=()=>window.kcShowBrandFallback?.(current);current.src=publicUrl;}
   kcBrandEditor.status='Published successfully · This logo is now live across Kinetic Crew';const status=$('#brandLogoEditorStatus');if(status)status.textContent=kcBrandEditor.status;
   notice('Official logo updated on the selected destinations.');paint();
+  requestAnimationFrame(()=>{window.kcApplyBrandLogo?.(publicUrl,targets);const live=$('#brandLogoCurrent');if(live&&live.getAttribute('src')!==publicUrl)live.src=publicUrl;});
  }catch(error){kcBrandEditor.status=error.message||'Logo upload failed. Your current logo is unchanged.';const status=$('#brandLogoEditorStatus');if(status)status.textContent=kcBrandEditor.status;notice(kcBrandEditor.status);button.disabled=!kcBrandEditor.image;button.textContent=oldLabel;}
 });
 document.addEventListener('change',async e=>{
