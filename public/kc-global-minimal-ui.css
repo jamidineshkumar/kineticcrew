@@ -26,3 +26,29 @@
 }
 .welcome{padding-top:8px!important}
 .kc-home-featured-art{justify-content:flex-end!important}
+
+
+/* Hide decorative carousel telemetry and micro-copy consistently across every app section. */
+.kc-brand-intro-top,
+.kc-brand-intro-bottom,
+.kc-brand-intro-slide>small,
+.kc-brand-intro-slide>strong,
+.kc-intro-index,
+.kc-more-intro-progress,
+.kc-more-ad-top,
+.kc-more-ad-kicker,
+.kc-more-ad-count,
+.kc-more-ad-label,
+.kc-home-featured-count,
+.kc-home-featured-kicker,
+.kc-home-featured-label,
+.kc-home-user>span>small,
+.kc-admin-shortcuts-heading>span,
+.kc-admin-shortcuts-heading>small,
+.kc-fun-section-title>div>small,
+.kc-fun-hub-foot,
+.kc-brand-intro-watermark{
+ display:none!important;
+}
+.kc-brand-intro-stage{inset:0!important}
+.kc-brand-intro-slide{justify-content:center!important}
