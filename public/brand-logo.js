@@ -40,7 +40,7 @@
   try{localStorage.setItem(CACHE_KEY,url);}catch{}
   const original=window.kcPath;
   if(typeof original==='function'&&!original.__kcBrandWrapped){
-   const wrapped=function(path){if(/(?:^|\/)kinetic-crew-logo\.(?:svg|jpe?g|png|webp)(?:[?#]|$)/i.test(String(path||'')))return activeUrl;return original.call(this,path);};
+   const wrapped=function(path){const signinPage=!!document.querySelector('#kcAuthScreen');const selected=signinPage?activeTargets.signin:activeTargets.app;if(selected&&/(?:^|\\/)kinetic-crew-logo\\.(?:svg|jpe?g|png|webp)(?:[?#]|$)/i.test(String(path||'')))return activeUrl;return original.call(this,path);};
    wrapped.__kcBrandWrapped=true;window.kcPath=wrapped;
   }
   if(activeTargets.app||activeTargets.signin)document.querySelectorAll('img').forEach(setImage);
