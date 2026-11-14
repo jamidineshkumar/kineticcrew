@@ -9,7 +9,6 @@ export type BrandedEmailOptions = {
   footerNote?: string;
 };
 
-const BRAND_LOGO = "https://lkdfjiweqxshbbcadfna.supabase.co/storage/v1/object/public/crew-brand-assets/brand/email-logo.png";
 const esc = (value: unknown) => String(value ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]!));
 
 export function brandedEmail(options: BrandedEmailOptions): string {
@@ -25,9 +24,6 @@ export function brandedEmail(options: BrandedEmailOptions): string {
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">${subtitle || title} · Kinetic Crew</div>
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#08090d;"><tr><td align="center" style="padding:24px 12px 30px;">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:620px;">
-<tr><td style="padding:4px 8px 18px;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>
-<td align="center" valign="middle" colspan="2"><img src="${BRAND_LOGO}" width="66" height="66" alt="KC" style="display:block;width:66px;height:66px;object-fit:contain;border:1px solid #66616e;border-radius:22px;background:linear-gradient(145deg,#44434d,#171820);box-shadow:0 0 22px #ffffff18;padding:4px;"></td>
-</tr></table></td></tr>
 <tr><td style="padding:0 8px 16px;">
 <h1 style="margin:0;font-size:clamp(36px,8vw,52px);line-height:1.03;font-weight:800;letter-spacing:-2px;color:#f7f6f8;">${title}</h1>
 ${subtitle ? `<p style="margin:22px 0 0;color:#b6b3bd;font-size:20px;line-height:1.55;">${subtitle}</p>` : ""}
@@ -37,6 +33,6 @@ ${options.contentHtml ? `<tr><td style="padding:24px 20px 8px;color:#e9e6ed;font
 ${code}
 </table></td></tr>
 <tr><td style="padding:0 10px;"><p style="margin:0;color:#aaa7b0;font-size:15px;line-height:1.6;">${esc(options.footerNote || "If you didn't request this, you can safely ignore this email.")}</p>
-<p style="margin:26px 0 0;color:#686671;font-size:10px;letter-spacing:2px;">KINETIC CREW</p></td></tr>
+<div style="margin-top:20px;color:#ff955d;font-family:Georgia,'Times New Roman',serif;font-size:25px;font-style:italic;font-weight:700;letter-spacing:0.5px;">Kinetic Crew</div><div style="width:54px;height:2px;margin-top:5px;background:#ff955d;border-radius:2px;"></div></td></tr>
 </table></td></tr></table></body></html>`;
 }
