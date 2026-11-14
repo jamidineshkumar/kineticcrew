@@ -1781,9 +1781,7 @@ async function checkPendingApprovalAlerts(){
    const body=fresh.length===1
     ? (fresh[0].name||'A new member')+' requested to join Kinetic Crew. Review the request.'
     : fresh.length+' new members requested to join Kinetic Crew. Review the requests.';
-   const {data:sent,error:sendError}=await client.functions.invoke('send-crew-notification',{body:{action:'send',title:'New membership request',body,audience:'super_admin'}});
-   if(sendError||sent?.error)throw new Error(sent?.error||sendError?.message||'Push alert could not be sent.');
-   console.info('Pending membership push alert:',sent?.message||'sent');
+   notice(fresh.length===1?'A new membership request is waiting for review.':fresh.length+' new membership requests are waiting for review.');
    if(['overview','crew-management','member-requests'].includes(S.view))paint();
   }
  }catch(error){console.warn('Pending approval alert check failed:',error.message||error);}
