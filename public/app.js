@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
-window.KC_APP_VERSION='1.5.3';
+window.KC_APP_VERSION='1.5.4';
 let kcUpdatePending=false,kcUpdateReloading=false,kcPendingVersion='';
 const KC_UPDATE_GUARD='kc_update_reload_guard_v1';
 function kcReloadAlreadyUsed(version=''){try{return sessionStorage.getItem(KC_UPDATE_GUARD)===String(version||'service-worker');}catch{return new URL(location.href).searchParams.has('kc_refresh');}}
@@ -316,7 +316,7 @@ function publicProfilePage(){
  if(!p)return empty('Profile unavailable','This crew profile could not be loaded.');
  const self=String(p.auth_id)===String(S.user?.auth_id),founder=p.role==='super_admin';
  const following=Boolean(S.profileSocial?.is_following??S.profileSocial?.following??S.profileSocial?.viewer_follows);
- const photo=p.banner_url||p.cover_url||p.cover_photo_url||'';
+ const photo=p.banner_url||p.cover_url||p.cover_photo_url||p.avatar_url||'';
  const avatar=p.avatar_url||'';
  const username=p.username||String(p.email||'crew-member').split('@')[0];
  const job=p.profession||p.designation||p.occupation||(founder?'Founder / Super Admin':'Kinetic Crew Member');
