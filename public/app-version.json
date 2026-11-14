@@ -1,6 +1,6 @@
 {
-  "version": "1.6.16",
+  "version": "1.6.17",
   "minimum_version": "1.2.7",
   "updated_at": "2026-11-14T00:00:00.000Z",
-  "release_notes": "Kinetic Gram now shows stories only for members who have posted, fixes feed tabs and story controls, and displays live crew presence only while members are online."
+  "release_notes": "Event admins can enable automatic personal ticket emails after registration. Tickets include the member QR code and full event details. Kinetic Gram also shows posted stories only and live online crew presence."
 }
