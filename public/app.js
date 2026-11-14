@@ -531,7 +531,7 @@ async function startQr(){
   const scan=async now=>{
    if(!S.qrStream||S.qrProcessing||frameBusy)return;
    if(now-lastScanAt<130){requestAnimationFrame(scan);return;}
-   lastScanAt=now;frameBusy=true;
+   lastScanAt=now;if(invalidUntil&&now>=invalidUntil&&$('#kcQrStage')?.dataset.state==='error'){invalidUntil=0;kcQrSetState('scanning','Align QR code inside the square','Keep the ticket steady and within the frame.');}frameBusy=true;
    try{
     if(video.readyState>=2&&video.videoWidth&&window.jsQR){
      const edge=Math.floor(Math.min(video.videoWidth,video.videoHeight)*0.76);
