@@ -1,6 +1,6 @@
 {
-  "version": "1.6.0",
+  "version": "1.6.1",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T14:00:00.000Z",
-  "release_notes": "Member action menus now open visibly in normal layout on mobile; member cards display the assigned designation or role instead of a generic bio fallback. Reduced scroll storage writes, corrected home carousel timer cleanup, and lowered app-version polling frequency."
+  "updated_at": "2026-11-14T15:15:00.000Z",
+  "release_notes": "Reduced excess vertical spacing on More page, compacted intro banner, headings, feature tiles and section gaps while preserving accessible tap targets."
 }
