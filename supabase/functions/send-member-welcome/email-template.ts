@@ -33,6 +33,6 @@ ${options.contentHtml ? `<tr><td style="padding:16px 16px 6px;color:#e9e6ed;font
 ${code}
 </table></td></tr>
 <tr><td style="padding:0 6px;"><p style="margin:0;color:#aaa7b0;font-size:13px;line-height:1.4;">${esc(options.footerNote || "If you didn't request this, you can safely ignore this email.")}</p>
-<div style="margin-top:12px;color:#ff955d;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-style:italic;font-weight:700;letter-spacing:0.5px;">Kinetic Crew</div><div style="width:54px;height:2px;margin-top:5px;background:#ff955d;border-radius:2px;"></div></td></tr>
+<div style="margin-top:10px;color:#f5f3f6;font-family:'Segoe Script','Brush Script MT','Lucida Handwriting',cursive;font-size:32px;font-style:italic;font-weight:400;letter-spacing:-1px;line-height:1.1;">Kinetic Crew</div><div style="width:170px;height:2px;margin-top:3px;margin-left:8px;background:#f5f3f6;border-radius:100%;transform:rotate(-5deg);"></div></td></tr>
 </table></td></tr></table></body></html>`;
 }
