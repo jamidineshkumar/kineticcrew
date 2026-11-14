@@ -59,34 +59,49 @@ Deno.serve(async(req:Request)=>{
   const role=String(profile.role||"");
   if(!["member","admin","super_admin"].includes(role))return json({error:"Your role cannot request attendance reports."},403);
   const body=await req.json(),eventId=String(body.eventId||"").trim();
-  if(!eventId)return json({error:"Choose an event first."},400);
-  const {data:event,error:eventError}=await db.from("crew_events").select("id,title,description,location,starts_at").eq("id",eventId).maybeSingle();
-  if(eventError||!event)return json({error:"Event not found."},404);
   const ownEmail=String(profile.email||user.email||"").trim().toLowerCase(),requestedEmail=String(body.toEmail||"").trim().toLowerCase();
   const recipientEmail=role==="member"?ownEmail:requestedEmail;
-  if(!recipientEmail||! /^\S+@\S+\.\S+$/.test(recipientEmail))return json({error:"Enter a valid report email address."},400);
-  if(role==="member"&&requestedEmail&&requestedEmail!==ownEmail)return json({error:"Members can send personal attendance statements only to their account email."},403);
-  const {data:registrations,error:regError}=await db.from("crew_registrations").select("member_id,registered_at,crew_profiles!inner(auth_id,name,email)").eq("event_id",eventId);
-  if(regError)throw regError;
-  const {data:attendanceRows,error:attError}=await db.from("crew_attendance").select("event_id,member_id,status,marked_at").eq("event_id",eventId);
-  if(attError)throw attError;
-  const {data:finalized,error:finalError}=await db.from("crew_event_finalizations").select("event_id").eq("event_id",eventId).maybeSingle();
-  if(finalError)throw finalError;
-  const attendanceByMember=new Map((attendanceRows||[]).map((r:any)=>[String(r.member_id),r]));
-  const roster=(registrations||[]).map((r:any)=>{
-   const p=r.crew_profiles||{},a:any=attendanceByMember.get(String(r.member_id));
-   return {member_id:String(r.member_id),name:String(p.name||"Crew member"),status:String(a?.status||(finalized?"absent":"pending")),marked_at:a?.marked_at||null};
-  });
-  const own=roster.find((r:any)=>r.member_id===user.id);
-  if(role==="member"&&!own)return json({error:"You must be registered for this event to request your attendance statement."},403);
-  const scope=role==="member"?"personal":"complete",rows=scope==="personal"?[own]:roster;
-  const stats={total:roster.length,present:roster.filter((r:any)=>r.status==="present").length,absent:roster.filter((r:any)=>r.status==="absent").length,pending:roster.filter((r:any)=>r.status==="pending").length,notAttending:roster.filter((r:any)=>r.status==="not_attending").length};
+  if(!recipientEmail||! /^\\S+@\\S+\\.\\S+$/.test(recipientEmail))return json({error:"Enter a valid report email address."},400);
+  if(role==="member"&&requestedEmail&&requestedEmail!==ownEmail)return json({error:"Members can send personal attendance histories only to their account email."},403);
+  let event:any,roster:any[],scope:"complete"|"personal";
+  if(eventId){
+   const {data:oneEvent,error:eventError}=await db.from("crew_events").select("id,title,description,location,starts_at").eq("id",eventId).maybeSingle();
+   if(eventError||!oneEvent)return json({error:"Event not found."},404);
+   const {data:registrations,error:regError}=await db.from("crew_registrations").select("member_id,registered_at,crew_profiles!inner(auth_id,name,email)").eq("event_id",eventId);if(regError)throw regError;
+   const {data:attendanceRows,error:attError}=await db.from("crew_attendance").select("event_id,member_id,status,marked_at").eq("event_id",eventId);if(attError)throw attError;
+   const {data:finalized,error:finalError}=await db.from("crew_event_finalizations").select("event_id").eq("event_id",eventId).maybeSingle();if(finalError)throw finalError;
+   const attendanceByMember=new Map((attendanceRows||[]).map((r:any)=>[String(r.member_id),r]));
+   roster=(registrations||[]).map((r:any)=>{const p=r.crew_profiles||{},a:any=attendanceByMember.get(String(r.member_id));return {member_id:String(r.member_id),name:String(p.name||"Crew member"),status:String(a?.status||(finalized?"absent":"pending")),marked_at:a?.marked_at||null};});
+   const own=roster.find((r:any)=>r.member_id===user.id);
+   if(role==="member"&&!own)return json({error:"You must be registered for this event to request your attendance statement."},403);
+   scope=role==="member"?"personal":"complete";if(scope==="personal")roster=[own];event=oneEvent;
+  }else{
+   const [{data:events,error:eventError},{data:registrations,error:regError},{data:attendanceRows,error:attError},{data:finalizedRows,error:finalError}]=await Promise.all([
+    db.from("crew_events").select("id,title,description,location,starts_at").order("starts_at",{ascending:true}),
+    db.from("crew_registrations").select("event_id,member_id,registered_at,crew_profiles!inner(auth_id,name,email)"),
+    db.from("crew_attendance").select("event_id,member_id,status,marked_at"),
+    db.from("crew_event_finalizations").select("event_id")
+   ]);
+   if(eventError)throw eventError;if(regError)throw regError;if(attError)throw attError;if(finalError)throw finalError;
+   const eventMap=new Map((events||[]).map((e:any)=>[String(e.id),e]));
+   const attendanceMap=new Map((attendanceRows||[]).map((a:any)=>[String(a.event_id)+"|"+String(a.member_id),a]));
+   const finalizedSet=new Set((finalizedRows||[]).map((x:any)=>String(x.event_id)));
+   let allRows=(registrations||[]).map((r:any)=>{const p=r.crew_profiles||{},ev=eventMap.get(String(r.event_id)),a=attendanceMap.get(String(r.event_id)+"|"+String(r.member_id));if(!ev)return null;return {member_id:String(r.member_id),name:String(ev.title||"Kinetic Crew event")+" — "+String(p.name||"Crew member"),status:String(a?.status||(finalizedSet.has(String(r.event_id))?"absent":"pending")),marked_at:a?.marked_at||null,event_date:ev.starts_at||r.registered_at||null};}).filter(Boolean);
+   scope=role==="member"?"personal":"complete";
+   if(scope==="personal")allRows=allRows.filter((r:any)=>r.member_id===user.id);
+   if(!allRows.length)return json({error:"No recorded attendance history was found yet."},404);
+   const dates=allRows.map((r:any)=>r.event_date).filter(Boolean).sort();
+   event={id:"all-events",title:"Complete Kinetic Crew attendance history",description:"All recorded events",location:"All crew venues",starts_at:dates[0]||new Date().toISOString()};
+   roster=allRows;
+  }
+  const rows=roster;
+  const stats={total:rows.length,present:rows.filter((r:any)=>r.status==="present").length,absent:rows.filter((r:any)=>r.status==="absent").length,pending:rows.filter((r:any)=>r.status==="pending").length,notAttending:rows.filter((r:any)=>r.status==="not_attending").length};
   const smtpUser=Deno.env.get("SMTP_USER")||"kineticcreww@gmail.com",smtpPass=Deno.env.get("SMTP_PASS");
   if(!smtpPass)return json({error:"Gmail SMTP is not configured. Add SMTP_PASS to Supabase Edge Function secrets."},503);
   const mailer=nodemailer.createTransport({host:"smtp.gmail.com",port:465,secure:true,auth:{user:smtpUser,pass:smtpPass}});
   try{await mailer.verify();}catch(error){const detail=String(error instanceof Error?error.message:"SMTP authentication failed");console.error("attendance report SMTP verification failed:",detail);return json({error:/535|BadCredentials|Username and Password not accepted|Invalid login/i.test(detail)?"Gmail rejected SMTP authentication. Update SMTP_USER and the Google App Password in Supabase function secrets.":"Could not connect to Gmail SMTP. Check SMTP_USER and SMTP_PASS."},503);}
   const pdfBytes=await buildPdf(event,rows,stats,scope,String(profile.name||"Kinetic Crew"));
-  const subject=(scope==="complete"?"Attendance report · ":"Personal attendance · ")+String(event.title||"Kinetic Crew event")+" · Kinetic Crew";
+  const subject=(scope==="complete"?"Full attendance history":"Personal attendance history")+" · Kinetic Crew";
   const summary=[["Registered members",stats.total],["Present",stats.present],["Absent",stats.absent],["Pending",stats.pending],["Not attending",stats.notAttending]];
   const summaryHtml=summary.map(([label,value])=>"<tr><td style='padding:8px 10px;border-bottom:1px solid #e8e8e8;color:#555'>"+label+"</td><td align='right' style='padding:8px 10px;border-bottom:1px solid #e8e8e8;font-weight:bold'>"+value+"</td></tr>").join("");
   const rowsHtml=rows.map((r:any)=>"<tr><td style='padding:8px 10px;border-bottom:1px solid #e8e8e8'>"+esc(r.name)+"</td><td style='padding:8px 10px;border-bottom:1px solid #e8e8e8'>"+esc(statusLabel(r.status))+"</td><td style='padding:8px 10px;border-bottom:1px solid #e8e8e8'>"+esc(stampLabel(r.marked_at))+"</td></tr>").join("");
