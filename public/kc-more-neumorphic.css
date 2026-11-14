@@ -99,3 +99,6 @@
 }
 @media(prefers-reduced-motion:reduce){.kc-more-pill{transition:none!important}}
 
+
+/* Remove decorative sparkle overlay from the More screen; retain the KC watermark. */
+.kc-more-reference-sparkle{display:none!important;}
