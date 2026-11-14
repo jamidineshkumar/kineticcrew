@@ -2,5 +2,5 @@
   "version": "1.4.9",
   "minimum_version": "1.2.7",
   "updated_at": "2026-11-14T06:45:00.000Z",
-  "release_notes": "Restored Super Admin crew management visibility, pending approval review, and custom crew designation controls. Added pending-approval push alerts for Super Admins while the app is active; FCM delivers sent alerts in the background."
+  "release_notes": "Restored Super Admin Crew Members and Member Requests access, added custom crew designations, removed the stray home-screen text, and wired server-triggered push alerts for pending approvals. Super Admin push alerts are delivered through FCM when the app is in the background."
 }
