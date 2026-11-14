@@ -1,6 +1,6 @@
 {
-  "version": "1.5.9",
+  "version": "1.6.0",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T13:40:00.000Z",
-  "release_notes": "Improved the in-app notification alert: louder multi-tone sequence lasting about 1.5 seconds, with audio context resume handling for mobile browsers."
+  "updated_at": "2026-11-14T14:00:00.000Z",
+  "release_notes": "Simplified app-wide UI by removing decorative role-space eyebrow labels, tiny carousel labels, counters and slide telemetry."
 }
