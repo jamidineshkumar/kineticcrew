@@ -139,7 +139,7 @@
     button.dataset.busy = "1"; button.disabled = true;
     try {
       if (create) {
-        const title = window.prompt("Meeting title", "Kinetic Crew Meeting");
+        const title = await appDialog({title:"Create a meeting",message:"Choose a name for your crew meeting.",inputValue:"Kinetic Crew Meeting",confirmText:"Create meeting"});
         if (title === null) return;
         await connect("create", { title });
       } else {
@@ -148,7 +148,7 @@
         await connect("join", { code });
       }
     } catch (error) {
-      window.alert(error?.message || "KC Meet could not start. Please try again.");
+      await showAppError(error?.message || "KC Meet could not start. Please try again.");
     } finally { button.dataset.busy = "0"; button.disabled = false; }
   }, true);
   document.addEventListener("keydown", event => { if (event.key === "Escape" && $("#kcMeetLiveRoot .kcml-dialog")) closeRoom(); });
