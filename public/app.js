@@ -1164,7 +1164,7 @@ function kcOpenFeaturePage(index){
  menu.hidden=true;panels.forEach(node=>{node.hidden=node!==panel;});
  let back=panel.querySelector(':scope > .kc-feature-page-back');
  if(!back){back=document.createElement('button');back.type='button';back.className='kc-feature-page-back';back.dataset.kcFeatureBack='true';back.textContent='← All sections';panel.insertBefore(back,panel.firstChild);}
- panel.scrollIntoView({behavior:'instant',block:'start'});
+ kcApplyCollectionPagination(panel);panel.scrollIntoView({behavior:'instant',block:'start'});
 }
 function kcBackToFeatureMenu(){
  const menu=$('#app [data-kc-feature-navigation]');if(!menu)return;
