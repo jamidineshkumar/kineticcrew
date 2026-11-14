@@ -182,7 +182,7 @@ async function refresh(){
  // The authenticated bootstrap is the only data dependency required to open the app.
  // Load it first, render immediately, and hydrate optional sections in the background.
  const d=await api('bootstrap');
- S.user=d.user;S.events=d.events||[];S.announcements=d.announcements||[];S.members=d.members||[];
+ S.user=d.user;kcRememberSignedInAccount(S.user);S.events=d.events||[];S.announcements=d.announcements||[];S.members=d.members||[];
  try{const access=await rpc('crew_access_status',{});if(!access.error&&access.data?.role)S.user.role=access.data.role;}catch(error){console.warn('Crew role could not be refreshed:',error);}
  S.offline=false;S.error='';
  paintUser();paint();
