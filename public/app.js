@@ -1816,7 +1816,7 @@ async function boot(){
   const saved=readPageState();
   const incomingShare=new URLSearchParams(location.search);
   const navigationType=performance.getEntriesByType?.('navigation')?.[0]?.type||'navigate';
-  const restoreSavedPage=navigationType==='reload'||incomingShare.has('kc_refresh');
+  // Restore a route only inside the same live tab (manual refresh / update reload).\n  // A fresh app launch gets a clean Home landing instead of replaying a stale Profile view.\n  let sameAppSession=false;\n  try{sameAppSession=sessionStorage.getItem('kc_app_session_active_v1')==='1';sessionStorage.setItem('kc_app_session_active_v1','1');}catch{}\n  const restoreSavedPage=sameAppSession&&(navigationType==='reload'||incomingShare.has('kc_refresh'));
   if(incomingShare.has('share_target')){
    const raw=[incomingShare.get('url'),incomingShare.get('text'),incomingShare.get('title')].filter(Boolean).join(' ');
    const match=raw.match(/https:\/\/[^\s<>"']+/i);
