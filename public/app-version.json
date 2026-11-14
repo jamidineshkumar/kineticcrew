@@ -1,6 +1,6 @@
 {
-  "version": "1.5.7",
+  "version": "1.5.8",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T13:20:00.000Z",
-  "release_notes": "Fixed member directory cards showing a generic Kinetic Crew member label instead of the assigned profession/designation/access role. Directory data refreshes after a role change."
+  "updated_at": "2026-11-14T13:25:00.000Z",
+  "release_notes": "Member cards and public profile now show the assigned access role or custom designation instead of the generic Kinetic Crew member label. Directory cache refreshes after role changes."
 }
