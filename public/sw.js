@@ -1,6 +1,6 @@
 const BASE=new URL(self.registration.scope).pathname.replace(/\/?$/,'/');
-const CACHE='kinetic-crew-shell-v167';
-const CORE=['','index.html','connect.html','login.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','icon.svg','kinetic-crew-logo.svg','kinetic-crew-logo.jpg','kc-notification-icon.png','theme.js','theme-overrides.css','stumagz-redesign.css','mobile-dock.js','push-notifications.js','crew-enhancements.js','crew-enhancements.css','app-version.json','kc-meet.js','kc-meet.css','vibe-home.css', 'approved-mobile-shell.css','kc-home-glass-tiles.css','kc-exact-home.css','icon.svg','founder-crown.svg','onboarding.css','more-menu-reference.css','kc-more-neumorphic.css','kc-dock-final.css','kinetic-gram-experience.css','kinetic-gram-experience.js','kc-home-featured-carousel.css','kc-profile-liquid.css','kc-header-alignment-fix.css','kc-home-header-greeting-refresh.css','kc-transition.css','kc-transition.js','student-tribe-interface.css','global-search.js','global-search.css','events-experience.css','gram-onboarding.js','gram-onboarding.css','kc-memories-sharing.css','kc-notifications-inbox.css','kc-home-logo-menu-dedupe.css','kc-profile-single-edit.css','kc-profile-flip-hint.css','kc-app-neumorphic-system.css','kc-attendance-report.css','kc-search-events-polish.css','kc-more-event-ads.css','kc-more-event-ads.js','brand-logo.js','brand-logo-admin.css','kc-admin-shortcuts.css','kc-admin-role-tools.css','kc-admin-menu-shortcuts.css','kc-admin-menu-shortcuts.js','kc-member-action-ring.css','kc-visitor-profile.css','kc-global-minimal-ui.css'];
+const CACHE='kinetic-crew-shell-v168';
+const CORE=['','index.html','connect.html','login.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','icon.svg','kinetic-crew-logo.svg','kinetic-crew-logo.jpg','kc-notification-icon.svg','theme.js','theme-overrides.css','stumagz-redesign.css','mobile-dock.js','push-notifications.js','crew-enhancements.js','crew-enhancements.css','app-version.json','kc-meet.js','kc-meet.css','vibe-home.css', 'approved-mobile-shell.css','kc-home-glass-tiles.css','kc-exact-home.css','icon.svg','founder-crown.svg','onboarding.css','more-menu-reference.css','kc-more-neumorphic.css','kc-dock-final.css','kinetic-gram-experience.css','kinetic-gram-experience.js','kc-home-featured-carousel.css','kc-profile-liquid.css','kc-header-alignment-fix.css','kc-home-header-greeting-refresh.css','kc-transition.css','kc-transition.js','student-tribe-interface.css','global-search.js','global-search.css','events-experience.css','gram-onboarding.js','gram-onboarding.css','kc-memories-sharing.css','kc-notifications-inbox.css','kc-home-logo-menu-dedupe.css','kc-profile-single-edit.css','kc-profile-flip-hint.css','kc-app-neumorphic-system.css','kc-attendance-report.css','kc-search-events-polish.css','kc-more-event-ads.css','kc-more-event-ads.js','brand-logo.js','brand-logo-admin.css','kc-admin-shortcuts.css','kc-admin-role-tools.css','kc-admin-menu-shortcuts.css','kc-admin-menu-shortcuts.js','kc-member-action-ring.css','kc-visitor-profile.css','kc-global-minimal-ui.css'];
 const ASSETS=CORE.map(path=>BASE+path);
 const CDN_ASSETS=["https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2","https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js","https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"];
 const CDN_CACHE="kinetic-crew-cdn-v1";
@@ -30,20 +30,26 @@ if(messaging)messaging.onBackgroundMessage(async payload=>{
     body:payload.notification?.body||"You have a new crew update.",
     // Android's compact icon and badge must be a transparent monochrome glyph.
     // Keep the full-colour logo for the expanded notification artwork.
-    icon:BASE+"kc-notification-icon.png",
+    icon:BASE+"kinetic-crew-logo.svg",
     image:logo||BASE+"kinetic-crew-logo.jpg",
-    badge:BASE+"kc-notification-icon.png",
-    data:{url:payload.data?.url||BASE}
+    badge:BASE+"kc-notification-icon.svg",
+    data:{url:payload.data?.url||BASE,route:payload.data?.route||"",notification_type:payload.data?.notification_type||""}
   });
 });
 }catch(error){console.warn("Background notifications disabled:",error);}
 self.addEventListener("notificationclick",event=>{
   event.notification.close();
-  const target=new URL(event.notification.data?.url||BASE,self.location.origin).href;
+  event.stopImmediatePropagation?.();
+  const rawTarget=event.notification.data?.url||BASE;
+  const target=new URL(rawTarget,self.location.origin);
+  // Keep the route query intact: app.js consumes kc_view after auth and data refresh.
   event.waitUntil((async()=>{
-    const clients=await self.clients.matchAll({type:"window",includeUncontrolled:true});
-    for(const client of clients){if(client.url.startsWith(self.location.origin)&&"focus"in client){await client.navigate(target);return client.focus();}}
-    return self.clients.openWindow(target);
+    const windows=await self.clients.matchAll({type:"window",includeUncontrolled:true});
+    const appWindow=windows.find(client=>client.url.startsWith(self.location.origin)&&"navigate"in client);
+    if(appWindow){
+      try{await appWindow.navigate(target.href);return await appWindow.focus();}catch(error){console.warn("Could not navigate existing Kinetic Crew window:",error);}
+    }
+    return self.clients.openWindow(target.href);
   })());
 });
 self.addEventListener("message",event=>{if(event.data?.type==="SKIP_WAITING")self.skipWaiting();});
