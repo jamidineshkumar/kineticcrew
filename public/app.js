@@ -1016,7 +1016,7 @@ function leaderboardPage(){
 function legacySettingsPage(){return profilePage()+'<section class="surface app-settings-panel"><div class="formtitle"><div class="formicon">☼</div><div><h3>Appearance</h3><p>Choose how Kinetic Crew looks on this device.</p></div></div><div class="settings-choice"><button type="button" class="outline" data-set-theme="dark">☾ Dark mode</button><button type="button" class="outline" data-set-theme="light">☀ Light mode</button></div></section>';}
 function crewManagementPage(){
  if(!admin())return empty('Admin access required','Admins and Super Admins can review crew membership. Only the Super Admin can change roles.');
- const rows=(S.members||[]).map(m=>'<article class="crew-manage-row" data-managed-member="'+esc(m.auth_id)+'" data-member-name="'+esc(m.name||'Crew member')+'"><div class="crew-manage-person">'+avatarMarkup(m)+'<span><b>'+esc(m.name||'Crew member')+'</b><small>'+esc(m.username?'@'+m.username:'Crew member')+'</small></span></div><span class="roletag '+esc(m.role)+'">'+esc(role(m.role))+'</span>'+(superadmin()&&m.auth_id!==S.user.auth_id&&m.role!=='super_admin'?'<div class="kc-role-tools"><label class="kc-role-change"><span>Access role</span><select class="select role-select" data-role-change="'+esc(m.auth_id)+'" data-current-role="'+esc(m.role||'member')+'"><option value="member" '+(m.role==='member'?'selected':'')+'>Member</option><option value="admin" '+(m.role==='admin'?'selected':'')+'>Admin</option></select></label><form class="kc-define-role" data-designation-form="'+esc(m.auth_id)+'"><label><span>Define crew role</span><input maxlength="40" name="designation" value="'+esc(m.crew_title||'')+'" placeholder="e.g. Choreographer, Team Lead"></label><button type="submit" class="outline" data-save-designation="'+esc(m.auth_id)+'">Save</button></form></div>':'')+'</article>').join('');
+ const rows=(S.members||[]).map(m=>'<article class="crew-manage-row" data-managed-member="'+esc(m.auth_id)+'" data-member-action-card="'+esc(m.auth_id)+'" data-member-role="'+esc(m.role||'member')+'" data-member-name="'+esc(m.name||'Crew member')+'"><div class="crew-manage-person">'+avatarMarkup(m)+'<span><b>'+esc(m.name||'Crew member')+'</b><small>'+esc(m.username?'@'+m.username:'Crew member')+'</small></span></div><span class="roletag '+esc(m.role)+'">'+esc(role(m.role))+'</span>'+(superadmin()&&m.auth_id!==S.user.auth_id&&m.role!=='super_admin'?'<div class="kc-role-tools"><label class="kc-role-change"><span>Access role</span><select class="select role-select" data-role-change="'+esc(m.auth_id)+'" data-current-role="'+esc(m.role||'member')+'"><option value="member" '+(m.role==='member'?'selected':'')+'>Member</option><option value="admin" '+(m.role==='admin'?'selected':'')+'>Admin</option></select></label><form class="kc-define-role" data-designation-form="'+esc(m.auth_id)+'"><label><span>Define crew role</span><input maxlength="40" name="designation" value="'+esc(m.crew_title||'')+'" placeholder="e.g. Choreographer, Team Lead"></label><button type="submit" class="outline" data-save-designation="'+esc(m.auth_id)+'">Save</button></form></div>':'')+'</article>').join('');
  const pendingRows=(S.pendingMembers||[]).map(m=>'<article class="crew-manage-row kc-pending-member"><div class="crew-manage-person"><span class="kc-pending-avatar">⌛</span><span><b>'+esc(m.name||'New member')+'</b><small>'+esc(m.email||'')+' · @'+esc(m.username||'crew-member')+'</small><small>Requested '+esc(dt(m.requested_at))+'</small></span></div><div class="kc-pending-actions"><button type="button" class="primary" data-review-member="approve" data-member-id="'+esc(m.auth_id)+'">Approve</button><button type="button" class="outline" data-review-member="reject" data-member-id="'+esc(m.auth_id)+'">Reject</button></div></article>').join('');
  return welcome('Crew Members','Manage approved members, roles and new membership requests.')+
  '<section class="surface crew-manage-list"><div class="directoryhead"><div><span class="settings-kicker">'+(superadmin()?'SUPER ADMIN · ROLE MANAGEMENT':'ADMIN · CREW DIRECTORY')+'</span><h3>Members & roles</h3><p>'+(superadmin()?'Set account access and define custom crew designations. Super Admin accounts and your own role are protected.':'View approved crew members. Role changes are reserved for the Super Admin.')+'</p></div></div>'+(rows||empty('No members yet','Approved crew accounts will appear here.'))+'</section>'+
@@ -1278,30 +1278,26 @@ document.addEventListener('animationend',event=>{
  try{localStorage.setItem('kc_profile_flip_intro_v1','1');}catch{}
 });
 document.addEventListener('click',event=>{const edit=event.target.closest('[data-edit-event]');if(!edit)return;event.preventDefault();if(!admin()){notice('Admin access required to edit events.');return;}S.editingEventId=edit.dataset.editEvent;go('event-edit');});
-let kcMemberPressTimer=null,kcMemberSuppressClickUntil=0;
 function closeMemberActionRings(except){
  document.querySelectorAll('.kc-member-action-open').forEach(card=>{if(card!==except){card.classList.remove('kc-member-action-open');card.querySelector('.kc-member-action-ring')?.remove();}});
 }
-document.addEventListener('pointerdown',event=>{
- const card=event.target.closest('[data-member-action-card]');
- if(!card||String(card.dataset.memberActionCard)===String(S.user?.auth_id)||event.target.closest('.kc-member-action-ring'))return;
- clearTimeout(kcMemberPressTimer);
- kcMemberPressTimer=setTimeout(()=>{
-  if(!card.isConnected)return;
-  closeMemberActionRings(card);card.classList.add('kc-member-action-open');
-  card.querySelector('.kc-member-action-ring')?.remove();
-  card.insertAdjacentHTML('beforeend',memberActionRingMarkup(card.dataset.memberActionCard,card.dataset.memberRole,card.dataset.memberName));
-  kcMemberSuppressClickUntil=Date.now()+900;
- },520);
-},true);
-document.addEventListener('pointerup',()=>clearTimeout(kcMemberPressTimer),true);
-document.addEventListener('pointercancel',()=>clearTimeout(kcMemberPressTimer),true);
-document.addEventListener('contextmenu',event=>{if(event.target.closest('[data-member-action-card]'))event.preventDefault();});
-document.addEventListener('pointerdown',event=>{if(!event.target.closest('[data-member-action-card]'))closeMemberActionRings();},true);
+function openMemberActionRing(card){
+ if(!card)return;
+ const id=String(card.dataset.memberActionCard||'');
+ if(!id||id===String(S.user?.auth_id||''))return;
+ const alreadyOpen=card.classList.contains('kc-member-action-open');
+ closeMemberActionRings();
+ if(alreadyOpen)return;
+ card.classList.add('kc-member-action-open');
+ card.querySelector('.kc-member-action-ring')?.remove();
+ card.insertAdjacentHTML('beforeend',memberActionRingMarkup(id,card.dataset.memberRole,card.dataset.memberName));
+}
 document.addEventListener('click',event=>{
- const card=event.target.closest('[data-member-action-card]');
- if(card&&Date.now()<kcMemberSuppressClickUntil&&!event.target.closest('.kc-member-action-ring')){event.preventDefault();event.stopImmediatePropagation();kcMemberSuppressClickUntil=0;}
-},true);
+ const toggle=event.target.closest('[data-member-actions-toggle]');
+ if(toggle){event.preventDefault();event.stopPropagation();openMemberActionRing(toggle.closest('[data-member-action-card]'));return;}
+ if(!event.target.closest('[data-member-action-card]'))closeMemberActionRings();
+});
+document.addEventListener('contextmenu',event=>{if(event.target.closest('[data-member-action-card]'))event.preventDefault();});
 document.addEventListener('click',async e=>{
  const review=e.target.closest('[data-review-member]');if(review){const action=review.dataset.reviewMember,id=review.dataset.memberId;if(!admin()||!id)return;review.disabled=true;try{if(action==='reject'&&!confirm('Reject this membership request?')){review.disabled=false;return;}const {data,error}=await rpc('crew_review_member',{p_auth_id:id,p_decision:action,p_reason:action==='reject'?'Not approved by crew administration.':null});if(error)throw error;if(action==='approve'){const {data:mail,error:mailError}=await client.functions.invoke('send-member-welcome',{body:{authId:id}});if(mailError||mail?.error)throw Error(mail?.error||mailError?.message||'Member approved, but welcome email failed.');notice(mail?.message||'Member approved and welcome email sent.');}else notice('Membership request rejected.');await go(S.view==='crew-management'?'crew-management':'member-requests');}catch(error){notice(error.message||'Could not review this request.');review.disabled=false;}return;}
  const memberAction=e.target.closest('[data-member-action]');
