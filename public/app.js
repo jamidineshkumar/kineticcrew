@@ -1913,8 +1913,15 @@ async function boot(){
   rpc('crew_profile_login_touch',{}).catch(error=>console.warn('Could not record today’s profile login:',error));
   const saved=readPageState();
   const incomingShare=new URLSearchParams(location.search);
+  const requestedPushView=String(incomingShare.get('kc_view')||'');
+  const allowedPushViews=new Set(['member-requests','crew-management','notifications','events','attendance','calendar','rehearsals','chat','feed','meet','profile','overview']);
+  const pushView=allowedPushViews.has(requestedPushView)?requestedPushView:'';
+  if(pushView){
+   const cleanPushUrl=new URL(location.href);cleanPushUrl.searchParams.delete('kc_view');
+   history.replaceState({},'',cleanPushUrl.pathname+cleanPushUrl.search+cleanPushUrl.hash);
+  }
   const navigationType=performance.getEntriesByType?.('navigation')?.[0]?.type||'navigate';
-  // Restore a route only inside the same live tab (manual refresh / update reload).\n  // A fresh app launch gets a clean Home landing instead of replaying a stale Profile view.\n  let sameAppSession=false;\n  try{sameAppSession=sessionStorage.getItem('kc_app_session_active_v1')==='1';sessionStorage.setItem('kc_app_session_active_v1','1');}catch{}\n  restoreSavedPage=sameAppSession&&(navigationType==='reload'||incomingShare.has('kc_refresh'));
+  // Restore a route only inside the same live tab (manual refresh / update reload).\n  // A fresh app launch gets a clean Home landing instead of replaying a stale Profile view.\n  let sameAppSession=false;\n  try{sameAppSession=sessionStorage.getItem('kc_app_session_active_v1')==='1';sessionStorage.setItem('kc_app_session_active_v1','1');}catch{}\n  restoreSavedPage=!pushView&&sameAppSession&&(navigationType==='reload'||incomingShare.has('kc_refresh'));
   if(incomingShare.has('share_target')){
    const raw=[incomingShare.get('url'),incomingShare.get('text'),incomingShare.get('title')].filter(Boolean).join(' ');
    const match=raw.match(/https:\/\/[^\s<>"']+/i);
@@ -1962,6 +1969,7 @@ async function boot(){
   }
 
   if(pendingProfileId){try{localStorage.removeItem('kc_pending_profile');}catch{}S.selectedProfileId=pendingProfileId;await go('public-profile');}
+  else if(pushView){await go(pushView);}
   else if(restoreSavedPage&&saved&&(!saved.userId||saved.userId===(session.user.id||session.user.auth_id)))restorePageScroll(saved);
   else {S.view='overview';S.selectedEvent=null;S.selectedProfileId=null;S.navOpen='overview';paint();savePageState();}
  }catch(e){
