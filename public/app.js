@@ -1225,7 +1225,7 @@ function kcBackToFeatureMenu(){
 }
 
 function paint(){
-document.body.classList.toggle('kc-more-open',S.view==='more');document.body.classList.toggle('kc-home-screen',S.view==='overview');const headerBell=document.querySelector('.kc-header-notifications');if(headerBell)headerBell.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>'+(unread()?'<i></i>':'');const headerProfile=document.querySelector('.kc-header-profile');if(headerProfile)headerProfile.innerHTML=avatarMarkup(S.user||{},'small');
+document.body.classList.toggle('kc-more-open',S.view==='more');document.body.classList.toggle('kc-home-screen',S.view==='overview');const headerBell=document.querySelector('.kc-header-notifications');if(headerBell)headerBell.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>'+(unread()?'<i></i>':'');const headerProfile=document.querySelector('.kc-header-profile');if(headerProfile){headerProfile.innerHTML=avatarMarkup(S.user||{},'small');headerProfile.dataset.view='profile';headerProfile.setAttribute('role','button');headerProfile.setAttribute('tabindex','0');headerProfile.setAttribute('aria-label','Open my profile');}
 const communityItems=[['polls','◉','Polls & voting'],['memories','▧','KC Memories'],['leave','↗','Leave requests'],['rehearsals','◷','Rehearsals'],['updates','↗','Crew updates'],['people','♙','Discover crew'],['meet','◉','KC Meet']];
 const groups=[
  ['overview',superadmin()?'SUPER ADMIN':admin()?'ADMIN SPACE':'MEMBER SPACE',superadmin()?'Full platform control':admin()?'Crew operations':'Your crew at a glance',[['overview','⌂','Overview']]],
@@ -1381,12 +1381,12 @@ function developerPage(){
  return '<section class="kc-developer-profile" aria-label="Developer profile">'+
  '<div class="kc-developer-cover">'+(photo?'<img class="kc-developer-cover-photo" src="'+esc(photo)+'" alt="Jami Dinesh Kumar" loading="eager" onerror="this.hidden=true">':'<div class="kc-developer-cover-placeholder" aria-hidden="true"></div>')+
  '<button type="button" class="kc-developer-back" data-view="settings" aria-label="Back to settings">‹</button>'+
- (superadmin()?'<button type="button" class="kc-developer-photo-edit" data-developer-photo-pick>✎ Edit photo</button><input id="kcDeveloperPhotoInput" class="kc-developer-photo-input" type="file" accept="image/jpeg,image/png,image/webp">':'')+
+ (superadmin()?'<label class="kc-developer-photo-edit" for="kcDeveloperPhotoInput">✎ Edit photo</label><input id="kcDeveloperPhotoInput" class="kc-developer-photo-input" type="file" accept="image/jpeg,image/png,image/webp">':'')+
  '<span class="kc-developer-cover-mark">KINETIC CREW</span></div>'+
  '<div class="kc-developer-profile-body">'+
  '<h1>JAMI DINESH KUMAR</h1><p class="kc-developer-handle">@dinuvox</p><span class="kc-developer-role">FOUNDER · DEVELOPER</span>'+
  '<p class="kc-developer-bio">The person behind Kinetic Crew.</p>'+
- '<div class="kc-developer-links">'+links.map(([name,url,mark])=>'<a class="kc-developer-link" href="'+url+'" target="_blank" rel="noopener noreferrer"><span>'+mark+'</span><b>'+name+'</b><i aria-hidden="true">↗</i></a>').join('')+'</div></div></section>';
+ '<nav class="kc-developer-links" aria-label="Developer social links">'+links.map(([name,url,mark])=>'<a class="kc-developer-link" href="'+url+'" target="_blank" rel="noopener noreferrer" aria-label="'+name+'" title="'+name+'"><span aria-hidden="true">'+mark+'</span></a>').join('')+'</nav></div></section>';
 }
 function appSuggestionsPage(){
  return settingsSubpage('App suggestions','Help improve Kinetic Crew by sharing an idea or reporting an issue.',appSuggestionsSettingsMarkup());
@@ -2197,11 +2197,11 @@ window.addEventListener('unhandledrejection',event=>{console.error('Kinetic Crew
 
 /* Open the native file picker from a real user gesture on the edit-photo control. */
 document.addEventListener('click',event=>{
- const trigger=event.target.closest('[data-developer-photo-pick]');
+ const trigger=event.target.closest('.kc-developer-photo-edit');
  if(!trigger)return;
- if(!superadmin()){notice('Only the Super Admin can edit the developer photo.');return;}
+ if(!superadmin()){event.preventDefault();notice('Only the Super Admin can edit the developer photo.');return;}
  const input=document.getElementById('kcDeveloperPhotoInput');
- if(input){input.value='';input.click();}
+ if(input)input.value='';
 });
 
 /* Developer cover photo: upload and persist the full, uncropped image. */
