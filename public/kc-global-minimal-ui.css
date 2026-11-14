@@ -1,0 +1,28 @@
+/* Global cleanup: remove decorative micro-labels and carousel telemetry across Kinetic Crew. */
+.welcome .eyebrow,
+.kc-liquid-eyebrow,
+.kc-home-featured-kicker,
+.kc-home-featured-label,
+.kc-home-user>span>small,
+.kc-home-updates-head>span,
+.kc-home-update-kicker,
+.kc-more-reference-header .eyebrow,
+.kc-feed-kicker,
+.kc-attendance-kicker,
+.kc-fun-kicker,
+.kce-eyebrow,
+.kc-ticket-heading>span,
+.kc-ticket-id-label,
+.kc-ticket-detail>span,
+.kc-ticket-footer>span,
+.kc-profile-flip-hint small,
+[class*="slide-counter"],
+[class*="slide-count"],
+[class*="slide-timer"],
+[class*="slide-duration"],
+[class*="slide-progress-label"],
+[class*="slide-meta"]{
+ display:none!important;
+}
+.welcome{padding-top:8px!important}
+.kc-home-featured-art{justify-content:flex-end!important}
