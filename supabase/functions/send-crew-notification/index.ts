@@ -89,8 +89,13 @@ Deno.serve(async (req) => {
     const title = String(body.title || "Kinetic Crew").trim().slice(0, 120);
     const message = String(body.body || "").trim().slice(0, 1000);
     const audience = String(body.audience || "all");
+    const imageUrl = String(body.imageUrl || "").trim();
+    const allowedImagePrefix = supabaseUrl.replace(/\/$/, "") + "/storage/v1/object/public/crew-alert-media/alerts/";
     if (!title || !message) return json({ error: "A title and message are required." }, 400);
     if (!["all", "member", "admin", "super_admin"].includes(audience)) return json({ error: "Invalid audience." }, 400);
+    if (imageUrl && (!imageUrl.startsWith(allowedImagePrefix) || imageUrl.length > 2048)) {
+      return json({ error: "The attached image URL is invalid." }, 400);
+    }
 
     let query = adminClient.from("crew_push_tokens").select("token,auth_id,crew_profiles!inner(role)");
     if (audience !== "all") query = query.eq("crew_profiles.role", audience);
@@ -115,9 +120,9 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           message: {
             token,
-            notification: { title, body: message },
-            webpush: { notification: { title, body: message, icon: "/icon.svg", image: "/kinetic-crew-logo.jpg", badge: "/kc-notification-badge.svg", tag: notificationId, renotify: false }, fcmOptions: { link: "/" } },
-            android: { priority: "HIGH", notification: { channel_id: "crew_updates", sound: "default", tag: notificationId } },
+            notification: { title, body: message, ...(imageUrl ? { image: imageUrl } : {}) },
+            webpush: { notification: { title, body: message, icon: "/icon.svg", image: imageUrl || "/kinetic-crew-logo.jpg", badge: "/kc-notification-badge.svg", tag: notificationId, renotify: false }, fcmOptions: { link: "/" } },
+            android: { priority: "HIGH", notification: { channel_id: "crew_updates", sound: "default", tag: notificationId, ...(imageUrl ? { image: imageUrl } : {}) } },
             data: { url: "/", notificationId },
           },
         }),
