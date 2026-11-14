@@ -60,9 +60,9 @@ Deno.serve(async(req:Request)=>{
   const role=String(profile.role||"");
   if(!["member","admin","super_admin"].includes(role))return json({error:"Your role cannot request attendance reports."},403);
   const body=await req.json(),eventId=String(body.eventId||"").trim();
-  const ownEmail=String(profile.email||user.email||"").trim().toLowerCase(),requestedEmail=String(body.toEmail||"").trim().toLowerCase();
+  const ownEmail=String(user.email||profile.email||"").trim().toLowerCase(),requestedEmail=String(body.toEmail||"").trim().toLowerCase();
   const recipientEmail=role==="member"?ownEmail:requestedEmail;
-  if(!recipientEmail||! /^\\S+@\\S+\\.\\S+$/.test(recipientEmail))return json({error:"Enter a valid report email address."},400);
+  if(!recipientEmail||! /^\S+@\S+\.\S+$/.test(recipientEmail))return json({error:role==="member"?"Your authenticated account does not have a valid email address.":"Enter a valid report email address."},400);
   if(role==="member"&&requestedEmail&&requestedEmail!==ownEmail)return json({error:"Members can send personal attendance histories only to their account email."},403);
   let event:any,roster:any[],scope:"complete"|"personal";
   if(eventId){
