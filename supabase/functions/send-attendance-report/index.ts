@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import nodemailer from "npm:nodemailer@6.9.16";
-import { brandedEmail } from "../_shared/email-template.ts";
+import { brandedEmail } from "./email-template.ts";
 import { PDFDocument, StandardFonts, rgb } from "npm:pdf-lib@1.17.1";
 import { Buffer } from "node:buffer";
 
