@@ -61,3 +61,9 @@
 .kc-visitor-profile-clean .kc-visitor-identity{left:30px;right:30px;bottom:38px}
 .kc-visitor-profile-clean .kc-visitor-shade{background:linear-gradient(180deg,rgba(5,6,10,.28) 0%,rgba(5,6,10,.08) 34%,rgba(5,6,10,.42) 58%,rgba(8,9,13,.96) 100%)}
 @media(max-width:600px){.kc-visitor-profile-clean .kc-visitor-hero{height:calc(76svh - 55px);min-height:460px;max-height:620px}.kc-visitor-profile-clean .kc-visitor-identity{left:22px;right:22px;bottom:30px}}
+
+
+.kc-visitor-role-stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
+.kc-visitor-role-stack .kc-visitor-role{margin-top:0}
+.kc-visitor-role-secondary{background:rgba(29,32,40,.86);border:1px solid rgba(255,255,255,.2)}
+.kc-visitor-instagram{display:inline-flex;margin-top:12px;color:#f4d8e2;text-decoration:none;font-size:13px;font-weight:600}
