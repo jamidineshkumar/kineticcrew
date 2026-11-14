@@ -74,3 +74,14 @@ html[data-theme="light"] .kc-feed-tabs button.active{color:#fff}
   height:calc(100% + 176px)!important;
  }
 }
+
+
+/* Presence rail is rendered only when Supabase Realtime reports other members online. */
+.kc-home-online-crew[hidden]{display:none!important}
+.kc-home-online-crew{margin:18px 0 12px;padding:15px 16px;border:1px solid rgba(255,255,255,.11);border-radius:22px;background:linear-gradient(135deg,rgba(34,39,43,.88),rgba(18,20,24,.9));}
+.kc-home-online-crew .kc-fun-section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.kc-home-online-crew .kc-fun-section-title small{color:#a5a9b1;font-size:9px;letter-spacing:.16em}
+.kc-home-online-crew .kc-fun-section-title h2{display:flex;align-items:center;gap:8px;margin:3px 0 0;font-size:16px}
+.kc-home-online-crew .kc-online-count{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:rgba(65,214,161,.13);color:#62e4b4;font-size:10px}
+.kc-home-online-crew .kc-fun-person{position:relative}
+.kc-home-online-crew .kc-online-dot{position:absolute;top:0;right:8px;width:11px;height:11px;border:2px solid #171a1d;border-radius:50%;background:#46df9b;box-shadow:0 0 10px rgba(70,223,155,.65)}
