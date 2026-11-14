@@ -97,3 +97,78 @@ html[data-theme="light"] #kcMobileDock .kc-dock-home.active .dock-label,
 html[data-theme="light"] #kcMobileDock .kc-dock-group-item.active .dock-label,
 html[data-theme="light"] #kcMobileDock .kc-dock-group button.active .dock-label{color:#272a30!important}
 @media(prefers-reduced-motion:reduce){#kcMobileDock,#kcMobileDock *{transition:none!important;animation:none!important}}
+
+/* Readability + Gram signature: labels remain legible; the K has only its own animated smoke, never a tile. */
+@media(max-width:900px){
+ #kcMobileDock.kc-mobile-dock .dock-label,
+ #kcMobileDock.kc-mobile-dock .kc-dock-home .dock-label,
+ #kcMobileDock.kc-mobile-dock .kc-dock-group-item .dock-label,
+ #kcMobileDock.kc-mobile-dock .kc-dock-group button .dock-label{
+  display:block!important;visibility:visible!important;opacity:1!important;
+  color:#f4f1ef!important;-webkit-text-fill-color:#f4f1ef!important;
+  font-size:11px!important;font-weight:650!important;line-height:1.2!important;
+  letter-spacing:.01em!important;text-shadow:0 1px 5px rgba(0,0,0,.85)!important;
+  overflow:visible!important;max-height:none!important;
+ }
+ #kcMobileDock.kc-mobile-dock .kc-dock-home.active .dock-label,
+ #kcMobileDock.kc-mobile-dock .kc-dock-group-item.active .dock-label,
+ #kcMobileDock.kc-mobile-dock .kc-dock-group button.active .dock-label{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+ }
+ /* Remove every nested plate, border and background around the Gram mark. */
+ #kcMobileDock .kc-dock-group-item[data-view="feed"],
+ #kcMobileDock .kc-dock-group button[data-view="feed"]{
+  background:transparent!important;border-color:transparent!important;box-shadow:none!important;
+ }
+ #kcMobileDock .kc-dock-group-item[data-view="feed"] .dock-icon,
+ #kcMobileDock .kc-dock-group button[data-view="feed"] .dock-icon{
+  position:relative!important;isolation:isolate!important;overflow:visible!important;
+  background:transparent!important;border:0!important;border-radius:0!important;
+  outline:0!important;box-shadow:none!important;
+ }
+ #kcMobileDock .kc-dock-group-item[data-view="feed"] .dock-icon:before,
+ #kcMobileDock .kc-dock-group button[data-view="feed"] .dock-icon:before{
+  content:""!important;position:absolute!important;z-index:-1!important;
+  inset:-8px!important;border:0!important;border-radius:50%!important;
+  background:
+   radial-gradient(ellipse at 28% 72%,rgba(255,116,93,.78),transparent 48%),
+   radial-gradient(ellipse at 70% 28%,rgba(190,91,255,.8),transparent 52%),
+   radial-gradient(ellipse at 50% 52%,rgba(91,135,255,.55),transparent 62%)!important;
+  background-size:180% 180%!important;filter:blur(8px)!important;opacity:.72!important;
+  animation:kcGramSmoke 5.5s ease-in-out infinite alternate!important;
+  pointer-events:none!important;
+ }
+ #kcMobileDock .kc-dock-group-item[data-view="feed"] .dock-icon img,
+ #kcMobileDock .kc-dock-group button[data-view="feed"] .dock-icon img{
+  position:relative!important;z-index:1!important;
+  width:27px!important;height:27px!important;max-width:27px!important;max-height:27px!important;
+  padding:0!important;margin:0!important;border:0!important;border-radius:0!important;
+  outline:0!important;background:transparent!important;box-shadow:none!important;
+  object-fit:contain!important;filter:drop-shadow(0 0 5px rgba(184,115,255,.38))!important;
+  animation:kcKGradientShift 7s ease-in-out infinite!important;
+ }
+ #kcMobileDock .kc-dock-group-item[data-view="feed"] .dock-icon svg,
+ #kcMobileDock .kc-dock-group button[data-view="feed"] .dock-icon svg{
+  position:relative!important;z-index:1!important;background:transparent!important;
+  border:0!important;box-shadow:none!important;filter:drop-shadow(0 0 5px rgba(184,115,255,.38))!important;
+  animation:kcKGradientShift 7s ease-in-out infinite!important;
+ }
+}
+@keyframes kcGramSmoke{
+ 0%{transform:translate(-3px,2px) scale(.88) rotate(-12deg);filter:blur(8px) hue-rotate(0deg);opacity:.52}
+ 50%{transform:translate(3px,-3px) scale(1.12) rotate(8deg);filter:blur(10px) hue-rotate(65deg);opacity:.9}
+ 100%{transform:translate(-1px,1px) scale(.96) rotate(-5deg);filter:blur(7px) hue-rotate(145deg);opacity:.68}
+}
+@keyframes kcKGradientShift{
+ 0%,100%{filter:drop-shadow(0 0 4px rgba(255,116,100,.36)) hue-rotate(0deg) saturate(1.12)}
+ 35%{filter:drop-shadow(0 0 7px rgba(197,100,255,.58)) hue-rotate(42deg) saturate(1.35)}
+ 70%{filter:drop-shadow(0 0 6px rgba(93,153,255,.5)) hue-rotate(-32deg) saturate(1.28)}
+}
+@media(prefers-reduced-motion:reduce){
+ #kcMobileDock .kc-dock-group-item[data-view="feed"] .dock-icon:before,
+ #kcMobileDock .kc-dock-group button[data-view="feed"] .dock-icon:before,
+ #kcMobileDock .kc-dock-group-item[data-view="feed"] .dock-icon img,
+ #kcMobileDock .kc-dock-group button[data-view="feed"] .dock-icon img,
+ #kcMobileDock .kc-dock-group-item[data-view="feed"] .dock-icon svg,
+ #kcMobileDock .kc-dock-group button[data-view="feed"] .dock-icon svg{animation:none!important}
+}
