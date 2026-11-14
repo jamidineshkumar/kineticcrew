@@ -15,7 +15,7 @@ const esc = (value: unknown) => String(value ?? "").replace(/[&<>"']/g, c => ({ 
 export function brandedEmail(options: BrandedEmailOptions): string {
   const title = esc(options.title);
   const subtitle = options.subtitle ? esc(options.subtitle) : "";
-  const eyebrow = esc(options.eyebrow || "KINETIC CREW · AUDITIONS 3.0");
+  const eyebrow = esc(options.eyebrow || "KINETIC CREW");
   const code = options.code ? `
     <tr><td align="center" style="padding:30px 18px 34px;border:1px solid #9d7774;border-radius:28px;background:#292832;background-image:linear-gradient(135deg,#292b34 0%,#24232c 52%,#2c211f 100%);">
       <div style="font-family:Arial,Helvetica,sans-serif;font-size:42px;line-height:1.2;font-weight:800;letter-spacing:9px;color:#ff955d;text-shadow:0 0 14px #f4773f88;white-space:nowrap;">${esc(options.code)}</div>
@@ -31,7 +31,7 @@ export function brandedEmail(options: BrandedEmailOptions): string {
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#08090d;"><tr><td align="center" style="padding:28px 14px 34px;">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:620px;">
 <tr><td style="padding:8px 10px 38px;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>
-<td align="left" valign="middle"><span style="display:inline-block;padding:11px 17px;border:1px solid #55545b;border-radius:30px;background:#171820;color:#f6f5f7;font-size:15px;font-weight:800;letter-spacing:1px;">KINETIC CREW <span style="font-size:10px;color:#b9b6c0;font-weight:600;">AUDITIONS 3.0</span></span></td>
+<td align="left" valign="middle"><span style="display:inline-block;padding:11px 17px;border:1px solid #55545b;border-radius:30px;background:#171820;color:#f6f5f7;font-size:15px;font-weight:800;letter-spacing:1px;">KINETIC CREW </span></td>
 <td align="right" valign="middle"><img src="${BRAND_LOGO}" width="66" height="66" alt="KC" style="display:block;width:66px;height:66px;object-fit:contain;border:1px solid #66616e;border-radius:22px;background:#24232c;padding:4px;"></td>
 </tr></table></td></tr>
 <tr><td style="padding:0 10px 26px;"><div style="font-size:11px;letter-spacing:3px;color:#ff955d;font-weight:800;">${eyebrow}</div>
