@@ -1,6 +1,6 @@
 {
-  "version": "1.6.7",
+  "version": "1.6.8",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T11:00:00.000Z",
-  "release_notes": "Duplicate push notifications are collapsed and notification branding is refreshed."
+  "updated_at": "2026-11-14T11:20:00.000Z",
+  "release_notes": "Custom alerts are notification-only, and release notice deletion now syncs to your account."
 }
