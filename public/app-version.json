@@ -1,6 +1,6 @@
 {
-  "version": "1.5.5",
+  "version": "1.5.6",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T13:00:00.000Z",
-  "release_notes": "Fixed member directory details so profession, designation and Instagram are returned consistently. Public member profiles now use the member photo as a full-bleed background instead of a circular avatar."
+  "updated_at": "2026-11-14T13:15:00.000Z",
+  "release_notes": "Member directory role badge now appears beside each member identity. Member action menus retain basic actions for everyone and show elevated management actions only to authorized Admins and Super Admins."
 }
