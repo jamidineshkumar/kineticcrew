@@ -1948,7 +1948,7 @@ async function boot(){
   // Seed an in-app history entry so Android/iOS back gestures navigate screens
   // instead of immediately leaving the installed app.
   try{
-   history.replaceState({kcAppView:S.view||'overview',kcRoot:true},'',location.href);
+   history.replaceState({kcAppView:'overview',kcRoot:true},'',location.href);
    history.pushState({kcAppView:S.view||'overview',kcGuard:true},'',location.href);
   }catch(error){console.warn('Could not initialize in-app back navigation:',error);}
   setupCrewPushForSignedInMember();
