@@ -41,3 +41,10 @@
 .kc-suggestion-admin-note{margin-top:10px!important;padding-top:10px;border-top:1px solid var(--border,rgba(180,170,150,.18))}
 .kc-suggestion-review-form{padding-top:12px;border-top:1px solid var(--border,rgba(180,170,150,.18))}
 
+
+/* Reliable, visible tap target for member actions */
+.kc-member-action-open{z-index:120!important}
+.kc-member-action-ring{z-index:220!important;pointer-events:auto!important;touch-action:manipulation}
+.kc-member-action-ring button{pointer-events:auto!important;position:relative;z-index:221}
+.kc-member-actions-toggle{min-width:42px;min-height:38px;padding:6px 12px!important;font-size:18px!important;letter-spacing:2px;line-height:1;touch-action:manipulation}
+.crew-manage-row.kc-member-action-open{position:relative}
