@@ -1109,8 +1109,9 @@ if(S.view==='overview'){
 function brandSettingsPage(){
  if(!superadmin())return empty('Super Admin access required','Only the Super Admin can change the official Kinetic Crew logo.');
  const current=S.appSettings?.brand_logo_url||window.KC_BRAND_LOGO_URL||window.kcPath('kinetic-crew-logo.svg');
+ const brandTargets=S.appSettings?.brand_logo_targets||{app:true,browser:true,pwa:true,signin:true};
  setTimeout(()=>{kcBrandDraw();kcBrandSetControls(!!kcBrandEditor.image);},0);
- return welcome('Brand identity','Create and manage the official Kinetic Crew logo across the app, browser and installed experience.')+
+ return welcome('Brand identity','Choose exactly where the new official logo should appear across Kinetic Crew.')+
  '<section class="surface settings-card kc-brand-settings-card">'+
  '<span class="settings-kicker">SUPER ADMIN ONLY</span><h3>Official Kinetic Crew logo</h3>'+
  '<p>Choose an image, then position and scale it inside the square brand canvas before publishing. Drag to move, pinch with two fingers to zoom, or use the controls below.</p>'+
@@ -1128,7 +1129,7 @@ function brandSettingsPage(){
  '<input id="brandLogoZoom" type="range" min="50" max="300" step="1" value="100" disabled>'+
  '<div class="kc-brand-editor-actions"><button type="button" id="brandLogoRotate" disabled>↻ Rotate 90°</button><button type="button" id="brandLogoCenter" disabled>Center image</button></div>'+
  '</div>'+
- '<small class="kc-brand-file-help">PNG, JPG or WebP · maximum 5 MB · transparent areas are preserved. The final icon is exported at 512 × 512.</small>'+
+ '<small class="kc-brand-file-help">PNG, JPG or WebP · maximum 5 MB · transparent areas are preserved. The final icon is exported at 512 × 512.</small><div class="kc-brand-targets"><div class="kc-brand-targets-head"><b>WHERE SHOULD THIS LOGO UPDATE?</b><span>Select destinations</span></div><label><input type="checkbox" data-brand-target="app" checked><span><b>App interface</b><small>Headers, menus, profile and in-app logo placements</small></span></label><label><input type="checkbox" data-brand-target="browser" checked><span><b>Browser icon</b><small>Favicon and browser tab branding</small></span></label><label><input type="checkbox" data-brand-target="pwa" checked><span><b>Installed app icon</b><small>Android / iOS home-screen and PWA icon</small></span></label><label><input type="checkbox" data-brand-target="signin" checked><span><b>Sign-in & welcome screens</b><small>Login, signup and entry branding</small></span></label></div>'+
  '<button type="button" class="primary" id="uploadBrandLogo" disabled>Publish logo everywhere →</button>'+
  '<p class="kc-brand-security-note">Your Super Admin account can publish the official logo. PNG, JPG or WebP images up to 5 MB are supported.</p>'+
  '</section>';
@@ -1576,14 +1577,19 @@ document.addEventListener('click',async event=>{
   const uploaded=await storage.upload('brand/kinetic-crew-logo.png',blob,{upsert:true,contentType:'image/png',cacheControl:'0'});
   if(uploaded.error)throw uploaded.error;
   const publicUrl=storage.getPublicUrl(uploaded.data.path).data.publicUrl+'?v='+Date.now();
-  button.textContent='Applying everywhere…';
+  const targets=Object.fromEntries(['app','browser','pwa','signin'].map(key=>[key,!!document.querySelector('[data-brand-target="'+key+'"]')?.checked]));
+  if(!Object.values(targets).some(Boolean))throw Error('Select at least one destination for the new logo.');
+  button.textContent='Saving destinations…';
+  const targetSaved=await rpc('crew_set_app_setting',{p_key:'brand_logo_targets',p_value:JSON.stringify(targets)});
+  if(targetSaved.error)throw targetSaved.error;
+  button.textContent='Applying selected destinations…';
   const saved=await rpc('crew_set_app_setting',{p_key:'brand_logo_url',p_value:publicUrl});
   if(saved.error)throw saved.error;
-  S.appSettings={...(S.appSettings||{}),brand_logo_url:publicUrl};
-  window.kcApplyBrandLogo?.(publicUrl);
+  S.appSettings={...(S.appSettings||{}),brand_logo_url:publicUrl,brand_logo_targets:targets};
+  window.kcApplyBrandLogo?.(publicUrl,targets);
   const current=$('#brandLogoCurrent');if(current)current.src=publicUrl;
   kcBrandEditor.status='Published successfully · This logo is now live across Kinetic Crew';const status=$('#brandLogoEditorStatus');if(status)status.textContent=kcBrandEditor.status;
-  notice('Official Kinetic Crew logo updated everywhere.');paint();
+  notice('Official logo updated on the selected destinations.');paint();
  }catch(error){kcBrandEditor.status=error.message||'Logo upload failed. Your current logo is unchanged.';const status=$('#brandLogoEditorStatus');if(status)status.textContent=kcBrandEditor.status;notice(kcBrandEditor.status);button.disabled=!kcBrandEditor.image;button.textContent=oldLabel;}
 });
 document.addEventListener('change',async e=>{
