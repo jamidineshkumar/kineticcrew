@@ -125,3 +125,41 @@ html[data-theme="light"] .kc-feed-tabs button.active{color:#fff}
     height:calc(100% + 176px)!important;
   }
 }
+
+
+/* Full-screen Gram viewer: retain the same cropped video-only Instagram surface. */
+.kg-viewer-media .kg-instagram-video-only{
+  position:absolute!important;
+  inset:0!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#050505!important;
+}
+.kg-viewer-media .kg-instagram-video-only iframe{
+  position:absolute!important;
+  inset:-88px 0 0!important;
+  display:block!important;
+  width:100%!important;
+  height:calc(100% + 176px)!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#050505!important;
+}
+.kg-viewer-media:has(.kg-instagram-video-only){overflow:hidden!important;background:#050505!important}
+@media(max-width:600px){
+ .kg-viewer-media .kg-instagram-video-only iframe{
+  inset:-88px 0 0!important;
+  height:calc(100% + 176px)!important;
+ }
+}
