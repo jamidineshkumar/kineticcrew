@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
-window.KC_APP_VERSION='1.6.20';
+window.KC_APP_VERSION='1.6.21';
 let kcUpdatePending=false,kcUpdateReloading=false,kcPendingVersion='';
 const KC_UPDATE_GUARD='kc_update_reload_guard_v1';
 function kcReloadAlreadyUsed(version=''){try{return sessionStorage.getItem(KC_UPDATE_GUARD)===String(version||'service-worker');}catch{return new URL(location.href).searchParams.has('kc_refresh');}}
@@ -175,6 +175,40 @@ document.addEventListener('pointerdown',event=>{
 document.addEventListener('contextmenu',event=>{if(event.target.closest('.sidebottom .profile'))event.preventDefault();});
 document.addEventListener('click',event=>{
  if(kcProfileLongPressFired&&event.target.closest('.sidebottom .profile')){event.preventDefault();event.stopImmediatePropagation();kcProfileLongPressFired=false;}
+});
+/* The More menu's My Profile shortcut also supports the same long-press account switcher. */
+let kcMoreProfilePressTimer=null,kcMoreProfilePressFired=false,kcMoreProfilePressPoint=null;
+document.addEventListener('pointerdown',event=>{
+ const target=event.target.closest('.kc-more-reference-others-grid .kc-more-other[data-view="profile"]');
+ if(!target)return;
+ kcMoreProfilePressFired=false;
+ kcMoreProfilePressPoint={x:event.clientX,y:event.clientY};
+ clearTimeout(kcMoreProfilePressTimer);
+ kcMoreProfilePressTimer=setTimeout(()=>{
+  kcMoreProfilePressFired=true;
+  kcOpenAccountSwitcher();
+ },520);
+},{passive:true});
+document.addEventListener('pointermove',event=>{
+ if(!kcMoreProfilePressPoint)return;
+ if(Math.hypot(event.clientX-kcMoreProfilePressPoint.x,event.clientY-kcMoreProfilePressPoint.y)>12){
+  clearTimeout(kcMoreProfilePressTimer);
+  kcMoreProfilePressPoint=null;
+ }
+},{passive:true});
+['pointerup','pointercancel'].forEach(type=>document.addEventListener(type,()=>{
+ clearTimeout(kcMoreProfilePressTimer);
+ kcMoreProfilePressPoint=null;
+},{passive:true}));
+document.addEventListener('contextmenu',event=>{
+ if(event.target.closest('.kc-more-reference-others-grid .kc-more-other[data-view="profile"]'))event.preventDefault();
+});
+document.addEventListener('click',event=>{
+ if(kcMoreProfilePressFired&&event.target.closest('.kc-more-reference-others-grid .kc-more-other[data-view="profile"]')){
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  kcMoreProfilePressFired=false;
+ }
 });
 
 function cacheKey(userId){return 'kc-bootstrap-v2:'+userId;}
@@ -1013,6 +1047,7 @@ function eventsPage(){
  '<label class="kce-event-search"><input id="kceEventSearch" type="search" placeholder="Search concerts, workshops, events..." value="'+esc(S.eventQuery||'')+'" autocomplete="off" aria-label="Search concerts, workshops and events"></label>'+
  (featured&&filter==='all'&&!query?'<button type="button" class="kce-featured-event" data-open-event="'+esc(featured.id)+'">'+art(featured,'featured')+'<span class="kce-featured-info"><i>✦ FEATURED EXPERIENCE</i><b>'+esc(featured.title)+'</b><small>◷ '+esc(dt(featured.starts_at))+'<br>⌖ '+esc(featured.location||'Venue to be announced')+'</small><strong>View event <span>↗</span></strong></span></button>':'')+
  (filter==='all'&&!query?'<div class="kce-category-mosaic kce-event-shortcuts"><button type="button" class="kce-category kce-cat-performances" data-event-filter="performances"><i>♫</i><b>Concerts & Shows</b><small>Live performances</small></button><button type="button" class="kce-category kce-cat-workshops" data-event-filter="workshops"><i>✳</i><b>Workshops</b><small>Learn with the crew</small></button><button type="button" class="kce-category kce-cat-community" data-event-filter="community"><i>♧</i><b>Community</b><small>Meet your people</small></button><button type="button" class="kce-category" data-event-filter="auditions"><i>✦</i><b>Auditions</b><small>Join the movement</small></button></div>':'')+
+'<button type="button" class="kce-kc-meet-tile" data-view="meet" aria-label="Open KC Meet"><span class="kce-kc-meet-mark" aria-hidden="true">KC</span><span class="kce-kc-meet-copy"><small>CREW CONNECTION</small><b>KC Meet</b><span>Start a meeting or join your crew live</span></span><span class="kce-kc-meet-arrow" aria-hidden="true">↗</span></button>'+
  '<div class="kce-discover-label"><div><span class="kce-eyebrow">'+(filter==='tickets'?'YOUR WALLET':'CURATED FOR YOU')+'</span><h2>'+(filter==='tickets'?'Your tickets':filter==='past'?'Past experiences':filter==='all'?'Recommended for you':tabs.find(x=>x[0]===filter)?.[1]||'Events')+'</h2></div><span>'+pool.length+' '+(pool.length===1?'EVENT':'EVENTS')+'</span></div>'+
  '<div class="kce-tabs" role="tablist" aria-label="Event filters">'+tabs.map(([key,label])=>'<button type="button" role="tab" aria-selected="'+(filter===key)+'" class="'+(filter===key?'active':'')+'" data-event-filter="'+key+'">'+label+(key==='tickets'&&registered.length?' <small>'+registered.length+'</small>':'')+'</button>').join('')+'</div>'+
  '<div class="kce-events-grid">'+(pool.length?pool.map(cardUI).join(''):'<div class="kce-empty-state"><span>✦</span><b>'+(filter==='tickets'?'Your ticket wallet is waiting':filter==='past'?'No past events yet':query?'No matching events':'No events here yet')+'</b><small>'+(filter==='tickets'?'Register for an event and your ticket will appear here.':query?'Try another event name, category or venue.':'New Kinetic Crew experiences will appear here.')+'</small>'+(filter==='tickets'?'<button type="button" data-event-filter="all">Discover events →</button>':'')+'</div>')+'</div>'+
