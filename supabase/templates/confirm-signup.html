@@ -1,43 +1,37 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark">
-<title>Enter Kinetic Crew</title>
-<style>
-@keyframes kcGlow{0%,100%{opacity:.35;transform:scale(.92)}50%{opacity:.8;transform:scale(1.08)}}
-@keyframes kcPulse{0%,100%{box-shadow:0 0 0 0 rgba(244,174,82,.18),0 0 24px rgba(244,174,82,.12)}50%{box-shadow:0 0 0 8px rgba(244,174,82,0),0 0 42px rgba(244,174,82,.28)}}
-@media(prefers-reduced-motion:reduce){.kc-orb,.kc-code{animation:none!important}}
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="supported-color-schemes" content="dark">
+<title>Kinetic Crew verification code</title>
 </head>
-<body style="margin:0;padding:26px 12px;background:#08080d;font-family:Arial,Helvetica,sans-serif;color:#f8f5ef">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0">Your Kinetic Crew verification code is ready. Enter it to continue.</div>
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td align="center">
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:620px;overflow:hidden;border:1px solid #35313a;border-radius:28px;background:#101016;box-shadow:0 24px 70px rgba(0,0,0,.55)">
-<tr><td style="padding:25px 28px;background:linear-gradient(120deg,#19171d,#111116);border-bottom:1px solid #38313a">
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td style="font-size:20px;font-weight:900;letter-spacing:3px;color:#fff">KINETIC <span style="color:#f0b45b">CREW</span><div style="padding-top:6px;font-size:9px;letter-spacing:3px;color:#a8a0a8;font-weight:600">MOVE TOGETHER · MAKE IT KINETIC</div></td><td align="right" style="font-size:9px;letter-spacing:2px;color:#d2a35d">CREW HQ / 01</td></tr></table>
+<body style="margin:0;padding:32px 14px;background:#080a0d;font-family:Arial,Helvetica,sans-serif;color:#eef0f4">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0">Your Kinetic Crew verification code: {{ .Token }}</div>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#080a0d">
+<tr><td align="center" style="padding:20px 8px">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:520px">
+<tr><td align="center" style="padding:10px 12px 26px">
+<div style="font-size:22px;line-height:1.2;font-weight:900;letter-spacing:3px;color:#f2f3f6">KINETIC <span style="color:#a7a9b3">CREW</span></div>
 </td></tr>
-<tr><td style="padding:0;background:radial-gradient(ellipse at 50% 12%,#45301e 0,#1a1519 35%,#101016 75%)">
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td align="center" style="padding:36px 22px 12px">
-<div class="kc-orb" style="display:inline-block;width:76px;height:76px;line-height:76px;border:1px solid #b98543;border-radius:24px;background:linear-gradient(145deg,#32251b,#15131a);color:#f5c77f;font-size:31px;text-align:center;animation:kcGlow 3s ease-in-out infinite">✳</div>
-<div style="padding-top:24px;font-size:10px;font-weight:800;letter-spacing:4px;color:#d6a85f">YOUR NEXT CHAPTER STARTS HERE</div>
-<h1 style="margin:13px 0 10px;font-size:34px;line-height:1.12;letter-spacing:-1.2px;color:#fff">Step into the<br><span style="color:#f2bd70">spotlight.</span></h1>
-<p style="max-width:420px;margin:0 auto;color:#b8b0ba;font-size:14px;line-height:1.75">One quick check, then you're in. Verify your email to join the movement and get back to your crew.</p>
-</td></tr></table>
+<tr><td style="padding:28px 22px 30px;border:1px solid #292d34;border-radius:28px;background:#171a20;box-shadow:12px 12px 28px #050609,-10px -10px 26px #222630">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr><td align="center" style="padding:8px 8px 24px">
+<div style="font-size:10px;font-weight:700;letter-spacing:4px;color:#9ca2ad">EMAIL VERIFICATION</div>
 </td></tr>
-<tr><td style="padding:18px 28px 34px;background:#101016">
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #665039;border-radius:22px;background:linear-gradient(145deg,#29211c,#19171b 62%,#17151c);box-shadow:inset 0 1px rgba(255,255,255,.12),0 18px 45px rgba(0,0,0,.35)">
-<tr><td align="center" style="padding:24px 18px 8px;font-size:10px;font-weight:800;letter-spacing:4px;color:#e7bd7d">YOUR ONE-TIME ACCESS CODE</td></tr>
-<tr><td align="center" style="padding:12px 14px 13px"><div class="kc-code" style="display:inline-block;padding:15px 20px;border:1px solid #9a7140;border-radius:15px;background:linear-gradient(135deg,#f3c77f,#d79b4d);color:#1a1410;font-size:35px;line-height:1.2;font-weight:900;letter-spacing:9px;animation:kcPulse 2.8s ease-in-out infinite">{{ .Token }}</div></td></tr>
-<tr><td align="center" style="padding:4px 18px 24px;color:#c3b9ad;font-size:12px;line-height:1.6">Enter this code in the Kinetic Crew app to verify your email.</td></tr>
-</table>
-<p style="margin:20px 0 0;text-align:center;color:#a9a1ac;font-size:12px;line-height:1.7">This code expires in <strong style="color:#f1c27b">10 minutes</strong>.<br>For your security, never share this code with anyone.</p>
+<tr><td align="center" style="padding:0 4px 12px">
+<div style="display:inline-block;padding:23px 18px;width:calc(100% - 36px);max-width:380px;border-radius:20px;background:#101217;border:1px solid #252a32;box-shadow:inset 7px 7px 16px #08090d,inset -7px -7px 16px #1b2029">
+<div style="font-size:36px;line-height:1.35;font-weight:800;letter-spacing:9px;color:#b7a0ff;text-align:center;white-space:nowrap">{{ .Token }}</div>
+</div>
 </td></tr>
-<tr><td style="padding:23px 24px;background:#17151b;border-top:1px solid #39313a;text-align:center">
-<div style="font-size:10px;letter-spacing:3px;font-weight:800;color:#d8aa64">ONE CREW. ONE RHYTHM.</div>
-<p style="margin:9px 0 0;color:#807985;font-size:10px;line-height:1.6">You received this email because an account was created using this address. If this wasn't you, you can safely ignore this message.</p>
+<tr><td align="center" style="padding:16px 8px 0">
+<div style="font-size:10px;letter-spacing:2px;color:#7f8793">KINETIC CREW · CREW HQ</div>
 </td></tr>
 </table>
-<p style="max-width:600px;margin:17px auto 0;text-align:center;color:#625d68;font-size:10px">© Kinetic Crew · Built to move together</p>
+</td></tr>
+<tr><td align="center" style="padding:18px 8px 0;font-size:10px;letter-spacing:1px;color:#606875">KINETIC CREW</td></tr>
+</table>
 </td></tr></table>
-</body></html>
+</body>
+</html>
