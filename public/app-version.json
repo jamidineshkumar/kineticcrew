@@ -1,6 +1,6 @@
 {
   "version": "1.6.0",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T14:00:00.000Z",
-  "release_notes": "Simplified app-wide UI by removing decorative role-space eyebrow labels, tiny carousel labels, counters and slide telemetry."
+  "updated_at": "2026-11-14T14:10:00.000Z",
+  "release_notes": "Replaced native browser delete confirmation prompts with a branded Kinetic Crew dialog requiring DELETE confirmation. Reduced unnecessary background polling, paused hidden-tab refreshes, and slowed app-version checks to improve mobile responsiveness."
 }
