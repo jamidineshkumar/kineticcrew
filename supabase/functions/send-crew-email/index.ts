@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import nodemailer from "npm:nodemailer@6.9.16";
+import { brandedEmail } from "../_shared/email-template.ts";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -68,7 +69,7 @@ Deno.serve(async (req: Request) => {
           to: email,
           subject: title + " · Kinetic Crew",
           text: message,
-          html: '<body style="margin:0;padding:24px;background:#0b1110;color:#f4f0e5;font-family:Arial,sans-serif"><table role="presentation" width="100%" style="max-width:600px;margin:auto;background:#141d1a;border:1px solid #4b5b4e;border-radius:20px;padding:28px"><tr><td><div style="font-size:11px;letter-spacing:3px;color:#d7bd75;font-weight:bold">KINETIC CREW</div><h1 style="font-size:25px;color:#fff8e8;margin:20px 0 12px">' + safeTitle + '</h1><p style="font-size:14px;line-height:1.7;color:#d0d3c8">' + safeBody + '</p><div style="margin-top:26px;padding-top:16px;border-top:1px solid #ffffff22;font-size:10px;letter-spacing:2px;color:#9ba79e">KINETIC CREW · BUILT TO MOVE TOGETHER</div></td></tr></table></body>'
+          html: brandedEmail({ eyebrow: "CREW ANNOUNCEMENT", title: safeTitle, contentHtml: '<p style="margin:0;color:#e5e1e8;font-size:15px;line-height:1.75">' + safeBody + '</p>' , footerNote: "You are receiving this because you are an approved Kinetic Crew member." })
         });
         const { error: sentLogError } = await adminClient.from("crew_email_delivery_log").update({ status: "sent", sent_at: new Date().toISOString() })
           .eq("idempotency_key", emailKey).eq("recipient_email", email);
