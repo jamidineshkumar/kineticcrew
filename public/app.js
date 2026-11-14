@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
-window.KC_APP_VERSION='1.4.8';
+window.KC_APP_VERSION='1.4.9';
 let kcUpdatePending=false,kcUpdateReloading=false,kcPendingVersion='';
 const KC_UPDATE_GUARD='kc_update_reload_guard_v1';
 function kcReloadAlreadyUsed(version=''){try{return sessionStorage.getItem(KC_UPDATE_GUARD)===String(version||'service-worker');}catch{return new URL(location.href).searchParams.has('kc_refresh');}}
@@ -13,7 +13,7 @@ function kcRegisterAutoUpdates(){if(!('serviceWorker'in navigator))return;const 
 window.addEventListener('focus',kcApplyPendingUpdate);window.addEventListener('pageshow',kcApplyPendingUpdate);document.addEventListener('visibilitychange',()=>{if(!document.hidden)kcApplyPendingUpdate();});document.addEventListener('focusout',()=>setTimeout(kcApplyPendingUpdate,250));
 setInterval(kcCheckAppVersion,60*1000);
 window.addEventListener('load',()=>{kcCheckAppVersion();kcRegisterAutoUpdates();},{once:true});
-const S={user:null,view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],pendingMembers:[],pendingPoll:null,pendingPollBusy:false,profileSetupRedirected:false,publicMembers:[],memberFavorites:[],blockedMemberIds:[],featureItems:{},socialPosts:[],socialLikes:[],socialComments:[],profileDashboard:null,profileTab:'uploads',roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',error:'',peopleQuery:'',eventsFilter:'all',eventQuery:'',editingEventId:null,sharedDraft:null,qrStream:null,qrScanning:false,qrProcessing:false,};
+const S={user:null,view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],pendingMembers:[],pendingPoll:null,pendingPollBusy:false,pendingAlertIds:[],pendingAlertTimer:null,profileSetupRedirected:false,publicMembers:[],memberFavorites:[],blockedMemberIds:[],featureItems:{},socialPosts:[],socialLikes:[],socialComments:[],profileDashboard:null,profileTab:'uploads',roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',error:'',peopleQuery:'',eventsFilter:'all',eventQuery:'',editingEventId:null,sharedDraft:null,qrStream:null,qrScanning:false,qrProcessing:false,};
 window.KC_SEARCH_API={
  snapshot:()=>({events:S.events||[],announcements:S.announcements||[],members:S.publicMembers||[],posts:S.socialPosts||[],role:S.user?.role||'member'}),
  load:async()=>{const jobs=[];if(!S.publicMembers?.length)jobs.push(rpc('crew_profile_directory',{}).then(({data,error})=>{if(error)throw error;S.publicMembers=Array.isArray(data)?data:[];}));if(!S.socialPosts?.length)jobs.push(loadSocialFeed());await Promise.all(jobs);},
@@ -1058,6 +1058,9 @@ if(founderProfileEntry){
 }
 if(S.homeUpdateTimer){clearInterval(S.homeUpdateTimer);S.homeUpdateTimer=null;}
 if(S.view==='overview'){
+ // Remove the stray legacy placeholder text seen on the home screen.
+ const homeRoot=document.getElementById('app');
+ if(homeRoot){const walker=document.createTreeWalker(homeRoot,NodeFilter.SHOW_TEXT);const stray=[];while(walker.nextNode()){if((walker.currentNode.nodeValue||'').trim()==='ONaN')stray.push(walker.currentNode);}stray.forEach(node=>node.remove());}
  const homeCarousel=document.querySelector('.kc-home-featured');
  const homeSlides=[...(homeCarousel?.querySelectorAll('[data-home-slide]')||[])];
  const homeDots=[...(homeCarousel?.querySelectorAll('[data-home-slide-to]')||[])];
@@ -1759,6 +1762,38 @@ async function showCrewIntro(force){
  overlay.querySelector('#kcIntroEnter').addEventListener('click',()=>finish(true));
  overlay.querySelector('#kcIntroSkip').addEventListener('click',()=>finish(false));
 }
+async function checkPendingApprovalAlerts(){
+ if(!superadmin()||S.offline||!client)return;
+ try{
+  const {data,error}=await rpc('crew_pending_members',{});
+  if(error)throw error;
+  const pending=Array.isArray(data)?data:[];
+  const ids=pending.map(item=>String(item.auth_id));
+  const key='kc-pending-alert-seen:'+String(S.user?.auth_id||S.user?.id||'');
+  let previous=[];
+  try{previous=JSON.parse(sessionStorage.getItem(key)||'null');}catch{}
+  if(!Array.isArray(previous)){sessionStorage.setItem(key,JSON.stringify(ids));S.pendingAlertIds=ids;S.pendingMembers=pending;return;}
+  const fresh=pending.filter(item=>!previous.includes(String(item.auth_id)));
+  sessionStorage.setItem(key,JSON.stringify(ids));
+  S.pendingAlertIds=ids;
+  S.pendingMembers=pending;
+  if(fresh.length){
+   const body=fresh.length===1
+    ? (fresh[0].name||'A new member')+' requested to join Kinetic Crew. Review the request.'
+    : fresh.length+' new members requested to join Kinetic Crew. Review the requests.';
+   const {data:sent,error:sendError}=await client.functions.invoke('send-crew-notification',{body:{action:'send',title:'New membership request',body,audience:'super_admin'}});
+   if(sendError||sent?.error)throw new Error(sent?.error||sendError?.message||'Push alert could not be sent.');
+   console.info('Pending membership push alert:',sent?.message||'sent');
+   if(['overview','crew-management','member-requests'].includes(S.view))paint();
+  }
+ }catch(error){console.warn('Pending approval alert check failed:',error.message||error);}
+}
+function startPendingApprovalAlerts(){
+ if(S.pendingAlertTimer)clearInterval(S.pendingAlertTimer);
+ if(!superadmin())return;
+ checkPendingApprovalAlerts();
+ S.pendingAlertTimer=setInterval(checkPendingApprovalAlerts,20000);
+}
 function setupCrewPushForSignedInMember(){
  if(!S.user||S.offline||!window.kcPush)return;
  const userId=String(S.user.auth_id||S.user.id||'guest');
@@ -1822,6 +1857,7 @@ async function boot(){
   if(membership.error)throw membership.error;
   if(membership.data?.status!=='approved'){location.replace(window.kcPath('pending.html'));return;}
   if(S.user&&membership.data?.role)S.user.role=membership.data.role;
+  startPendingApprovalAlerts();
   const accessCheck=await withTimeout(client.rpc('crew_assert_not_blocked',{}),10000,'Could not verify your Kinetic Crew account status.');
   if(accessCheck.error){
    if(/blocked|suspended/i.test(accessCheck.error.message||'')){
