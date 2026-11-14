@@ -1,6 +1,6 @@
 {
-  "version": "1.6.12",
+  "version": "1.6.13",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T13:10:00.000Z",
-  "release_notes": "KC Meet title and error dialogs now use the Kinetic Crew in-app dialog system."
+  "updated_at": "2026-11-14T13:15:00.000Z",
+  "release_notes": "Fixed logo publishing failure caused by destination initialization order; selected destinations are validated before upload."
 }
