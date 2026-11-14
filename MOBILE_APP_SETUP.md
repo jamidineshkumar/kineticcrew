@@ -9,7 +9,7 @@ Kinetic Crew keeps one shared web codebase in `public/`, packaged with Capacitor
 1. Open GitHub → Actions → **Build Kinetic Crew Mobile Apps**.
 2. Select **Run workflow** on the `main` branch.
 3. Wait for the Android job to finish.
-4. Download the `kinetic-crew-debug-apk` artifact and extract `app-debug.apk`.
+4. Download the `kinetic-crew-debug-apk` artifact and extract `KineticCrew.apk`.
 5. Transfer it to an Android phone and install it. Android may ask you to allow installs from the browser or file manager used to open the APK.
 
 ### Build a signed release APK for sharing
@@ -23,7 +23,7 @@ Configure these GitHub Actions repository secrets:
 - `ANDROID_KEY_ALIAS`: key alias
 - `ANDROID_KEY_PASSWORD`: key password
 
-After adding all four secrets, run the same workflow again. It produces the `kinetic-crew-signed-release-apk` artifact. Future APK updates must use the same keystore and application ID.
+After adding all four secrets, run the same workflow again. It produces the `kinetic-crew-signed-release-apk` artifact containing `KineticCrew.apk`. Future APK updates must use the same keystore and application ID.
 
 Windows PowerShell Base64 conversion:
 
