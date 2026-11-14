@@ -176,7 +176,8 @@ document.addEventListener('contextmenu',event=>{if(event.target.closest('.sidebo
 document.addEventListener('click',event=>{
  if(kcProfileLongPressFired&&event.target.closest('.sidebottom .profile')){event.preventDefault();event.stopImmediatePropagation();kcProfileLongPressFired=false;}
 });
-\nfunction cacheKey(userId){return 'kc-bootstrap-v2:'+userId;}
+
+function cacheKey(userId){return 'kc-bootstrap-v2:'+userId;}
 function paintUser(){if(!S.user)return;const name=$('#profileName'),userRole=$('#profileRole'),avatar=$('#avatar'),topAvatar=$('#topAvatar');if(name)name.textContent=S.user.name||S.user.email||'Crew Member';if(userRole)userRole.textContent=role(S.user.role);if(avatar)avatar.innerHTML=avatarMarkup(S.user);if(topAvatar)topAvatar.innerHTML=avatarMarkup(S.user,'small');}
 async function refresh(){
  // The authenticated bootstrap is the only data dependency required to open the app.
