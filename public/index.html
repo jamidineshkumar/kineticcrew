@@ -70,7 +70,8 @@
 <link rel="stylesheet" href="kc-feature-page-navigation.css?v=20261114-feature-pages2">
 <link rel="stylesheet" href="qr-scanner-focus.css?v=20261114-qr-focus1">
 <link rel="stylesheet" href="kc-dock-premium.css?v=20261114-premium-dock1">
-<link rel="stylesheet" href="kc-home-poll-layout.css?v=20261114-poll-layout1">\n<link rel="stylesheet" href="kc-developer-photo.css?v=20261114-developer-photo1">\n</head>
+<link rel="stylesheet" href="kc-home-poll-layout.css?v=20261114-poll-layout1">\n<link rel="stylesheet" href="kc-developer-photo.css?v=20261114-developer-photo1">\n<link rel="stylesheet" href="kc-home-artifact-cleanup.css?v=20261114-home-cleanup1">
+</head>
 <body>
 <div id="appRoot">
   <div class="shell">
@@ -150,5 +151,6 @@ setTimeout(function(){const root=document.getElementById('app');if(root&&root.te
 <script>
 (()=>{const slash=String.fromCharCode(92);const clean=root=>{const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];while(w.nextNode()){const n=w.currentNode,v=n.nodeValue||'';const z=v.split(slash+'n').join('').split(slash+'r').join('');if(z.trim()===''&&z!==v)nodes.push(n);}nodes.forEach(n=>n.remove());};clean(document.body);new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType===Node.TEXT_NODE){const v=n.nodeValue||'',z=v.split(slash+'n').join('').split(slash+'r').join('');if(z.trim()===''&&z!==v)n.remove();}else if(n.nodeType===Node.ELEMENT_NODE)clean(n);}))).observe(document.body,{childList:true,subtree:true});})();
 </script>
-<script src="kc-admin-menu-shortcuts.js?v=20261114-admin-menu1" defer></script>\n</body>
+<script src="kc-admin-menu-shortcuts.js?v=20261114-admin-menu1" defer></script>\n<script src="kc-home-text-cleanup.js?v=20261114-home-cleanup1" defer></script>
+</body>
 </html>
