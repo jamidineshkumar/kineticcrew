@@ -15,6 +15,8 @@
   const src=img.getAttribute('src')||'';
   const className=String(img.className?.baseVal||img.className||'');
   const isBrandImage=/kinetic-crew-logo\.(?:svg|jpe?g|png|webp)(?:[?#]|$)/i.test(src)||/(^|[-_])logo($|[-_])|brandmark/i.test(className)||/kinetic\s*crew\s*logo|crew\s*logo|brand\s*logo/i.test(img.alt||'')||img.hasAttribute('data-kc-brand')||img.dataset.kcBrandManaged==='true';
+  const signinPage=!!document.querySelector('#kcAuthScreen');
+  if(signinPage?!activeTargets.signin:!activeTargets.app)return;
   if(activeUrl&&isBrandImage&&src!==activeUrl){img.dataset.kcBrandManaged='true';img.src=activeUrl;}
 
  };
