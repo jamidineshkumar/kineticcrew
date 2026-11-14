@@ -96,9 +96,9 @@ async function enable() {
     if (Notification.permission === "granted") {
       const notice=new Notification(title, {
         body,
-        icon: window.kcPath("kc-notification-icon.png"),
+        icon: window.kcPath("kinetic-crew-logo.svg"),
         image: window.kcPath("kinetic-crew-logo.jpg"),
-        badge: window.kcPath("kc-notification-icon.png"),
+        badge: window.kcPath("kc-notification-icon.svg"),
         tag: payload.data?.id || "kinetic-crew-update",
         data: { url: rawTarget }
       });
