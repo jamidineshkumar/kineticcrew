@@ -1,0 +1,48 @@
+export type BrandedEmailOptions = {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  contentHtml?: string;
+  code?: string;
+  buttonLabel?: string;
+  buttonUrl?: string;
+  footerNote?: string;
+};
+
+const BRAND_LOGO = "https://lkdfjiweqxshbbcadfna.supabase.co/storage/v1/object/public/crew-brand-assets/brand/email-logo.png";
+const esc = (value: unknown) => String(value ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]!));
+
+export function brandedEmail(options: BrandedEmailOptions): string {
+  const title = esc(options.title);
+  const subtitle = options.subtitle ? esc(options.subtitle) : "";
+  const eyebrow = esc(options.eyebrow || "KINETIC CREW · AUDITIONS 3.0");
+  const code = options.code ? `
+    <tr><td align="center" style="padding:30px 18px 34px;border:1px solid #9d7774;border-radius:28px;background:#292832;background-image:linear-gradient(135deg,#292b34 0%,#24232c 52%,#2c211f 100%);">
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:42px;line-height:1.2;font-weight:800;letter-spacing:9px;color:#ff955d;text-shadow:0 0 14px #f4773f88;white-space:nowrap;">${esc(options.code)}</div>
+      <div style="display:inline-block;margin-top:20px;padding:9px 17px;border:1px solid #66646d;border-radius:24px;background:#34353d;color:#c3c1c9;font-size:13px;">One-time verification code</div>
+    </td></tr>` : "";
+  const button = options.buttonLabel && options.buttonUrl ? `
+    <tr><td align="center" style="padding:24px 0 8px;">
+      <a href="${esc(options.buttonUrl)}" style="display:inline-block;padding:15px 28px;border:1px solid #a56f5d;border-radius:40px;background:#08090d;background-image:linear-gradient(110deg,#101114,#050506 65%,#261510);box-shadow:0 0 18px #f47c4a55;color:#f5f2f4;text-decoration:none;font-size:16px;font-weight:700;">${esc(options.buttonLabel)} &nbsp;→</a>
+    </td></tr>` : "";
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"><title>${title} · Kinetic Crew</title></head>
+<body style="margin:0;padding:0;background:#08090d;color:#f5f3f6;font-family:Arial,Helvetica,sans-serif;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">${subtitle || title} · Kinetic Crew</div>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#08090d;"><tr><td align="center" style="padding:28px 14px 34px;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:620px;">
+<tr><td style="padding:8px 10px 38px;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>
+<td align="left" valign="middle"><span style="display:inline-block;padding:11px 17px;border:1px solid #55545b;border-radius:30px;background:#171820;color:#f6f5f7;font-size:15px;font-weight:800;letter-spacing:1px;">KINETIC CREW <span style="font-size:10px;color:#b9b6c0;font-weight:600;">AUDITIONS 3.0</span></span></td>
+<td align="right" valign="middle"><img src="${BRAND_LOGO}" width="66" height="66" alt="KC" style="display:block;width:66px;height:66px;object-fit:contain;border:1px solid #66616e;border-radius:22px;background:#24232c;padding:4px;"></td>
+</tr></table></td></tr>
+<tr><td style="padding:0 10px 26px;"><div style="font-size:11px;letter-spacing:3px;color:#ff955d;font-weight:800;">${eyebrow}</div>
+<h1 style="margin:14px 0 0;font-size:36px;line-height:1.08;letter-spacing:-1.2px;color:#f7f6f8;">${title}</h1>
+${subtitle ? `<p style="margin:16px 0 0;color:#b6b3bd;font-size:18px;line-height:1.5;">${subtitle}</p>` : ""}
+</td></tr>
+<tr><td style="padding:0 0 22px;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #6d6269;border-radius:28px;background:#171820;background-image:linear-gradient(135deg,#252832 0%,#171820 55%,#241b1b 100%);">
+<tr><td style="padding:26px 22px 28px;">${options.contentHtml || ""}</td></tr>
+${code}${button}
+</table></td></tr>
+<tr><td style="padding:0 10px;"><p style="margin:0;color:#aaa7b0;font-size:13px;line-height:1.6;">${esc(options.footerNote || "If you didn't request this, you can safely ignore this email.")}</p>
+<p style="margin:24px 0 0;color:#686671;font-size:10px;letter-spacing:2px;">KINETIC CREW · BUILT TO MOVE TOGETHER</p></td></tr>
+</table></td></tr></table></body></html>`;
+}
