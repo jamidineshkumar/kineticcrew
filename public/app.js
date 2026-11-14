@@ -1071,6 +1071,71 @@ function memberRequestsPage(){
 }
 function chatMessagesMarkup(items){const rows=(items||[]).slice().sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));return rows.length?rows.map(m=>{const own=String(m.author_id)===String(S.user.auth_id);return '<article class="wa-message '+(own?'own':'')+'"><small>'+esc(own?'You':m.author_name||'Crew member')+'</small><p>'+esc(m.body||m.title)+'</p><time>'+esc(dt(m.created_at))+'</time></article>';}).join(''):'<div class="wa-empty"><b>Start the crew conversation</b><small>Messages from your crew will appear here.</small></div>';}
 function whatsAppChatPage(){const items=S.featureItems.chat||[];return welcome('Crew Chat','One crew conversation. Share plans, quick updates and moments.')+'<section class="wa-shell"><aside class="wa-rail"><div class="wa-rail-head"><b>KC MESSAGES</b><span>● ONLINE</span></div><div class="wa-room active"><span class="wa-room-avatar">KC</span><span><b>Main Crew</b><small>Everyone in Kinetic Crew</small></span></div></aside><div class="wa-conversation"><header class="wa-chat-head"><span class="wa-room-avatar">KC</span><span><b>Main Crew</b><small>Kinetic Crew group conversation · '+items.length+' messages</small></span></header><div class="wa-messages" id="waMessages">'+chatMessagesMarkup(items)+'</div><form class="wa-composer" data-feature-form="chat"><input type="hidden" name="title" value="Crew message"><textarea name="body" rows="1" maxlength="5000" required placeholder="Message the crew…"></textarea><button type="submit" aria-label="Send message">➤</button></form></div></section>';}
+
+function kcApplyFeaturePageNavigation(){
+ const excluded=new Set(['overview','more','events','calendar','chat','feed','memes','fun-zone','fun-zone-games','meet','attendance','settings','app-settings']);
+ if(excluded.has(S.view))return;
+ const root=$('#app');if(!root)return;
+ const candidates=[...root.querySelectorAll('section,form')].filter(node=>{
+  if(node.closest('[data-kc-feature-navigation]'))return false;
+  if(node.matches('[data-kc-feature-exclude],.kc-feed-story-rail,.kc-feed-stories,.social-feed-list,.eventgrid,.kc-attendance-feature-grid'))return false;
+  let parent=node.parentElement;
+  while(parent&&parent!==root){
+   if(parent.matches('section,form'))return false;
+   parent=parent.parentElement;
+  }
+  return parent===root;
+ });
+ const usable=candidates.filter(node=>{
+  const heading=node.querySelector('h2,h3,h4,legend,[data-section-title]');
+  const text=(heading?.textContent||'').trim();
+  return text.length>1;
+ });
+ if(usable.length<2)return;
+ const labels=usable.map((node,index)=>{
+  const heading=node.querySelector('h2,h3,h4,legend,[data-section-title]');
+  const title=(heading?.textContent||'').replace(/\s+/g,' ').trim();
+  return title.length>42?title.slice(0,39).trim()+'…':title||('Feature '+(index+1));
+ });
+ const menu=document.createElement('section');
+ menu.className='kc-feature-page-menu';
+ menu.dataset.kcFeatureNavigation='true';
+ menu.innerHTML='<span class="kc-feature-page-kicker">CHOOSE A FEATURE</span><div class="kc-feature-page-grid"></div><p class="kc-feature-page-hint">Each option opens on its own screen.</p>';
+ const grid=menu.querySelector('.kc-feature-page-grid');
+ usable.forEach((node,index)=>{
+  const button=document.createElement('button');
+  button.type='button';button.className='kc-feature-page-card';button.dataset.kcFeatureOpen=String(index);
+  const icon=document.createElement('span');icon.className='kc-feature-page-icon';icon.textContent=['✦','◈','▤','↗'][index%4];
+  const title=document.createElement('b');title.textContent=labels[index];
+  const arrow=document.createElement('i');arrow.textContent='↗';
+  button.append(icon,title,arrow);grid.append(button);
+  node.hidden=true;node.dataset.kcFeaturePanel=String(index);
+ });
+ const first=usable[0];
+ first.parentElement.insertBefore(menu,first);
+}
+function kcOpenFeaturePage(index){
+ const menu=$('#app [data-kc-feature-navigation]');
+ const panels=[...document.querySelectorAll('#app [data-kc-feature-panel]')];
+ if(!menu||!panels.length)return;
+ const panel=panels.find(node=>node.dataset.kcFeaturePanel===String(index));
+ if(!panel)return;
+ menu.hidden=true;
+ panels.forEach(node=>{node.hidden=node!==panel;});
+ let back=panel.querySelector(':scope > .kc-feature-page-back');
+ if(!back){
+  back=document.createElement('button');back.type='button';back.className='kc-feature-page-back';back.dataset.kcFeatureBack='true';back.textContent='← All features';
+  panel.insertBefore(back,panel.firstChild);
+ }
+ panel.scrollIntoView({behavior:'instant',block:'start'});
+}
+function kcBackToFeatureMenu(){
+ const menu=$('#app [data-kc-feature-navigation]');
+ if(!menu)return;
+ document.querySelectorAll('#app [data-kc-feature-panel]').forEach(node=>node.hidden=true);
+ menu.hidden=false;menu.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
 function paint(){
 document.body.classList.toggle('kc-more-open',S.view==='more');document.body.classList.toggle('kc-home-screen',S.view==='overview');const headerBell=document.querySelector('.kc-header-notifications');if(headerBell)headerBell.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>'+(unread()?'<i></i>':'');const headerProfile=document.querySelector('.kc-header-profile');if(headerProfile)headerProfile.innerHTML=avatarMarkup(S.user||{},'small');
 const communityItems=[['polls','◉','Polls & voting'],['memories','▧','KC Memories'],['leave','↗','Leave requests'],['rehearsals','◷','Rehearsals'],['updates','↗','Crew updates'],['people','♙','Discover crew'],['meet','◉','KC Meet']];
@@ -1091,6 +1156,7 @@ const fn={overview:home,more:morePage,events:eventsPage,meet:meetPage,'event-det
 $('#app').innerHTML=(S.error?'<div class="alert"><span>'+esc(S.error)+'</span><button data-clear>×</button></div>':'')+(S.offline?'<div class="offline-strip">OFFLINE · LAST SAVED DATA</div>':'')+fn();savePageState();
 if(S.view==='event-detail'&&admin())loadTicketRecipientRoster(S.selectedEvent);
 renderProfileQrCards();
+kcApplyFeaturePageNavigation();
 const founderProfileEntry=S.view==='profile'&&superadmin()&&!document.body.classList.contains('kc-founder-profile-open');
 if(S.view!=='profile')document.body.classList.remove('kc-founder-profile-open');
 if(founderProfileEntry){
@@ -1342,6 +1408,7 @@ document.addEventListener('click',event=>{
  if(!event.target.closest('[data-member-action-card]'))closeMemberActionRings();
 });
 document.addEventListener('contextmenu',event=>{if(event.target.closest('[data-member-action-card]'))event.preventDefault();});
+document.addEventListener('click',e=>{const feature=e.target.closest('[data-kc-feature-open]');if(feature){kcOpenFeaturePage(feature.dataset.kcFeatureOpen);return;}if(e.target.closest('[data-kc-feature-back]')){kcBackToFeatureMenu();return;}});
 document.addEventListener('click',async e=>{
  const review=e.target.closest('[data-review-member]');if(review){const action=review.dataset.reviewMember,id=review.dataset.memberId;if(!admin()||!id)return;review.disabled=true;try{if(action==='reject'&&!await kcConfirmDialog({title:'Reject membership request?',message:'This member will not be added to the crew.',confirmText:'Reject request',danger:true})){review.disabled=false;return;}const {data,error}=await rpc('crew_review_member',{p_auth_id:id,p_decision:action,p_reason:action==='reject'?'Not approved by crew administration.':null});if(error)throw error;if(action==='approve'){const {data:mail,error:mailError}=await client.functions.invoke('send-member-welcome',{body:{authId:id}});if(mailError||mail?.error)throw Error(mail?.error||mailError?.message||'Member approved, but welcome email failed.');notice(mail?.message||'Member approved and welcome email sent.');}else notice('Membership request rejected.');await go(S.view==='crew-management'?'crew-management':'member-requests');}catch(error){notice(error.message||'Could not review this request.');review.disabled=false;}return;}
  const memberAction=e.target.closest('[data-member-action]');
