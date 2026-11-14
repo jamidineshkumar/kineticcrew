@@ -63,7 +63,7 @@
 .kc-start-loading{min-height:48vh;display:grid;place-content:center;justify-items:center;gap:12px;color:#f4f2f8;text-align:center;font:500 14px system-ui,sans-serif}.kc-start-loading:before{content:"";width:28px;height:28px;border:2px solid #ffffff30;border-top-color:#d6a4ff;border-radius:50%;animation:kcStartSpin .8s linear infinite}@keyframes kcStartSpin{to{transform:rotate(360deg)}}
 </style>
 <link rel="stylesheet" href="kc-admin-role-tools.css?v=20261114-roletools1">
-</head>
+<link rel="stylesheet" href="kc-admin-menu-shortcuts.css?v=20261114-admin-menu1">\n</head>
 <body>
 <div id="appRoot">
   <div class="shell">
@@ -143,5 +143,5 @@ setTimeout(function(){const root=document.getElementById('app');if(root&&root.te
 <script>
 (()=>{const slash=String.fromCharCode(92);const clean=root=>{const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];while(w.nextNode()){const n=w.currentNode,v=n.nodeValue||'';const z=v.split(slash+'n').join('').split(slash+'r').join('');if(z.trim()===''&&z!==v)nodes.push(n);}nodes.forEach(n=>n.remove());};clean(document.body);new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType===Node.TEXT_NODE){const v=n.nodeValue||'',z=v.split(slash+'n').join('').split(slash+'r').join('');if(z.trim()===''&&z!==v)n.remove();}else if(n.nodeType===Node.ELEMENT_NODE)clean(n);}))).observe(document.body,{childList:true,subtree:true});})();
 </script>
-</body>
+<script src="kc-admin-menu-shortcuts.js?v=20261114-admin-menu1" defer></script>\n</body>
 </html>
