@@ -1567,6 +1567,8 @@ document.addEventListener('click',async event=>{
  if(!kcBrandEditor.image){notice('Choose a logo image first.');return;}
  const oldLabel=button.textContent;button.disabled=true;button.textContent='Preparing logo…';
  try{
+  const targets=Object.fromEntries(['app','browser','pwa','signin','email'].map(key=>[key,!!document.querySelector('[data-brand-target="'+key+'"]')?.checked]));
+  if(!Object.values(targets).some(Boolean))throw Error('Select at least one destination for the new logo.');
   const canvas=document.createElement('canvas');canvas.width=512;canvas.height=512;
   const ctx=canvas.getContext('2d');if(!ctx)throw Error('Your browser could not prepare the logo image.');
   kcBrandClampPan();const p=kcBrandEditor,m=kcBrandMetrics(),img=p.image;
@@ -1579,8 +1581,6 @@ document.addEventListener('click',async event=>{
   if(uploaded.error)throw uploaded.error;
   if(targets.email){button.textContent='Updating email logo…';const emailUpload=await storage.upload('brand/email-logo.png',blob,{upsert:true,contentType:'image/png',cacheControl:'0'});if(emailUpload.error)throw emailUpload.error;}
   const publicUrl=storage.getPublicUrl(uploaded.data.path).data.publicUrl+'?v='+Date.now();
-  const targets=Object.fromEntries(['app','browser','pwa','signin','email'].map(key=>[key,!!document.querySelector('[data-brand-target="'+key+'"]')?.checked]));
-  if(!Object.values(targets).some(Boolean))throw Error('Select at least one destination for the new logo.');
   button.textContent='Saving destinations…';
   const targetSaved=await rpc('crew_set_app_setting',{p_key:'brand_logo_targets',p_value:targets});
   if(targetSaved.error)throw targetSaved.error;
