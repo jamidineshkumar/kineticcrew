@@ -835,6 +835,7 @@ function home(){
  const homeEvents=[...upcoming,...recentPublished].slice(0,6);
  const homeListEvents=upcoming.length?upcoming.slice(0,3):recentPublished.slice(0,3);
  const people=(S.publicMembers||[]).filter(m=>String(m.auth_id)!==String(S.user?.auth_id)).slice(0,8);
+ const onlinePeople=[...new Set((S.onlineCrew||[]).map(String))].filter(id=>id!==String(S.user?.auth_id||'')).map(id=>(S.publicMembers||[]).find(m=>String(m.auth_id)===id)).filter(Boolean);
  const u=S.user||{},name=(u.name||u.email||'Crew member').split('@')[0].split(' ')[0];
  const hour=new Date().getHours(),greeting=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
  const homeMood=upcoming.length?'Your next crew moment is getting closer.':'Your space. Your people. Your next big moment.';
@@ -880,7 +881,7 @@ function home(){
  '<section class="kc-home-featured" aria-label="Featured crew updates"><div class="kc-home-featured-track">'+slideMarkup+'</div>'+(slides.length>1?'<div class="kc-home-featured-dots" aria-label="Featured carousel pages">'+slides.map((_,i)=>'<button type="button" data-home-slide-to="'+i+'" class="'+(i===0?'active':'')+'" aria-label="Show slide '+(i+1)+'"></button>').join('')+'</div>':'')+'</section>'+
  '<section class="kc-home-reference-section kc-home-latest-section"><div class="kc-home-reference-section-head"><h2>Latest from your crew</h2><button type="button" data-view="notifications">See all <span>→</span></button></div><div class="kc-exact-update-row">'+updates+'</div></section>'+
  
-  '<section class="kc-fun-people kc-home-online-crew" aria-label="Crew members online" '+((S.onlineCrew||[]).length?'':'hidden')+'><div class="kc-fun-section-title"><div><small>LIVE PRESENCE</small><h2>Crew online <span class="kc-online-count">'+(S.onlineCrew||[]).length+'</span></h2></div></div><div class="kc-fun-people-rail">'+(S.onlineCrew||[]).map(id=>{const p=people.find(m=>String(m.auth_id)===String(id));return p?'<button type="button" class="kc-fun-person is-online" data-open-profile="'+esc(p.auth_id)+'">'+avatarMarkup(p)+'<i class="kc-online-dot" aria-label="Online"></i><b>'+esc((p.name||'Crew').split(' ')[0])+'</b></button>':'';}).join('')+'</div></section>'+
+  '<section class="kc-fun-people kc-home-online-crew" aria-label="Crew members online" '+(onlinePeople.length?'':'hidden')+'><div class="kc-fun-section-title"><div><small>LIVE PRESENCE</small><h2>Crew online <span class="kc-online-count">'+onlinePeople.length+'</span></h2></div></div><div class="kc-fun-people-rail">'+onlinePeople.map(p=>'<button type="button" class="kc-fun-person is-online" data-open-profile="'+esc(p.auth_id)+'">'+avatarMarkup(p)+'<i class="kc-online-dot" aria-label="Online"></i><b>'+esc((p.name||'Crew').split(' ')[0])+'</b></button>').join('')+'</div></section>'+
   '<div class="kc-fun-hub-foot">ONE CREW. MANY WAYS TO HAVE FUN. <span>✦</span></div>'+
  '</div>';
 }
