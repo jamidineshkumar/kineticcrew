@@ -31,3 +31,46 @@ html[data-theme="light"] .kg-head-actions button{background:#fff;color:#26282c;b
 html[data-theme="light"] .kc-feed-tabs{background:#fff!important;border-color:#e1e3e7!important}
 html[data-theme="light"] .kc-feed-tabs button{color:#676d75}
 html[data-theme="light"] .kc-feed-tabs button.active{color:#fff}
+
+
+/* Instagram shares: present as a clean, full-width video surface in Kinetic Gram. */
+.social-post-card .kg-instagram-video-only{
+  position:relative!important;
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  height:min(72dvh,680px)!important;
+  min-height:320px!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border:0!important;
+  border-radius:18px!important;
+  background:#050505!important;
+  isolation:isolate;
+}
+.social-post-card .kg-instagram-video-only iframe{
+  position:absolute!important;
+  inset:-92px 0 0!important;
+  display:block!important;
+  width:100%!important;
+  height:calc(100% + 184px)!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#050505!important;
+}
+.social-post-card .social-link-preview{display:none!important}
+@media(max-width:600px){
+ .social-post-card .kg-instagram-video-only{
+  height:min(70dvh,640px)!important;
+  min-height:300px!important;
+  border-radius:16px!important;
+ }
+ .social-post-card .kg-instagram-video-only iframe{
+  inset:-88px 0 0!important;
+  height:calc(100% + 176px)!important;
+ }
+}
