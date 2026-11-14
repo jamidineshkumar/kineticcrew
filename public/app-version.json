@@ -1,6 +1,6 @@
 {
-  "version": "1.5.4",
+  "version": "1.5.5",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T12:50:00.000Z",
-  "release_notes": "Member profile updates now persist all editable details and the visitor profile uses the member photo as a full-bleed background instead of a circular avatar."
+  "updated_at": "2026-11-14T13:00:00.000Z",
+  "release_notes": "Fixed member directory details so profession, designation and Instagram are returned consistently. Public member profiles now use the member photo as a full-bleed background instead of a circular avatar."
 }
