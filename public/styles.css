@@ -192,3 +192,27 @@
 .kc-attendance-success-modal h2{margin:10px 0 8px}.kc-attendance-success-member{font-size:18px;font-weight:750;margin:8px 0}.kc-attendance-success-event{display:grid;gap:5px;margin:18px 0;padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.045)}.kc-attendance-success-event small{opacity:.7}
 @keyframes kcAttendanceTickIn{from{transform:scale(.55);opacity:0}to{transform:scale(1);opacity:1}}
 @media(prefers-reduced-motion:reduce){.kc-attendance-success-tick{animation:none}}
+
+
+/* Branded, lightweight destructive-action dialog */
+.modalback.kc-confirm-backdrop{z-index:1000;padding:18px;background:rgba(3,5,9,.78);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:kcConfirmFade .14s ease-out}
+.kc-confirm-modal{width:min(100%,460px);padding:26px 24px 22px;border:1px solid rgba(255,255,255,.12);border-radius:25px;background:linear-gradient(155deg,#25262d,#17191f 72%);box-shadow:0 24px 70px rgba(0,0,0,.55);text-align:left;animation:kcConfirmRise .18s ease-out}
+.kc-confirm-mark{display:grid;place-items:center;width:42px;height:42px;margin-bottom:16px;border:1px solid rgba(255,105,105,.3);border-radius:14px;background:rgba(255,80,80,.12);color:#ff9292;font-size:22px;font-weight:800}
+.kc-confirm-kicker{display:block;margin-bottom:8px;color:#b8a4d9;font-size:10px;font-weight:750;letter-spacing:.12em}
+.kc-confirm-modal h2{margin:0 0 10px;color:#f6f4fa;font-size:23px;line-height:1.2;letter-spacing:-.035em}
+.kc-confirm-modal>p{margin:0 0 16px;color:#b6b6c0;font-size:13px;line-height:1.55}
+.kc-confirm-target{margin:0 0 18px;padding:12px 14px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.045);color:#f2edf8;font-size:14px;font-weight:700;overflow-wrap:anywhere}
+.kc-confirm-input-label{display:block;margin:0 0 8px;color:#d7d4df;font-size:12px}
+.kc-confirm-input-label b{color:#d0b5ff;letter-spacing:.08em}
+.kc-confirm-input{display:block;width:100%;min-height:50px;padding:0 14px;border:1px solid rgba(255,255,255,.14);border-radius:13px;outline:none;background:#101116;color:#fff;font-size:16px;letter-spacing:.08em}
+.kc-confirm-input:focus{border-color:#a88bd9;box-shadow:0 0 0 3px rgba(168,139,217,.14)}
+.kc-confirm-error{min-height:17px;margin:6px 0 0!important;color:#ff9b9b!important;font-size:11px!important}
+.kc-confirm-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.kc-confirm-actions button{min-height:46px;padding:0 18px;border-radius:13px;font-size:13px;font-weight:750}
+.kc-confirm-actions .kc-confirm-danger{border:1px solid rgba(255,105,105,.35);background:linear-gradient(135deg,#d83b54,#a91f3b);color:#fff}
+.kc-confirm-actions .kc-confirm-danger:disabled{opacity:.35;filter:grayscale(.6);cursor:not-allowed}
+.kc-confirm-actions .secondary{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#e9e7ee}
+@keyframes kcConfirmFade{from{opacity:0}to{opacity:1}}
+@keyframes kcConfirmRise{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
+@media(max-width:520px){.kc-confirm-modal{padding:23px 19px 19px;border-radius:22px}.kc-confirm-modal h2{font-size:21px}.kc-confirm-actions button{flex:1}}
+@media(prefers-reduced-motion:reduce){.modalback.kc-confirm-backdrop,.kc-confirm-modal{animation:none}}
