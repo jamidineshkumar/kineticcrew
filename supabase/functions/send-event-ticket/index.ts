@@ -1,6 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import QRCode from "npm:qrcode@1.5.4";
 import nodemailer from "npm:nodemailer@6.9.16";
+import { brandedEmail } from "../_shared/email-template.ts";
 
 const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization, x-client-info, apikey, content-type","Access-Control-Allow-Methods":"POST, OPTIONS"};
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,"Content-Type":"application/json"}});
@@ -86,41 +87,14 @@ Deno.serve(async(req)=>{
    const eventDate=dateLabel(event.starts_at);
    const eventTime=timeLabel(event.starts_at);
    const eventVenue=String(event.location||"To be announced");
-   const html=`<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:20px 10px;background:#0b1110;font-family:Arial,Helvetica,sans-serif;color:#f4f0e5">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse"><tr><td align="center">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;border-collapse:separate;border-spacing:0;background:#121b19;border:1px solid #b69a50;border-radius:24px;overflow:hidden">
-<tr><td style="padding:24px 24px 20px;background:linear-gradient(120deg,#153b36,#282519);text-align:left">
-<div style="font-size:10px;letter-spacing:3px;color:#d7bd75;font-weight:bold">KINETIC CREW&nbsp; / &nbsp;OFFICIAL ENTRY</div>
-<div style="font-size:11px;letter-spacing:4px;color:#c7c4b4;margin-top:20px">MY TICKET</div>
-<div style="font-size:27px;line-height:1.12;font-weight:700;color:#fff8e8;margin-top:8px;word-break:break-word">${esc(eventTitle)}</div>
-</td></tr>
-<tr><td style="padding:18px 18px 0">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #77683c;border-radius:18px;background:#17211e">
-<tr><td style="padding:14px 14px 10px;text-align:center">
-<div style="font-size:10px;letter-spacing:2px;color:#d9cda9">PASS ID&nbsp; · &nbsp;${passId}</div>
-</td></tr>
-<tr><td style="padding:0 14px 12px;text-align:center">
-<img src="cid:ticket-qr.png" width="164" height="164" alt="Personal event entry QR code" style="display:block;width:164px;height:164px;max-width:100%;margin:0 auto;background:#f3ecd9;border:7px solid #302b1b;border-radius:12px">
-<div style="font-size:9px;letter-spacing:2px;color:#b8c0b5;margin-top:10px">SCAN AT THE EVENT ENTRANCE</div>
-</td></tr></table>
-</td></tr>
-<tr><td style="padding:20px 20px 8px">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
-<tr><td width="50%" valign="top" style="padding:0 8px 15px 0"><div style="font-size:9px;letter-spacing:2px;color:#aeb4a8">NAME</div><div style="font-size:14px;line-height:1.4;font-weight:bold;color:#f4f0e5;padding-top:5px">${esc(recipient.name)}</div></td>
-<td width="50%" valign="top" style="padding:0 0 15px 8px"><div style="font-size:9px;letter-spacing:2px;color:#aeb4a8">DATE</div><div style="font-size:14px;line-height:1.4;font-weight:bold;color:#f4f0e5;padding-top:5px">${esc(eventDate)}</div></td></tr>
-<tr><td width="50%" valign="top" style="padding:0 8px 10px 0"><div style="font-size:9px;letter-spacing:2px;color:#aeb4a8">VENUE</div><div style="font-size:14px;line-height:1.4;font-weight:bold;color:#f4f0e5;padding-top:5px">${esc(eventVenue)}</div></td>
-<td width="50%" valign="top" style="padding:0 0 10px 8px"><div style="font-size:9px;letter-spacing:2px;color:#aeb4a8">TIME</div><div style="font-size:14px;line-height:1.4;font-weight:bold;color:#f4f0e5;padding-top:5px">${esc(eventTime)}</div></td></tr>
-<tr><td colspan="2" style="padding:0 0 12px"><div style="font-size:9px;letter-spacing:2px;color:#aeb4a8">EVENT DETAILS</div><div style="font-size:13px;line-height:1.6;color:#e2e2d8;padding-top:5px;white-space:pre-line">${esc(event.description||"See your Kinetic Crew event page for the latest details.")}</div></td></tr>
-</table>
-</td></tr>
-<tr><td style="padding:0 20px 18px"><div style="border-top:1px dashed #777b68;padding-top:12px;font-size:10px;letter-spacing:1px;color:#c5c6b8">● VALID PERSONAL PASS <span style="float:right">ONE MEMBER · ONE QR</span></div></td></tr>
-<tr><td style="padding:0 20px 22px">
-<div style="font-size:17px;font-weight:bold;color:#dfc477;margin-bottom:8px">${esc(greeting)}</div>
-<div style="font-size:13px;line-height:1.65;color:#d0d3c8;white-space:pre-line">${esc(message)}</div>
-<div style="font-size:12px;line-height:1.5;color:#b9b9a9;margin-top:12px">${esc(footer)}</div>
-<div style="border-top:1px solid #ffffff22;margin-top:20px;padding-top:14px;text-align:center;font-size:9px;letter-spacing:3px;color:#9ba79e">KINETIC CREW&nbsp; · &nbsp;BUILT TO MOVE TOGETHER</div>
-</td></tr></table>
-</td></tr></table></body></html>`;
+   const html=brandedEmail({
+    eyebrow:"OFFICIAL EVENT ENTRY",
+    title:"Your event ticket",
+    subtitle:eventTitle,
+    contentHtml:'<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #77616a;border-radius:18px;background:#20212a;"><tr><td align="center" style="padding:15px 14px 10px;"><div style="font-size:10px;letter-spacing:2px;color:#ffad7c;">PASS ID · '+passId+'</div></td></tr><tr><td align="center" style="padding:0 14px 15px;"><img src="cid:ticket-qr.png" width="164" height="164" alt="Personal event entry QR code" style="display:block;width:164px;height:164px;max-width:100%;margin:0 auto;background:#fff;border:7px solid #302b1b;border-radius:12px;"><div style="font-size:9px;letter-spacing:2px;color:#c2bec8;margin-top:10px;">SCAN AT THE EVENT ENTRANCE</div></td></tr></table><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:18px;"><tr><td width="50%" valign="top" style="padding:0 8px 14px 0;"><div style="font-size:9px;letter-spacing:2px;color:#aaa5b1;">NAME</div><div style="font-size:14px;font-weight:bold;color:#f4f0e5;padding-top:5px;">'+esc(recipient.name)+'</div></td><td width="50%" valign="top" style="padding:0 0 14px 8px;"><div style="font-size:9px;letter-spacing:2px;color:#aaa5b1;">DATE</div><div style="font-size:14px;font-weight:bold;color:#f4f0e5;padding-top:5px;">'+esc(eventDate)+'</div></td></tr><tr><td width="50%" valign="top" style="padding:0 8px 12px 0;"><div style="font-size:9px;letter-spacing:2px;color:#aaa5b1;">VENUE</div><div style="font-size:14px;font-weight:bold;color:#f4f0e5;padding-top:5px;">'+esc(eventVenue)+'</div></td><td width="50%" valign="top" style="padding:0 0 12px 8px;"><div style="font-size:9px;letter-spacing:2px;color:#aaa5b1;">TIME</div><div style="font-size:14px;font-weight:bold;color:#f4f0e5;padding-top:5px;">'+esc(eventTime)+'</div></td></tr></table><div style="border-top:1px dashed #777b82;padding-top:12px;font-size:10px;letter-spacing:1px;color:#d0cbd4;">VALID PERSONAL PASS · ONE MEMBER · ONE QR</div><h2 style="font-size:17px;color:#ffad7c;margin:20px 0 8px;">'+esc(greeting)+'</h2><p style="font-size:13px;line-height:1.65;color:#e0dce4;white-space:pre-line;">'+esc(message)+'</p><p style="font-size:12px;line-height:1.5;color:#b9b4bf;margin-top:12px;">'+esc(footer)+'</p><p style="font-size:13px;line-height:1.65;color:#c2bec8;margin-top:16px;"><b>Event details:</b><br>'+esc(event.description||"See your Kinetic Crew event page for the latest details.")+'</p>',
+    footerNote:"Keep this ticket available on your phone and present the QR code at the event entrance."
+   });
+
    try{
     await mailer.sendMail({from:'"KINETIC CREW" <'+smtpUser+'>',to:recipient.email,subject,html,attachments:[{filename:"kinetic-crew-ticket-qr.png",content:qrBase64,encoding:"base64",cid:"ticket-qr.png"}]});
     if(deliveryKey){
