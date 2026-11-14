@@ -1,0 +1,12 @@
+/* Super Admin role-definition controls */
+.kc-role-tools{display:grid;grid-template-columns:minmax(130px,.7fr) minmax(220px,1.3fr);gap:10px;flex:1 1 100%;align-items:end}
+.kc-define-role{display:flex;align-items:end;gap:8px;min-width:0}
+.kc-define-role label{display:grid;gap:6px;flex:1;min-width:0}
+.kc-define-role label span,.kc-role-change span{font-size:11px;font-weight:750;color:var(--muted,#a8adae)}
+.kc-define-role input{width:100%;min-width:0;min-height:42px;padding:9px 11px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(255,255,255,.055);color:var(--text,#f5f3ef)}
+.kc-define-role button{min-height:42px;white-space:nowrap}
+.kc-role-change{display:grid;gap:6px;min-width:120px}
+.kc-role-change .role-select{min-height:42px}
+.kc-pending-count{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 7px;border-radius:99px;background:rgba(255,135,95,.18);color:#ffad8b;font-size:12px}
+.kc-pending-list{scroll-margin-top:24px}
+@media(max-width:560px){.kc-role-tools{grid-template-columns:1fr}.kc-define-role{width:100%}.kc-define-role button{flex:0 0 auto}}
