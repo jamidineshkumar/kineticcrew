@@ -1857,7 +1857,6 @@ async function boot(){
   if(membership.error)throw membership.error;
   if(membership.data?.status!=='approved'){location.replace(window.kcPath('pending.html'));return;}
   if(S.user&&membership.data?.role)S.user.role=membership.data.role;
-  startPendingApprovalAlerts();
   const accessCheck=await withTimeout(client.rpc('crew_assert_not_blocked',{}),10000,'Could not verify your Kinetic Crew account status.');
   if(accessCheck.error){
    if(/blocked|suspended/i.test(accessCheck.error.message||'')){
@@ -1869,6 +1868,7 @@ async function boot(){
   }
   // Start the opt-in immediately after the account is verified, before dashboard data loads.
   S.user={auth_id:session.user.id,id:session.user.id};
+  startPendingApprovalAlerts();
   kcAccessGuard={userId:session.user.id,checkedAt:Date.now()};
   setupCrewPushForSignedInMember();
   rpc('crew_profile_login_touch',{}).catch(error=>console.warn('Could not record today’s profile login:',error));
