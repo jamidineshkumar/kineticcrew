@@ -47,6 +47,7 @@ async function rpc(name,args){
  return withTimeout(client.rpc(name,args),25000,'The crew service is taking too long. Your connection may be weak; retry when it stabilizes.');
 }
 const role=r=>({super_admin:'Super Admin',admin:'Admin',member:'Member'}[r]||'Member');
+const memberDescriptor=m=>String(m?.profession||m?.designation||m?.crew_title||m?.occupation||role(m?.role)||'Member').trim();
 const admin=()=>['admin','super_admin'].includes(String(S.user?.role||'')), superadmin=()=>S.user&&S.user.role==='super_admin';
 const profileIsComplete=u=>Boolean(u&&u.name&&u.username&&u.date_of_birth&&u.instagram_username&&u.profession&&u.bio&&u.avatar_url);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -220,8 +221,10 @@ document.addEventListener('change',async event=>{
   if(error)throw error;
   if(data?.ok===false)throw Error(data?.message||'Role change was not accepted.');
   member.role=nextRole;select.dataset.currentRole=nextRole;
+  (S.publicMembers||[]).forEach(person=>{if(String(person.auth_id)===String(authId))person.role=nextRole;});
   notice((member.name||'Member')+' is now '+nextRole+'.');
   paint();
+  rpc('crew_profile_directory',{}).then(({data,error})=>{if(!error&&Array.isArray(data)){S.publicMembers=data;if(S.view==='people')paint();}}).catch(error=>console.warn('Member directory role refresh failed:',error));
  }catch(error){select.value=currentRole;notice(error.message||'Could not change this member role.');}
  finally{if(select.isConnected)select.disabled=false;}
 });
@@ -343,7 +346,7 @@ async function openProfileConnections(kind,ownerId){
   document.body.appendChild(root);
  }catch(error){notice(error.message||'Could not load this list.');}
 }
-function legacyPeoplePage(){const people=S.publicMembers||[];return welcome('Discover the crew','Find your people, open their profiles and follow their journey.')+'<div class="profile-directory">'+(people.length?people.map(m=>'<article class="surface crew-profile-tile"><button class="crew-profile-open" data-open-profile="'+esc(m.auth_id)+'">'+avatarMarkup(m)+'<span><b>'+esc(m.name)+'</b><small>@'+esc(m.username||'crew-member')+'</small></span></button><p>'+esc(m.bio||'Kinetic Crew member')+'</p><div class="crew-profile-stats"><b>'+Number(m.followers_count||0)+' followers</b><span>'+esc(role(m.role))+'</span></div><button class="outline full" data-open-profile="'+esc(m.auth_id)+'">View profile</button></article>').join(''):empty('No crew profiles yet','Crew members will appear here once they have signed in.'))+'</div>';}
+function legacyPeoplePage(){const people=S.publicMembers||[];return welcome('Discover the crew','Find your people, open their profiles and follow their journey.')+'<div class="profile-directory">'+(people.length?people.map(m=>'<article class="surface crew-profile-tile"><button class="crew-profile-open" data-open-profile="'+esc(m.auth_id)+'">'+avatarMarkup(m)+'<span><b>'+esc(m.name)+'</b><small>@'+esc(m.username||'crew-member')+'</small></span></button><p>'+esc(memberDescriptor(m))+'</p><div class="crew-profile-stats"><b>'+Number(m.followers_count||0)+' followers</b><span>'+esc(role(m.role))+'</span></div><button class="outline full" data-open-profile="'+esc(m.auth_id)+'">View profile</button></article>').join(''):empty('No crew profiles yet','Crew members will appear here once they have signed in.'))+'</div>';}
 function readKey(){return 'kc-read-notices:'+String(S.user?.id||S.user?.auth_id||'guest');}
 function prefsKey(){return 'kc-notification-prefs:'+String(S.user?.auth_id||S.user?.id||'guest');}
 function dismissedNoticeKey(){return 'kc-dismissed-notices:'+String(S.user?.auth_id||S.user?.id||'guest');}
