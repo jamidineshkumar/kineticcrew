@@ -1580,7 +1580,7 @@ document.addEventListener('click',async event=>{
   const targets=Object.fromEntries(['app','browser','pwa','signin'].map(key=>[key,!!document.querySelector('[data-brand-target="'+key+'"]')?.checked]));
   if(!Object.values(targets).some(Boolean))throw Error('Select at least one destination for the new logo.');
   button.textContent='Saving destinations…';
-  const targetSaved=await rpc('crew_set_app_setting',{p_key:'brand_logo_targets',p_value:JSON.stringify(targets)});
+  const targetSaved=await rpc('crew_set_app_setting',{p_key:'brand_logo_targets',p_value:targets});
   if(targetSaved.error)throw targetSaved.error;
   button.textContent='Applying selected destinations…';
   const saved=await rpc('crew_set_app_setting',{p_key:'brand_logo_url',p_value:publicUrl});
