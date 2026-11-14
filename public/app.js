@@ -230,7 +230,7 @@ document.addEventListener('change',async event=>{
  if(!authId||!['member','admin'].includes(nextRole)||nextRole===currentRole)return;
  const member=(S.members||[]).find(m=>String(m.auth_id)===String(authId));
  if(!member||member.role==='super_admin'||String(authId)===String(S.user?.auth_id)){notice('This account role cannot be changed.');select.value=currentRole;return;}
- if(!confirm('Change '+(member.name||'this member')+' role from '+currentRole.replace('_',' ')+' to '+nextRole.replace('_',' ')+'?')){select.value=currentRole;return;}
+ if(!await kcConfirmDialog({title:'Change crew role?',message:'Change '+(member.name||'this member')+' role from '+currentRole.replace('_',' ')+' to '+nextRole.replace('_',' ')+'?',confirmText:'Change role',danger:false})){select.value=currentRole;return;}
  select.disabled=true;
  try{
   const {data,error}=await rpc('crew_set_member_role',{p_auth_id:authId,p_role:nextRole});
@@ -1320,7 +1320,7 @@ document.addEventListener('click',event=>{
 });
 document.addEventListener('contextmenu',event=>{if(event.target.closest('[data-member-action-card]'))event.preventDefault();});
 document.addEventListener('click',async e=>{
- const review=e.target.closest('[data-review-member]');if(review){const action=review.dataset.reviewMember,id=review.dataset.memberId;if(!admin()||!id)return;review.disabled=true;try{if(action==='reject'&&!confirm('Reject this membership request?')){review.disabled=false;return;}const {data,error}=await rpc('crew_review_member',{p_auth_id:id,p_decision:action,p_reason:action==='reject'?'Not approved by crew administration.':null});if(error)throw error;if(action==='approve'){const {data:mail,error:mailError}=await client.functions.invoke('send-member-welcome',{body:{authId:id}});if(mailError||mail?.error)throw Error(mail?.error||mailError?.message||'Member approved, but welcome email failed.');notice(mail?.message||'Member approved and welcome email sent.');}else notice('Membership request rejected.');await go(S.view==='crew-management'?'crew-management':'member-requests');}catch(error){notice(error.message||'Could not review this request.');review.disabled=false;}return;}
+ const review=e.target.closest('[data-review-member]');if(review){const action=review.dataset.reviewMember,id=review.dataset.memberId;if(!admin()||!id)return;review.disabled=true;try{if(action==='reject'&&!await kcConfirmDialog({title:'Reject membership request?',message:'This member will not be added to the crew.',confirmText:'Reject request',danger:true})){review.disabled=false;return;}const {data,error}=await rpc('crew_review_member',{p_auth_id:id,p_decision:action,p_reason:action==='reject'?'Not approved by crew administration.':null});if(error)throw error;if(action==='approve'){const {data:mail,error:mailError}=await client.functions.invoke('send-member-welcome',{body:{authId:id}});if(mailError||mail?.error)throw Error(mail?.error||mailError?.message||'Member approved, but welcome email failed.');notice(mail?.message||'Member approved and welcome email sent.');}else notice('Membership request rejected.');await go(S.view==='crew-management'?'crew-management':'member-requests');}catch(error){notice(error.message||'Could not review this request.');review.disabled=false;}return;}
  const memberAction=e.target.closest('[data-member-action]');
  if(memberAction){
   const action=memberAction.dataset.memberAction,id=memberAction.dataset.memberId,name=memberAction.dataset.memberName||'Crew member';
@@ -1332,7 +1332,7 @@ document.addEventListener('click',async e=>{
     const target=(S.members||[]).concat(S.publicMembers||[]).find(m=>String(m.auth_id)===String(id));
     if(!admin()||!target||target.role==='super_admin'||(!superadmin()&&target.role!=='member'))throw Error('Your role cannot manage this account.');
     const blocking=action==='block';
-    if(!confirm((blocking?'Block ':'Unblock ')+name+'? '+(blocking?'They will be unable to sign in on any device until an admin restores access.':'')))return;
+    if(!await kcConfirmDialog({title:blocking?'Block crew member?':'Unblock crew member?',message:(blocking?'Block ':'Unblock ')+name+'? '+(blocking?'They will be unable to sign in on any device until an admin restores access.':'They will be able to sign in again.'),confirmText:blocking?'Block member':'Unblock member',danger:blocking}))return;
     const {data,error}=await client.functions.invoke('member-actions',{body:{action:action,authId:id}});
     if(error){let message=error.message||'Member action failed.';try{const payload=await error.context?.json?.();message=payload?.error||message;}catch{}throw Error(message);}
     if(data?.error)throw Error(data.error);
@@ -1350,7 +1350,7 @@ if(globalDelete){
  if(!admin()){notice('Admin access required.');return;}
  const type=globalDelete.dataset.globalDeleteNotice,id=globalDelete.dataset.noticeSourceId;
  if(!['announcement','event','post'].includes(type)||!id){notice('This notification cannot be deleted.');return;}
- if(!confirm('Delete this notification for EVERYONE? The original '+type+' will remain available in its own section.'))return;
+ if(!await kcConfirmDialog({title:'Delete notification for everyone?',message:'The original '+type+' will remain available in its own section.',confirmText:'Delete notification',danger:true}))return;
  globalDelete.disabled=true;
  try{
   const {error}=await client.from('crew_notification_deletions').insert({notice_type:type,source_id:String(id),deleted_by:S.user.auth_id});
@@ -1730,7 +1730,7 @@ if(f.id==='attendanceReportForm'){e.preventDefault();const d=new FormData(f),but
 document.addEventListener('change',async e=>{if(e.target.matches('select[name="eventId"]')){S.rosterEvent=e.target.value;if(!S.rosterEvent){S.roster=null;paint();return;}await action(async()=>{S.roster=await api('attendance?eventId='+encodeURIComponent(S.rosterEvent));S.attendanceAudit=await rpc('crew_attendance_audit',{p_event_id:S.rosterEvent}).then(x=>{if(x.error)throw x.error;return x.data||[];});});}else if(e.target.id==='attendanceReportEventSelect'){S.attendanceReportEvent=e.target.value;paint();}else if(e.target.id==='rosterSelect'){S.rosterEvent=e.target.value;if(!S.rosterEvent){S.roster=null;paint();return;}await action(async()=>{S.roster=await api('attendance?eventId='+encodeURIComponent(S.rosterEvent));S.attendanceAudit=await rpc('crew_attendance_audit',{p_event_id:S.rosterEvent}).then(x=>{if(x.error)throw x.error;return x.data||[];});paint();});}else if(e.target.matches('.profile-admin-save')){const row=e.target.closest('[data-profile-row]');await action(async()=>{const {data,error}=await rpc('crew_manage_profile',{p_auth_id:row.dataset.profileRow,p_name:row.querySelector('[name="member_name"]').value,p_bio:row.querySelector('[name="member_bio"]').value});if(error)throw Error(error.message||'Could not update member profile.');notice('Member profile updated.');await refresh();});}else if(e.target.matches('.role-select')){await action(async()=>{let d=await api('role','PATCH',{authId:e.target.dataset.id,role:e.target.value});notice(d.message);await refresh();});}});
 $('#app').addEventListener('change',e=>{if(e.target.id==='profilePhotoInput'&&e.target.files?.[0]){const img=$('#profilePhotoPreview');if(img)img.src=URL.createObjectURL(e.target.files[0]);}});$('#logoutProfile')?.addEventListener('click',()=>$('#logout').click());
 async function performCrewSignOut(){
- if(!confirm('Sign out of Kinetic Crew on this device?'))return;
+ if(!await kcConfirmDialog({title:'Sign out?',message:'Sign out of Kinetic Crew on this device?',confirmText:'Sign out',danger:false}))return;
  try{await auth.signOut();}catch(error){notice(error.message||'Could not sign out. Please try again.');return;}
  S.user=null;S.events=[];S.announcements=[];S.members=[];
  try{sessionStorage.removeItem(PAGE_STATE_KEY);}catch{}
