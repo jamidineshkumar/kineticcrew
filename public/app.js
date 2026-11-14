@@ -13,7 +13,7 @@ function kcRegisterAutoUpdates(){if(!('serviceWorker'in navigator))return;const 
 window.addEventListener('focus',kcApplyPendingUpdate);window.addEventListener('pageshow',kcApplyPendingUpdate);document.addEventListener('visibilitychange',()=>{if(!document.hidden)kcApplyPendingUpdate();});document.addEventListener('focusout',()=>setTimeout(kcApplyPendingUpdate,250));
 setInterval(()=>{if(!document.hidden)kcCheckAppVersion();},5*60*1000);
 window.addEventListener('load',()=>{kcCheckAppVersion();kcRegisterAutoUpdates();},{once:true});
-const S={user:null,view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],pendingMembers:[],pendingPoll:null,pendingPollBusy:false,pendingAlertIds:[],pendingAlertTimer:null,profileSetupRedirected:false,publicMembers:[],memberFavorites:[],blockedMemberIds:[],featureItems:{},pollScreen:'home',selectedPoll:null,pollSummary:[],pollRespondents:[],socialPosts:[],socialLikes:[],socialComments:[],profileDashboard:null,profileTab:'uploads',roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',attendanceSection:'home',error:'',peopleQuery:'',eventsFilter:'all',eventQuery:'',editingEventId:null,sharedDraft:null,qrStream:null,qrScanning:false,qrProcessing:false,};
+const S={user:null,view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],pendingMembers:[],pendingPoll:null,pendingPollBusy:false,pendingAlertIds:[],pendingAlertTimer:null,profileSetupRedirected:false,publicMembers:[],memberFavorites:[],blockedMemberIds:[],featureItems:{},pollScreen:'home',selectedPoll:null,pollSummary:[],pollRespondents:[],socialPosts:[],socialLikes:[],socialComments:[],onlineCrew:[],profileDashboard:null,profileTab:'uploads',roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',attendanceSection:'home',error:'',peopleQuery:'',eventsFilter:'all',eventQuery:'',editingEventId:null,sharedDraft:null,qrStream:null,qrScanning:false,qrProcessing:false,};
 window.KC_SEARCH_API={
  snapshot:()=>({events:S.events||[],announcements:S.announcements||[],members:S.publicMembers||[],posts:S.socialPosts||[],role:S.user?.role||'member'}),
  load:async()=>{const jobs=[];if(!S.publicMembers?.length)jobs.push(rpc('crew_profile_directory',{}).then(({data,error})=>{if(error)throw error;S.publicMembers=Array.isArray(data)?data:[];}));if(!S.socialPosts?.length)jobs.push(loadSocialFeed());await Promise.all(jobs);},
@@ -701,6 +701,7 @@ async function loadSocialFeed(){
  for(const result of [likes,comments,people])if(result.error)throw result.error;
  S.socialPosts=rows;S.socialLikes=likes.data||[];S.socialComments=comments.data||[];
  S.publicMembers=Array.isArray(people.data)?people.data:[];
+ updateHomeOnlineCrew();
 }
 
 async function loadMemories(){
@@ -797,6 +798,35 @@ function featurePage(key){
  return welcome(title,descriptions[key]||'Everything happening across Kinetic Crew.')+(canCreate?featureForm(key):'')+'<div class="feature-feed">'+(items.map(item=>featureCard(key,item)).join('')||empty('Nothing here yet','New '+title.toLowerCase()+' will appear here.'))+'</div>';
 }
 
+let kcPresenceChannel=null,kcPresenceUserId='';
+function updateHomeOnlineCrew(){
+ const section=document.querySelector('.kc-home-online-crew');if(!section)return;
+ const people=S.publicMembers||[],ids=[...new Set((S.onlineCrew||[]).map(String))].filter(id=>id!==String(S.user?.auth_id||''));
+ const visible=ids.map(id=>people.find(p=>String(p.auth_id)===id)).filter(Boolean);
+ section.hidden=!visible.length;
+ const count=section.querySelector('.kc-online-count');if(count)count.textContent=String(visible.length);
+ const rail=section.querySelector('.kc-fun-people-rail');if(rail)rail.innerHTML=visible.map(p=>'<button type="button" class="kc-fun-person is-online" data-open-profile="'+esc(p.auth_id)+'">'+avatarMarkup(p)+'<i class="kc-online-dot" aria-label="Online"></i><b>'+esc((p.name||'Crew').split(' ')[0])+'</b></button>').join('');
+}
+function startCrewPresence(){
+ const id=String(S.user?.auth_id||S.user?.id||'');if(!id||!client?.channel||kcPresenceUserId===id)return;
+ if(kcPresenceChannel){try{client.removeChannel(kcPresenceChannel);}catch{}kcPresenceChannel=null;}
+ kcPresenceUserId=id;
+ const channel=client.channel('kc-crew-online',{config:{presence:{key:id}}});kcPresenceChannel=channel;
+ channel.on('presence',{event:'sync'},()=>{
+  if(kcPresenceChannel!==channel)return;
+  const state=channel.presenceState(),ids=[];
+  Object.values(state||{}).forEach(entries=>(entries||[]).forEach(entry=>{const memberId=String(entry?.user_id||'');if(memberId)ids.push(memberId);}));
+  S.onlineCrew=[...new Set(ids)];
+  updateHomeOnlineCrew();
+ });
+ channel.subscribe(async status=>{
+  if(status==='SUBSCRIBED'&&kcPresenceChannel===channel){
+   try{await channel.track({user_id:id,online_at:new Date().toISOString()});}
+   catch(error){console.warn('Crew live presence could not start:',error);}
+  }
+ });
+}
+window.addEventListener('pagehide',()=>{if(kcPresenceChannel){try{kcPresenceChannel.untrack();}catch{}}});
 function home(){
  const now=Date.now(),all=[...(S.events||[])].filter(e=>e&&e.id&&e.title).sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at));
  const upcoming=all.filter(e=>new Date(e.starts_at).getTime()>=now);
@@ -850,7 +880,7 @@ function home(){
  '<section class="kc-home-featured" aria-label="Featured crew updates"><div class="kc-home-featured-track">'+slideMarkup+'</div>'+(slides.length>1?'<div class="kc-home-featured-dots" aria-label="Featured carousel pages">'+slides.map((_,i)=>'<button type="button" data-home-slide-to="'+i+'" class="'+(i===0?'active':'')+'" aria-label="Show slide '+(i+1)+'"></button>').join('')+'</div>':'')+'</section>'+
  '<section class="kc-home-reference-section kc-home-latest-section"><div class="kc-home-reference-section-head"><h2>Latest from your crew</h2><button type="button" data-view="notifications">See all <span>→</span></button></div><div class="kc-exact-update-row">'+updates+'</div></section>'+
  
-  '<section class="kc-fun-people"><div class="kc-fun-section-title"><div><small>YOUR PEOPLE</small><h2>Crew is online</h2></div><button type="button" data-view="people">Discover all ↗</button></div><div class="kc-fun-people-rail">'+(people.length?people.map(p=>'<button type="button" class="kc-fun-person" data-open-profile="'+esc(p.auth_id)+'">'+avatarMarkup(p)+'<b>'+esc((p.name||'Crew').split(' ')[0])+'</b></button>').join(''):'<button type="button" class="kc-fun-person" data-view="people"><span class="kc-fun-person-add">＋</span><b>Find crew</b></button>')+'</div></section>'+
+  '<section class="kc-fun-people kc-home-online-crew" aria-label="Crew members online" '+((S.onlineCrew||[]).length?'':'hidden')+'><div class="kc-fun-section-title"><div><small>LIVE PRESENCE</small><h2>Crew online <span class="kc-online-count">'+(S.onlineCrew||[]).length+'</span></h2></div></div><div class="kc-fun-people-rail">'+(S.onlineCrew||[]).map(id=>{const p=people.find(m=>String(m.auth_id)===String(id));return p?'<button type="button" class="kc-fun-person is-online" data-open-profile="'+esc(p.auth_id)+'">'+avatarMarkup(p)+'<i class="kc-online-dot" aria-label="Online"></i><b>'+esc((p.name||'Crew').split(' ')[0])+'</b></button>':'';}).join('')+'</div></section>'+
   '<div class="kc-fun-hub-foot">ONE CREW. MANY WAYS TO HAVE FUN. <span>✦</span></div>'+
  '</div>';
 }
@@ -935,7 +965,9 @@ function chatPage(){
 function socialFeedPage(){
  const posts=S.socialPosts||[],people=(S.publicMembers||[]).filter(m=>String(m.auth_id)!==String(S.user?.auth_id)).slice(0,18);
  window.__kcGramPosts=posts;window.__kcGramPeople=people;
- const stories='<section class="kc-feed-stories"><div class="kc-feed-stories-head"><b>Stories</b><span>CREW MOMENTS</span></div><div class="kc-feed-story-rail"><button class="kc-feed-story own" data-view="profile"><span class="kc-story-ring"><span class="kc-story-avatar">'+avatarMarkup(S.user)+'</span><i>+</i></span><small>Your story</small></button>'+people.map((p,i)=>'<button class="kc-feed-story" data-open-profile="'+esc(p.auth_id)+'"><span class="kc-story-ring '+(i<5?'fresh':'')+'"><span class="kc-story-avatar">'+avatarMarkup(p)+'</span></span><small>'+esc((p.name||'Crew').split(' ')[0])+'</small></button>').join('')+'</div></section>';
+ const storyAuthors=new Map();
+ posts.forEach(post=>{const id=String(post.author_id||'');if(id&&!storyAuthors.has(id))storyAuthors.set(id,post);});
+ const stories=storyAuthors.size?'<section class="kc-feed-stories"><div class="kc-feed-stories-head"><b>Stories</b><span>CREW MOMENTS</span></div><div class="kc-feed-story-rail">'+[...storyAuthors.entries()].map(([id,post])=>{const person=id===String(S.user?.auth_id)?S.user:people.find(p=>String(p.auth_id)===id)||{name:'Crew member'};const own=id===String(S.user?.auth_id);return '<button type="button" class="kc-feed-story '+(own?'own':'')+'" data-gram-story="'+esc(post.id)+'" aria-label="View '+(own?'your':esc(person.name||'crew'))+' latest post"><span class="kc-story-ring fresh"><span class="kc-story-avatar">'+avatarMarkup(person)+'</span>'+(own?'<i>+</i>':'')+'</span><small>'+esc(own?'Your story':(person.name||'Crew').split(' ')[0])+'</small></button>';}).join('')+'</div></section>':'';
  return '<div class="kc-feed-page"><header class="kc-feed-top"><div><span class="kc-feed-kicker">KINETIC CREW / COMMUNITY</span><h1>Kinetic <em>Gram</em></h1></div></header>'+
  '<div class="kc-feed-tabs"><span class="active">Feed</span><span>Following</span><span>Reels</span></div>'+stories+
  '<form id="socialPostForm" class="surface social-share-composer kc-feed-composer"><div class="kc-feed-compose-avatar">'+avatarMarkup(S.user)+'</div><div class="kc-feed-compose-main"><label class="field"><textarea name="caption" rows="2" maxlength="1200" placeholder="Share a moment with your crew…" aria-label="Caption">'+esc(S.sharedDraft?.caption||'')+'</textarea></label><div class="kc-feed-link-field"><span>↗</span><input name="link_url" type="url" inputmode="url" value="'+esc(S.sharedDraft?.url||'')+'" placeholder="Paste a reel, video or post link" required></div>'+(S.sharedDraft?.url?'<div class="kc-share-draft-preview"><span>LINK PREVIEW · NOT POSTED</span>'+socialEmbed(S.sharedDraft.url)+'<small>The original media stays on its social platform. Kinetic Crew stores only the shared URL and your caption.</small></div>':'')+'<div class="social-composer-foot"><small>Preview first. Nothing is posted until you tap Share.</small><button type="submit" class="primary">Share ↗</button></div></div></form>'+
@@ -2019,6 +2051,7 @@ async function boot(){
   S.user={auth_id:session.user.id,id:session.user.id,role:membership.data?.role||'member'};
   kcAccessGuard={userId:session.user.id,checkedAt:Date.now()};
   setupCrewPushForSignedInMember();
+  startCrewPresence();
   rpc('crew_profile_login_touch',{}).catch(error=>console.warn('Could not record today’s profile login:',error));
   const saved=readPageState();
   const incomingShare=new URLSearchParams(location.search);
