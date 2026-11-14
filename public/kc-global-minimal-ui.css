@@ -52,3 +52,35 @@
 }
 .kc-brand-intro-stage{inset:0!important}
 .kc-brand-intro-slide{justify-content:center!important}
+
+/* Focused copy reduction: keep controls and meaningful status, remove redundant helper prose. */
+@media (max-width: 900px) {
+  /* Home: keep the greeting, headline and CTA; remove duplicate descriptive copy. */
+  #app .kc-home-greeting-lead,
+  #app .kc-home-featured-kicker,
+  #app .kc-home-featured-glass > small {
+    display: none !important;
+  }
+
+  /* Attendance: the selected event and controls already communicate the next action. */
+  #app .kc-attendance-heading > div > p,
+  #app .kc-attendance-live,
+  #app .kc-attendance-task > small,
+  #app .kc-attendance-next-head,
+  #app .kc-attendance-event-meta > small,
+  #app .kc-attendance-empty > .kc-attendance-kicker,
+  #app .kc-attendance-empty > p,
+  #app .kc-attendance-section-title > div > p,
+  #app .kc-attendance-note,
+  #app .kc-attendance-or {
+    display: none !important;
+  }
+
+  #app .kc-attendance-next {
+    padding-top: 16px !important;
+  }
+
+  #app .kc-attendance-event-meta:has(> b:only-child) {
+    margin-top: 8px !important;
+  }
+}
