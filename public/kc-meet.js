@@ -14,9 +14,37 @@
     shell().innerHTML = '<div class="kcml-backdrop"><section class="kcml-dialog" role="dialog" aria-modal="true">' + content + '</section></div>';
     shell().querySelector("[data-kcml-close]")?.addEventListener("click", closeRoom);
   }
+  function appDialog({title="Kinetic Crew",message="",inputValue=null,confirmText="Continue",cancelText="Cancel",showCancel=true}={}) {
+    return new Promise(resolve => {
+      const root = $("#modalRoot");
+      if (!root) { resolve(inputValue === null ? undefined : null); return; }
+      let settled = false;
+      const cancelValue = inputValue === null ? undefined : null;
+      const finish = value => { if (settled) return; settled = true; root.innerHTML = ""; document.removeEventListener("keydown", onKey); resolve(value); };
+      const onKey = event => {
+        if (event.key === "Escape") { event.preventDefault(); finish(cancelValue); }
+        if (event.key === "Enter" && inputValue !== null) { event.preventDefault(); root.querySelector("[data-kc-dialog-ok]")?.click(); }
+      };
+      root.innerHTML = '<div class="modalback kc-confirm-backdrop" data-kc-dialog-backdrop><section class="modal kc-confirm-modal kc-meet-app-dialog" role="dialog" aria-modal="true" aria-labelledby="kcMeetDialogTitle" aria-describedby="kcMeetDialogMessage" tabindex="-1"><span class="kc-confirm-kicker">KINETIC CREW · KC MEET</span><h2 id="kcMeetDialogTitle">'+esc(title)+'</h2><p id="kcMeetDialogMessage">'+esc(message)+'</p>' +
+        (inputValue !== null ? '<label class="kc-meet-dialog-label" for="kcMeetDialogInput">Meeting title</label><input id="kcMeetDialogInput" class="kc-confirm-input" type="text" maxlength="80" autocomplete="off" value="'+esc(inputValue)+'" placeholder="Enter meeting title">' : '') +
+        '<div class="kc-confirm-actions">'+(showCancel?'<button type="button" class="secondary" data-kc-dialog-cancel>'+esc(cancelText)+'</button>':'')+'<button type="button" class="primary" data-kc-dialog-ok>'+esc(confirmText)+'</button></div></section></div>';
+      const input = root.querySelector("#kcMeetDialogInput");
+      root.querySelector("[data-kc-dialog-cancel]")?.addEventListener("click",()=>finish(cancelValue));
+      root.querySelector("[data-kc-dialog-ok]")?.addEventListener("click",()=>{
+        if (inputValue !== null) { const value=String(input?.value||"").trim(); if(!value){input?.focus();return;} finish(value); }
+        else finish(true);
+      });
+      root.querySelector("[data-kc-dialog-backdrop]")?.addEventListener("click",event=>{if(event.target===event.currentTarget)finish(cancelValue);});
+      document.addEventListener("keydown",onKey);
+      requestAnimationFrame(()=>{if(input){input.focus();input.select();}else root.querySelector(".kc-meet-app-dialog")?.focus();});
+    });
+  }
+  function showAppError(message) {
+    return appDialog({title:"Something went wrong",message:String(message||"KC Meet could not start. Please try again."),confirmText:"Got it",showCancel:false});
+  }
   function showError(message) {
     const el = $("#kcml-status"); if (el) { el.textContent = message; el.hidden = false; }
-    else window.alert(message);
+    else showAppError(message);
   }
   async function issueToken(action, payload = {}) {
     if (!client) throw new Error("Kinetic Crew connection is unavailable. Reload and try again.");
