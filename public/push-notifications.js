@@ -91,7 +91,8 @@ async function enable() {
       icon: window.kcPath("kinetic-crew-logo.jpg"),
       image: window.kcPath("kinetic-crew-logo.jpg"),
       badge: window.kcPath("icon.svg"),
-      tag: payload.data?.id || "kinetic-crew-update"
+      tag: payload.data?.notificationId || payload.data?.id || "kinetic-crew-update",
+      renotify: false
     });
     try {
       const session = window.kcSupabase.auth.getSession();
