@@ -52,3 +52,12 @@
  .kc-visitor-profile-clean .kc-visitor-avatar{width:82px;height:82px;margin-bottom:15px}
  .kc-visitor-profile-clean .kc-visitor-about{margin:14px 8px 0;padding:17px}
 }
+
+
+/* Profile identity: use the member's own photo as a full-bleed hero, not a small avatar. */
+.kc-visitor-profile-clean .kc-visitor-hero{background-color:#111318;background-image:var(--kc-visitor-cover);background-position:center 35%;background-size:cover}
+.kc-visitor-profile-clean .kc-visitor-hero:before{background:var(--kc-visitor-cover) center 35%/cover no-repeat;filter:blur(0);transform:scale(1.015)}
+.kc-visitor-profile-clean .kc-visitor-avatar{display:none!important}
+.kc-visitor-profile-clean .kc-visitor-identity{left:30px;right:30px;bottom:38px}
+.kc-visitor-profile-clean .kc-visitor-shade{background:linear-gradient(180deg,rgba(5,6,10,.28) 0%,rgba(5,6,10,.08) 34%,rgba(5,6,10,.42) 58%,rgba(8,9,13,.96) 100%)}
+@media(max-width:600px){.kc-visitor-profile-clean .kc-visitor-hero{height:calc(76svh - 55px);min-height:460px;max-height:620px}.kc-visitor-profile-clean .kc-visitor-identity{left:22px;right:22px;bottom:30px}}
