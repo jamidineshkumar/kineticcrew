@@ -1095,65 +1095,77 @@ function chatMessagesMarkup(items){const rows=(items||[]).slice().sort((a,b)=>ne
 function whatsAppChatPage(){const items=S.featureItems.chat||[];return welcome('Crew Chat','One crew conversation. Share plans, quick updates and moments.')+'<section class="wa-shell"><aside class="wa-rail"><div class="wa-rail-head"><b>KC MESSAGES</b><span>● ONLINE</span></div><div class="wa-room active"><span class="wa-room-avatar">KC</span><span><b>Main Crew</b><small>Everyone in Kinetic Crew</small></span></div></aside><div class="wa-conversation"><header class="wa-chat-head"><span class="wa-room-avatar">KC</span><span><b>Main Crew</b><small>Kinetic Crew group conversation · '+items.length+' messages</small></span></header><div class="wa-messages" id="waMessages">'+chatMessagesMarkup(items)+'</div><form class="wa-composer" data-feature-form="chat"><input type="hidden" name="title" value="Crew message"><textarea name="body" rows="1" maxlength="5000" required placeholder="Message the crew…"></textarea><button type="submit" aria-label="Send message">➤</button></form></div></section>';}
 
 function kcApplyFeaturePageNavigation(){
- const excluded=new Set(['overview','more','events','calendar','chat','feed','memes','fun-zone','fun-zone-games','meet','attendance','settings','app-settings']);
+ const excluded=new Set(['new-event','event-edit','event-detail','public-profile','attendance','meet','fun-zone-games']);
  if(excluded.has(S.view))return;
  const root=$('#app');if(!root)return;
- const candidates=[...root.querySelectorAll('section,form')].filter(node=>{
+ root.querySelectorAll('[data-kc-feature-navigation],[data-kc-feature-panel]').forEach(node=>node.removeAttribute('data-kc-feature-navigation')||node.removeAttribute('data-kc-feature-panel'));
+ const candidates=[...root.querySelectorAll('section')].filter(node=>{
   if(node.closest('[data-kc-feature-navigation]'))return false;
-  if(node.matches('[data-kc-feature-exclude],.kc-feed-story-rail,.kc-feed-stories,.social-feed-list,.eventgrid,.kc-attendance-feature-grid'))return false;
+  if(node.matches('[data-kc-feature-exclude],.kc-feed-story-rail,.kc-feed-stories,.social-feed-list,.eventgrid,.kc-attendance-feature-grid,.kc-feature-page-menu,.kc-feature-page-panel'))return false;
   let parent=node.parentElement;
   while(parent&&parent!==root){
-   if(parent.matches('section,form'))return false;
+   if(parent.matches('section'))return false;
    parent=parent.parentElement;
   }
-  return parent===root;
- });
- const usable=candidates.filter(node=>{
-  const heading=node.querySelector('h2,h3,h4,legend,[data-section-title]');
-  const text=(heading?.textContent||'').trim();
-  return text.length>1;
- });
- if(usable.length<2)return;
- const labels=usable.map((node,index)=>{
-  const heading=node.querySelector('h2,h3,h4,legend,[data-section-title]');
+  if(parent!==root)return false;
+  const heading=node.querySelector(':scope > h1,:scope > h2,:scope > h3,:scope > h4,:scope > header h1,:scope > header h2,:scope > header h3,:scope > header h4,:scope > div > h2,:scope > div > h3');
   const title=(heading?.textContent||'').replace(/\s+/g,' ').trim();
-  return title.length>42?title.slice(0,39).trim()+'…':title||('Feature '+(index+1));
+  if(title.length<3)return false;
+  if(node.matches('.kc-feed-stories,.kc-home-featured,.notice-hero,.kc-attendance-summary'))return false;
+  return true;
  });
- const menu=document.createElement('section');
- menu.className='kc-feature-page-menu';
- menu.dataset.kcFeatureNavigation='true';
- menu.innerHTML='<span class="kc-feature-page-kicker">CHOOSE A FEATURE</span><div class="kc-feature-page-grid"></div><p class="kc-feature-page-hint">Each option opens on its own screen.</p>';
- const grid=menu.querySelector('.kc-feature-page-grid');
- usable.forEach((node,index)=>{
-  const button=document.createElement('button');
-  button.type='button';button.className='kc-feature-page-card';button.dataset.kcFeatureOpen=String(index);
-  const icon=document.createElement('span');icon.className='kc-feature-page-icon';icon.textContent=['✦','◈','▤','↗'][index%4];
-  const title=document.createElement('b');title.textContent=labels[index];
-  const arrow=document.createElement('i');arrow.textContent='↗';
-  button.append(icon,title,arrow);grid.append(button);
-  node.hidden=true;node.dataset.kcFeaturePanel=String(index);
+ if(candidates.length>=3){
+  const menu=document.createElement('section');
+  menu.className='kc-feature-page-menu';menu.dataset.kcFeatureNavigation='true';
+  menu.innerHTML='<span class="kc-feature-page-kicker">EXPLORE THIS PAGE</span><div class="kc-feature-page-grid"></div><p class="kc-feature-page-hint">Open one section at a time to keep the screen focused.</p>';
+  const grid=menu.querySelector('.kc-feature-page-grid');
+  candidates.forEach((node,index)=>{
+   const heading=node.querySelector(':scope > h1,:scope > h2,:scope > h3,:scope > h4,:scope > header h1,:scope > header h2,:scope > header h3,:scope > header h4,:scope > div > h2,:scope > div > h3');
+   const title=(heading?.textContent||'').replace(/\s+/g,' ').trim();
+   const button=document.createElement('button');button.type='button';button.className='kc-feature-page-card';button.dataset.kcFeatureOpen=String(index);
+   const icon=document.createElement('span');icon.className='kc-feature-page-icon';icon.textContent=['✦','◈','▤','↗'][index%4];
+   const label=document.createElement('b');label.textContent=title.length>42?title.slice(0,39).trim()+'…':title;
+   const arrow=document.createElement('i');arrow.textContent='↗';button.append(icon,label,arrow);grid.append(button);
+   node.hidden=true;node.dataset.kcFeaturePanel=String(index);
+  });
+  candidates[0].parentElement.insertBefore(menu,candidates[0]);
+ }
+ kcApplyCollectionPagination(root);
+}
+function kcApplyCollectionPagination(root){
+ const selectors=['.eventgrid','.profile-directory','.feature-feed','.social-feed-list','.announcements','.kc-poll-list','.leaderboard-list','.crew-manage-list','.calendar-list'];
+ selectors.forEach(selector=>{
+  root.querySelectorAll(selector).forEach((list,index)=>{
+   if(list.closest('[data-kc-feature-panel][hidden]'))return;
+   const items=[...list.children].filter(node=>!node.matches('[data-kc-pagination-control]'));
+   if(items.length<=6)return;
+   const key=selector.replace(/[^a-z]/gi,'')+'-'+index;
+   const old=list.parentElement?.querySelector(':scope > [data-kc-pagination-control="'+key+'"]');
+   if(old)old.remove();
+   const state=Number(list.dataset.kcPageSize||6);
+   items.forEach((item,i)=>{item.hidden=i>=state;});
+   if(state>=items.length)return;
+   const more=document.createElement('button');more.type='button';more.className='kc-collection-more';more.dataset.kcPaginationControl=key;more.dataset.kcPaginationList=selector;more.textContent='Show '+Math.min(6,items.length-state)+' more · '+(items.length-state)+' remaining';
+   more.addEventListener('click',()=>{
+    const next=Math.min(items.length,state+6);list.dataset.kcPageSize=String(next);
+    items.forEach((item,i)=>{item.hidden=i>=next;});
+    if(next>=items.length)more.remove();else more.textContent='Show '+Math.min(6,items.length-next)+' more · '+(items.length-next)+' remaining';
+   });
+   list.insertAdjacentElement('afterend',more);
+  });
  });
- const first=usable[0];
- first.parentElement.insertBefore(menu,first);
 }
 function kcOpenFeaturePage(index){
- const menu=$('#app [data-kc-feature-navigation]');
- const panels=[...document.querySelectorAll('#app [data-kc-feature-panel]')];
+ const menu=$('#app [data-kc-feature-navigation]');const panels=[...document.querySelectorAll('#app [data-kc-feature-panel]')];
  if(!menu||!panels.length)return;
- const panel=panels.find(node=>node.dataset.kcFeaturePanel===String(index));
- if(!panel)return;
- menu.hidden=true;
- panels.forEach(node=>{node.hidden=node!==panel;});
+ const panel=panels.find(node=>node.dataset.kcFeaturePanel===String(index));if(!panel)return;
+ menu.hidden=true;panels.forEach(node=>{node.hidden=node!==panel;});
  let back=panel.querySelector(':scope > .kc-feature-page-back');
- if(!back){
-  back=document.createElement('button');back.type='button';back.className='kc-feature-page-back';back.dataset.kcFeatureBack='true';back.textContent='← All features';
-  panel.insertBefore(back,panel.firstChild);
- }
+ if(!back){back=document.createElement('button');back.type='button';back.className='kc-feature-page-back';back.dataset.kcFeatureBack='true';back.textContent='← All sections';panel.insertBefore(back,panel.firstChild);}
  panel.scrollIntoView({behavior:'instant',block:'start'});
 }
 function kcBackToFeatureMenu(){
- const menu=$('#app [data-kc-feature-navigation]');
- if(!menu)return;
+ const menu=$('#app [data-kc-feature-navigation]');if(!menu)return;
  document.querySelectorAll('#app [data-kc-feature-panel]').forEach(node=>node.hidden=true);
  menu.hidden=false;menu.scrollIntoView({behavior:'smooth',block:'start'});
 }
