@@ -57,6 +57,7 @@
 <link rel="stylesheet" href="kc-profile-activity-fix.css?v=20261112-profile-activity-fix2">\n<link rel="stylesheet" href="kc-meet.css?v=20261114-meet-ui1">
 <link rel="stylesheet" href="kc-light-mode-fix.css?v=20261112-light-mode-fix5">
 <link rel="stylesheet" href="kc-home-hero-dock-refine.css?v=20261112-hero-dock1">
+<link rel="stylesheet" href="kc-mobile-text-layout-fix.css?v=20261114-text-layout1">
 <style>
 @media(max-width:900px){#kcMobileDock .dock-label{display:block!important;color:#f4f2f8!important;opacity:1!important;visibility:visible!important;text-shadow:0 1px 3px rgba(0,0,0,.45)!important}#kcMobileDock .kc-dock-home.active .dock-label,#kcMobileDock .kc-dock-group-item.active .dock-label{color:#fff!important}#kcMobileDock.kc-mobile-dock{bottom:calc(18px + env(safe-area-inset-bottom,0px))!important;z-index:1500!important}#kcMobileDock .kc-dock-home,#kcMobileDock .kc-dock-group-item{min-height:58px!important;overflow:visible!important}}
 .kc-start-loading{min-height:48vh;display:grid;place-content:center;justify-items:center;gap:12px;color:#f4f2f8;text-align:center;font:500 14px system-ui,sans-serif}.kc-start-loading:before{content:"";width:28px;height:28px;border:2px solid #ffffff30;border-top-color:#d6a4ff;border-radius:50%;animation:kcStartSpin .8s linear infinite}@keyframes kcStartSpin{to{transform:rotate(360deg)}}
@@ -105,7 +106,7 @@ window.addEventListener('error',function(e){
 </script>
 <script src="kc-transition.js?v=20261112-smoothfade3" defer></script>
 <script src="kc-profile-liquid.js?v=20261111-liquidprofile1" defer></script>
-<script src="app.js?v=20261114-home-events-meet1" defer></script>
+<script src="app.js?v=20261114-text-home-fix1" defer></script>
 <script>
 setTimeout(function(){const root=document.getElementById('app');if(root&&root.textContent.includes('Opening Kinetic Crew')){root.innerHTML='<div class="kc-start-error" role="alert"><strong>Kinetic Crew is taking too long to start</strong><p>The app script did not finish loading. Check your connection and retry.</p><button type="button" onclick="location.reload()">Reload app</button></div>'; }},22000);
 </script>
