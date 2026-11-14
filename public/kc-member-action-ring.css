@@ -58,3 +58,15 @@
 .kc-member-directory-footer [data-open-profile]{margin-right:auto}
 .kc-member-directory-card>p{margin-top:14px}
 @media(max-width:420px){.kc-member-card-heading{gap:6px}.kc-member-card-heading>.role-pill{font-size:10px;padding:5px 8px}}
+
+
+/* Keep member actions in normal document flow so parent cards cannot clip the menu on mobile. */
+.kc-member-directory-card,.crew-manage-row{overflow:visible!important}
+.kc-member-directory-card.kc-member-action-open,.crew-manage-row.kc-member-action-open{z-index:120!important;margin-bottom:12px!important}
+.kc-member-action-ring{position:relative!important;top:auto!important;right:auto!important;width:100%!important;max-width:none!important;margin:12px 0 2px!important;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-3px);transition:opacity .16s ease,transform .16s ease,visibility .16s ease}
+.kc-member-action-open .kc-member-action-ring{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
+.kc-member-action-orbit{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px}
+.kc-member-action{min-height:46px;touch-action:manipulation}
+.kc-member-actions-toggle{position:relative;z-index:2;flex:0 0 auto;min-width:48px;min-height:44px;border-radius:14px!important}
+@media(max-width:560px){.kc-member-action-orbit{grid-template-columns:repeat(2,minmax(0,1fr))}.kc-member-action{min-height:48px}.kc-member-directory-card.kc-member-action-open,.crew-manage-row.kc-member-action-open{margin-bottom:12px!important}}
+@media(prefers-reduced-motion:reduce){.kc-member-action-ring,.kc-member-action{transition:none!important}}
