@@ -1,6 +1,6 @@
 {
-  "version": "1.6.11",
+  "version": "1.6.12",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T13:00:00.000Z",
-  "release_notes": "All KC Meet prompts and errors now use Kinetic Crew's branded in-app dialog design."
+  "updated_at": "2026-11-14T13:10:00.000Z",
+  "release_notes": "KC Meet title and error dialogs now use the Kinetic Crew in-app dialog system."
 }
