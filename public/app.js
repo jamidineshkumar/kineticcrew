@@ -1868,7 +1868,6 @@ async function boot(){
   }
   // Start the opt-in immediately after the account is verified, before dashboard data loads.
   S.user={auth_id:session.user.id,id:session.user.id};
-  startPendingApprovalAlerts();
   kcAccessGuard={userId:session.user.id,checkedAt:Date.now()};
   setupCrewPushForSignedInMember();
   rpc('crew_profile_login_touch',{}).catch(error=>console.warn('Could not record today’s profile login:',error));
@@ -1890,6 +1889,7 @@ async function boot(){
   }catch(error){
    if(!restoreOffline(session.user))throw error;
   }
+  startPendingApprovalAlerts();
   // Re-check access when the app returns to the foreground; a newly blocked account
   // is signed out on this device even if its access token has not expired yet.
   if(!window.__kcBlockWatch){
