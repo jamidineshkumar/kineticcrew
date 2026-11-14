@@ -1,6 +1,6 @@
 {
-  "version": "1.5.6",
+  "version": "1.5.7",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T13:15:00.000Z",
-  "release_notes": "Member directory role badge now appears beside each member identity. Member action menus retain basic actions for everyone and show elevated management actions only to authorized Admins and Super Admins."
+  "updated_at": "2026-11-14T13:20:00.000Z",
+  "release_notes": "Fixed member directory cards showing a generic Kinetic Crew member label instead of the assigned profession/designation/access role. Directory data refreshes after a role change."
 }
