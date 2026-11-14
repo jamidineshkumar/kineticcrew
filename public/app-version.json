@@ -1,6 +1,6 @@
 {
-  "version": "1.6.14",
+  "version": "1.6.15",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T13:22:00.000Z",
-  "release_notes": "Attendance reports now cover the complete recorded event history instead of requiring one event selection."
+  "updated_at": "2026-11-14T13:35:00.000Z",
+  "release_notes": "The Scan QR attendance tile now opens the scanner and starts the camera automatically."
 }
