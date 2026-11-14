@@ -23,10 +23,10 @@
  const setImage=img=>{
   if(!(img instanceof HTMLImageElement)||!isBrandImage(img))return;
   const signin=!!document.querySelector('#kcAuthScreen');
-  if(signin?!activeTargets.signin:!activeTargets.app)return;
-  if(activeUrl&&(img.getAttribute('src')||'')!==activeUrl){restoreImage(img);img.dataset.kcBrandManaged='true';img.src=activeUrl;}
   if(!img.dataset.kcBrandErrorBound){img.dataset.kcBrandErrorBound='true';img.addEventListener('error',()=>showFallback(img));img.addEventListener('load',()=>restoreImage(img));}
   if(img.complete&&img.naturalWidth===0)showFallback(img);else if(img.naturalWidth>0)restoreImage(img);
+  if(signin?!activeTargets.signin:!activeTargets.app)return;
+  if(activeUrl&&(img.getAttribute('src')||'')!==activeUrl){restoreImage(img);img.dataset.kcBrandManaged='true';img.src=activeUrl;}
  };
  const setLink=(selector,url)=>document.querySelectorAll(selector).forEach(link=>{if(link.href!==url)link.href=url;if(['icon','shortcut icon','apple-touch-icon'].includes(link.rel))link.type='image/png';});
  const applyManifest=async url=>{
