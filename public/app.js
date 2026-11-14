@@ -1745,6 +1745,7 @@ document.addEventListener('submit',async e=>{
    if(key==='rehearsals'){try{await window.kcPush.send(String(d.get('title')||'Crew rehearsal'),body||'A new rehearsal has been scheduled.','all',{sendEmail:d.get('send_email')==='true',emailKey:'rehearsal:'+res.id,emailType:'rehearsal'});}catch(pushError){console.warn('Rehearsal saved; notification delivery failed:',pushError);notice('Rehearsal saved, but its notification could not be delivered.');}}
    notice(res.message);
    S.featureItems[key]=await featureApi('list',key,{});
+   if(key==='polls'){S.pollScreen='list';S.selectedPoll=null;}
    if(key==='chat'){S.view='chat';paint();$('#waMessages')?.scrollTo({top:$('#waMessages').scrollHeight,behavior:'smooth'});}
   }catch(error){S.error=error.message||'Could not save this item.';paint();}
   return;
