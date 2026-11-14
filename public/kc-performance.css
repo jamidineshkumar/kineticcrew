@@ -1,0 +1,86 @@
+/* Kinetic Crew mobile rendering optimizations. Keep the existing brand assets and visual language intact. */
+@media (max-width: 900px) {
+  /* Let the browser skip off-screen card layout/paint on long pages. */
+  #app .kce-event-card,
+  #app .kce-ticket-wallet-card,
+  #app .feature-card,
+  #app .announcement,
+  #app .kc-poll-card,
+  #app .kc-account-row,
+  #app .kc-meet-info-grid article {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 180px;
+  }
+
+  /* Large translucent card stacks were forcing repeated backdrop-filter repaints while scrolling. */
+  #app .kce-event-card,
+  #app .kce-ticket-wallet-card,
+  #app .feature-card,
+  #app .announcement,
+  #app .kc-poll-card {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Avoid animating every repeated card as it enters the document. */
+  #app .feature-card,
+  #app .stat,
+  #app .event,
+  #app .announcement {
+    animation: none !important;
+  }
+
+  #app img {
+    content-visibility: auto;
+  }
+
+  .kc-more-reference,
+  .kc-meet-page,
+  .kce-events {
+    contain: layout paint style;
+  }
+}
+
+.kce-kc-meet-tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  min-height: 104px;
+  margin: 0 0 22px;
+  padding: 17px 19px;
+  overflow: hidden;
+  text-align: left;
+  color: #f8f7fb;
+  border: 1px solid rgba(139, 226, 213, .28);
+  border-radius: 21px;
+  background: radial-gradient(circle at 90% 12%, rgba(77, 215, 195, .2), transparent 34%), linear-gradient(115deg, #172b2a, #11191c 58%, #172522);
+  box-shadow: 0 12px 30px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.07);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.kce-kc-meet-tile:active { transform: scale(.99); }
+.kce-kc-meet-mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 52px;
+  width: 52px;
+  height: 52px;
+  border: 1px solid rgba(101, 223, 204, .38);
+  border-radius: 17px;
+  color: #a1f1e4;
+  background: linear-gradient(145deg, rgba(91,220,201,.2), rgba(255,255,255,.045));
+  font-size: 19px;
+  font-weight: 900;
+  letter-spacing: -.08em;
+  box-shadow: 0 0 24px rgba(68,204,185,.13);
+}
+.kce-kc-meet-copy { display: grid; gap: 4px; min-width: 0; flex: 1; }
+.kce-kc-meet-copy small { color: #83cfc3; font-size: 9px; font-weight: 800; letter-spacing: .17em; }
+.kce-kc-meet-copy b { color: #f7fffd; font-size: 17px; letter-spacing: -.025em; }
+.kce-kc-meet-copy span { color: #aabbb8; font-size: 11px; line-height: 1.4; }
+.kce-kc-meet-arrow { color: #8fe6d8; font-size: 22px; }
+@media (prefers-reduced-motion: reduce) {
+  .kce-kc-meet-tile { transition: none !important; }
+}
