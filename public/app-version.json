@@ -1,6 +1,6 @@
 {
-  "version": "1.4.7",
+  "version": "1.4.8",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T00:00:00.000Z",
-  "release_notes": "Kinetic Crew 1.4.7 adds a click-to-open event creation form, a redesigned KC Meet interface with participant and chat panels, reliable Home-first fresh launches, refresh-page restoration, and an on-Home profile completion prompt."
+  "updated_at": "2026-11-14T03:05:00.000Z",
+  "release_notes": "Kinetic Crew 1.4.8 fixes mobile text clipping and broken word wrapping across profile controls, activity metrics and the bottom dock. Fresh app launches now open Home, while refreshes and in-session update reloads preserve the current page."
 }
