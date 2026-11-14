@@ -48,3 +48,13 @@
 .kc-member-action-ring button{pointer-events:auto!important;position:relative;z-index:221}
 .kc-member-actions-toggle{min-width:42px;min-height:38px;padding:6px 12px!important;font-size:18px!important;letter-spacing:2px;line-height:1;touch-action:manipulation}
 .crew-manage-row.kc-member-action-open{position:relative}
+
+
+/* Member directory: keep role visible beside the identity, with actions governed by viewer permissions. */
+.kc-member-card-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.kc-member-card-heading .crew-profile-open{flex:1;min-width:0}
+.kc-member-card-heading>.role-pill{flex:0 0 auto;align-self:center;margin:0;white-space:nowrap}
+.kc-member-directory-footer{display:flex;align-items:center;justify-content:flex-end;gap:10px}
+.kc-member-directory-footer [data-open-profile]{margin-right:auto}
+.kc-member-directory-card>p{margin-top:14px}
+@media(max-width:420px){.kc-member-card-heading{gap:6px}.kc-member-card-heading>.role-pill{font-size:10px;padding:5px 8px}}
