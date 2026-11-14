@@ -1959,28 +1959,6 @@ window.addEventListener('offline',()=>{if(S.user){S.offline=true;S.error='You ar
 window.addEventListener('error',event=>{console.error('Kinetic Crew runtime error:',event.error||event.message);});
 window.addEventListener('unhandledrejection',event=>{console.error('Kinetic Crew async error:',event.reason);});
 
-let installPrompt=null;
-let installCompleted=window.matchMedia?.('(display-mode: standalone)').matches||window.navigator.standalone===true;
-function syncInstallButtons(){document.querySelectorAll('[data-kc-install]').forEach(button=>{button.disabled=installCompleted;button.textContent=installCompleted?'✓ App installed':'↓ Install app';button.setAttribute('aria-label',installCompleted?'Kinetic Crew is installed':'Install Kinetic Crew');});}
-function showInstallHelp(){
- const root=$('#modalRoot');if(!root)return;
- root.innerHTML='<div class="kc-install-backdrop" data-install-close><section class="kc-install-dialog" role="dialog" aria-modal="true" aria-labelledby="kcInstallTitle"><button class="kc-install-close" type="button" data-install-close aria-label="Close">×</button><span class="kc-install-icon">↓</span><h2 id="kcInstallTitle">Install Kinetic Crew</h2><p>Chrome has not offered the one-tap install prompt yet. You can still install the app:</p><ol><li>Open the Chrome <b>⋮</b> menu.</li><li>Tap <b>Install app</b> or <b>Add to Home screen</b>.</li><li>Confirm <b>Install</b>.</li></ol><button type="button" class="primary" data-install-close>Got it</button></section></div>';
-}
-window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;syncInstallButtons();});
-window.addEventListener('appinstalled',()=>{installPrompt=null;installCompleted=true;syncInstallButtons();notice('Kinetic Crew is installed on your device.');});
-document.addEventListener('click',async event=>{
- const button=event.target.closest('[data-kc-install]');if(!button)return;
- event.preventDefault();event.stopPropagation();
- if(installCompleted){notice('Kinetic Crew is already installed.');return;}
- if(!installPrompt){showInstallHelp();return;}
- const promptEvent=installPrompt;installPrompt=null;
- try{const promptResult=promptEvent.prompt();setMobileMenu(false);await promptResult;const choice=await promptEvent.userChoice;if(choice?.outcome==='accepted'){installCompleted=true;notice('Kinetic Crew installation started.');}else notice('Installation was cancelled. You can install it later from this menu.');}
- catch(error){showInstallHelp();}
- syncInstallButtons();
-});
-document.addEventListener('click',event=>{if(event.target.closest('[data-install-close]'))$('#modalRoot').innerHTML='';});
-syncInstallButtons();
-
 window.addEventListener('kc:app-version-updated',()=>{if(S.view==='app-info')paint();});
 window.addEventListener('kc:release-feed-updated',()=>{if(S.view==='app-info')paint();});
 boot().finally(()=>{});
