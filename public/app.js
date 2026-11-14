@@ -1153,11 +1153,6 @@ function kcApplyCollectionPagination(root){
    items.forEach((item,i)=>{item.hidden=i>=state;});
    if(state>=items.length)return;
    const more=document.createElement('button');more.type='button';more.className='kc-collection-more';more.dataset.kcPaginationControl=key;more.dataset.kcPaginationList=selector;more.textContent='Show '+Math.min(6,items.length-state)+' more · '+(items.length-state)+' remaining';
-   more.addEventListener('click',()=>{
-    const next=Math.min(items.length,state+6);list.dataset.kcPageSize=String(next);
-    items.forEach((item,i)=>{item.hidden=i>=next;});
-    if(next>=items.length)more.remove();else more.textContent='Show '+Math.min(6,items.length-next)+' more · '+(items.length-next)+' remaining';
-   });
    list.insertAdjacentElement('afterend',more);
   });
  });
