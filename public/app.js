@@ -673,7 +673,7 @@ function memberAttendancePage(){
 
 function socialEmbed(url){
  try{
-  const u=new URL(url),host=u.hostname.toLowerCase().replace(/^www\./,'');
+  const u=new URL(url),host=u.hostname.toLowerCase().replace(/^www\\./,'');
   let id='';
   if(host==='youtu.be')id=u.pathname.split('/').filter(Boolean)[0]||'';
   else if(['youtube.com','m.youtube.com'].includes(host)){
@@ -681,9 +681,9 @@ function socialEmbed(url){
    if(!id){const parts=u.pathname.split('/').filter(Boolean),marker=parts.findIndex(p=>p==='shorts'||p==='embed');if(marker>=0)id=parts[marker+1]||'';}
   }
   if(id&&/^[a-zA-Z0-9_-]{6,20}$/.test(id))return '<div class="social-embed social-embed-video"><iframe src="https://www.youtube-nocookie.com/embed/'+esc(id)+'" title="Shared crew video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>';
-  if(host==='instagram.com'&&/^\/(p|reel|tv)\/[A-Za-z0-9_-]+/.test(u.pathname))return '<div class="social-embed social-embed-instagram"><iframe src="https://www.instagram.com'+esc(u.pathname.replace(/\/$/,'')+'/embed')+'" title="Instagram shared post" loading="lazy" allowfullscreen referrerpolicy="no-referrer"></iframe></div>';
+  if(host==='instagram.com'&&/^\\/(p|reel|tv)\\/[A-Za-z0-9_-]+/.test(u.pathname))return '<div class="social-embed social-embed-instagram kg-instagram-video-only"><iframe src="https://www.instagram.com'+esc(u.pathname.replace(/\\/$/,'')+'/embed')+'" title="Shared crew video" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe></div>';
   if(host==='tiktok.com'||host==='m.tiktok.com'){
-   const match=u.pathname.match(/\/video\/(\d+)/);if(match)return '<div class="social-embed social-embed-tiktok"><iframe src="https://www.tiktok.com/player/v1/'+match[1]+'?music_info=1&description=1" title="TikTok shared video" loading="lazy" allow="fullscreen" allowfullscreen></iframe></div>';
+   const match=u.pathname.match(/\\/video\\/(\\d+)/);if(match)return '<div class="social-embed social-embed-tiktok"><iframe src="https://www.tiktok.com/player/v1/'+match[1]+'?music_info=1&description=1" title="Shared crew video" loading="lazy" allow="fullscreen" allowfullscreen></iframe></div>';
   }
  }catch{}
  return '';
@@ -728,7 +728,7 @@ function socialPostCard(post){
  const commentMarkup=comments.map(c=>{const person=people.find(m=>String(m.auth_id)===String(c.user_id))||{name:'Crew member'};return '<article class="social-comment"><b>'+esc(person.name)+'</b><p>'+esc(c.body)+'</p><time>'+esc(dt(c.created_at))+'</time></article>';}).join('');
  return '<article class="surface social-post-card" data-social-post="'+esc(post.id)+'"><header class="social-post-head">'+avatarMarkup(author,'social-author-avatar')+'<div><b>'+esc(author.name||'Crew member')+'</b><small>'+esc(role(author.role))+' · '+esc(dt(post.created_at))+'</small></div>'+(owned||admin()?'<button type="button" class="social-delete" data-social-delete="'+esc(post.id)+'" aria-label="Delete post">×</button>':'')+'</header>'+
  (post.caption?'<p class="social-post-caption">'+esc(post.caption)+'</p>':'')+
- (url?socialEmbed(url)+'<a class="social-link-preview" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer"><span class="social-link-icon">↗</span><span><small>SHARED LINK</small><b>'+esc(host)+'</b><em>Open original post or page</em></span><span class="social-link-arrow">↗</span></a>':'<div class="social-invalid-link">This shared link is unavailable.</div>')+
+ (url?socialEmbed(url):'<div class="social-invalid-link">This shared link is unavailable.</div>')+
  '<div class="social-post-stats"><span>'+likes.length+' '+(likes.length===1?'like':'likes')+'</span><span>'+comments.length+' '+(comments.length===1?'comment':'comments')+'</span></div>'+
  '<div class="social-post-actions"><button type="button" class="'+(liked?'social-action liked':'social-action')+'" data-social-like="'+esc(post.id)+'" data-liked="'+(liked?'true':'false')+'">'+(liked?'♥ Liked':'♡ Like')+'</button><button type="button" class="social-action" data-social-comments-toggle="'+esc(post.id)+'">▢ Comment</button><button type="button" class="social-action" data-social-share="'+esc(post.id)+'">↗ Share</button></div>'+
  '<section class="social-comments" data-social-comments="'+esc(post.id)+'" hidden><div class="social-comments-list">'+(commentMarkup||'<p class="social-no-comments">Start the conversation.</p>')+'</div><form class="social-comment-form" data-social-comment-form="'+esc(post.id)+'"><input name="body" maxlength="800" required placeholder="Write a comment…"><button type="submit" aria-label="Send comment">➤</button></form></section></article>';
