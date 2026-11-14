@@ -88,9 +88,9 @@ async function enable() {
     window.dispatchEvent(new CustomEvent("kc:notification", { detail: { title, body, target: payload.data?.url?.includes("chat") ? "chat" : "notifications" } }));
     if (Notification.permission === "granted") new Notification(title, {
       body,
-      icon: window.kcPath("kinetic-crew-logo.jpg"),
+      icon: window.kcPath("icon.svg"),
       image: window.kcPath("kinetic-crew-logo.jpg"),
-      badge: window.kcPath("icon.svg"),
+      badge: window.kcPath("kc-notification-badge.svg"),
       tag: payload.data?.notificationId || payload.data?.id || "kinetic-crew-update",
       renotify: false
     });
