@@ -116,7 +116,67 @@ function kcConfirmDialog({title='Are you sure?',message='This action cannot be u
  });
 }
 
-function cacheKey(userId){return 'kc-bootstrap-v2:'+userId;}
+
+/* Multi-account menu: store account identifiers only; never persist passwords or refresh tokens. */
+const KC_ACCOUNT_LIST_KEY='kc_saved_account_emails_v1';
+function kcRememberSignedInAccount(user){
+ if(!user?.email)return;
+ try{
+  const list=JSON.parse(localStorage.getItem(KC_ACCOUNT_LIST_KEY)||'[]');
+  const email=String(user.email).trim().toLowerCase();
+  const next=[email,...list.filter(item=>String(item).toLowerCase()!==email)].slice(0,8);
+  localStorage.setItem(KC_ACCOUNT_LIST_KEY,JSON.stringify(next));
+ }catch(error){console.warn('Could not save account list:',error);}
+}
+function kcOpenAccountSwitcher(){
+ const root=$('#modalRoot');if(!root||!S.user)return;
+ let accounts=[];try{accounts=JSON.parse(localStorage.getItem(KC_ACCOUNT_LIST_KEY)||'[]');}catch{}
+ const current=String(S.user.email||'').toLowerCase();
+ const rows=[...new Set([current,...accounts].filter(Boolean))];
+ root.innerHTML='<div class="modalback kc-account-backdrop" id="kcAccountBackdrop"><section class="modal kc-account-modal" role="dialog" aria-modal="true" aria-labelledby="kcAccountTitle"><button type="button" class="iconbutton" id="kcAccountClose" aria-label="Close">×</button><span class="eyebrow">KINETIC CREW / ACCOUNTS</span><h2 id="kcAccountTitle">Switch profile</h2><p class="hint">Choose an account or add another crew account. For security, you will enter its password when switching.</p><div class="kc-account-list">'+rows.map(email=>'<button type="button" class="kc-account-row" data-kc-account-email="'+esc(email)+'"><span class="kc-account-avatar">'+esc(initials(email.split('@')[0]))+'</span><span><b>'+esc(email===current?(S.user.name||email):email)+'</b><small>'+esc(email)+'</small></span><i>'+(email===current?'CURRENT':'↗')+'</i></button>').join('')+'</div><button type="button" class="primary full" id="kcAddAccount">＋ Add profile</button><form id="kcAccountLogin" class="kc-account-login" hidden><label class="field">Email address<input name="email" type="email" autocomplete="username" required></label><label class="field">Password<input name="password" type="password" autocomplete="current-password" required></label><button type="submit" class="primary full">Continue to profile →</button><button type="button" class="outline full" id="kcAccountCancel">Cancel</button><p class="hint" id="kcAccountError" role="alert"></p></form></section></div>';
+ const close=()=>{root.innerHTML='';};
+ $('#kcAccountClose')?.addEventListener('click',close);
+ $('#kcAccountBackdrop')?.addEventListener('click',e=>{if(e.target.id==='kcAccountBackdrop')close();});
+ const form=$('#kcAccountLogin'),emailInput=form?.elements.namedItem('email');
+ const showLogin=email=>{form.hidden=false;emailInput.value=email||'';emailInput.readOnly=!!email;form.elements.namedItem('password').value='';form.querySelector('input[type="password"]')?.focus();};
+ root.querySelectorAll('[data-kc-account-email]').forEach(button=>button.addEventListener('click',()=>{
+  const email=button.dataset.kcAccountEmail;
+  if(email===current){close();go('profile');return;}
+  showLogin(email);
+ }));
+ $('#kcAddAccount')?.addEventListener('click',()=>showLogin(''));
+ $('#kcAccountCancel')?.addEventListener('click',()=>{form.hidden=true;});
+ form?.addEventListener('submit',async event=>{
+  event.preventDefault();
+  const submit=form.querySelector('button[type="submit"]'),errorNode=$('#kcAccountError');
+  const email=String(emailInput.value||'').trim().toLowerCase(),password=String(form.elements.namedItem('password').value||'');
+  if(!email||!password)return;
+  submit.disabled=true;submit.textContent='Signing in…';errorNode.textContent='';
+  try{
+   const result=await auth.signInWithPassword({email,password});
+   if(result.error)throw result.error;
+   kcRememberSignedInAccount(result.data?.user||{email});
+   close();S.profileDashboard=null;S.profileSocial=null;
+   await refresh();
+   notice('Switched to '+(S.user?.name||email)+'.');
+  }catch(error){errorNode.textContent=error.message||'Could not sign in to this profile.';}
+  finally{if(submit.isConnected){submit.disabled=false;submit.textContent='Continue to profile →';}}
+ });
+}
+let kcProfileLongPressTimer=null,kcProfileLongPressFired=false;
+document.addEventListener('pointerdown',event=>{
+ const profile=event.target.closest('.sidebottom .profile');
+ if(!profile||event.target.closest('#logout'))return;
+ kcProfileLongPressFired=false;
+ clearTimeout(kcProfileLongPressTimer);
+ kcProfileLongPressTimer=setTimeout(()=>{kcProfileLongPressFired=true;kcOpenAccountSwitcher();},520);
+},{passive:true});
+['pointerup','pointercancel','pointerleave'].forEach(type=>document.addEventListener(type,()=>clearTimeout(kcProfileLongPressTimer),{passive:true}));
+document.addEventListener('contextmenu',event=>{if(event.target.closest('.sidebottom .profile'))event.preventDefault();});
+document.addEventListener('click',event=>{
+ if(kcProfileLongPressFired&&event.target.closest('.sidebottom .profile')){event.preventDefault();event.stopImmediatePropagation();kcProfileLongPressFired=false;}
+});
+\nfunction cacheKey(userId){return 'kc-bootstrap-v2:'+userId;}
 function paintUser(){if(!S.user)return;const name=$('#profileName'),userRole=$('#profileRole'),avatar=$('#avatar'),topAvatar=$('#topAvatar');if(name)name.textContent=S.user.name||S.user.email||'Crew Member';if(userRole)userRole.textContent=role(S.user.role);if(avatar)avatar.innerHTML=avatarMarkup(S.user);if(topAvatar)topAvatar.innerHTML=avatarMarkup(S.user,'small');}
 async function refresh(){
  // The authenticated bootstrap is the only data dependency required to open the app.
@@ -1225,7 +1285,7 @@ function kcBackToFeatureMenu(){
 }
 
 function paint(){
-document.body.classList.toggle('kc-more-open',S.view==='more');document.body.classList.toggle('kc-home-screen',S.view==='overview');const headerBell=document.querySelector('.kc-header-notifications');if(headerBell)headerBell.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>'+(unread()?'<i></i>':'');const headerProfile=document.querySelector('.kc-header-profile');if(headerProfile){headerProfile.innerHTML=avatarMarkup(S.user||{},'small');headerProfile.dataset.view='profile';headerProfile.setAttribute('role','button');headerProfile.setAttribute('tabindex','0');headerProfile.setAttribute('aria-label','Open my profile');}
+document.body.classList.toggle('kc-more-open',S.view==='more');document.body.classList.toggle('kc-home-screen',S.view==='overview');const headerBell=document.querySelector('.kc-header-notifications');if(headerBell)headerBell.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>'+(unread()?'<i></i>':'');const headerProfile=document.querySelector('.kc-header-profile');if(headerProfile)headerProfile.innerHTML=avatarMarkup(S.user||{},'small');
 const communityItems=[['polls','◉','Polls & voting'],['memories','▧','KC Memories'],['leave','↗','Leave requests'],['rehearsals','◷','Rehearsals'],['updates','↗','Crew updates'],['people','♙','Discover crew'],['meet','◉','KC Meet']];
 const groups=[
  ['overview',superadmin()?'SUPER ADMIN':admin()?'ADMIN SPACE':'MEMBER SPACE',superadmin()?'Full platform control':admin()?'Crew operations':'Your crew at a glance',[['overview','⌂','Overview']]],
