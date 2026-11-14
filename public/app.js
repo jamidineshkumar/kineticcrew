@@ -257,7 +257,7 @@ function profileCardBackMarkup(user,authId,username){
  if(user?.avatar_url)qrTarget.searchParams.set('p',String(user.avatar_url));
  const instagram='https://www.instagram.com/'+encodeURIComponent(String(user?.instagram_username||handle).replace(/^@/,''))+'/';
  const displayId='KC-'+(profileId.replace(/[^a-zA-Z0-9]/g,'').slice(-8)||handle.slice(0,8)).toUpperCase();
- const role=String(user?.role==='super_admin'?'FOUNDER / SUPER ADMIN':user?.profession||user?.designation||user?.occupation||'CREW MEMBER').toUpperCase();
+ const role=String(user?.role==='super_admin'?'FOUNDER / SUPER ADMIN':user?.profession||user?.designation||user?.occupation||role(user?.role).toUpperCase()).toUpperCase();
  return '<section class="kc-profile-card-back" aria-label="Kinetic Crew digital profile ticket">'+
  '<div class="kc-ticket-heading"><span>MY PROFILE</span><b>KINETIC CREW</b></div>'+
  '<div class="kc-ticket-stub"><div class="kc-ticket-id-label">MEMBER ID</div><strong>'+esc(displayId)+'</strong><div class="kc-ticket-perforation"><i></i></div>'+
@@ -322,7 +322,7 @@ function publicProfilePage(){
  const photo=p.banner_url||p.cover_url||p.cover_photo_url||p.avatar_url||'';
  const avatar=p.avatar_url||'';
  const username=p.username||String(p.email||'crew-member').split('@')[0];
- const job=p.profession||p.designation||p.occupation||(founder?'Founder / Super Admin':'Kinetic Crew Member');
+ const job=p.profession||p.designation||p.occupation||role(p.role);
  const profession=String(p.profession||'').trim(),designation=String(p.designation||p.crew_title||'').trim(),instagram=String(p.instagram_username||'').replace(/^@/,'').trim();
  const coverStyle=photo?' style="--kc-visitor-cover:url(&quot;'+esc(safeSocialUrl(photo))+'&quot;)"':'';
  const action=self?'<button class="kc-visitor-action" data-view="profile">Edit profile</button>':'<button type="button" class="kc-visitor-action kc-follow-action" data-follow="'+esc(p.auth_id)+'" data-following="'+(following?'true':'false')+'">'+(following?'Following':'Follow')+'</button>';
