@@ -319,7 +319,8 @@ function publicProfilePage(){
  const photo=p.banner_url||p.cover_url||p.cover_photo_url||p.avatar_url||'';
  const avatar=p.avatar_url||'';
  const username=p.username||String(p.email||'crew-member').split('@')[0];
- const job=p.profession||p.designation||p.occupation||(founder?'Founder / Super Admin':'Kinetic Crew Member');\n const profession=String(p.profession||'').trim(),designation=String(p.designation||p.crew_title||'').trim(),instagram=String(p.instagram_username||'').replace(/^@/,'').trim();
+ const job=p.profession||p.designation||p.occupation||(founder?'Founder / Super Admin':'Kinetic Crew Member');
+ const profession=String(p.profession||'').trim(),designation=String(p.designation||p.crew_title||'').trim(),instagram=String(p.instagram_username||'').replace(/^@/,'').trim();
  const coverStyle=photo?' style="--kc-visitor-cover:url(&quot;'+esc(safeSocialUrl(photo))+'&quot;)"':'';
  const action=self?'<button class="kc-visitor-action" data-view="profile">Edit profile</button>':'<button type="button" class="kc-visitor-action kc-follow-action" data-follow="'+esc(p.auth_id)+'" data-following="'+(following?'true':'false')+'">'+(following?'Following':'Follow')+'</button>';
  return '<main class="kc-visitor-profile kc-visitor-profile-clean">'+
