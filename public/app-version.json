@@ -1,6 +1,6 @@
 {
-  "version": "1.6.15",
+  "version": "1.6.16",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T13:35:00.000Z",
-  "release_notes": "The Scan QR attendance tile now opens the scanner and starts the camera automatically."
+  "updated_at": "2026-11-14T00:00:00.000Z",
+  "release_notes": "Kinetic Gram now shows stories only for members who have posted, fixes feed tabs and story controls, and displays live crew presence only while members are online."
 }
