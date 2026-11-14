@@ -48,11 +48,15 @@ async function enableNativePush() {
     await PushNotifications.addListener("registrationError", error => console.error("FCM registration failed:", error));
     await PushNotifications.addListener("pushNotificationReceived", notification => {
       console.info("Crew push received:", notification.title || "Kinetic Crew");
-      window.dispatchEvent(new CustomEvent("kc:notification", { detail: { title: notification.title || "Kinetic Crew", body: notification.body || "You have a new crew update.", target: notification.data?.url?.includes("chat") ? "chat" : "notifications" } }));
+      const rawTarget=notification.data?.url||"/";
+      let targetView="notifications";
+      try{targetView=new URL(rawTarget,window.location.href).searchParams.get("kc_view")||targetView;}catch{}
+      window.dispatchEvent(new CustomEvent("kc:notification", { detail: { title: notification.title || "Kinetic Crew", body: notification.body || "You have a new crew update.", target: targetView } }));
     });
     await PushNotifications.addListener("pushNotificationActionPerformed", action => {
       const target = action.notification?.data?.url || "/";
-      window.location.href = window.kcPath(target.replace(/^\//, ""));
+      const url = new URL(target, window.location.href);
+      window.location.href = url.pathname + url.search + url.hash;
     });
   }
   await PushNotifications.register();
@@ -85,14 +89,21 @@ async function enable() {
   onMessage(messaging, payload => {
     const title = payload.notification?.title || "Kinetic Crew";
     const body = payload.notification?.body || "You have a new crew update.";
-    window.dispatchEvent(new CustomEvent("kc:notification", { detail: { title, body, target: payload.data?.url?.includes("chat") ? "chat" : "notifications" } }));
-    if (Notification.permission === "granted") new Notification(title, {
-      body,
-      icon: window.kcPath("kinetic-crew-logo.jpg"),
-      image: window.kcPath("kinetic-crew-logo.jpg"),
-      badge: window.kcPath("icon.svg"),
-      tag: payload.data?.id || "kinetic-crew-update"
-    });
+    const rawTarget=payload.data?.url||"/";
+    let targetView="notifications";
+    try{targetView=new URL(rawTarget,window.location.href).searchParams.get("kc_view")||targetView;}catch{}
+    window.dispatchEvent(new CustomEvent("kc:notification", { detail: { title, body, target: targetView } }));
+    if (Notification.permission === "granted") {
+      const notice=new Notification(title, {
+        body,
+        icon: window.kcPath("kc-notification-icon.png"),
+        image: window.kcPath("kinetic-crew-logo.jpg"),
+        badge: window.kcPath("kc-notification-icon.png"),
+        tag: payload.data?.id || "kinetic-crew-update",
+        data: { url: rawTarget }
+      });
+      notice.onclick=()=>{window.focus();const url=new URL(rawTarget,window.location.href);window.location.href=url.pathname+url.search+url.hash;};
+    }
     try {
       const session = window.kcSupabase.auth.getSession();
       session.then(({data}) => {
