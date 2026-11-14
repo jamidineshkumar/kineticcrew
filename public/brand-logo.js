@@ -5,6 +5,7 @@
  const FALLBACK=(()=>{try{return window.kcPath('kinetic-crew-logo.svg');}catch{return 'kinetic-crew-logo.svg';}})();
  const CACHE_KEY='kc-global-brand-logo-v4';
  let activeUrl='';
+ let activeTargets={app:true,browser:true,pwa:true,signin:true};
  let manifestObjectUrl='';
  const validUrl=value=>{
   try{const u=new URL(String(value||''));return u.protocol==='https:'&&u.hostname==='lkdfjiweqxshbbcadfna.supabase.co'&&u.pathname==='/storage/v1/object/public/crew-brand-assets/brand/kinetic-crew-logo.png';}catch{return false;}
@@ -31,26 +32,26 @@
    manifestObjectUrl=URL.createObjectURL(blob);link.href=manifestObjectUrl;
   }catch(error){console.info('Kinetic Crew install icon will refresh on the next manifest load.',error);}
  };
- const apply=url=>{
+ const apply=(url,targets=activeTargets)=>{
   if(!validUrl(url))return false;
-  activeUrl=url;window.KC_BRAND_LOGO_URL=url;
+  activeUrl=url;activeTargets={app:true,browser:true,pwa:true,signin:true,...(targets||{})};window.KC_BRAND_LOGO_URL=url;
   try{localStorage.setItem(CACHE_KEY,url);}catch{}
   const original=window.kcPath;
   if(typeof original==='function'&&!original.__kcBrandWrapped){
    const wrapped=function(path){if(/(?:^|\/)kinetic-crew-logo\.(?:svg|jpe?g|png|webp)(?:[?#]|$)/i.test(String(path||'')))return activeUrl;return original.call(this,path);};
    wrapped.__kcBrandWrapped=true;window.kcPath=wrapped;
   }
-  document.querySelectorAll('img').forEach(setImage);
-  setLink('link[rel="icon"],link[rel="shortcut icon"],link[rel="apple-touch-icon"]',url);
-  document.querySelectorAll('meta[name="msapplication-TileImage"]').forEach(meta=>meta.content=url);
-  applyManifest(url);
+  if(activeTargets.app||activeTargets.signin)document.querySelectorAll('img').forEach(setImage);
+  if(activeTargets.browser)setLink('link[rel="icon"],link[rel="shortcut icon"]',url);
+  if(activeTargets.pwa){setLink('link[rel="apple-touch-icon"]',url);document.querySelectorAll('meta[name="msapplication-TileImage"]').forEach(meta=>meta.content=url);applyManifest(url);}
   return true;
  };
  window.kcApplyBrandLogo=apply;
  try{const cached=localStorage.getItem(CACHE_KEY);if(cached)apply(cached);}catch{}
  if(window.kcSupabase){
-  window.kcSupabase.rpc('crew_get_brand_logo').then(({data,error})=>{
-   if(!error&&typeof data==='string'&&validUrl(data))apply(data);
+  window.kcSupabase.rpc('crew_get_brand_identity').then(({data,error})=>{
+   if(!error&&data&&validUrl(data.logo_url))apply(data.logo_url,data.targets);
+   else if(!error)return window.kcSupabase.rpc('crew_get_brand_logo').then(({data:url,error:legacyError})=>{if(!legacyError&&typeof url==='string')apply(url);});
   }).catch(error=>console.info('Using cached Kinetic Crew logo until the brand setting is available.',error));
  }
  const observer=new MutationObserver(records=>{
