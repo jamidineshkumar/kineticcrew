@@ -1078,9 +1078,22 @@ if(founderProfileEntry){
 }
 if(S.homeCarouselTimer){clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=null;}if(S.homeRailTimer){clearInterval(S.homeRailTimer);S.homeRailTimer=null;}
 if(S.view==='overview'){
- // Remove the stray legacy placeholder text seen on the home screen.
+ // Remove the stray legacy placeholder, including text inserted by late-rendering widgets.
  const homeRoot=document.getElementById('app');
- if(homeRoot){const walker=document.createTreeWalker(homeRoot,NodeFilter.SHOW_TEXT);const stray=[];while(walker.nextNode()){if((walker.currentNode.nodeValue||'').trim()==='ONaN')stray.push(walker.currentNode);}stray.forEach(node=>node.remove());}
+ const stripHomePlaceholder=node=>{
+  if(!node)return;
+  if(node.nodeType===Node.TEXT_NODE){if((node.nodeValue||'').trim()==='ONaN')node.remove();return;}
+  if(node.nodeType!==Node.ELEMENT_NODE)return;
+  const walker=document.createTreeWalker(node,NodeFilter.SHOW_TEXT),stray=[];
+  while(walker.nextNode())if((walker.currentNode.nodeValue||'').trim()==='ONaN')stray.push(walker.currentNode);
+  stray.forEach(textNode=>textNode.remove());
+ };
+ if(S.homePlaceholderObserver){S.homePlaceholderObserver.disconnect();S.homePlaceholderObserver=null;}
+ if(homeRoot){
+  stripHomePlaceholder(homeRoot);
+  S.homePlaceholderObserver=new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(stripHomePlaceholder)));
+  S.homePlaceholderObserver.observe(homeRoot,{childList:true,subtree:true});
+ }
  const homeCarousel=document.querySelector('.kc-home-featured');
  const homeSlides=[...(homeCarousel?.querySelectorAll('[data-home-slide]')||[])];
  const homeDots=[...(homeCarousel?.querySelectorAll('[data-home-slide-to]')||[])];
