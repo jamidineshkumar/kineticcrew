@@ -1,6 +1,6 @@
 {
-  "version": "1.6.10",
+  "version": "1.6.11",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T12:00:00.000Z",
-  "release_notes": "Improved Android and PWA back gestures: one back returns to the previous screen; a second back from Home exits."
+  "updated_at": "2026-11-14T13:00:00.000Z",
+  "release_notes": "All KC Meet prompts and errors now use Kinetic Crew's branded in-app dialog design."
 }
