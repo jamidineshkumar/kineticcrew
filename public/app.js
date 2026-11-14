@@ -932,7 +932,7 @@ other('profile','profile','My Profile')+other('settings','settings','Settings')+
 '</div></section>'+
 '<button type="button" class="kc-more-signout" data-kc-signout><span>↗</span><b>Sign out</b><small>Sign out of this device</small></button>'+
 '<div class="kc-more-reference-footer">Made for <span>✦</span> Kinetic Crew</div>'+
-'<div class="kc-more-reference-watermark" aria-hidden="true">KC</div><div class="kc-more-reference-sparkle" aria-hidden="true">✦</div></div>';
+'<div class="kc-more-reference-watermark" aria-hidden="true">KC</div></div>';
 }
 
 function meetPage(){
