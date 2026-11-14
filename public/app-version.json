@@ -1,6 +1,6 @@
 {
-  "version": "1.6.3",
+  "version": "1.6.4",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T15:40:00.000Z",
-  "release_notes": "Made the welcome/login screen an installable PWA entry point by linking the web app manifest and registering the service worker there. Added explicit 192px and 512px PWA icon declarations. The Install App button continues to use Chrome's native install prompt when available."
+  "updated_at": "2026-11-14T00:00:00.000Z",
+  "release_notes": "Added a dedicated Admin and Super Admin Custom App Alerts panel with audience targeting, immediate Firebase push delivery, in-app inbox persistence, and recent broadcast history."
 }
