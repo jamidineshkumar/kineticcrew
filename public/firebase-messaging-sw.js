@@ -14,7 +14,10 @@ messaging.onBackgroundMessage((payload) => {
   const title = payload.notification?.title || "Kinetic Crew";
   const options = {
     body: payload.notification?.body || "You have a new crew update.",
-    icon: "/kinetic-crew-logo.jpg",
+    icon: "/icon.svg",
+    badge: "/kc-notification-badge.svg",
+    tag: payload.data?.notificationId || "kinetic-crew",
+    renotify: false,
     data: { url: payload.data?.url || "/" }
   };
   self.registration.showNotification(title, options);
