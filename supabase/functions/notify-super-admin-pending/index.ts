@@ -86,7 +86,7 @@ Deno.serve(async (req) => {
         body: JSON.stringify({ message: {
           token,
           notification: { title, body: message },
-          webpush: { notification: { title, body: message, icon: "/kinetic-crew-logo.svg", image: "/kinetic-crew-logo.jpg", badge: "/kinetic-crew-logo.svg", tag: "kc-pending-" + authId },  },
+          webpush: { notification: { title, body: message, icon: "/kinetic-crew-logo.svg", image: "/kinetic-crew-logo.jpg", badge: "/kc-notification-icon.svg", tag: "kc-pending-" + authId },  },
           android: { priority: "HIGH", notification: { channel_id: "crew_updates", sound: "default" } },
           data: { url: "/?kc_view=member-requests", route: "member-requests", notification_type: "membership_request" },
         } }),
