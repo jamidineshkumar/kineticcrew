@@ -17,8 +17,15 @@ Deno.serve(async(req)=>{
  const {data:{user},error:authError}=await userClient.auth.getUser();
  if(authError||!user)return json({error:"Sign in required."},401);
  const adminClient=createClient(url,service);
- const {data:operator,error:roleError}=await adminClient.from("crew_profiles").select("auth_id,role,name").eq("auth_id",user.id).maybeSingle();
- if(roleError||!operator||!["admin","super_admin"].includes(operator.role))return json({error:"Admin access required."},403);
+ const {data:operator,error:roleError}=await adminClient.from("crew_profiles").select("auth_id,role,name,email").eq("auth_id",user.id).maybeSingle();
+ const isAdmin=!!operator&&["admin","super_admin"].includes(operator.role);
+ const body=await req.json(),eventId=String(body.eventId||""),autoRegistration=body.autoRegistration===true;
+ if(roleError||!operator)return json({error:"Crew profile not found."},403);
+ if(!isAdmin&&!autoRegistration)return json({error:"Admin access required."},403);
+ if(!eventId)return json({error:"Event is required."},400);
+ const {data:event,error:eventError}=await adminClient.from("crew_events").select("id,title,description,location,starts_at,ticket_email_enabled").eq("id",eventId).maybeSingle();
+ if(eventError||!event)return json({error:"Event not found."},404);
+ if(autoRegistration&&!event.ticket_email_enabled)return json({error:"Automatic ticket email is not enabled for this event."},403);
  const smtpUser=Deno.env.get("SMTP_USER")||"kineticcreww@gmail.com",smtpPass=Deno.env.get("SMTP_PASS");
  if(!smtpPass)return json({error:"Gmail SMTP is not connected to the ticket sender yet. Add SMTP_PASS as a Supabase Edge Function secret. SMTP_USER defaults to kineticcreww@gmail.com."},503);
  const mailer=nodemailer.createTransport({host:"smtp.gmail.com",port:465,secure:true,auth:{user:smtpUser,pass:smtpPass}});
@@ -36,20 +43,20 @@ Deno.serve(async(req)=>{
    }
    return json({error:"Could not connect to Gmail SMTP. Check SMTP_USER, SMTP_PASS, and Gmail SMTP access in Supabase Edge Function secrets."},503);
   }
-  const body=await req.json(),eventId=String(body.eventId||"");
   const greeting="Your Kinetic Crew pass is ready";
   const message="Keep this personal ticket ready and show its QR code at the event entrance. Each QR code is unique to its registered member.";
   const footer="We look forward to seeing you there. · KINETIC CREW";
   const recipientMode=body.recipientMode==="single"?"single":"all";
   const singleEmail=String(body.email||"").trim().toLowerCase();
-  if(!eventId)return json({error:"Event is required."},400);
-  const {data:event,error:eventError}=await adminClient.from("crew_events").select("id,title,description,location,starts_at").eq("id",eventId).maybeSingle();
-  if(eventError||!event)return json({error:"Event not found."},404);
   let query=adminClient.from("crew_registrations").select("member_id,crew_profiles!inner(auth_id,name,email)").eq("event_id",eventId);
   const {data:registrations,error:regError}=await query;
   if(regError)throw regError;
   let recipients=(registrations||[]).map((r:any)=>({id:r.member_id,name:r.crew_profiles?.name||"Crew member",email:String(r.crew_profiles?.email||"").trim().toLowerCase()})).filter((r:any)=>r.email);
-  if(recipientMode==="single"){
+  if(autoRegistration){
+   if(!registrations?.some((r:any)=>String(r.member_id)===String(user.id)))return json({error:"Register for this event before requesting its ticket."},403);
+   recipients=recipients.filter((r:any)=>String(r.id)===String(user.id));
+   if(!recipients.length)return json({error:"Your registered email address could not be found."},404);
+  }else if(recipientMode==="single"){
    if(!singleEmail||!/^\S+@\S+\.\S+$/.test(singleEmail))return json({error:"Enter a valid registered member email."},400);
    recipients=recipients.filter((r:any)=>r.email===singleEmail);
    if(!recipients.length)return json({error:"That email is not registered for this event."},404);
@@ -58,6 +65,17 @@ Deno.serve(async(req)=>{
   if(recipients.length>500)return json({error:"This event has more than 500 recipients. Send in smaller batches."},400);
   const sendResults=[];
   for(const recipient of recipients){
+   const deliveryKey=autoRegistration?"event-ticket-registration:"+eventId:"";
+   if(deliveryKey){
+    const {data:prior,error:priorError}=await adminClient.from("crew_email_delivery_log").select("status").eq("idempotency_key",deliveryKey).eq("recipient_email",recipient.email).maybeSingle();
+    if(priorError)throw priorError;
+    if(prior?.status==="sent"){sendResults.push({email:recipient.email,ok:true,alreadySent:true});continue;}
+    const {error:claimError}=await adminClient.from("crew_email_delivery_log").insert({idempotency_key:deliveryKey,recipient_email:recipient.email,status:"sending"});
+    if(claimError){
+     if(claimError.code==="23505"){sendResults.push({email:recipient.email,ok:false,error:"Ticket email is already being processed."});continue;}
+     throw claimError;
+    }
+   }
    const payload="KC_EVENT_ATTENDANCE:"+eventId+":"+recipient.email;
    const qrDataUrl=await QRCode.toDataURL(payload,{width:360,margin:2,color:{dark:"#17201d",light:"#f3ecd9"},errorCorrectionLevel:"M"});
    const qrBase64=qrDataUrl.split(",")[1];
@@ -92,6 +110,7 @@ Deno.serve(async(req)=>{
 <td width="50%" valign="top" style="padding:0 0 15px 8px"><div style="font-size:9px;letter-spacing:2px;color:#aeb4a8">DATE</div><div style="font-size:14px;line-height:1.4;font-weight:bold;color:#f4f0e5;padding-top:5px">${esc(eventDate)}</div></td></tr>
 <tr><td width="50%" valign="top" style="padding:0 8px 10px 0"><div style="font-size:9px;letter-spacing:2px;color:#aeb4a8">VENUE</div><div style="font-size:14px;line-height:1.4;font-weight:bold;color:#f4f0e5;padding-top:5px">${esc(eventVenue)}</div></td>
 <td width="50%" valign="top" style="padding:0 0 10px 8px"><div style="font-size:9px;letter-spacing:2px;color:#aeb4a8">TIME</div><div style="font-size:14px;line-height:1.4;font-weight:bold;color:#f4f0e5;padding-top:5px">${esc(eventTime)}</div></td></tr>
+<tr><td colspan="2" style="padding:0 0 12px"><div style="font-size:9px;letter-spacing:2px;color:#aeb4a8">EVENT DETAILS</div><div style="font-size:13px;line-height:1.6;color:#e2e2d8;padding-top:5px;white-space:pre-line">${esc(event.description||"See your Kinetic Crew event page for the latest details.")}</div></td></tr>
 </table>
 </td></tr>
 <tr><td style="padding:0 20px 18px"><div style="border-top:1px dashed #777b68;padding-top:12px;font-size:10px;letter-spacing:1px;color:#c5c6b8">● VALID PERSONAL PASS <span style="float:right">ONE MEMBER · ONE QR</span></div></td></tr>
@@ -104,9 +123,18 @@ Deno.serve(async(req)=>{
 </td></tr></table></body></html>`;
    try{
     await mailer.sendMail({from:'"KINETIC CREW" <'+smtpUser+'>',to:recipient.email,subject,html,attachments:[{filename:"kinetic-crew-ticket-qr.png",content:qrBase64,encoding:"base64",cid:"ticket-qr.png"}]});
+    if(deliveryKey){
+     const {error:logError}=await adminClient.from("crew_email_delivery_log").update({status:"sent",sent_at:new Date().toISOString()}).eq("idempotency_key",deliveryKey).eq("recipient_email",recipient.email);
+     if(logError)console.error("Ticket delivery log update failed:",logError.message);
+    }
     sendResults.push({email:recipient.email,ok:true});
-   }catch(mailError){const reason=String(mailError instanceof Error?mailError.message:"SMTP delivery failed").slice(0,240);console.error("send-event-ticket SMTP failure for",recipient.email,reason);sendResults.push({email:recipient.email,ok:false,error:reason});}
+   }catch(mailError){
+    const reason=String(mailError instanceof Error?mailError.message:"SMTP delivery failed").slice(0,240);
+    console.error("send-event-ticket SMTP failure for",recipient.email,reason);
+    if(deliveryKey){await adminClient.from("crew_email_delivery_log").delete().eq("idempotency_key",deliveryKey).eq("recipient_email",recipient.email);}
+    sendResults.push({email:recipient.email,ok:false,error:reason});
+   }
   }
-  return json({ok:true,sent:sendResults.filter(x=>x.ok).length,failed:sendResults.filter(x=>!x.ok).length,results:sendResults});
+  return json({ok:true,sent:sendResults.filter(x=>x.ok&&!x.alreadySent).length,alreadySent:sendResults.filter(x=>x.alreadySent).length,failed:sendResults.filter(x=>!x.ok).length,results:sendResults});
  }catch(error){console.error("send-event-ticket:",error);return json({error:error instanceof Error?error.message:"Ticket email failed."},500);}
 });
