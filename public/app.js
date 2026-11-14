@@ -1381,7 +1381,7 @@ function developerPage(){
  return '<section class="kc-developer-profile" aria-label="Developer profile">'+
  '<div class="kc-developer-cover">'+(photo?'<img class="kc-developer-cover-photo" src="'+esc(photo)+'" alt="Jami Dinesh Kumar" loading="eager" onerror="this.hidden=true">':'<div class="kc-developer-cover-placeholder" aria-hidden="true"></div>')+
  '<button type="button" class="kc-developer-back" data-view="settings" aria-label="Back to settings">‹</button>'+
- (superadmin()?'<label class="kc-developer-photo-edit" for="kcDeveloperPhotoInput">✎ Edit photo</label><input id="kcDeveloperPhotoInput" class="kc-developer-photo-input" type="file" accept="image/jpeg,image/png,image/webp">':'')+
+ (superadmin()?'<button type="button" class="kc-developer-photo-edit" data-developer-photo-pick>✎ Edit photo</button><input id="kcDeveloperPhotoInput" class="kc-developer-photo-input" type="file" accept="image/jpeg,image/png,image/webp">':'')+
  '<span class="kc-developer-cover-mark">KINETIC CREW</span></div>'+
  '<div class="kc-developer-profile-body">'+
  '<h1>JAMI DINESH KUMAR</h1><p class="kc-developer-handle">@dinuvox</p><span class="kc-developer-role">FOUNDER · DEVELOPER</span>'+
@@ -2194,6 +2194,15 @@ window.addEventListener('offline',()=>{if(S.user){S.offline=true;S.error='You ar
 window.addEventListener('error',event=>{console.error('Kinetic Crew runtime error:',event.error||event.message);});
 window.addEventListener('unhandledrejection',event=>{console.error('Kinetic Crew async error:',event.reason);});
 
+
+/* Open the native file picker from a real user gesture on the edit-photo control. */
+document.addEventListener('click',event=>{
+ const trigger=event.target.closest('[data-developer-photo-pick]');
+ if(!trigger)return;
+ if(!superadmin()){notice('Only the Super Admin can edit the developer photo.');return;}
+ const input=document.getElementById('kcDeveloperPhotoInput');
+ if(input){input.value='';input.click();}
+});
 
 /* Developer cover photo: upload and persist the full, uncropped image. */
 document.addEventListener('change',async event=>{
