@@ -1,0 +1,124 @@
+/* Kinetic Crew — shared dialog design system. Loaded last so every app dialog inherits the same visual language. */
+:root{
+  --kc-dialog-bg:rgba(18,21,29,.96);
+  --kc-dialog-surface:rgba(255,255,255,.045);
+  --kc-dialog-border:rgba(255,255,255,.12);
+  --kc-dialog-text:var(--text,#f4f4f7);
+  --kc-dialog-muted:var(--muted,#9297a8);
+  --kc-dialog-accent:var(--lime,#c4f46b);
+  --kc-dialog-radius:22px;
+}
+#modalRoot .modalback{
+  z-index:30000!important;
+  padding:clamp(12px,3vw,24px)!important;
+  background:rgba(5,7,12,.76)!important;
+  -webkit-backdrop-filter:blur(16px) saturate(125%)!important;
+  backdrop-filter:blur(16px) saturate(125%)!important;
+}
+#modalRoot .modal{
+  width:min(100%,480px)!important;
+  max-height:min(88dvh,820px);
+  overflow:auto;
+  overscroll-behavior:contain;
+  padding:clamp(20px,4vw,28px)!important;
+  border:1px solid var(--kc-dialog-border)!important;
+  border-radius:var(--kc-dialog-radius)!important;
+  background:
+    radial-gradient(ellipse at 8% 0%,rgba(196,244,107,.075),transparent 42%),
+    linear-gradient(155deg,rgba(31,35,46,.98),var(--kc-dialog-bg) 72%)!important;
+  color:var(--kc-dialog-text)!important;
+  box-shadow:0 28px 90px rgba(0,0,0,.58),inset 0 1px 0 rgba(255,255,255,.055)!important;
+  -webkit-backdrop-filter:blur(22px)!important;
+  backdrop-filter:blur(22px)!important;
+  text-align:left;
+}
+#modalRoot .modal h2,
+#modalRoot .modal h3{color:var(--kc-dialog-text)!important;letter-spacing:-.025em}
+#modalRoot .modal p{color:var(--kc-dialog-muted)}
+#modalRoot .modal .eyebrow,
+#modalRoot .modal .kc-confirm-kicker{color:var(--kc-dialog-accent)}
+#modalRoot .modal .modalclose,
+#modalRoot .modal .iconbutton.modalclose{
+  display:grid;place-items:center;width:36px;height:36px;
+  border:1px solid var(--kc-dialog-border);border-radius:12px;
+  background:rgba(255,255,255,.07);color:#f4f4f7;
+}
+#modalRoot .modal input,
+#modalRoot .modal textarea,
+#modalRoot .modal select{
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:13px;background:rgba(8,10,16,.72);color:var(--kc-dialog-text);
+}
+#modalRoot .modal input:focus,
+#modalRoot .modal textarea:focus,
+#modalRoot .modal select:focus{
+  border-color:var(--kc-dialog-accent);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--kc-dialog-accent) 16%,transparent);
+  outline:0;
+}
+#modalRoot .modal .primary{
+  min-height:44px;border-radius:13px;
+  background:linear-gradient(135deg,var(--kc-dialog-accent),color-mix(in srgb,var(--kc-dialog-accent) 78%,#fff));
+  border:1px solid color-mix(in srgb,var(--kc-dialog-accent) 72%,#fff);
+  color:#14180e;font-weight:750;
+}
+#modalRoot .modal .secondary,
+#modalRoot .modal .outline{
+  min-height:44px;border-radius:13px;
+}
+#modalRoot .modal .kc-confirm-modal,
+#modalRoot .modal.kc-confirm-modal{
+  border-radius:var(--kc-dialog-radius)!important;
+}
+#modalRoot .kc-confirm-backdrop .kc-confirm-modal{
+  text-align:left;
+  background:radial-gradient(ellipse at 8% 0%,rgba(196,244,107,.075),transparent 42%),linear-gradient(155deg,#1f232e,#12151d 72%)!important;
+}
+#modalRoot .kc-confirm-backdrop .kc-confirm-kicker{color:var(--kc-dialog-accent)}
+#modalRoot .kc-confirm-backdrop .kc-confirm-input{
+  border-radius:13px;background:rgba(8,10,16,.72);color:#fff;
+}
+#modalRoot .kc-confirm-backdrop .kc-confirm-input:focus{border-color:var(--kc-dialog-accent);box-shadow:0 0 0 3px rgba(196,244,107,.14)}
+#modalRoot .kc-confirm-backdrop .kc-confirm-actions .secondary{
+  border:1px solid var(--kc-dialog-border);background:rgba(255,255,255,.07);color:#f4f4f7;
+}
+#modalRoot .kc-confirm-backdrop .kc-confirm-actions .kc-confirm-danger{
+  min-height:44px;border-radius:13px;
+}
+#modalRoot .kc-dm-modal,
+#modalRoot .kce-ticket-modal,
+#modalRoot .kc-attendance-success-modal{
+  border-radius:var(--kc-dialog-radius)!important;
+}
+body>.kc-connections-backdrop{
+  z-index:30000!important;padding:clamp(12px,3vw,24px);
+  background:rgba(5,7,12,.76)!important;
+  -webkit-backdrop-filter:blur(16px) saturate(125%);
+  backdrop-filter:blur(16px) saturate(125%);
+}
+body>.kc-connections-backdrop .kc-connections-panel{
+  width:min(100%,480px);max-height:min(88dvh,820px);overflow:auto;
+  border:1px solid var(--kc-dialog-border);border-radius:var(--kc-dialog-radius);
+  background:radial-gradient(ellipse at 8% 0%,rgba(196,244,107,.075),transparent 42%),linear-gradient(155deg,#1f232e,#12151d 72%);
+  color:var(--kc-dialog-text);box-shadow:0 28px 90px rgba(0,0,0,.58);
+}
+body>.kc-connections-backdrop .kc-connections-panel header,
+body>.kc-connections-backdrop .kc-connections-panel footer{border-color:rgba(255,255,255,.09)}
+body>.kc-connections-backdrop .kc-connections-panel header h2{color:var(--kc-dialog-text)}
+body>.kc-connections-backdrop .kc-connections-panel header small{color:var(--kc-dialog-accent)}
+body>.kc-connections-backdrop .kc-connections-panel [data-connections-close]{
+  width:36px;height:36px;border:1px solid var(--kc-dialog-border);border-radius:12px;
+  background:rgba(255,255,255,.07);color:#fff;
+}
+#modalRoot .modalback,
+body>.kc-connections-backdrop{animation:kcDialogBackdropIn .16s ease-out both}
+#modalRoot .modal{animation:kcDialogPanelIn .2s cubic-bezier(.2,.8,.2,1) both}
+@keyframes kcDialogBackdropIn{from{opacity:0}to{opacity:1}}
+@keyframes kcDialogPanelIn{from{opacity:0;transform:translateY(9px) scale(.985)}to{opacity:1;transform:none}}
+@media(max-width:520px){
+  #modalRoot .modal{width:100%!important;max-height:calc(100dvh - 24px);padding:22px 17px!important;border-radius:19px!important}
+  #modalRoot .modal .kc-confirm-actions{gap:8px}
+}
+@media(prefers-reduced-motion:reduce){
+  #modalRoot .modalback, #modalRoot .modal, body>.kc-connections-backdrop{animation:none!important}
+}
