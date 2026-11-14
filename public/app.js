@@ -1130,6 +1130,7 @@ function brandSettingsPage(){
  '<div class="kc-brand-editor-actions"><button type="button" id="brandLogoRotate" disabled>↻ Rotate 90°</button><button type="button" id="brandLogoCenter" disabled>Center image</button></div>'+
  '</div>'+
  '<small class="kc-brand-file-help">PNG, JPG or WebP · maximum 5 MB · transparent areas are preserved. The final icon is exported at 512 × 512.</small><div class="kc-brand-targets"><div class="kc-brand-targets-head"><b>WHERE SHOULD THIS LOGO UPDATE?</b><span>Select destinations</span></div><label><input type="checkbox" data-brand-target="app" '+(brandTargets.app?'checked':'')+'><span><b>App interface</b><small>Headers, menus, profile and in-app logo placements</small></span></label><label><input type="checkbox" data-brand-target="browser" '+(brandTargets.browser?'checked':'')+'><span><b>Browser icon</b><small>Favicon and browser tab branding</small></span></label><label><input type="checkbox" data-brand-target="pwa" '+(brandTargets.pwa?'checked':'')+'><span><b>Installed app icon</b><small>Android / iOS home-screen and PWA icon</small></span></label><label><input type="checkbox" data-brand-target="signin" '+(brandTargets.signin?'checked':'')+'><span><b>Sign-in & welcome screens</b><small>Login, signup and entry branding</small></span></label></div>'+
+ '<label><input type="checkbox" data-brand-target="email" '+(brandTargets.email?'checked':'')+'><span><b>Authentication emails</b><small>Verification and one-time login email header</small></span></label></div>'+
  '<button type="button" class="primary" id="uploadBrandLogo" disabled>Publish logo everywhere →</button>'+
  '<p class="kc-brand-security-note">Your Super Admin account can publish the official logo. PNG, JPG or WebP images up to 5 MB are supported.</p>'+
  '</section>';
@@ -1576,8 +1577,9 @@ document.addEventListener('click',async event=>{
   const storage=client.storage.from('crew-brand-assets');
   const uploaded=await storage.upload('brand/kinetic-crew-logo.png',blob,{upsert:true,contentType:'image/png',cacheControl:'0'});
   if(uploaded.error)throw uploaded.error;
+  if(targets.email){button.textContent='Updating email logo…';const emailUpload=await storage.upload('brand/email-logo.png',blob,{upsert:true,contentType:'image/png',cacheControl:'0'});if(emailUpload.error)throw emailUpload.error;}
   const publicUrl=storage.getPublicUrl(uploaded.data.path).data.publicUrl+'?v='+Date.now();
-  const targets=Object.fromEntries(['app','browser','pwa','signin'].map(key=>[key,!!document.querySelector('[data-brand-target="'+key+'"]')?.checked]));
+  const targets=Object.fromEntries(['app','browser','pwa','signin','email'].map(key=>[key,!!document.querySelector('[data-brand-target="'+key+'"]')?.checked]));
   if(!Object.values(targets).some(Boolean))throw Error('Select at least one destination for the new logo.');
   button.textContent='Saving destinations…';
   const targetSaved=await rpc('crew_set_app_setting',{p_key:'brand_logo_targets',p_value:targets});
