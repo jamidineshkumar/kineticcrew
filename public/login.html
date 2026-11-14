@@ -26,16 +26,38 @@
 const installButton=document.getElementById('kcWelcomeInstall'),installStatus=document.getElementById('kcWelcomeInstallStatus');
 let installPrompt=null;
 const isInstalled=()=>window.matchMedia?.('(display-mode: standalone)').matches||window.navigator.standalone===true;
-if(installButton&&!isInstalled())installButton.hidden=false;
-window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;if(installButton&&!isInstalled())installButton.hidden=false;});
-window.addEventListener('appinstalled',()=>{installPrompt=null;if(installButton)installButton.hidden=true;if(installStatus)installStatus.textContent='Kinetic Crew is installed.';});
+// Keep one install control only. Some browser/PWA helpers can inject a second
+// text-equivalent control into the welcome page; retain our accessible button.
+function removeDuplicateInstallControls(){
+ document.querySelectorAll('button,a,[role="button"]').forEach(el=>{
+  if(el===installButton||el.closest('#kcWelcomeInstall'))return;
+  const label=(el.innerText||el.textContent||'').replace(/[↓⬇↧]/g,'').trim().replace(/\\s+/g,' ').toLowerCase();
+  if(label==='install app')el.remove();
+ });
+}
+removeDuplicateInstallControls();
+if(installButton)installButton.hidden=true;
+if(installStatus)installStatus.textContent='';
+window.addEventListener('beforeinstallprompt',event=>{
+ event.preventDefault();installPrompt=event;
+ if(installButton&&!isInstalled())installButton.hidden=false;
+});
+window.addEventListener('appinstalled',()=>{
+ installPrompt=null;if(installButton)installButton.hidden=true;
+ if(installStatus)installStatus.textContent='Kinetic Crew is installed.';
+});
 installButton?.addEventListener('click',async()=>{
  if(isInstalled()){installButton.hidden=true;return;}
- if(!installPrompt){if(installStatus)installStatus.textContent='The one-tap install option is not available in this browser yet.';return;}
- const promptEvent=installPrompt;installPrompt=null;
- try{await promptEvent.prompt();const choice=await promptEvent.userChoice;if(choice?.outcome==='accepted'){installButton.hidden=true;if(installStatus)installStatus.textContent='Installation started.';}else if(installStatus)installStatus.textContent='Installation cancelled.';}
- catch{if(installStatus)installStatus.textContent='Could not start installation. Please try again.';}
+ if(!installPrompt)return;
+ const promptEvent=installPrompt;installPrompt=null;installButton.disabled=true;
+ try{
+  await promptEvent.prompt();const choice=await promptEvent.userChoice;
+  if(choice?.outcome==='accepted'){installButton.hidden=true;if(installStatus)installStatus.textContent='Installation started.';}
+  else if(installStatus)installStatus.textContent='Installation cancelled.';
+ }catch{if(installStatus)installStatus.textContent='Could not start installation. Use Chrome menu → Install app.';}
+ finally{installButton.disabled=false;}
 });
+
 })();
 </script>
 <script>
