@@ -28,7 +28,6 @@ const PAGE_STATE_KEY='kinetic-crew-page-state-v1';
 function readPageState(){try{const raw=localStorage.getItem(PAGE_STATE_KEY)||sessionStorage.getItem(PAGE_STATE_KEY);return raw?JSON.parse(raw):null;}catch{return null;}}
 function savePageState(){if(!S.user)return;try{const state=JSON.stringify({view:S.view,selectedEvent:S.selectedEvent,selectedProfileId:S.selectedProfileId,navOpen:S.navOpen,scrollX:window.scrollX||0,scrollY:window.scrollY||0,userId:S.user.auth_id||S.user.id||''});localStorage.setItem(PAGE_STATE_KEY,state);sessionStorage.setItem(PAGE_STATE_KEY,state);}catch{}}
 function restorePageScroll(state){if(!state)return;const restore=()=>window.scrollTo({left:Number(state.scrollX)||0,top:Number(state.scrollY)||0,behavior:'auto'});requestAnimationFrame(()=>requestAnimationFrame(restore));setTimeout(restore,180);}
-window.addEventListener('scroll',savePageState,{passive:true});
 window.addEventListener('pagehide',savePageState);
 
 function withTimeout(promise,ms,label){let timer;return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(label||'Request timed out. Check your connection and retry.')),ms);})]).finally(()=>clearTimeout(timer));}
@@ -959,7 +958,7 @@ function peoplePage(){
  const filtered=people.filter(m=>(String(m.name||'')+' '+String(m.username||'')+' '+String(m.role||'')+' '+String(m.bio||'')).toLowerCase().includes(query));
  return welcome('Find your crew','Search members and connect with your crew.')+
  '<section class="profile-discovery-bar"><label class="profile-search"><span aria-hidden="true">⌕</span><input id="peopleSearch" type="search" value="'+esc(S.peopleQuery||'')+'" placeholder="Search members…" autocomplete="off"></label><span class="profile-search-count" id="peopleSearchCount">'+filtered.length+' / '+people.length+'</span></section>'+
- '<div class="profile-directory" id="profileDirectoryGrid">'+(filtered.length?filtered.map(m=>'<article class="surface crew-profile-tile kc-member-directory-card" data-member-action-card="'+esc(m.auth_id)+'" data-member-role="'+esc(m.role||'member')+'" data-member-name="'+esc(m.name||'Crew member')+'"><div class="kc-member-card-heading"><button class="crew-profile-open" data-open-profile="'+esc(m.auth_id)+'">'+avatarMarkup(m)+'<span><b>'+esc(m.name||'Crew member')+'</b><small>@'+esc(m.username||'crew-member')+'</small></span></button><span class="role-pill '+esc(m.role)+'">'+esc(role(m.role))+'</span></div><p>'+esc(m.bio||'Kinetic Crew member')+'</p><div class="kc-member-directory-footer"><button type="button" class="outline" data-open-profile="'+esc(m.auth_id)+'">View profile <span aria-hidden="true">→</span></button>'+'<button type="button" class="outline kc-member-actions-toggle" data-member-actions-toggle aria-label="Member actions" title="Member actions">•••</button></div></article>').join(''):empty(query?'No matching members':'No crew members yet',query?'Try a different name or username.':'Crew members will appear here after they join.'))+'</div>';
+ '<div class="profile-directory" id="profileDirectoryGrid">'+(filtered.length?filtered.map(m=>'<article class="surface crew-profile-tile kc-member-directory-card" data-member-action-card="'+esc(m.auth_id)+'" data-member-role="'+esc(m.role||'member')+'" data-member-name="'+esc(m.name||'Crew member')+'"><div class="kc-member-card-heading"><button class="crew-profile-open" data-open-profile="'+esc(m.auth_id)+'">'+avatarMarkup(m)+'<span><b>'+esc(m.name||'Crew member')+'</b><small>@'+esc(m.username||'crew-member')+'</small></span></button><span class="role-pill '+esc(m.role)+'">'+esc(role(m.role))+'</span></div><p>'+esc(memberDescriptor(m))+'</p><div class="kc-member-directory-footer"><button type="button" class="outline" data-open-profile="'+esc(m.auth_id)+'">View profile <span aria-hidden="true">→</span></button>'+'<button type="button" class="outline kc-member-actions-toggle" data-member-actions-toggle aria-label="Member actions" title="Member actions">•••</button></div></article>').join(''):empty(query?'No matching members':'No crew members yet',query?'Try a different name or username.':'Crew members will appear here after they join.'))+'</div>';
 }
 
 function attendancePage(){
@@ -1077,7 +1076,7 @@ if(founderProfileEntry){
  const founderApp=$('#app');founderApp.classList.add('kc-founder-enter');
  setTimeout(()=>founderApp.classList.remove('kc-founder-enter'),1650);
 }
-if(S.homeUpdateTimer){clearInterval(S.homeUpdateTimer);S.homeUpdateTimer=null;}
+if(S.homeCarouselTimer){clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=null;}if(S.homeRailTimer){clearInterval(S.homeRailTimer);S.homeRailTimer=null;}
 if(S.view==='overview'){
  // Remove the stray legacy placeholder text seen on the home screen.
  const homeRoot=document.getElementById('app');
@@ -1088,21 +1087,21 @@ if(S.view==='overview'){
  if(homeSlides.length>1){
   let current=0;
   const show=next=>{current=(next+homeSlides.length)%homeSlides.length;homeSlides.forEach((slide,i)=>slide.classList.toggle('is-active',i===current));homeDots.forEach((dot,i)=>dot.classList.toggle('active',i===current));};
-  homeDots.forEach(dot=>dot.addEventListener('click',()=>{show(Number(dot.dataset.homeSlideTo));clearInterval(S.homeUpdateTimer);S.homeUpdateTimer=setInterval(()=>show(current+1),5200);}));
-  S.homeUpdateTimer=setInterval(()=>show(current+1),5200);
+  homeDots.forEach(dot=>dot.addEventListener('click',()=>{show(Number(dot.dataset.homeSlideTo));clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=setInterval(()=>show(current+1),5200);}));
+  S.homeCarouselTimer=setInterval(()=>show(current+1),5200);
   let swipeStartX=0,swipeStartY=0;
-  homeCarousel.addEventListener('touchstart',event=>{clearInterval(S.homeUpdateTimer);const touch=event.changedTouches?.[0];swipeStartX=touch?.clientX||0;swipeStartY=touch?.clientY||0;},{passive:true});
-  homeCarousel.addEventListener('touchend',event=>{const touch=event.changedTouches?.[0],dx=(touch?.clientX||0)-swipeStartX,dy=(touch?.clientY||0)-swipeStartY;if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy))show(current+(dx<0?1:-1));clearInterval(S.homeUpdateTimer);S.homeUpdateTimer=setInterval(()=>show(current+1),5200);},{passive:true});
+  homeCarousel.addEventListener('touchstart',event=>{clearInterval(S.homeCarouselTimer);const touch=event.changedTouches?.[0];swipeStartX=touch?.clientX||0;swipeStartY=touch?.clientY||0;},{passive:true});
+  homeCarousel.addEventListener('touchend',event=>{const touch=event.changedTouches?.[0],dx=(touch?.clientX||0)-swipeStartX,dy=(touch?.clientY||0)-swipeStartY;if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy))show(current+(dx<0?1:-1));clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=setInterval(()=>show(current+1),5200);},{passive:true});
  }
  const rail=document.querySelector('.kc-home-updates'),track=rail?.querySelector('.kc-home-updates-track'),dots=[...(rail?.querySelectorAll('.kc-home-update-dots span')||[])],count=dots.length;
  if(track&&count>1){
   let index=0;
   const move=next=>{index=(next+count)%count;track.style.transform='translate3d('+(-index*100)+'%,0,0)';dots.forEach((dot,i)=>dot.classList.toggle('active',i===index));const label=rail.querySelector('.kc-home-update-count');if(label)label.textContent=String(index+1).padStart(2,'0')+' / '+String(count).padStart(2,'0');};
-  S.homeUpdateTimer=setInterval(()=>move(index+1),5500);
-  rail.addEventListener('mouseenter',()=>clearInterval(S.homeUpdateTimer));
-  rail.addEventListener('mouseleave',()=>{clearInterval(S.homeUpdateTimer);S.homeUpdateTimer=setInterval(()=>move(index+1),5500);});
-  rail.addEventListener('touchstart',()=>clearInterval(S.homeUpdateTimer),{passive:true});
-  rail.addEventListener('touchend',()=>{clearInterval(S.homeUpdateTimer);S.homeUpdateTimer=setInterval(()=>move(index+1),5500);},{passive:true});
+  S.homeRailTimer=setInterval(()=>move(index+1),5500);
+  rail.addEventListener('mouseenter',()=>clearInterval(S.homeRailTimer));
+  rail.addEventListener('mouseleave',()=>{clearInterval(S.homeRailTimer);S.homeRailTimer=setInterval(()=>move(index+1),5500);});
+  rail.addEventListener('touchstart',()=>clearInterval(S.homeRailTimer),{passive:true});
+  rail.addEventListener('touchend',()=>{clearInterval(S.homeRailTimer);S.homeRailTimer=setInterval(()=>move(index+1),5500);},{passive:true});
  }
 }
 }
@@ -1315,7 +1314,7 @@ function openMemberActionRing(card){
 }
 document.addEventListener('click',event=>{
  const toggle=event.target.closest('[data-member-actions-toggle]');
- if(toggle){event.preventDefault();event.stopPropagation();openMemberActionRing(toggle.closest('[data-member-action-card]'));return;}
+ if(toggle){event.preventDefault();event.stopImmediatePropagation();openMemberActionRing(toggle.closest('[data-member-action-card]'));return;}
  if(!event.target.closest('[data-member-action-card]'))closeMemberActionRings();
 });
 document.addEventListener('contextmenu',event=>{if(event.target.closest('[data-member-action-card]'))event.preventDefault();});
