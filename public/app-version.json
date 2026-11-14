@@ -1,6 +1,6 @@
 {
-  "version": "1.6.2",
+  "version": "1.6.3",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T15:27:00.000Z",
-  "release_notes": "Removed duplicate welcome-screen install controls and only show the install action when the browser provides a working install prompt."
+  "updated_at": "2026-11-14T15:40:00.000Z",
+  "release_notes": "Made the welcome/login screen an installable PWA entry point by linking the web app manifest and registering the service worker there. Added explicit 192px and 512px PWA icon declarations. The Install App button continues to use Chrome's native install prompt when available."
 }
