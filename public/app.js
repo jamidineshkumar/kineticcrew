@@ -2020,30 +2020,55 @@ function startPendingApprovalAlerts(){
 function setupCrewPushForSignedInMember(){
  if(!S.user||S.offline||!window.kcPush)return;
  const userId=String(S.user.auth_id||S.user.id||'guest');
- const dismissedKey='kc-push-optin-dismissed:'+userId;
+ const enabledKey='kc-push-enabled:'+userId;
  const isNative=!!window.Capacitor?.isNativePlatform?.();
- const sync=()=>window.kcPush.syncExistingPermission?.().catch(error=>console.warn('Push subscription refresh failed:',error));
- if(!isNative&&'Notification'in window&&Notification.permission==='granted'){sync();return;}
- // Native Capacitor builds use the Android permission API, not the browser
- // Notification/service-worker APIs. Web builds must be served over HTTPS.
- if(!isNative&&(!('Notification'in window)||!('serviceWorker'in navigator)||!window.isSecureContext||Notification.permission==='denied'))return;
- if(localStorage.getItem('kc-push-enabled')==='yes'||localStorage.getItem(dismissedKey)==='yes')return;
+ const supported=isNative||(('Notification'in window)&&('serviceWorker'in navigator)&&window.isSecureContext);
+ if(!supported)return;
  if(document.getElementById('kcPushOptin'))return;
+ const markEnabled=()=>{localStorage.setItem(enabledKey,'yes');saveNotificationPrefs({push:true});};
+ // A granted browser permission still needs a fresh token registration for this account/device.
+ if(!isNative&&Notification.permission==='granted'){
+  window.kcPush.syncExistingPermission?.().then(markEnabled).catch(error=>console.warn('Push subscription refresh failed:',error));
+  return;
+ }
+ if(localStorage.getItem(enabledKey)==='yes')return;
  const panel=document.createElement('section');
  panel.id='kcPushOptin';
  panel.setAttribute('role','dialog');
+ panel.setAttribute('aria-modal','true');
  panel.setAttribute('aria-label','Enable Kinetic Crew notifications');
- const pushDescription=superadmin()?'Get new member approval requests and important crew alerts even when Kinetic Crew is closed.':'Get important announcements, event changes and crew updates even when Kinetic Crew is closed.';
- panel.innerHTML='<div class="kc-push-optin-copy"><span class="kc-push-optin-icon">✦</span><div><strong>Stay in the crew loop</strong><p>'+esc(pushDescription)+'</p></div></div><div class="kc-push-optin-actions"><button type="button" class="kc-push-optin-enable" id="kcPushOptinEnable">Enable notifications</button><button type="button" class="kc-push-optin-later" id="kcPushOptinLater">Not now</button></div>';
- panel.style.cssText='position:fixed;z-index:9998;left:16px;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));max-width:520px;margin:auto;padding:18px;border:1px solid rgba(255,255,255,.18);border-radius:22px;background:rgba(20,22,30,.96);color:#fff;box-shadow:0 18px 60px rgba(0,0,0,.35);backdrop-filter:blur(20px);font:inherit';
+ const pushDescription=superadmin()?'Receive member approval requests and important crew alerts, even when the app is closed.':'Receive important announcements, event changes and crew updates, even when the app is closed.';
+ panel.innerHTML='<div class="kc-push-optin-card"><span class="kc-push-optin-icon" aria-hidden="true">KC</span><div class="kc-push-optin-eyebrow">ONE-TIME SETUP</div><h2>Enable crew notifications</h2><p>'+esc(pushDescription)+'</p><div class="kc-push-optin-help" id="kcPushOptinHelp" aria-live="polite">Turn on notifications to complete your Kinetic Crew setup.</div><button type="button" class="kc-push-optin-enable" id="kcPushOptinEnable">Enable notifications</button></div>';
  const style=document.createElement('style');
- style.textContent='#kcPushOptin .kc-push-optin-copy{display:flex;gap:12px;align-items:flex-start}#kcPushOptin .kc-push-optin-icon{display:grid;place-items:center;width:38px;height:38px;flex:none;border-radius:13px;background:rgba(255,255,255,.1);font-size:20px}#kcPushOptin strong{display:block;font-size:15px}#kcPushOptin p{margin:5px 0 0;color:rgba(255,255,255,.72);font-size:13px;line-height:1.45}#kcPushOptin .kc-push-optin-actions{display:flex;gap:9px;margin-top:15px}#kcPushOptin button{min-height:42px;border:0;border-radius:12px;padding:0 15px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}#kcPushOptinEnable{background:#e8ff75;color:#171a12;flex:1}#kcPushOptinLater{background:rgba(255,255,255,.1);color:#fff}';
+ style.id='kcPushOptinStyle';
+ style.textContent=`
+ #kcPushOptin{position:fixed;inset:0;z-index:20000;display:grid;place-items:center;box-sizing:border-box;padding:24px 18px calc(24px + env(safe-area-inset-bottom,0px));background:rgba(5,6,12,.82);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);font:inherit}
+ #kcPushOptin .kc-push-optin-card{width:min(100%,440px);box-sizing:border-box;padding:28px 22px 22px;border:1px solid rgba(255,255,255,.16);border-radius:28px;background:linear-gradient(145deg,rgba(36,35,48,.98),rgba(15,17,27,.99));color:#fff;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.1)}
+ #kcPushOptin .kc-push-optin-icon{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 16px;border:1px solid rgba(255,255,255,.2);border-radius:20px;background:linear-gradient(145deg,rgba(255,150,120,.25),rgba(190,115,255,.25),rgba(110,145,255,.24));font-weight:900;letter-spacing:-1px}
+ #kcPushOptin .kc-push-optin-eyebrow{color:#d7b9ff;font-size:10px;font-weight:800;letter-spacing:2px}
+ #kcPushOptin h2{margin:9px 0 8px;font-size:23px;line-height:1.15;letter-spacing:-.6px}
+ #kcPushOptin p{margin:0;color:rgba(255,255,255,.72);font-size:14px;line-height:1.55}
+ #kcPushOptin .kc-push-optin-help{margin:18px 0 14px;padding:11px 12px;border:1px solid rgba(255,255,255,.1);border-radius:13px;background:rgba(255,255,255,.055);color:rgba(255,255,255,.72);font-size:12px;line-height:1.45}
+ #kcPushOptin .kc-push-optin-enable{width:100%;min-height:50px;border:0;border-radius:15px;background:linear-gradient(110deg,#f3d2ff,#d9c2ff,#b9d2ff);color:#171421;font:inherit;font-size:14px;font-weight:850;cursor:pointer}
+ #kcPushOptin .kc-push-optin-enable:disabled{opacity:.65;cursor:wait}
+ @media(max-height:520px){#kcPushOptin{overflow:auto;align-items:start}#kcPushOptin .kc-push-optin-card{margin:auto;padding:18px}#kcPushOptin .kc-push-optin-icon{width:42px;height:42px;margin-bottom:8px}}
+ `;
  document.head.appendChild(style);document.body.appendChild(panel);
- panel.querySelector('#kcPushOptinLater').addEventListener('click',()=>{localStorage.setItem(dismissedKey,'yes');panel.remove();style.remove();});
- panel.querySelector('#kcPushOptinEnable').addEventListener('click',async event=>{
-  const button=event.currentTarget;button.disabled=true;button.textContent='Enabling…';
-  try{const result=await window.kcPush.enable();saveNotificationPrefs({push:true});localStorage.setItem('kc-push-enabled','yes');localStorage.setItem(dismissedKey,'yes');panel.remove();style.remove();notice(result.message||'Notifications are enabled on this device.');}
-  catch(error){button.disabled=false;button.textContent='Try again';notice(error.message||'Could not enable notifications.');}
+ const button=panel.querySelector('#kcPushOptinEnable'),help=panel.querySelector('#kcPushOptinHelp');
+ button.addEventListener('click',async()=>{
+  button.disabled=true;button.textContent='Enabling…';
+  help.textContent='Requesting permission and registering this device…';
+  try{
+   const result=await window.kcPush.enable();
+   markEnabled();
+   panel.remove();style.remove();
+   notice(result.message||'Notifications are enabled on this device.');
+  }catch(error){
+   button.disabled=false;button.textContent='Try again';
+   const denied=!isNative&&('Notification'in window)&&Notification.permission==='denied';
+   help.textContent=denied?'Notifications are blocked by your browser. Open your browser site settings, allow notifications for Kinetic Crew, return here and tap Try again.':(error.message||'Could not enable notifications. Check your connection and try again.');
+   if(denied)help.style.color='#ffd0a8';
+  }
  });
 }
 window.addEventListener('kc:push-ready',()=>{if(S.user)setupCrewPushForSignedInMember();});
