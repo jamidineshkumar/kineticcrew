@@ -1,6 +1,6 @@
 {
-  "version": "1.6.8",
+  "version": "1.6.9",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T11:20:00.000Z",
-  "release_notes": "Custom alerts are notification-only, and release notice deletion now syncs to your account."
+  "updated_at": "2026-11-14T12:00:00.000Z",
+  "release_notes": "Updated the Kinetic Crew PWA app icon and branded notification badge."
 }
