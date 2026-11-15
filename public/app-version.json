@@ -1,6 +1,6 @@
 {
-  "version": "1.6.37",
+  "version": "1.6.36",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-15T14:39:37.986Z",
-  "release_notes": "Custom alert images display only on their own notification and are cleaned up after delivery."
+  "updated_at": "2026-11-15T14:40:18.864Z",
+  "release_notes": "Fix custom alert images leaking into later notifications; clean up only the attached alert image."
 }
