@@ -1,6 +1,6 @@
 {
-  "version": "1.6.32",
+  "version": "1.6.33",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-15T14:03:32.308Z",
-  "release_notes": "Event and rehearsal registration alerts, 24-hour/2-hour/30-minute reminders, start alerts, cancellation/postponement alerts, and foreground push support."
+  "updated_at": "2026-11-15T14:04:52.641Z",
+  "release_notes": "Automatic event/rehearsal registration confirmations, 24-hour/2-hour/30-minute reminders, start alerts, cancellation/postponement alerts and foreground notifications on web and Android."
 }
