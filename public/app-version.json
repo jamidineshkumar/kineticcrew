@@ -1,6 +1,6 @@
 {
-  "version": "1.6.27",
+  "version": "1.6.28",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-15T12:30:00.000Z",
-  "release_notes": "Audition applicants can sign in directly to the separate Audition Portal; invitation email, account routing and admin notification delivery status updated."
+  "updated_at": "2026-11-15T13:00:00.000Z",
+  "release_notes": "Audition invitation now provisions a direct sign-in account; applicants land in the Audition Portal; admin cards show email and push delivery status."
 }
