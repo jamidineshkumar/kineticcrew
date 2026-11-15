@@ -13,7 +13,7 @@ function statusCopy(s){
  if(s==='audition_video_submitted')return ['AUDITION VIDEO RECEIVED','Your audition video was submitted through the Audition Portal and is waiting for independent review.','warn'];
  if(s==='final_review'||s==='final_review_disagreement')return ['FINAL AUDITION REVIEW','Your audition video is being reviewed by Admin and Super Admin.','warn'];
  if(s==='selected')return ['SELECTED','Both Admin and Super Admin selected you after the audition. Check your email for your regular Member access update.','good'];
- if(s==='rejected')return ['NOT SELECTED','Both reviewers did not approve this application. Thank you for auditioning with Kinetic Crew.','bad'];
+ if(s==='rejected')return ['NOT SELECTED','Your audition was not selected by both reviewers. Thank you for auditioning with Kinetic Crew.','bad'];
  if(s==='review_disagreement')return ['REVIEW DISAGREEMENT','The reviewers have different decisions. Your application remains under review until the decision is resolved.','warn'];
  if(s==='under_review'||s==='review_disagreement')return ['APPLICATION UNDER REVIEW','Your initial application is being independently reviewed. You will receive an email if you are invited to audition.','warn'];
  return ['APPLICATION RECEIVED','Your application has been received and is waiting for independent Admin and Super Admin review.','warn'];
