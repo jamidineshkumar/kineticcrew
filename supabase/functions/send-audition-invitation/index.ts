@@ -95,6 +95,7 @@ Deno.serve(async(req:Request)=>{
     if(claimError) throw claimError;
     if(!claim) return json({ok:true,inProgress:true},202);
     claimOwned=true;
+    const releaseClaim=async()=>{if(claimOwned){await db.from("crew_email_delivery_log").delete().eq("idempotency_key",key).eq("recipient_email",email).eq("status","sending");claimOwned=false;}};
 
     const smtpUser=Deno.env.get("SMTP_USER")||"kineticcreww@gmail.com";
     const smtpPass=Deno.env.get("SMTP_PASS");
@@ -108,18 +109,21 @@ Deno.serve(async(req:Request)=>{
         .eq("auth_id",app.auth_id).maybeSingle();
       if(profileError) throw profileError;
       if(!profile||profile.approval_status!=="approved"||profile.role!=="audition_participant") {
+        await releaseClaim();
         return json({error:"The linked account is not an active Audition Portal account. Contact the Super Admin."},409);
       }
       username=String(profile.username||username).trim().toLowerCase();
       if(!username) throw new Error("The audition username is missing. Retry account provisioning.");
     } else {
       if(app.application_status!=="audition_invited") {
+        await releaseClaim();
         return json({error:"This application is not ready for first-time audition account provisioning."},409);
       }
       const {data:existingProfile,error:existingProfileError}=await db.from("crew_profiles")
         .select("auth_id,role").eq("email",email).maybeSingle();
       if(existingProfileError) throw existingProfileError;
       if(existingProfile) {
+        await releaseClaim();
         return json({error:"This email already belongs to a Kinetic Crew account. Ask an Admin to review the application; an existing member account will not be overwritten."},409);
       }
 
