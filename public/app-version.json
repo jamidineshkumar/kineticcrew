@@ -1,6 +1,6 @@
 {
-  "version": "1.6.36",
+  "version": "1.6.37",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-15T14:42:06.919Z",
-  "release_notes": "Custom alert images are isolated to their own notification; unrelated pushes use the app icon."
+  "updated_at": "2026-11-15T15:39:02.341Z",
+  "release_notes": "Kinetic Gram native posts, reels, stories and inbox navigation; More menu mobile scroll optimizations."
 }
