@@ -197,7 +197,7 @@ Deno.serve(async (req) => {
                 notification: {
                   title: item.title,
                   body: item.body,
-                  icon: "/icon.svg",
+                  icon: "/kc-notification-badge.svg",
                   badge: "/kc-notification-badge.svg",
                   tag: notificationId,
                   renotify: false,
