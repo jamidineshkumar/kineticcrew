@@ -120,44 +120,54 @@ Deno.serve(async(req:Request)=>{
         return json({error:"This application is not ready for first-time audition account provisioning."},409);
       }
       const {data:existingProfile,error:existingProfileError}=await db.from("crew_profiles")
-        .select("auth_id,role").eq("email",email).maybeSingle();
+        .select("auth_id,role,approval_status,username").eq("email",email).maybeSingle();
       if(existingProfileError) throw existingProfileError;
+
       if(existingProfile) {
-        await releaseClaim();
-        return json({error:"This email already belongs to a Kinetic Crew account. Ask an Admin to review the application; an existing member account will not be overwritten."},409);
-      }
-
-      let prepared=false,lastCredentialError="";
-      for(let attempt=1;attempt<=30&&!prepared;attempt++) {
-        username=nameUsername(String(app.name||""),attempt);
-        const {error}=await userClient.rpc("crew_audition_prepare_invitation_credentials",{
-          p_application_id:id,p_username:username,p_temporary_password:password
+        const reusableRole=existingProfile.role==="audition_participant"&&existingProfile.approval_status==="approved";
+        const recoverablePending=existingProfile.role==="member"&&existingProfile.approval_status==="pending";
+        if(!app.username||String(existingProfile.username||"").toLowerCase()!==String(app.username).toLowerCase()||(!reusableRole&&!recoverablePending)) {
+          await releaseClaim();
+          return json({error:"This email already belongs to a different Kinetic Crew account. An existing member account will not be overwritten; ask an Admin to review the application."},409);
+        }
+        username=String(existingProfile.username).toLowerCase();
+        const {data:linked,error:linkError}=await userClient.rpc("crew_audition_attach_account",{
+          p_application_id:id,p_auth_id:existingProfile.auth_id,p_username:username
         });
-        if(!error) prepared=true;
-        else if(/already in use|unique|duplicate/i.test(error.message||"")) lastCredentialError=error.message;
-        else throw error;
-      }
-      if(!prepared) throw new Error("Could not create a unique name-based username. "+lastCredentialError);
+        if(linkError||!linked?.ok) throw linkError||new Error("Could not recover the existing audition account link.");
+      } else {
+        let prepared=false,lastCredentialError="";
+        for(let attempt=1;attempt<=30&&!prepared;attempt++) {
+          username=nameUsername(String(app.name||""),attempt);
+          const {error}=await userClient.rpc("crew_audition_prepare_invitation_credentials",{
+            p_application_id:id,p_username:username,p_temporary_password:password
+          });
+          if(!error) prepared=true;
+          else if(/already in use|unique|duplicate/i.test(error.message||"")) lastCredentialError=error.message;
+          else throw error;
+        }
+        if(!prepared) throw new Error("Could not create a unique name-based username. "+lastCredentialError);
 
-      const {data:created,error:createError}=await db.auth.admin.createUser({
-        email,
-        password,
-        email_confirm:true,
-        user_metadata:{full_name:String(app.name||"Audition applicant"),username}
-      });
-      if(createError||!created?.user) {
-        throw new Error(createError?.message?.toLowerCase().includes("already")?
-          "This email already has a Kinetic Crew sign-in account. Contact an Admin to link it safely.":
-          (createError?.message||"Could not create the audition sign-in account."));
-      }
-      const newAuthId=created.user.id;
-      const {data:attached,error:attachError}=await userClient.rpc("crew_audition_attach_account",{
-        p_application_id:id,p_auth_id:newAuthId,p_username:username
-      });
-      if(attachError||!attached?.ok) {
-        await db.from("crew_profiles").delete().eq("auth_id",newAuthId);
-        await db.auth.admin.deleteUser(newAuthId).catch(()=>({error:null}));
-        throw attachError||new Error("Could not activate the separate Audition Portal account.");
+        const {data:created,error:createError}=await db.auth.admin.createUser({
+          email,
+          password,
+          email_confirm:true,
+          user_metadata:{full_name:String(app.name||"Audition applicant"),username}
+        });
+        if(createError||!created?.user) {
+          throw new Error(createError?.message?.toLowerCase().includes("already")?
+            "This email already has a Kinetic Crew sign-in account. Contact an Admin to link it safely.":
+            (createError?.message||"Could not create the audition sign-in account."));
+        }
+        const newAuthId=created.user.id;
+        const {data:attached,error:attachError}=await userClient.rpc("crew_audition_attach_account",{
+          p_application_id:id,p_auth_id:newAuthId,p_username:username
+        });
+        if(attachError||!attached?.ok) {
+          await db.from("crew_profiles").delete().eq("auth_id",newAuthId);
+          await db.auth.admin.deleteUser(newAuthId).catch(()=>({error:null}));
+          throw attachError||new Error("Could not activate the separate Audition Portal account.");
+        }
       }
     }
 
