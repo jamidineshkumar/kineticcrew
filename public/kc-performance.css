@@ -190,3 +190,48 @@
     transition-property: border-color, opacity !important;
   }
 }
+
+
+/* Mobile responsiveness: preserve the glass surfaces, but avoid GPU-heavy full-screen blur and shadow transitions. */
+@media (max-width: 900px) {
+  #app .surface,
+  #app .event,
+  #app .announcement,
+  #app .feature-card,
+  #app .kc-poll-card,
+  #app .kce-event-card,
+  #app .kce-detail-panel,
+  #app .kce-reserve-panel,
+  #app .kc-more-reference,
+  #kcMobileDock,
+  .kc-mobile-topbar,
+  #sidebar {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  #app button,
+  #app .surface,
+  #app .event,
+  #app .announcement,
+  #kcMobileDock button {
+    transition-property: transform, opacity, background-color, border-color !important;
+    transition-duration: .12s !important;
+  }
+  #app .surface,
+  #app .event,
+  #app .announcement,
+  #app .feature-card,
+  #app .kc-poll-card,
+  #app .kce-event-card {
+    box-shadow: 0 8px 22px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.045) !important;
+  }
+  #app, #sidebar, #kcMobileDock { overscroll-behavior: contain; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #app *, #app *::before, #app *::after,
+  #kcMobileDock, #kcMobileDock * {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
