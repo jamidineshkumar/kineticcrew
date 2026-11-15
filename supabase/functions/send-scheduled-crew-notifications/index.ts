@@ -82,9 +82,6 @@ Deno.serve(async (req) => {
       .eq("status", "sending")
       .lt("updated_at", new Date(Date.now() - 10 * 60 * 1000).toISOString());
 
-    const { error: promotionError } = await admin.rpc("crew_enqueue_event_promotions");
-    if (promotionError) throw promotionError;
-
     const { data: due, error: dueError } = await admin
       .from("crew_scheduled_pushes")
       .select("id,recipient_auth_id,source_type,source_id,notification_key,title,body,attempts")
@@ -110,38 +107,6 @@ Deno.serve(async (req) => {
         .maybeSingle();
       if (claimError) throw claimError;
       if (!claimed) continue;
-
-      if (String(item.notification_key).startsWith("promotion_")) {
-        const { data: event, error: eventError } = await admin
-          .from("crew_events")
-          .select("id,starts_at,event_status,capacity")
-          .eq("id", item.source_id)
-          .maybeSingle();
-        if (eventError) throw eventError;
-        const { count: registrationCount, error: countError } = await admin
-          .from("crew_registrations")
-          .select("member_id", { count: "exact", head: true })
-          .eq("event_id", item.source_id);
-        if (countError) throw countError;
-        const { data: alreadyRegistered, error: registrationError } = await admin
-          .from("crew_registrations")
-          .select("member_id")
-          .eq("event_id", item.source_id)
-          .eq("member_id", item.recipient_auth_id)
-          .maybeSingle();
-        if (registrationError) throw registrationError;
-        const seatsRemain = event && event.event_status === "scheduled"
-          && new Date(event.starts_at).getTime() > Date.now()
-          && Number(event.capacity || 0) > Number(registrationCount || 0);
-        if (!seatsRemain || alreadyRegistered) {
-          await admin.from("crew_scheduled_pushes").update({
-            status: "failed",
-            last_error: alreadyRegistered ? "Member has already registered." : "Event is full, cancelled, postponed or has started.",
-            updated_at: new Date().toISOString(),
-          }).eq("id", item.id);
-          continue;
-        }
-      }
 
       const { data: devices, error: deviceError } = await admin
         .from("crew_push_tokens")
