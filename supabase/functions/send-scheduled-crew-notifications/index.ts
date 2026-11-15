@@ -77,6 +77,9 @@ Deno.serve(async (req) => {
     const { data: valid, error: authError } = await admin.rpc("crew_validate_notification_cron_secret", { p_secret: cronSecret });
     if (authError || valid !== true) return json({ error: "Scheduler authentication failed." }, 401);
 
+    const { error: promotionError } = await admin.rpc("crew_enqueue_daily_promotions");
+    if (promotionError) throw promotionError;
+
     await admin.from("crew_scheduled_pushes")
       .update({ status: "pending", last_error: "Recovered after an interrupted delivery attempt.", updated_at: new Date().toISOString() })
       .eq("status", "sending")
@@ -98,6 +101,22 @@ Deno.serve(async (req) => {
     let sent = 0, failed = 0, noDevices = 0;
 
     for (const item of due) {
+      if (item.notification_key?.startsWith("promotion_")) {
+        const { data: preference, error: preferenceError } = await admin
+          .from("crew_profiles")
+          .select("promotional_updates_enabled,role,approval_status")
+          .eq("auth_id", item.recipient_auth_id)
+          .maybeSingle();
+        if (preferenceError) throw preferenceError;
+        if (!preference || preference.promotional_updates_enabled !== true ||
+            preference.role === "audition_participant" || preference.approval_status !== "approved") {
+          await admin.from("crew_scheduled_pushes").update({
+            status: "failed", last_error: "Promotional updates are disabled or recipient is not eligible.",
+            updated_at: new Date().toISOString(),
+          }).eq("id", item.id).eq("status", "pending");
+          continue;
+        }
+      }
       const { data: claimed, error: claimError } = await admin
         .from("crew_scheduled_pushes")
         .update({ status: "sending", attempts: Number(item.attempts || 0) + 1, last_error: null })
