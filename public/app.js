@@ -1096,29 +1096,34 @@ function chatPage(){
  return welcome('Crew chat','The crew group chat — quick messages, shared energy, one conversation.')+'<section class="wa-chat-shell"><header class="wa-chat-head"><div class="wa-chat-mark">KC</div><div><b>Kinetic Crew</b><small>'+items.length+' messages · Crew group</small></div><span class="wa-online"><i></i> LIVE</span></header><div class="wa-chat-messages" id="waMessages">'+(messages||'<div class="wa-empty">✳<b>Start the conversation</b><small>Your crew messages will appear here.</small></div>')+'</div><form class="wa-chat-compose" data-feature-form="chat"><input type="hidden" name="title" value="Crew message"><textarea name="body" rows="1" maxlength="5000" required placeholder="Message the crew…"></textarea><button class="wa-send" type="submit" aria-label="Send message">➤</button></form></section>';
 }
 
-function socialFeedPage(){
- const posts=S.socialPosts||[],people=(S.publicMembers||[]).filter(m=>String(m.auth_id)!==String(S.user?.auth_id)).slice(0,18);
- window.__kcGramPosts=posts;window.__kcGramPeople=people;
- const storyAuthors=new Map();
- posts.forEach(post=>{const id=String(post.author_id||'');if(id&&!storyAuthors.has(id))storyAuthors.set(id,post);});
- const stories=storyAuthors.size?'<section class="kc-feed-stories"><div class="kc-feed-stories-head"><b>Stories</b><span>CREW MOMENTS</span></div><div class="kc-feed-story-rail">'+[...storyAuthors.entries()].map(([id,post])=>{const person=id===String(S.user?.auth_id)?S.user:people.find(p=>String(p.auth_id)===id)||{name:'Crew member'};const own=id===String(S.user?.auth_id);return '<button type="button" class="kc-feed-story '+(own?'own':'')+'" data-gram-story="'+esc(post.id)+'" aria-label="View '+(own?'your':esc(person.name||'crew'))+' latest post"><span class="kc-story-ring fresh"><span class="kc-story-avatar">'+avatarMarkup(person)+'</span>'+(own?'<i>+</i>':'')+'</span><small>'+esc(own?'Your story':(person.name||'Crew').split(' ')[0])+'</small></button>';}).join('')+'</div></section>':'';
- return '<div class="kc-feed-page"><header class="kc-feed-top"><div><span class="kc-feed-kicker">KINETIC CREW / COMMUNITY</span><h1>Kinetic <em>Gram</em></h1></div></header>'+
- '<div class="kc-feed-tabs"><span class="active">Feed</span><span>Following</span><span>Reels</span></div>'+stories+
- '<form id="socialPostForm" class="surface social-share-composer kc-feed-composer"><div class="kc-feed-compose-avatar">'+avatarMarkup(S.user)+'</div><div class="kc-feed-compose-main"><label class="field"><textarea name="caption" rows="2" maxlength="1200" placeholder="Share a moment with your crew…" aria-label="Caption">'+esc(S.sharedDraft?.caption||'')+'</textarea></label><div class="kc-feed-link-field"><span>↗</span><input name="link_url" type="url" inputmode="url" value="'+esc(S.sharedDraft?.url||'')+'" placeholder="Paste a reel, video or post link" required></div>'+(S.sharedDraft?.url?'<div class="kc-share-draft-preview"><span>LINK PREVIEW · NOT POSTED</span>'+socialEmbed(S.sharedDraft.url)+'<small>The original media stays on its social platform. Kinetic Crew stores only the shared URL and your caption.</small></div>':'')+'<div class="social-composer-foot"><small>Preview first. Nothing is posted until you tap Share.</small><button type="submit" class="primary">Share ↗</button></div></div></form>'+
- '<div class="kc-feed-section-head"><b>For the crew</b><span>'+posts.length+' POSTS</span></div><div class="social-feed-list">'+(posts.map(socialPostCard).join('')||empty('Your crew feed starts here','Share the first reel, performance or moment with everyone.'))+'</div></div>';
+function openGramCreate(){
+ if(!S.user||S.user.role==='audition_participant'){notice('Kinetic Gram posting is available to approved crew members.');return;}
+ $('#modalRoot').innerHTML='<div class="modalback" id="kgCreateBackdrop"><section class="modal kg-create-modal" role="dialog" aria-modal="true" aria-labelledby="kgCreateTitle"><button type="button" class="iconbutton modalclose" data-gram-create-close aria-label="Close">×</button><span class="eyebrow">KINETIC GRAM</span><h2 id="kgCreateTitle">Create something</h2><div class="kg-create-kind"><label><input type="radio" name="kind" value="story"><span>Story</span></label><label><input type="radio" name="kind" value="reel"><span>Reel</span></label><label><input type="radio" name="kind" value="post" checked><span>Post</span></label></div><form id="gramCreateForm"><label class="field"><span>Photo or video</span><input type="file" name="media" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" required></label><label class="field"><span>Caption</span><textarea name="caption" rows="3" maxlength="1200" placeholder="Write a caption…"></textarea></label><small>Stories disappear after 24 hours. Posts and reels stay on your crew feed.</small><button type="submit" class="primary">Share with crew ↗</button></form></section></div>';
+ $('#kgCreateBackdrop')?.addEventListener('click',e=>{if(e.target.id==='kgCreateBackdrop')$('#modalRoot').innerHTML='';});
 }
-
-const featureLabels={rehearsals:'Rehearsals',leave:'Leave requests',memories:'KC Memories',polls:'Polls & voting',expenses:'Crew expenses',auditions:'Auditions',chat:'Crew chat',achievements:'Achievements'};
-const featureMeta={
- rehearsals:['Plan a practice session','Create rehearsals, assign a choreographer and share the venue.','Session title','Practice details','Create session'],
- leave:['Request time away','Send a leave request to the crew admins.','Leave request','Reason and dates','Submit request'],
- memories:['KC Memories','Share the photo album and video links from crew moments.','Memory title','Caption and media link','Share memory'],
- auditions:['Audition portal','Publish auditions or submit your audition details and video link.','Audition / application','Dance style, contact and audition video link','Submit'],
- polls:['Crew polls','Vote on songs, themes and crew decisions.','Poll question','Add options separated by commas','Publish poll'],
-
- achievements:['Achievements','Recognize crew milestones and standout contributions.','Achievement title','Describe the achievement and recipient','Award achievement']
-};
-const featureKeys=Object.keys(featureLabels);
+function socialFeedPage(){
+ const posts=S.socialPosts||[],stories=S.socialStories||[],people=S.publicMembers||[],tab=S.gramTab||'home';
+ window.__kcGramPosts=posts;window.__kcGramPeople=people;
+ const tabs=[['home','Home'],['posts','Posts'],['reels','Reels'],['messages','Messages']];
+ const nav='<nav class="kg-top-tabs" aria-label="Kinetic Gram navigation">'+tabs.map(([key,label])=>'<button type="button" data-gram-tab="'+key+'" class="'+(tab===key?'active':'')+'">'+label+'</button>').join('')+'</nav>';
+ const create='<button type="button" class="kg-create-button" data-gram-create aria-label="Create story, reel or post">＋</button>';
+ const header='<header class="kg-header"><h1>Kinetic <em>Gram</em></h1>'+create+'</header>';
+ const storyRail='<section class="kg-stories"><div class="kg-story-row"><button type="button" class="kg-story-item" data-gram-create><span class="kg-story-avatar">'+avatarMarkup(S.user)+'</span><small>Your story</small></button>'+stories.map(st=>{const person=people.find(p=>String(p.auth_id)===String(st.author_id))||{name:'Crew member'};return '<button type="button" class="kg-story-item" data-gram-story-open="'+esc(st.id)+'"><span class="kg-story-ring"><img src="'+esc(st.signed_media_url||'')+'" alt="" loading="lazy"></span><small>'+esc((person.name||'Crew').split(' ')[0])+'</small></button>';}).join('')+'</div></section>';
+ const empty='<section class="kg-empty"><div class="kg-empty-mark">✳</div><b>Your crew feed starts here</b><p>Share the first reel, performance or moment with everyone.</p></section>';
+ let body='';
+ if(tab==='messages'){
+  const grouped=new Map();
+  (S.gramMessages||[]).forEach(m=>{const other=String(m.sender_id)===String(S.user.auth_id)?m.recipient_id:m.sender_id;if(!grouped.has(other))grouped.set(other,m);});
+  body='<section class="kg-inbox"><div class="kg-section-head"><h2>Messages</h2><span>PRIVATE CREW CHATS</span></div>'+(grouped.size?[...grouped.entries()].map(([id,m])=>{const person=people.find(p=>String(p.auth_id)===String(id))||{auth_id:id,name:'Crew member'};return '<button type="button" class="kg-inbox-row" data-gram-message="'+esc(id)+'">'+avatarMarkup(person,'kg-inbox-avatar')+'<span><b>'+esc(person.name||'Crew member')+'</b><small>'+esc(m.body||'')+'</small></span><time>'+esc(dt(m.created_at))+'</time></button>';}).join(''):'<section class="kg-empty"><div class="kg-empty-mark">✉</div><b>Your messages appear here</b><p>Open a crew member profile to start a private chat.</p><button type="button" class="outline" data-view="people">Find crew</button></section>')+'</section>';
+ }else if(tab==='reels'){
+  const reels=posts.filter(p=>p.post_type==='reel');
+  body='<section class="kg-reels">'+(reels.length?reels.map(p=>'<article class="kg-reel-card">'+(p.signed_media_url?'<video src="'+esc(p.signed_media_url)+'" controls playsinline preload="metadata"></video>':socialEmbed(p.link_url))+'<p>'+esc(p.caption||'')+'</p>'+socialPostCard(p)+'</article>').join(''):empty)+'</section>';
+ }else{
+  const visible=tab==='posts'?posts.filter(p=>p.post_type!=='reel'):posts;
+  body='<section class="kg-feed-section"><div class="kg-section-head"><h2>'+(tab==='posts'?'Posts':'For the crew')+'</h2><span>'+visible.length+' POSTS</span></div><div class="social-feed-list">'+(visible.map(socialPostCard).join('')||empty)+'</div></section>';
+ }
+ return '<div class="kc-feed-page kg-page">'+header+nav+(tab==='home'?storyRail:'')+body+'</div>';
+}
 
 function updatesPage(){return welcome('Crew updates','Announcements, changes, and the latest from your people.',admin()?button('＋ New update','new-update'):'')+'<div class="twoCol"><div class="announcements">'+(S.announcements.map(announcement).join('')||empty('It is quiet in here','Updates will appear here when published.'))+'</div>'+(admin()?updateForm():'')+'</div>';}
 async function removeCustomAlertImage(){const path=S.customAlertImagePath;S.customAlertImageUrl='';S.customAlertImagePath='';if(path){const {error}=await client.storage.from('crew-alert-media').remove([path]);if(error)console.warn('Could not remove unused alert image:',error);}}
