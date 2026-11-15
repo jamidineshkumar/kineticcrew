@@ -38,7 +38,7 @@ Deno.serve(async(req:Request)=>{
   const smtpUser=Deno.env.get("SMTP_USER")||"kineticcreww@gmail.com", smtpPass=Deno.env.get("SMTP_PASS");
   if(!smtpPass){await db.from("crew_email_delivery_log").delete().eq("idempotency_key",key).eq("recipient_email",email);return json({error:"SMTP_PASS is not configured in Supabase Edge Function secrets."},503);}
   const dob=String(app.application_data?.dob||"").trim();
-  if(!/^\d{4}-\\d{2}-\\d{2}$/.test(dob)) throw new Error("Applicant date of birth is missing or invalid. Update the application before sending credentials.");
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(dob)) throw new Error("Applicant date of birth is missing or invalid. Update the application before sending credentials.");
   const password=dob.slice(8,10)+dob.slice(5,7)+dob.slice(0,4);
   let username="",prepared=false,lastCredentialError="";
   for(let attempt=1;attempt<=30&&!prepared;attempt++){
