@@ -2157,10 +2157,13 @@ function setupCrewPushForSignedInMember(){
   return;
  }
  if(isNative&&localStorage.getItem(enabledKey)==='yes'){
-  window.kcPush.syncExistingPermission?.().then(markEnabled).catch(error=>console.warn('Native push registration refresh failed:',error));
+  window.kcPush.syncExistingPermission?.().then(result=>{
+   if(result?.skipped){localStorage.removeItem(enabledKey);setupCrewPushForSignedInMember();}
+   else markEnabled();
+  }).catch(error=>console.warn('Native push registration refresh failed:',error));
   return;
  }
- if(localStorage.getItem(enabledKey)==='yes')return;
+ if(!isNative&&localStorage.getItem(enabledKey)==='yes'&&Notification.permission==='granted')return;
  const panel=document.createElement('section');
  panel.id='kcPushOptin';
  panel.setAttribute('role','dialog');
