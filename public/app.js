@@ -1258,41 +1258,13 @@ function chatMessagesMarkup(items){const rows=(items||[]).slice().sort((a,b)=>ne
 function whatsAppChatPage(){const items=S.featureItems.chat||[];return welcome('Crew Chat','One crew conversation. Share plans, quick updates and moments.')+'<section class="wa-shell"><aside class="wa-rail"><div class="wa-rail-head"><b>KC MESSAGES</b><span>● ONLINE</span></div><div class="wa-room active"><span class="wa-room-avatar">KC</span><span><b>Main Crew</b><small>Everyone in Kinetic Crew</small></span></div></aside><div class="wa-conversation"><header class="wa-chat-head"><span class="wa-room-avatar">KC</span><span><b>Main Crew</b><small>Kinetic Crew group conversation · '+items.length+' messages</small></span></header><div class="wa-messages" id="waMessages">'+chatMessagesMarkup(items)+'</div><form class="wa-composer" data-feature-form="chat"><input type="hidden" name="title" value="Crew message"><textarea name="body" rows="1" maxlength="5000" required placeholder="Message the crew…"></textarea><button type="submit" aria-label="Send message">➤</button></form></div></section>';}
 
 function kcApplyFeaturePageNavigation(){
- const excluded=new Set(['new-event','event-edit','event-detail','public-profile','attendance','meet','fun-zone-games']);
- if(excluded.has(S.view))return;
  const root=$('#app');if(!root)return;
- root.querySelectorAll('[data-kc-feature-navigation],[data-kc-feature-panel]').forEach(node=>node.removeAttribute('data-kc-feature-navigation')||node.removeAttribute('data-kc-feature-panel'));
- const candidates=[...root.querySelectorAll('section')].filter(node=>{
-  if(node.closest('[data-kc-feature-navigation]'))return false;
-  if(node.matches('[data-kc-feature-exclude],.kc-feed-story-rail,.kc-feed-stories,.social-feed-list,.eventgrid,.kc-attendance-feature-grid,.kc-feature-page-menu,.kc-feature-page-panel'))return false;
-  let parent=node.parentElement;
-  while(parent&&parent!==root){
-   if(parent.matches('section'))return false;
-   parent=parent.parentElement;
-  }
-  if(parent!==root)return false;
-  const heading=node.querySelector(':scope > h1,:scope > h2,:scope > h3,:scope > h4,:scope > header h1,:scope > header h2,:scope > header h3,:scope > header h4,:scope > div > h2,:scope > div > h3');
-  const title=(heading?.textContent||'').replace(/\s+/g,' ').trim();
-  if(title.length<3)return false;
-  if(node.matches('.kc-feed-stories,.kc-home-featured,.notice-hero,.kc-attendance-summary'))return false;
-  return true;
+ root.querySelectorAll('[data-kc-feature-navigation]').forEach(node=>node.remove());
+ root.querySelectorAll('[data-kc-feature-panel]').forEach(node=>{
+  node.removeAttribute('data-kc-feature-panel');
+  node.hidden=false;
  });
- if(candidates.length>=3){
-  const menu=document.createElement('section');
-  menu.className='kc-feature-page-menu';menu.dataset.kcFeatureNavigation='true';
-  menu.innerHTML='<span class="kc-feature-page-kicker">EXPLORE THIS PAGE</span><div class="kc-feature-page-grid"></div><p class="kc-feature-page-hint">Open one section at a time to keep the screen focused.</p>';
-  const grid=menu.querySelector('.kc-feature-page-grid');
-  candidates.forEach((node,index)=>{
-   const heading=node.querySelector(':scope > h1,:scope > h2,:scope > h3,:scope > h4,:scope > header h1,:scope > header h2,:scope > header h3,:scope > header h4,:scope > div > h2,:scope > div > h3');
-   const title=(heading?.textContent||'').replace(/\s+/g,' ').trim();
-   const button=document.createElement('button');button.type='button';button.className='kc-feature-page-card';button.dataset.kcFeatureOpen=String(index);
-   const icon=document.createElement('span');icon.className='kc-feature-page-icon';icon.textContent=['✦','◈','▤','↗'][index%4];
-   const label=document.createElement('b');label.textContent=title.length>42?title.slice(0,39).trim()+'…':title;
-   const arrow=document.createElement('i');arrow.textContent='↗';button.append(icon,label,arrow);grid.append(button);
-   node.hidden=true;node.dataset.kcFeaturePanel=String(index);
-  });
-  candidates[0].parentElement.insertBefore(menu,candidates[0]);
- }
+ root.querySelectorAll('.kc-feature-page-back').forEach(node=>node.remove());
  kcApplyCollectionPagination(root);
 }
 function kcApplyCollectionPagination(root){
