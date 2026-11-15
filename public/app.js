@@ -136,7 +136,7 @@ function kcOpenAccountSwitcher(){
  const valid=accounts.map(value=>String(value||'').trim().toLowerCase()).filter(email=>email.includes('@')&&email.split('@')[1]?.includes('.'));
  const rows=[...new Set([current,...valid].filter(Boolean))];
  localStorage.setItem(KC_ACCOUNT_LIST_KEY,JSON.stringify(rows));
- root.innerHTML='<div class="modalback" id="kcAccountBackdrop"><section class="modal kc-account-modal" role="dialog" aria-modal="true" aria-labelledby="kcAccountTitle"><button type="button" class="icon-button" id="kcAccountClose" aria-label="Close">×</button><span class="kc-confirm-kicker">KINETIC CREW / ACCOUNTS</span><h2 id="kcAccountTitle">Switch profile</h2><p class="hint">Choose an account or add another crew account. For security, enter its password when switching.</p><div class="kc-account-list">'+rows.map(email=>'<div class="kc-account-entry"><button type="button" class="kc-account-row" data-kc-account-email="'+esc(email)+'"><span class="kc-account-avatar">'+esc(initials(email.split('@')[0]))+'</span><span><b>'+esc(email===current?(S.user.name||email):email)+'</b><small>'+esc(email)+'</small></span><i>'+(email===current?'CURRENT':'↗')+'</i></button>'+(email!==current?'<button type="button" class="kc-account-remove" data-kc-remove-account="'+esc(email)+'" aria-label="Remove '+esc(email)+' from saved profiles" title="Remove saved profile">×</button>':'')+'</div>').join('')+'</div><button type="button" class="primary full" id="kcAddAccount">＋ Add profile</button><form id="kcAccountLogin" class="kc-account-login" hidden><label class="field">Email address<input name="email" type="email" autocomplete="username" required></label><label class="field">Password<input name="password" type="password" autocomplete="current-password" required></label><button type="submit" class="primary full">Continue to profile →</button><button type="button" class="outline full" id="kcAccountCancel">Cancel</button><p class="hint" id="kcAccountError" role="alert"></p></form></section></div>';
+ root.innerHTML='<div class="modalback" id="kcAccountBackdrop"><section class="modal kc-account-modal" role="dialog" aria-modal="true" aria-labelledby="kcAccountTitle"><button type="button" class="icon-button" id="kcAccountClose" aria-label="Close">×</button><span class="kc-confirm-kicker">KINETIC CREW / ACCOUNTS</span><h2 id="kcAccountTitle">Switch profile</h2><p class="hint">Choose an account or add another crew account. For security, enter its password when switching.</p><div class="kc-account-list">'+rows.map(email=>'<div class="kc-account-entry"><button type="button" class="kc-account-row" data-kc-account-email="'+esc(email)+'"><span class="kc-account-avatar">'+esc(initials(email.split('@')[0]))+'</span><span><b>'+esc(email===current?(S.user.name||email):email)+'</b><small>'+esc(email)+'</small></span><i>'+(email===current?'CURRENT':'↗')+'</i></button>'+(email!==current?'<button type="button" class="kc-account-remove" data-kc-remove-account="'+esc(email)+'" aria-label="Remove '+esc(email)+' from saved profiles" title="Remove saved profile">Remove</button>':'')+'</div>').join('')+'</div><button type="button" class="primary full" id="kcAddAccount">＋ Add profile</button><form id="kcAccountLogin" class="kc-account-login" hidden><label class="field">Email address<input name="email" type="email" autocomplete="username" required></label><label class="field">Password<input name="password" type="password" autocomplete="current-password" required></label><button type="submit" class="primary full">Continue to profile →</button><button type="button" class="outline full" id="kcAccountCancel">Cancel</button><p class="hint" id="kcAccountError" role="alert"></p></form></section></div>';
  const close=()=>{root.innerHTML='';};
  const form=$('#kcAccountLogin'),emailInput=form?.elements.namedItem('email');
  const showLogin=email=>{form.hidden=false;emailInput.value=email||'';emailInput.readOnly=!!email;form.elements.namedItem('password').value='';form.querySelector('input[type="password"]')?.focus();};
@@ -1334,11 +1334,20 @@ const crumb=$('#crumb');if(crumb)crumb.textContent=({overview:'Overview',more:'M
 const fn={overview:home,more:morePage,events:eventsPage,meet:meetPage,'event-detail':eventDetailPage,'event-edit':()=>eventForm(S.events.find(x=>String(x.id)===String(S.editingEventId))||null),'new-event':()=>eventForm(),chat:chatPage,feed:socialFeedPage,memes:memeZonePage,'fun-zone-games':miniGamesPage,notifications:notificationsPage,updates:updatesPage,profile:profilePage,'app-settings':settingsPage,people:peoplePage,'public-profile':publicProfilePage,'crew-management':crewManagementPage,'member-requests':memberRequestsPage,'custom-alerts':customAlertsPage,attendance:attendancePage,'brand-settings':brandSettingsPage,settings:settingsPage,developer:developerPage,'appearance-settings':appearanceSettingsPage,'notification-settings':notificationSettingsPage,'device-settings':deviceSettingsPage,'app-info':appInfoPage,'app-suggestions':appSuggestionsPage,rehearsals:()=>featurePage('rehearsals'),calendar:calendarPage,polls:()=>featurePage('polls'),memories:()=>featurePage('memories'),achievements:()=>featurePage('achievements'),leave:()=>featurePage('leave'),'fun-zone':funZonePage,credits:creditsPage}[S.view]||home;
 $('#app').innerHTML=(S.error?'<div class="alert"><span>'+esc(S.error)+'</span><button data-clear>×</button></div>':'')+(S.offline?'<div class="offline-strip">OFFLINE · LAST SAVED DATA</div>':'')+fn();savePageState();
 if(S.view==='more'){
- document.querySelectorAll('section').forEach(section=>{
-  const heading=section.querySelector(':scope > h2');
-  if(heading?.textContent.trim()==='Crew administration'&&!section.querySelector('[data-audition-admin]'))section.remove();
- });
- document.querySelectorAll('.kc-admin-shortcuts').forEach(section=>section.remove());
+ const cleanAdminMenu=()=>{
+  const page=document.querySelector('.kc-more-reference');
+  if(!page)return;
+  page.querySelectorAll('#kc-admin-menu-shortcuts,.kc-admin-shortcuts').forEach(node=>node.remove());
+  const groups=[...page.querySelectorAll('.kc-more-reference-group')].filter(node=>node.querySelector(':scope > h2')?.textContent.trim()==='Crew administration');
+  if(groups.length>1){
+   const keep=groups.find(node=>node.querySelector('[data-audition-admin]'))||groups[0];
+   groups.forEach(node=>{if(node!==keep)node.remove();});
+  }
+ };
+ cleanAdminMenu();
+ requestAnimationFrame(cleanAdminMenu);
+ setTimeout(cleanAdminMenu,80);
+ setTimeout(cleanAdminMenu,300);
 }
 if(S.view==='event-detail'&&admin())loadTicketRecipientRoster(S.selectedEvent);
 renderProfileQrCards();
