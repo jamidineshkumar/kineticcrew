@@ -47,9 +47,26 @@ async function enableNativePush() {
       catch (error) { console.error("Could not register Android push token:", error); }
     });
     await PushNotifications.addListener("registrationError", error => console.error("FCM registration failed:", error));
-    await PushNotifications.addListener("pushNotificationReceived", notification => {
-      console.info("Crew push received:", notification.title || "Kinetic Crew");
-      window.dispatchEvent(new CustomEvent("kc:notification", { detail: { title: notification.title || "Kinetic Crew", body: notification.body || "You have a new crew update.", target: notification.data?.url?.includes("chat") ? "chat" : "notifications" } }));
+    await PushNotifications.addListener("pushNotificationReceived", async notification => {
+      const title = notification.title || "Kinetic Crew";
+      const body = notification.body || "You have a new crew update.";
+      console.info("Crew push received in foreground:", title);
+      window.dispatchEvent(new CustomEvent("kc:notification", { detail: { title, body, target: notification.data?.url?.includes("chat") ? "chat" : "notifications" } }));
+      try {
+        const { LocalNotifications } = await import("https://esm.sh/@capacitor/local-notifications@7.0.2");
+        const permission = await LocalNotifications.checkPermissions();
+        if (permission.display === "granted") {
+          await LocalNotifications.schedule({ notifications: [{
+            title, body,
+            id: Math.max(1, Date.now() % 2147483647),
+            channelId: "crew_updates",
+            schedule: { at: new Date(Date.now() + 300) },
+            extra: notification.data || {}
+          }] });
+        }
+      } catch (error) {
+        console.warn("Could not show foreground Android notification:", error);
+      }
     });
     await PushNotifications.addListener("pushNotificationActionPerformed", action => {
       const target = action.notification?.data?.url || "/";
