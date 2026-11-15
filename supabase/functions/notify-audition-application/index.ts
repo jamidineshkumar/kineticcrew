@@ -11,6 +11,14 @@ function pemBytes(pem: string) {
     .replaceAll("\n", "").replaceAll("\r", "").replaceAll(" ", "").replaceAll("\t", "");
   return Uint8Array.from(atob(body), c => c.charCodeAt(0));
 }
+function readKey(primary: string, legacy: string) {
+  const raw = Deno.env.get(primary);
+  if (raw) {
+    try { const parsed = JSON.parse(raw); if (typeof parsed === "string") return parsed; if (parsed && typeof parsed === "object") return parsed.default || Object.values(parsed).find(v => typeof v === "string") || ""; }
+    catch { return raw; }
+  }
+  return Deno.env.get(legacy) || "";
+}
 async function googleAccessToken() {
   const email = Deno.env.get("FCM_CLIENT_EMAIL");
   const privateKey = Deno.env.get("FCM_PRIVATE_KEY")?.replaceAll("\\n", "\n");
@@ -41,7 +49,7 @@ Deno.serve(async(req:Request)=>{
     activeApplicationId = applicationId;
     const trackingToken=String(body.trackingToken||"").trim();
     if(applicationId.length!==36 || !/^[a-f0-9]{64}$/i.test(trackingToken)) return json({error:"Invalid application notification request."},400);
-    db=createClient(Deno.env.get("SUPABASE_URL")!,Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    db=createClient(Deno.env.get("SUPABASE_URL")||"",readKey("SUPABASE_SECRET_KEYS","SUPABASE_SERVICE_ROLE_KEY")||Deno.env.get("SUPABASE_SECRET_KEY")||"");
     const {data:app,error:appError}=await db.from("crew_audition_applications").select("id,name,application_status,tracking_token_sha256").eq("id",applicationId).maybeSingle();
     if(appError) throw appError;
     if(!app || !app.tracking_token_sha256 || await sha256(trackingToken)!==app.tracking_token_sha256) return json({error:"Application verification failed."},403);
