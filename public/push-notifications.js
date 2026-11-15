@@ -40,6 +40,19 @@ async function enableNativePush() {
   let permission = await PushNotifications.checkPermissions();
   if (permission.receive !== "granted") permission = await PushNotifications.requestPermissions();
   if (permission.receive !== "granted") throw new Error("Allow notification permission for Kinetic Crew in Android settings.");
+  try {
+    const { LocalNotifications } = await import("https://esm.sh/@capacitor/local-notifications@7.0.2");
+    if (window.Capacitor?.getPlatform?.() === "android") {
+      await LocalNotifications.createChannel({
+        id: "crew_updates",
+        name: "Kinetic Crew updates",
+        description: "Event, rehearsal and important crew alerts",
+        importance: 5,
+        sound: "default",
+        vibration: true
+      });
+    }
+  } catch (error) { console.warn("Could not prepare Android notification channel:", error); }
   if (!nativePushReady) {
     nativePushReady = true;
     await PushNotifications.addListener("registration", async token => {
