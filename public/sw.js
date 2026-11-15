@@ -30,7 +30,7 @@ if(messaging)messaging.onBackgroundMessage(async payload=>{
     body:payload.notification?.body||"You have a new crew update.",
     // `icon` is the compact app mark; `image` gives Android a large,
     // full-colour crew logo in the expanded notification.
-    icon:logo||BASE+"kinetic-crew-logo.jpg",
+    icon:BASE+"kc-notification-badge.svg",
     ...(payload.data?.notificationType === "custom_alert" && payload.data?.imageUrl && payload.notification?.image === payload.data.imageUrl ? { image: payload.notification.image } : {}),
     badge:BASE+"kc-notification-badge.svg",
     tag:payload.data?.notificationId||("kc-"+title+"-"+(payload.notification?.body||"").slice(0,80)),
