@@ -23,15 +23,15 @@ function b64url(input: Uint8Array | string) {
   const bytes = typeof input === "string" ? new TextEncoder().encode(input) : input;
   let binary = "";
   bytes.forEach((b) => binary += String.fromCharCode(b));
-  return btoa(binary).replace(/=/g, "").replace(/\\+/g, "-").replace(/\\//g, "_");
+  return btoa(binary).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
 }
 function pemBytes(pem: string) {
-  const body = pem.replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----|\\s/g, "");
+  const body = pem.replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----|\s/g, "");
   return Uint8Array.from(atob(body), c => c.charCodeAt(0));
 }
 async function googleAccessToken() {
   const email = Deno.env.get("FCM_CLIENT_EMAIL");
-  const privateKey = Deno.env.get("FCM_PRIVATE_KEY")?.replace(/\\\\n/g, "\\n");
+  const privateKey = Deno.env.get("FCM_PRIVATE_KEY")?.replace(/\\n/g, "\n");
   if (!email || !privateKey) throw new Error("Firebase service-account secrets are incomplete.");
   const now = Math.floor(Date.now() / 1000);
   const header = b64url(JSON.stringify({ alg: "RS256", typ: "JWT" }));
