@@ -1166,7 +1166,7 @@ function memberActionRingMarkup(memberId,memberRole,memberName){
  return '<div class="kc-member-action-ring" role="group" aria-label="Member actions"><div class="kc-member-action-orbit">'+buttons+'</div></div>';
 }
 async function openDirectMessage(memberId){
- const id=String(memberId||'');if(!id||id===String(S.user?.auth_id))return;
+ const id=String(memberId||''),uid=String(S.user?.auth_id||'');if(!id||id===uid)return;
  const person=(S.publicMembers||[]).concat(S.members||[]).find(m=>String(m.auth_id)===id)||{auth_id:id,name:'Crew member'};
  await rpc('crew_assert_not_blocked',{});
  const safeId=value=>/^[a-zA-Z0-9-]{16,64}$/.test(String(value));
