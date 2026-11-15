@@ -1,6 +1,6 @@
 {
-  "version": "1.6.31",
+  "version": "1.6.32",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-15T14:02:46.445Z",
-  "release_notes": "Foreground push delivery restored; event and rehearsal registration confirmations, timed reminders, start alerts and lifecycle updates added."
+  "updated_at": "2026-11-15T14:03:32.308Z",
+  "release_notes": "Event and rehearsal registration alerts, 24-hour/2-hour/30-minute reminders, start alerts, cancellation/postponement alerts, and foreground push support."
 }
