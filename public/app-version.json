@@ -1,6 +1,6 @@
 {
-  "version": "1.6.28",
+  "version": "1.6.29",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-15T13:00:00.000Z",
-  "release_notes": "Audition invitation now provisions a direct sign-in account; applicants land in the Audition Portal; admin cards show email and push delivery status."
+  "updated_at": "2026-11-15T13:17:49.917Z",
+  "release_notes": "Audition management now shows only Application Status, Audition Admin Status, and President Review."
 }
