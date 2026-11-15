@@ -59,6 +59,14 @@ form.addEventListener('submit',async event=>{
   if(error)throw error;
   if(!data?.ok||!data?.application_id||!data?.tracking_token)throw new Error(data?.message||'The server did not confirm the application.');
   pendingEmail={id:data.application_id,token:data.tracking_token};
+  try {
+   const {data:pushResult,error:pushError}=await db.functions.invoke('notify-audition-application',{body:{applicationId:data.application_id,trackingToken:data.tracking_token}});
+   if(pushError) console.warn('Admin audition push notification could not be delivered:',pushError.message||pushError);
+   else if(pushResult?.error) console.warn('Admin audition push notification failed:',pushResult.error);
+   else console.info('Admin audition push notification:',pushResult?.message||'Notification processed.');
+  } catch(pushError) {
+   console.warn('Admin audition push notification failed without affecting application submission:',pushError);
+  }
   try{sessionStorage.setItem('kc_audition_pending_email',JSON.stringify(pendingEmail));}catch{}
   submit.textContent='Sending private tracking link…';
   await sendTrackingEmail();
