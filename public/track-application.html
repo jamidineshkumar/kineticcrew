@@ -9,10 +9,13 @@ const db=window.kcSupabase,root=document.getElementById('main'),token=new URLSea
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=v=>{const d=new Date(v);return Number.isNaN(+d)?'—':d.toLocaleString([],{dateStyle:'medium',timeStyle:'short'});};
 function statusCopy(s){
- if(s==='selected')return ['SELECTED','Both Admin and Super Admin reviewers approved your audition. Your member login credentials are being sent to your personal email.','good'];
+ if(s==='audition_invited')return ['APPLICATION ACCEPTED','Both Admin and Super Admin accepted your application. Check your personal email for your separate Audition Portal invitation and login details.','good'];
+ if(s==='audition_video_submitted')return ['AUDITION VIDEO RECEIVED','Your audition video was submitted through the Audition Portal and is waiting for independent review.','warn'];
+ if(s==='final_review'||s==='final_review_disagreement')return ['FINAL AUDITION REVIEW','Your audition video is being reviewed by Admin and Super Admin.','warn'];
+ if(s==='selected')return ['SELECTED','Both Admin and Super Admin selected you after the audition. Check your email for your regular Member access update.','good'];
  if(s==='rejected')return ['NOT SELECTED','Both reviewers did not approve this application. Thank you for auditioning with Kinetic Crew.','bad'];
  if(s==='review_disagreement')return ['REVIEW DISAGREEMENT','The reviewers have different decisions. Your application remains under review until the decision is resolved.','warn'];
- if(s==='under_review')return ['UNDER REVIEW','One reviewer has recorded a decision. The other reviewer is still reviewing the same audition video.','warn'];
+ if(s==='under_review'||s==='review_disagreement')return ['APPLICATION UNDER REVIEW','Your initial application is being independently reviewed. You will receive an email if you are invited to audition.','warn'];
  return ['APPLICATION RECEIVED','Your application has been received and is waiting for independent Admin and Super Admin review.','warn'];
 }
 function video(url){
@@ -26,7 +29,7 @@ function render(a){
  const [label,message,kind]=statusCopy(a.application_status);
  const details=a.application_data||{};
  const items=Object.entries(details).map(([k,v])=>'<div class="item"><small>'+esc(k.replace(/[_\s]+/g,' '))+'</small><b>'+esc(typeof v==='object'?JSON.stringify(v):v)+'</b></div>').join('');
- root.innerHTML='<div class="muted" style="font-size:11px;letter-spacing:.16em">APPLICATION STATUS</div><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0 12px"><h1>'+esc(a.name)+'</h1><span class="chip '+kind+'">'+label+'</span></div><p class="muted">'+message+'</p><div class="grid"><div class="item"><small>Application reference</small><b>'+esc(a.id)+'</b></div><div class="item"><small>Submitted</small><b>'+date(a.created_at)+'</b></div><div class="item"><small>Admin review</small><b>'+esc(a.admin_decision||'Pending')+'</b></div><div class="item"><small>Super Admin review</small><b>'+esc(a.president_decision||'Pending')+'</b></div></div><section class="panel" style="padding:16px;margin-top:16px"><h2>Submitted details</h2><div class="grid">'+items+'</div><p class="muted" style="font-size:12px;margin-bottom:0">Personal email: '+esc(a.email)+'</p></section><section class="panel" style="padding:16px;margin-top:16px"><h2>Your audition video</h2>'+video(a.video_url)+'</section><button class="btn" id="refresh">Refresh status ↻</button><p class="muted" style="font-size:11px">This private page refreshes automatically. Keep the tracking link to yourself.</p>';
+ root.innerHTML='<div class="muted" style="font-size:11px;letter-spacing:.16em">APPLICATION STATUS</div><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0 12px"><h1>'+esc(a.name)+'</h1><span class="chip '+kind+'">'+label+'</span></div><p class="muted">'+message+'</p><div class="grid"><div class="item"><small>Application reference</small><b>'+esc(a.id)+'</b></div><div class="item"><small>Submitted</small><b>'+date(a.created_at)+'</b></div><div class="item"><small>Admin review</small><b>'+esc(a.admin_decision||'Pending')+'</b></div><div class="item"><small>Super Admin review</small><b>'+esc(a.president_decision||'Pending')+'</b></div></div><section class="panel" style="padding:16px;margin-top:16px"><h2>Submitted details</h2><div class="grid">'+items+'</div><p class="muted" style="font-size:12px;margin-bottom:0">Personal email: '+esc(a.email)+'</p></section><button class="btn" id="refresh">Refresh status ↻</button><p class="muted" style="font-size:11px">This private page refreshes automatically. Keep the tracking link to yourself.</p>';
  document.getElementById('refresh').addEventListener('click',load);
 }
 async function load(){

@@ -1,6 +1,6 @@
 {
-  "version": "1.6.22",
+  "version": "1.6.24",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-15T00:00:00.000Z",
-  "release_notes": "Audition application loading and submission feedback improvements. Automatic app updates now use a synchronized release version and refreshed service-worker cache."
+  "updated_at": "2026-11-15T12:00:00.000Z",
+  "release_notes": "Restored two-stage audition flow: initial application review and invitation, followed by video submission in the separate Audition Portal and final Member selection."
 }
