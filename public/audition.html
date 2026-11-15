@@ -29,7 +29,7 @@ function homePage(){
 }
 function decisionCard(title,value){return '<div class="ka-review"><b>'+esc(title)+'</b><span class="ka-chip '+statusClass(value)+'">'+esc(statusLabel(value))+'</span><small style="display:block;margin-top:8px">'+(value==='accept'?'Your audition has been accepted by this reviewer.':value==='reject'?'This reviewer has not approved the audition.':'Waiting for this reviewer to complete their review.')+'</small></div>';}
 function statusText(s){
- if(s.application_status==='audition_invited')return 'Your initial application was accepted by both reviewers. Submit your audition video below when ready. Audition schedule and venue details will be shared by Kinetic Crew.';
+ if(s.application_status==='audition_invited'||s.application_status==='credentials_sent')return 'Your audition account is active. Submit your audition video below when ready. Audition schedule and further instructions will be shared by Kinetic Crew.';
  if(s.application_status==='audition_video_submitted')return 'Your audition video has been received and is waiting for independent Admin and Super Admin review.';
  if(s.application_status==='final_review')return 'Your audition video is under final review. One reviewer has recorded a decision; the other reviewer is still reviewing.';
  if(s.application_status==='final_review_disagreement')return 'The reviewers have different decisions on your audition. Your final selection remains pending.';
@@ -39,7 +39,7 @@ function statusText(s){
 }
 function auditionPage(){
  const s=state.status||{},st=s.application_status||'audition_invited';
- const canSubmit=['audition_invited','audition_video_submitted'].includes(st)&&!s.audition_admin_decision&&!s.audition_president_decision;
+ const canSubmit=['audition_invited','credentials_sent','audition_video_submitted'].includes(st)&&!s.audition_admin_decision&&!s.audition_president_decision;
  const form=canSubmit?'<form id="auditionVideoForm" style="margin-top:18px"><label style="display:block;font-weight:700;margin-bottom:8px" for="auditionVideoUrl">Audition video link</label><input id="auditionVideoUrl" type="url" required inputmode="url" placeholder="https://drive.google.com/…" style="width:100%;min-height:50px;padding:12px 14px;border:1px solid var(--ka-line);border-radius:12px;background:var(--ka-panel);color:var(--ka-text)"><p class="ka-muted" style="font-size:11px">Paste a Google Drive link with access set to Anyone with the link · Viewer, or a direct HTTPS video link.</p><button class="ka-action" id="submitAuditionVideo" type="submit">'+(s.video_submitted?'Update audition video':'Submit audition video')+' →</button></form>':(s.video_submitted?'<div class="ka-notice" style="margin-top:14px">Your audition video has been submitted successfully.</div>':'');
  return '<section class="ka-hero"><div class="ka-eyebrow">YOUR AUDITION</div><h1>Audition<br><span style="color:var(--ka-accent)">stage</span></h1><p>Submit your audition video here. This separate portal is for audition participants only and does not provide regular Member features.</p></section><section class="ka-panel"><div class="ka-row"><h2 style="margin:0">My Audition Status</h2><span class="ka-chip '+(st==='selected'?'good':st==='rejected'?'bad':'warn')+'">'+esc(st.replaceAll('_',' ').toUpperCase())+'</span></div><p class="ka-muted" style="line-height:1.65">'+esc(statusText(s))+'</p><div class="ka-status-grid">'+decisionCard('Initial Admin Review',s.admin_decision)+decisionCard('Initial Super Admin Review',s.president_decision)+'</div><div class="ka-status-grid">'+decisionCard('Audition Admin Review',s.audition_admin_decision)+decisionCard('Audition Super Admin Review',s.audition_president_decision)+'</div>'+form+'<p class="ka-muted" style="font-size:11px;margin-top:15px">Status refreshes automatically. Reviewer comments and internal notes are not visible here.</p></section>';
 }
@@ -72,7 +72,7 @@ async function boot(){
  const {data:access,error:accessError}=await client.rpc('crew_access_status',{});if(accessError)throw accessError;
  if(access?.status==='rejected'){try{localStorage.setItem('kc_audition_notice','rejected');}catch{}await client.auth.signOut({scope:'local'}).catch(()=>{});location.replace('login.html?audition=rejected');return;}
  if(access?.status!=='approved'){location.replace('pending.html');return;}
- if(access?.must_change_password){location.replace('change-password.html?required=1');return;}
+ if(access?.must_change_password&&access?.role!=='audition_participant'){location.replace('change-password.html?required=1');return;}
  if(access?.role==='member'){location.replace('index.html');return;}
  if(access?.role!=='audition_participant'){location.replace('login.html');return;}
  const {data:userData}=await client.auth.getUser();state.email=userData?.user?.email||'';
