@@ -1,6 +1,6 @@
 {
-  "version": "1.6.36",
+  "version": "1.6.37",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-15T14:38:40.641Z",
-  "release_notes": "Custom alert images are isolated to their own notification; default images removed from other alerts."
+  "updated_at": "2026-11-15T14:39:37.986Z",
+  "release_notes": "Custom alert images display only on their own notification and are cleaned up after delivery."
 }
