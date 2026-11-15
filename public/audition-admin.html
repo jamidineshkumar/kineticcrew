@@ -88,7 +88,8 @@ document.addEventListener('click',async e=>{
   else if(videoReview){videoReview.disabled=true;await reviewVideo(videoReview.dataset.videoReview,videoReview.dataset.decision);}
   else if(invitation){invitation.disabled=true;await sendInvitation(invitation.dataset.sendInvitation);}
   else if(selection){selection.disabled=true;const {data,error}=await client.functions.invoke('send-audition-selection-email',{body:{applicationId:selection.dataset.sendSelection}});if(error)throw error;if(data?.error)throw new Error(data.error);setNotice(data?.alreadySent?'Final Member access email was already sent.':data?.inProgress?'Final email is already being processed.':'Final Member access email sent and Member role activated.',false);}
-  else if(clean){clean.disabled=true;await cleanupById(clean.dataset.cleanup);}\n  else if(deleteApp){deleteApp.disabled=true;await deleteApplication(deleteApp.dataset.deleteApplication);}
+  else if(clean){clean.disabled=true;await cleanupById(clean.dataset.cleanup);}
+  else if(deleteApp){deleteApp.disabled=true;await deleteApplication(deleteApp.dataset.deleteApplication);}
   else if(e.target.closest('#exportApplicants'))exportApplicants();
   else if(e.target.closest('#refresh')||e.target.closest('#refreshList')||e.target.closest('#retryLoad'))await load();
   else if(e.target.closest('#openDraft'))openDraft();
