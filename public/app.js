@@ -1024,6 +1024,11 @@ pill('rehearsals','rehearsal','Rehearsals')+pill('polls','polls','Polls & voting
 pill('people','people','Crew Members')+
 pill('memories','bookmark','Memories')+
 '</div></section>'+
+(admin()?'<section class="kc-more-reference-group kc-more-admin-group"><h2>Crew administration</h2><div class="kc-more-reference-pills">'+
+pill('crew-management','people','Crew Members & Roles')+
+pill('member-requests','notifications','Pending Requests')+
+'<button type="button" class="kc-more-pill" data-audition-admin><span class="kc-more-pill-icon">'+icon('gigs')+'</span><b>Audition Management</b><em>ADMIN</em></button>'+
+'</div></section>':'')+
 '<section class="kc-more-reference-group kc-more-reference-others"><h2>More</h2><div class="kc-more-reference-others-grid">'+
 other('updates','announcements','Announcements')+other('notifications','notifications','Notifications')+
 other('profile','profile','My Profile')+other('settings','settings','Settings')+
