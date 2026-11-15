@@ -123,7 +123,7 @@ Deno.serve(async (req) => {
             notification: { title, body: message, ...(imageUrl ? { image: imageUrl } : {}) },
             webpush: { notification: { title, body: message, icon: "/icon.svg", ...(imageUrl ? { image: imageUrl } : {}), badge: "/kc-notification-badge.svg", tag: notificationId, renotify: false }, fcmOptions: { link: "/" } },
             android: { priority: "HIGH", notification: { channel_id: "crew_updates", sound: "default", tag: notificationId, ...(imageUrl ? { image: imageUrl } : {}) } },
-            data: { url: "/", notificationId },
+            data: { url: "/", notificationId, notificationType: "custom_alert", ...(imageUrl ? { imageUrl } : {}) },
           },
         }),
       });
