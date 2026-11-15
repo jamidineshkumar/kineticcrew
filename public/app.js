@@ -1369,10 +1369,7 @@ if(S.view==='more'){
    groups.forEach(node=>{if(node!==keep)node.remove();});
   }
  };
- cleanAdminMenu();
  requestAnimationFrame(cleanAdminMenu);
- setTimeout(cleanAdminMenu,80);
- setTimeout(cleanAdminMenu,300);
 }
 if(S.view==='event-detail'&&admin())loadTicketRecipientRoster(S.selectedEvent);
 renderProfileQrCards();
@@ -1709,11 +1706,44 @@ if(e.target.closest('#clearAllNotifications')){
  paint();notice('Your notifications have been cleared on your account. Other members’ inboxes are unchanged.');return;
 }
 if(e.target.closest('#markAllRead')){localStorage.setItem(readKey(),JSON.stringify(notificationItems().map(a=>a.notice_id)));paint();notice('All notifications marked as read.');return;}if(e.target.closest('#testNoticeSound')){playNoticeSound();notice('That is your Kinetic Crew alert sound.');return;}if(e.target.closest('#enablePush')){await action(async()=>{const result=await window.kcPush.enable();saveNotificationPrefs({push:true});notice(result.message||'Push alerts enabled on this device.');});return;}});
-document.addEventListener('input',e=>{if(e.target.id==='peopleSearch'){S.peopleQuery=e.target.value;const pos=e.target.selectionStart;const grid=$('#profileDirectoryGrid');if(grid){const temp=document.createElement('div');temp.innerHTML=peoplePage();const fresh=temp.querySelector('#profileDirectoryGrid');if(fresh)grid.replaceWith(fresh);const count=$('#peopleSearchCount');if(count)count.textContent=fresh?String(fresh.querySelectorAll('.kc-member-directory-card').length)+' / '+(S.publicMembers||[]).length:count.textContent;const input=$('#peopleSearch');if(input){input.focus();input.setSelectionRange(pos,pos);}}return;}if(e.target.id==='attendanceSearch'){S.attendanceQuery=e.target.value;const body=$('#rosterBody');if(body)body.innerHTML=rosterRows(S.roster?.roster||[]);}});
-document.addEventListener('input',e=>{if(e.target.id==='noticeSearch'){S.noticeQuery=e.target.value;const pos=e.target.selectionStart;const app=$('#app');const page=notificationsPage();const start=app.querySelector('.notice-layout');if(start){const temp=document.createElement('div');temp.innerHTML=page;const fresh=temp.querySelector('.notice-layout');start.replaceWith(fresh);const input=$('#noticeSearch');if(input){input.focus();input.setSelectionRange(pos,pos);}}}});
+document.addEventListener('input',e=>{
+ if(e.target.id==='peopleSearch'){
+  S.peopleQuery=e.target.value;const q=S.peopleQuery.trim().toLowerCase(),grid=$('#profileDirectoryGrid');if(!grid)return;
+  const cards=[...grid.querySelectorAll('.kc-member-directory-card')];let visible=0;
+  cards.forEach(card=>{const show=!q||card.textContent.toLowerCase().includes(q);card.hidden=!show;if(show)visible++;});
+  const count=$('#peopleSearchCount');if(count)count.textContent=visible+' / '+(S.publicMembers||[]).length;
+  let empty=grid.querySelector('.kc-search-empty');
+  if(!visible&&q){if(!empty){empty=document.createElement('div');empty.className='empty kc-search-empty';grid.append(empty);}empty.innerHTML='<div class="emptyicon">⌕</div><b>No matching members</b><p>Try another name or username.</p>';}
+  else empty?.remove();
+  return;
+ }
+ if(e.target.id==='attendanceSearch'){S.attendanceQuery=e.target.value;const body=$('#rosterBody');if(body)body.innerHTML=rosterRows(S.roster?.roster||[]);}
+});
+document.addEventListener('input',e=>{
+ if(e.target.id!=='noticeSearch')return;
+ S.noticeQuery=e.target.value;const q=S.noticeQuery.trim().toLowerCase(),feed=document.querySelector('.notice-feed');if(!feed)return;
+ const cards=[...feed.querySelectorAll('.notification-item')];let visible=0;
+ cards.forEach(card=>{const show=!q||card.textContent.toLowerCase().includes(q);card.hidden=!show;if(show)visible++;});
+ const count=feed.querySelector('.notice-feed-head small');if(count)count.textContent=visible+' updates';
+ let empty=feed.querySelector('.kc-search-empty');
+ if(!visible&&q){if(!empty){empty=document.createElement('div');empty.className='empty kc-search-empty';feed.append(empty);}empty.innerHTML='<div class="emptyicon">⌕</div><b>No matching updates</b><p>Try another search.</p>';}
+ else empty?.remove();
+});
 document.addEventListener('error',e=>{const img=e.target;if(!(img instanceof HTMLImageElement))return;const fallback=img.dataset.fallback;if(!fallback)return;const node=document.createElement('span');node.className=img.classList.contains('profile-photo')?'profile-photo profile-photo-placeholder':('avatar-fallback '+(img.classList.contains('small')?'small':''));node.textContent=fallback;node.setAttribute('aria-label','Profile image unavailable');img.replaceWith(node);},true);
 
-document.addEventListener('input',e=>{if(e.target.id!=='kceEventSearch')return;S.eventQuery=e.target.value;const pos=e.target.selectionStart,old=document.querySelector('.kce-events');if(!old)return;const temp=document.createElement('div');temp.innerHTML=eventsPage();const fresh=temp.querySelector('.kce-events');if(fresh)old.replaceWith(fresh);const input=document.querySelector('#kceEventSearch');if(input){input.focus();input.setSelectionRange(pos,pos);}});
+document.addEventListener('input',e=>{
+ if(e.target.id!=='kceEventSearch')return;
+ S.eventQuery=e.target.value;const q=S.eventQuery.trim().toLowerCase(),root=document.querySelector('.kce-events');if(!root)return;
+ root.querySelector('.kce-featured-event')?.toggleAttribute('hidden',!!q);
+ root.querySelector('.kce-category-mosaic')?.toggleAttribute('hidden',!!q);
+ const grid=root.querySelector('.kce-events-grid');if(!grid)return;
+ const cards=[...grid.children].filter(node=>node.matches('.kce-event-card,.kce-ticket-wallet-card'));let visible=0;
+ cards.forEach(card=>{const show=!q||card.textContent.toLowerCase().includes(q);card.hidden=!show;if(show)visible++;});
+ let empty=grid.querySelector('.kc-search-empty');
+ if(q&&!visible){if(!empty){empty=document.createElement('div');empty.className='kce-empty-state kc-search-empty';grid.append(empty);}empty.innerHTML='<span>⌕</span><b>No matching events</b><small>Try another event name, category or venue.</small>';}
+ else empty?.remove();
+ const total=root.querySelector('.kce-discover-label>span');if(total)total.textContent=(q?visible:cards.length)+' '+((q?visible:cards.length)===1?'EVENT':'EVENTS');
+});
 function openImageCrop(file,isBanner){
  if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>8*1024*1024){notice('Choose a JPG, PNG or WebP image under 8 MB.');return;}
  const url=URL.createObjectURL(file),img=new Image();
@@ -2129,7 +2159,7 @@ function setMobileMenu(open){
  if(toggle){toggle.setAttribute('aria-expanded',open?'true':'false');toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');}
  document.body.classList.toggle('kc-menu-open',!!open);
 }
-document.addEventListener('click',event=>{const toggle=event.target.closest('#menuToggle');if(!toggle)return;event.preventDefault();event.stopPropagation();go('more');});
+document.addEventListener('click',event=>{const toggle=event.target.closest('#menuToggle');if(!toggle)return;event.preventDefault();event.stopPropagation();setMobileMenu(!$('#sidebar')?.classList.contains('open'));});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('#sidebar')?.classList.contains('open'))setMobileMenu(false);});
 let kcBackExitAt=0;window.addEventListener('popstate',event=>{if($('#sidebar')?.classList.contains('open'))setMobileMenu(false);const state=event.state;if(state?.kcApp&&typeof state.kcView==='string'){kcBackExitAt=0;go(state.kcView,{fromPop:true});return;}const now=Date.now();if(kcBackExitAt&&now-kcBackExitAt<=1800){const nativeApp=window.Capacitor?.Plugins?.App;if(nativeApp?.exitApp){nativeApp.exitApp();return;}kcBackExitAt=0;return;}kcBackExitAt=now;try{history.pushState({kcApp:true,kcView:S.view,kcRoot:true},'',location.href);}catch{}notice('Press back again to exit Kinetic Crew.');});
 $('#nav')?.addEventListener('click',event=>{if(event.target.closest('[data-view]'))setMobileMenu(false);});
