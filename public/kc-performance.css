@@ -251,3 +251,11 @@
     width: 100%;
   }
 }
+
+/* The hidden attribute must win over component display rules on every viewport. */
+.kce-events-grid > [hidden],
+#profileDirectoryGrid > [hidden],
+.notice-feed > [hidden],
+.kce-events .kce-featured-event[hidden],
+.kce-events .kce-category-mosaic[hidden] { display: none !important; }
+.kc-search-empty { grid-column: 1 / -1; }
