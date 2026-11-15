@@ -1,6 +1,6 @@
 {
-  "version": "1.6.33",
+  "version": "1.6.34",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-15T14:04:52.641Z",
-  "release_notes": "Automatic event/rehearsal registration confirmations, 24-hour/2-hour/30-minute reminders, start alerts, cancellation/postponement alerts and foreground notifications on web and Android."
+  "updated_at": "2026-11-15T14:10:15.530Z",
+  "release_notes": "Capacity-aware event promotion: non-registered approved crew members see and receive available-seat event promotions until registration capacity is reached."
 }
