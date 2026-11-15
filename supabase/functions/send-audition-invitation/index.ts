@@ -16,7 +16,7 @@ Deno.serve(async(req:Request)=>{
  const {data:actor,error:actorError}=await db.from("crew_profiles").select("auth_id,role,approval_status").eq("auth_id",authData.user.id).maybeSingle();
  if(actorError||!actor||actor.approval_status!=="approved"||!["admin","super_admin"].includes(actor.role)) return json({error:"Only approved Admins and Super Admins can send audition invitations."},403);
  try{
-  const body=await req.json(), id=String(body.applicationId||"").trim();
+  const body=await req.json(), id=String(body.applicationId||"").trim(), forceResend=body.resend===true;
   if(!/^[0-9a-f-]{36}$/i.test(id)) return json({error:"A valid application ID is required."},400);
   const {data:app,error:appError}=await db.from("crew_audition_applications").select("id,name,email,application_status,auth_id").eq("id",id).maybeSingle();
   if(appError) throw appError;
@@ -27,7 +27,8 @@ Deno.serve(async(req:Request)=>{
   const key="audition-invitation:"+app.id;
   const {data:existing,error:existingError}=await db.from("crew_email_delivery_log").select("status").eq("idempotency_key",key).eq("recipient_email",email).maybeSingle();
   if(existingError) throw existingError;
-  if(existing?.status==="sent") return json({ok:true,alreadySent:true});
+  if(existing?.status==="sent"&&!forceResend) return json({ok:true,alreadySent:true,resendRequired:true});
+  if(existing?.status==="sent"&&forceResend){const {error:deleteSentError}=await db.from("crew_email_delivery_log").delete().eq("idempotency_key",key).eq("recipient_email",email).eq("status","sent");if(deleteSentError) throw deleteSentError;}
   const stale=new Date(Date.now()-15*60*1000).toISOString();
   await db.from("crew_email_delivery_log").delete().eq("idempotency_key",key).eq("recipient_email",email).eq("status","sending").lt("created_at",stale);
   const {data:claim,error:claimError}=await db.from("crew_email_delivery_log").insert({idempotency_key:key,recipient_email:email,status:"sending"}).select("recipient_email").maybeSingle();
