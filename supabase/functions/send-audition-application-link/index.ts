@@ -14,12 +14,21 @@ const esc = (value: unknown) => String(value ?? "").replace(/[&<>"']/g, c => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
 }[c]!));
 
+function readKey(primary: string, legacy: string) {
+  const raw = Deno.env.get(primary);
+  if (raw) {
+    try { const parsed = JSON.parse(raw); if (typeof parsed === "string") return parsed; if (parsed && typeof parsed === "object") return parsed.default || Object.values(parsed).find(v => typeof v === "string") || ""; }
+    catch { return raw; }
+  }
+  return Deno.env.get(legacy) || "";
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (req.method !== "POST") return json({ error: "POST required." }, 405);
 
-  const url = Deno.env.get("SUPABASE_URL")!;
-  const service = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const url = Deno.env.get("SUPABASE_URL") || "";
+  const service = readKey("SUPABASE_SECRET_KEYS","SUPABASE_SERVICE_ROLE_KEY") || Deno.env.get("SUPABASE_SECRET_KEY") || "";
   const db = createClient(url, service);
 
   try {
