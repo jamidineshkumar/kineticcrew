@@ -2156,6 +2156,10 @@ function setupCrewPushForSignedInMember(){
   window.kcPush.syncExistingPermission?.().then(markEnabled).catch(error=>console.warn('Push subscription refresh failed:',error));
   return;
  }
+ if(isNative&&localStorage.getItem(enabledKey)==='yes'){
+  window.kcPush.syncExistingPermission?.().then(markEnabled).catch(error=>console.warn('Native push registration refresh failed:',error));
+  return;
+ }
  if(localStorage.getItem(enabledKey)==='yes')return;
  const panel=document.createElement('section');
  panel.id='kcPushOptin';
