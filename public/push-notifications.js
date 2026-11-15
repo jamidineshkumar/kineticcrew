@@ -8,6 +8,7 @@ const FIREBASE_CONFIG = {
 };
 const VAPID_KEY = "BFyIdRmTPz0zDLmX9785gBdLZcXePRPyANtGSA8_MwZjiIvqSI248jIC45HraqzarkahcdqBVMi1CmWPrMQDzgc";
 let messagingPromise;
+let foregroundListenerReady = false;
 async function getMessaging() {
   if (!messagingPromise) messagingPromise = (async () => {
     const [{ initializeApp, getApps }, { getMessaging, getToken, onMessage }] = await Promise.all([
@@ -58,16 +59,52 @@ async function enableNativePush() {
   await PushNotifications.register();
   return { ok: true, message: "Android push registration started. This device will receive crew alerts after Firebase registration completes." };
 }
+async function installForegroundListener(messaging, onMessage) {
+  if (foregroundListenerReady) return;
+  foregroundListenerReady = true;
+  onMessage(messaging, async payload => {
+    const title = payload.notification?.title || "Kinetic Crew";
+    const body = payload.notification?.body || "You have a new crew update.";
+    const url = payload.data?.url || "/";
+    window.dispatchEvent(new CustomEvent("kc:notification", {
+      detail: { title, body, target: url.includes("chat") ? "chat" : "notifications" }
+    }));
+    if ("Notification" in window && Notification.permission === "granted") {
+      const options = {
+        body,
+        icon: window.kcPath("icon.svg"),
+        image: payload.notification?.image || window.kcPath("kinetic-crew-logo.jpg"),
+        badge: window.kcPath("kc-notification-badge.svg"),
+        tag: payload.data?.notificationId || payload.data?.id || "kinetic-crew-update",
+        renotify: false,
+        data: { url }
+      };
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        await registration.showNotification(title, options);
+      } catch {
+        try { new Notification(title, options); }
+        catch (error) { console.warn("Foreground system notification unavailable:", error); }
+      }
+    }
+  });
+}
 async function syncExistingPermission() {
-  if (window.Capacitor?.isNativePlatform?.()) return { ok: true, skipped: true };
+  if (window.Capacitor?.isNativePlatform?.()) {
+    const { PushNotifications } = await import("https://esm.sh/@capacitor/push-notifications@7.0.2");
+    const permission = await PushNotifications.checkPermissions();
+    if (permission.receive !== "granted") return { ok: true, skipped: true, message: "Notification permission is not enabled for this app." };
+    return enableNativePush();
+  }
   if (!("Notification" in window) || Notification.permission !== "granted" || !("serviceWorker" in navigator)) {
     return { ok: true, skipped: true };
   }
   const registration = await navigator.serviceWorker.register(window.kcPath("sw.js"), { scope: window.kcPath("") });
-  const { messaging, getToken } = await getMessaging();
+  const { messaging, getToken, onMessage } = await getMessaging();
   const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: registration });
   if (!token) throw new Error("Firebase did not return a device token.");
   const result = await invoke("register", { token, platform: "web" });
+  await installForegroundListener(messaging, onMessage);
   localStorage.setItem("kc-push-enabled", "yes");
   return result;
 }
@@ -82,41 +119,7 @@ async function enable() {
   const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: registration });
   if (!token) throw new Error("Firebase did not return a device token. Check the Firebase Web Push certificate.");
   const result = await invoke("register", { token, platform: "web" });
-  onMessage(messaging, payload => {
-    const title = payload.notification?.title || "Kinetic Crew";
-    const body = payload.notification?.body || "You have a new crew update.";
-    window.dispatchEvent(new CustomEvent("kc:notification", { detail: { title, body, target: payload.data?.url?.includes("chat") ? "chat" : "notifications" } }));
-    if (Notification.permission === "granted") new Notification(title, {
-      body,
-      icon: window.kcPath("icon.svg"),
-      image: window.kcPath("kinetic-crew-logo.jpg"),
-      badge: window.kcPath("kc-notification-badge.svg"),
-      tag: payload.data?.notificationId || payload.data?.id || "kinetic-crew-update",
-      renotify: false
-    });
-    try {
-      const session = window.kcSupabase.auth.getSession();
-      session.then(({data}) => {
-        const userId = data?.session?.user?.id || "guest";
-        const prefs = JSON.parse(localStorage.getItem("kc-notification-prefs:" + userId) || "{}");
-        if (prefs.sound !== false) {
-          const Audio = window.AudioContext || window.webkitAudioContext;
-          if (!Audio) return;
-          const ctx = new Audio(), now = ctx.currentTime;
-          [660, 880].forEach((hz, i) => {
-            const osc = ctx.createOscillator(), gain = ctx.createGain();
-            osc.type = "sine"; osc.frequency.value = hz;
-            gain.gain.setValueAtTime(.0001, now + i * .12);
-            gain.gain.exponentialRampToValueAtTime(.09, now + i * .12 + .025);
-            gain.gain.exponentialRampToValueAtTime(.0001, now + i * .12 + .2);
-            osc.connect(gain); gain.connect(ctx.destination);
-            osc.start(now + i * .12); osc.stop(now + i * .12 + .22);
-          });
-          setTimeout(() => ctx.close(), 700);
-        }
-      }).catch(() => {});
-    } catch {}
-  });
+  await installForegroundListener(messaging, onMessage);
   localStorage.setItem("kc-push-enabled", "yes");
   return result;
 }
