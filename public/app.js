@@ -45,7 +45,7 @@ async function rpc(name,args){
  }
  return withTimeout(client.rpc(name,args),25000,'The crew service is taking too long. Your connection may be weak; retry when it stabilizes.');
 }
-const role=r=>({super_admin:'Super Admin',admin:'Admin',member:'Member'}[r]||'Member');
+const role=r=>({super_admin:'Super Admin',admin:'Admin',member:'Member',audition_participant:'Audition Participant'}[r]||'Member');
 const memberDescriptor=m=>String(m?.crew_title||m?.occupation||role(m?.role)||'Member').trim();
 const admin=()=>['admin','super_admin'].includes(String(S.user?.role||'')), superadmin=()=>S.user&&S.user.role==='super_admin';
 const profileIsComplete=u=>Boolean(u&&u.name&&u.username&&u.date_of_birth&&u.registration_number&&u.instagram_username&&u.bio&&u.avatar_url);
@@ -976,7 +976,7 @@ function home(){
  '<header class="kc-home-reference-header"><div class="kc-home-user"><span><small>YOUR KINETIC CREW SPACE</small><b>Welcome back, '+esc(name)+'</b></span></div><button type="button" class="kc-home-theme-toggle" data-theme-toggle aria-label="Switch colour theme" title="Switch colour theme"><span aria-hidden="true">'+(document.documentElement.dataset.theme==='dark'?'☀':'☾')+'</span></button></header>'+
  '<section class="kc-home-greeting"><div class="kc-home-greeting-copy"><h1>'+greeting+', <em>'+esc(name)+'.</em></h1><p class="kc-home-greeting-lead">'+esc(homeMood)+'</p><small class="kc-home-greeting-sub">'+esc(homePrompt)+'</small></div><div class="kc-home-greeting-mark" aria-label="Kinetic Crew logo">'+brandMarkMarkup('kc-home-greeting-logo')+'</div></section>'+
  +(S.profileCompletionPending?'<section class="kc-home-profile-pending" role="status"><div><b>Profile completion pending</b><small>Finish your profile to complete your Kinetic Crew setup.</small></div><button type="button" data-view="profile">Complete profile →</button></section>':'')+
- +(admin()?'<section class="kc-admin-shortcuts" aria-label="Crew administration"><div class="kc-admin-shortcuts-heading"><span>ADMIN CONTROL CENTER</span><b>Crew management</b><small>Manage member roles and review new registrations.</small></div><div class="kc-admin-shortcuts-actions"><button type="button" data-view="crew-management"><span>♙</span><b>Crew Members & Roles</b><i>→</i></button><button type="button" data-view="member-requests"><span>⌛</span><b>Waiting List / Requests</b><i>→</i></button></div></section>':'')+
+ +(admin()?'<section class="kc-admin-shortcuts" aria-label="Crew administration"><div class="kc-admin-shortcuts-heading"><span>ADMIN CONTROL CENTER</span><b>Crew management</b><small>Manage member roles and review new registrations.</small></div><div class="kc-admin-shortcuts-actions"><button type="button" data-view="crew-management"><span>♙</span><b>Crew Members & Roles</b><i>→</i></button><button type="button" data-view="member-requests"><span>⌛</span><b>Waiting List / Requests</b><i>→</i></button><button type="button" data-audition-admin><span>◎</span><b>Audition Management</b><i>→</i></button></div></section>':'')+
  '<section class="kc-home-featured" aria-label="Featured crew updates"><div class="kc-home-featured-track">'+slideMarkup+'</div>'+(slides.length>1?'<div class="kc-home-featured-dots" aria-label="Featured carousel pages">'+slides.map((_,i)=>'<button type="button" data-home-slide-to="'+i+'" class="'+(i===0?'active':'')+'" aria-label="Show slide '+(i+1)+'"></button>').join('')+'</div>':'')+'</section>'+
  '<section class="kc-home-reference-section kc-home-latest-section"><div class="kc-home-reference-section-head"><h2>Latest from your crew</h2><button type="button" data-view="notifications">See all <span>→</span></button></div><div class="kc-exact-update-row">'+updates+'</div></section>'+
  
@@ -1435,6 +1435,7 @@ function settingsIcon(name){
 function settingsPage(){
  const version=window.KC_APP_VERSION||'1.2.2';
  const tiles=[
+  ['change-password','settings','Change password','Update your sign-in password'],
   ['profile','profile','My profile','Photo, name and crew identity'],
   ['appearance-settings','appearance','Appearance','Theme and display preferences'],
   ['notification-settings','notifications','Notifications','Push alerts and in-app sound'],
@@ -1445,7 +1446,7 @@ function settingsPage(){
  ];
  if(superadmin())tiles.splice(5,0,['brand-settings','brand','App icon & logo','Update the official app identity']);
  return welcome('App settings','Choose a section. Each option opens its own focused page.')+
- '<div class="kc-settings-hub">'+tiles.map(([view,icon,title,sub])=>'<button type="button" class="kc-settings-tile" data-view="'+view+'"><span class="kc-settings-tile-icon">'+settingsIcon(icon)+'</span><span class="kc-settings-tile-copy"><b>'+title+'</b><small>'+sub+'</small></span><span class="kc-settings-tile-arrow" aria-hidden="true">↗</span></button>').join('')+'</div>'+
+ '<div class="kc-settings-hub">'+tiles.map(([view,icon,title,sub])=>'<button type="button" class="kc-settings-tile" '+(view==='change-password'?'data-open-change-password':'data-view="'+view+'"')+'><span class="kc-settings-tile-icon">'+settingsIcon(icon)+'</span><span class="kc-settings-tile-copy"><b>'+title+'</b><small>'+sub+'</small></span><span class="kc-settings-tile-arrow" aria-hidden="true">↗</span></button>').join('')+'</div>'+
  '<div class="kc-settings-signout"><span><b>Sign out</b><small>End your session on this device</small></span><button type="button" id="settingsSignOut" aria-label="Sign out">Sign out <span aria-hidden="true">↗</span></button></div>'+
  '<p class="kc-settings-version">KINETIC CREW · v'+esc(version)+'</p>';
 }
@@ -1600,6 +1601,10 @@ document.addEventListener('click',event=>{
 });
 document.addEventListener('contextmenu',event=>{if(event.target.closest('[data-member-action-card]'))event.preventDefault();});
 document.addEventListener('click',e=>{const feature=e.target.closest('[data-kc-feature-open]');if(feature){kcOpenFeaturePage(feature.dataset.kcFeatureOpen);return;}if(e.target.closest('[data-kc-feature-back]')){kcBackToFeatureMenu();return;}});
+document.addEventListener('click',event=>{
+ const audition=event.target.closest('[data-audition-admin]');if(audition){location.href=window.kcPath('audition-admin.html');return;}
+ const password=event.target.closest('[data-open-change-password]');if(password){location.href=window.kcPath('change-password.html');return;}
+});
 document.addEventListener('click',async e=>{
  const review=e.target.closest('[data-review-member]');if(review){const action=review.dataset.reviewMember,id=review.dataset.memberId;if(!admin()||!id)return;review.disabled=true;try{if(action==='reject'&&!await kcConfirmDialog({title:'Reject membership request?',message:'This member will not be added to the crew.',confirmText:'Reject request',danger:true})){review.disabled=false;return;}const {data,error}=await rpc('crew_review_member',{p_auth_id:id,p_decision:action,p_reason:action==='reject'?'Not approved by crew administration.':null});if(error)throw error;if(action==='approve'){const {data:mail,error:mailError}=await client.functions.invoke('send-member-welcome',{body:{authId:id}});if(mailError||mail?.error)throw Error(mail?.error||mailError?.message||'Member approved, but welcome email failed.');notice(mail?.message||'Member approved and welcome email sent.');}else notice('Membership request rejected.');await go(S.view==='crew-management'?'crew-management':'member-requests');}catch(error){notice(error.message||'Could not review this request.');review.disabled=false;}return;}
  const memberAction=e.target.closest('[data-member-action]');
@@ -2203,7 +2208,10 @@ async function boot(){
   if(!session||!session.user){location.replace(window.kcPath('login.html'));return;}
   const membership=await withTimeout(client.rpc('crew_access_status',{}),10000,'Could not verify your Kinetic Crew membership.');
   if(membership.error)throw membership.error;
+  if(membership.data?.status==='rejected'&&membership.data?.role==='audition_rejected'){try{localStorage.setItem('kc_audition_notice','rejected');}catch{}await auth.signOut({scope:'local'}).catch(()=>{});location.replace(window.kcPath('login.html?audition=rejected'));return;}
   if(membership.data?.status!=='approved'){location.replace(window.kcPath('pending.html'));return;}
+  if(membership.data?.must_change_password){location.replace(window.kcPath('change-password.html?required=1'));return;}
+  if(membership.data?.role==='audition_participant'){location.replace(window.kcPath('audition.html'));return;}
   if(S.user&&membership.data?.role)S.user.role=membership.data.role;
   const accessCheck=await withTimeout(client.rpc('crew_assert_not_blocked',{}),10000,'Could not verify your Kinetic Crew account status.');
   if(accessCheck.error){

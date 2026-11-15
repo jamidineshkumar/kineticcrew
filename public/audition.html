@@ -1,0 +1,91 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#080910"><meta name="robots" content="noindex,nofollow"><title>Kinetic Crew · Audition Portal</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="theme-overrides.css"><link rel="stylesheet" href="kc-audition-portal.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="supabase-client.js"></script></head>
+<body class="ka-body"><div class="ka-shell"><header class="ka-header"><div class="ka-brand">KINETIC CREW<small>AUDITION PORTAL</small></div><button class="ka-icon-btn" id="menuOpen" aria-label="Open menu">☰</button></header><main class="ka-main" id="auditionRoot"><div class="ka-empty">Loading your audition portal…</div></main></div>
+<nav class="ka-dock" id="auditionDock"><button data-view="home" class="active"><span>⌂</span><small>Home</small></button><button data-view="audition"><span>◎</span><small>Audition</small></button></nav>
+<div class="ka-menu" id="auditionMenu"><div class="ka-menu-card"><div class="ka-menu-head"><b>KINETIC CREW</b><button class="ka-icon-btn" id="menuClose" aria-label="Close menu">×</button></div><div class="ka-menu-list" id="menuItems"></div></div></div>
+<script>
+(()=>{'use strict';
+const client=window.kcSupabase,root=document.getElementById('auditionRoot'),menu=document.getElementById('auditionMenu');
+const state={user:null,email:'',events:[],announcements:[],settings:{},status:{},view:'home'};try{document.documentElement.dataset.theme=localStorage.getItem('kc_theme')||'dark';}catch{}
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeUrl=v=>{try{const u=new URL(String(v||''));return u.protocol==='https:'?u.href:'';}catch{return '';}};
+const date=v=>{const d=new Date(v);return Number.isNaN(+d)?'Date TBA':d.toLocaleString([],{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});};
+const statusLabel=v=>v==='accept'?'Accepted':v==='reject'?'Rejected':'Pending';
+const statusClass=v=>v==='accept'?'good':v==='reject'?'bad':'warn';
+function closeMenu(){menu.classList.remove('open');}
+function renderMenu(){
+ const ig=safeUrl(state.settings.kinetic_crew_instagram_url||state.settings.crew_instagram_url||state.settings.instagram_url);
+ const yt=safeUrl(state.settings.kinetic_crew_youtube_url||state.settings.crew_youtube_url||state.settings.youtube_url);
+ const items=['<button class="ka-menu-item" data-view="banner"><span>▧</span>Banner</button>','<button class="ka-menu-item" data-view="settings"><span>⚙</span>App Settings</button>','<button class="ka-menu-item" data-view="profile"><span>◉</span>Profile</button>','<button class="ka-menu-item" data-view="notifications"><span>♧</span>Notifications</button>',ig?'<a class="ka-menu-item" target="_blank" rel="noopener noreferrer" href="'+esc(ig)+'"><span>◎</span>Kinetic Crew Instagram</a>':'<div class="ka-menu-item"><span>◎</span>Kinetic Crew Instagram · link not configured</div>',yt?'<a class="ka-menu-item" target="_blank" rel="noopener noreferrer" href="'+esc(yt)+'"><span>▶</span>Kinetic Crew YouTube</a>':'<div class="ka-menu-item"><span>▶</span>Kinetic Crew YouTube · link not configured</div>'];
+ document.getElementById('menuItems').innerHTML=items.join('');
+}
+function eventCard(e){
+ const image=safeUrl(e.cover_url),status=String(e.event_status||'scheduled').toLowerCase(),badge=status==='cancelled'?'bad':status==='postponed'?'warn':'good';
+ return '<article class="ka-event">'+(image?'<img loading="lazy" src="'+esc(image)+'" alt="">':'<div style="aspect-ratio:16/8;background:linear-gradient(135deg,#392e4d,#5d3e44)"></div>')+'<div class="ka-event-body"><div class="ka-meta"><span class="ka-chip '+badge+'">'+esc(status.toUpperCase())+'</span><span>'+esc(e.category||'Kinetic Crew event')+'</span></div><h3>'+esc(e.title||'Kinetic Crew event')+'</h3><p>'+esc(e.description||'Event details will be announced soon.')+'</p><div class="ka-meta"><span>◷ '+esc(date(e.starts_at))+'</span>'+(e.location?'<span>⌖ '+esc(e.location)+'</span>':'')+'</div></div></article>';
+}
+function announcementCard(a){return '<article class="ka-announcement"><h3>'+esc(a.title||'Crew update')+'</h3><p>'+esc(a.body||'')+'</p><time>'+esc(date(a.created_at))+'</time></article>';}
+function homePage(){
+ const events=state.events||[],ann=state.announcements||[];
+ return '<section class="ka-hero"><div class="ka-eyebrow">WELCOME TO KINETIC CREW</div><h1>Move together.<br><span style="color:var(--ka-accent)">Grow together.</span></h1><p>Stay connected with Kinetic Crew events, announcements and updates while your audition is under review.</p><div style="margin-top:18px"><button class="ka-action" data-view="audition">View audition status →</button></div></section><section class="ka-panel"><div class="ka-section-head"><h2>All Kinetic Crew Events</h2><span class="ka-muted">'+events.length+' updates</span></div>'+(events.length?'<div class="ka-grid">'+events.map(eventCard).join('')+'</div>':'<div class="ka-empty">No events have been published yet.</div>')+'</section><section class="ka-panel"><div class="ka-section-head"><h2>Crew Announcements</h2><span class="ka-muted">'+ann.length+' updates</span></div>'+(ann.length?ann.map(announcementCard).join(''):'<div class="ka-empty">No announcements have been published yet.</div>')+'</section>';
+}
+function decisionCard(title,value){return '<div class="ka-review"><b>'+esc(title)+'</b><span class="ka-chip '+statusClass(value)+'">'+esc(statusLabel(value))+'</span><small style="display:block;margin-top:8px">'+(value==='accept'?'Your audition has been accepted by this reviewer.':value==='reject'?'This reviewer has not approved the audition.':'Waiting for this reviewer to complete their review.')+'</small></div>';}
+function statusText(s){
+ if(s.application_status==='selected')return 'Both reviewers approved your audition. Your regular Kinetic Crew Member access is active.';
+ if(s.application_status==='rejected')return 'Your audition was not selected this time. Keep practising, keep growing, and we hope to see you at a future Kinetic Crew audition.';
+ if(s.application_status==='review_disagreement')return 'The reviewers have different decisions. Your application remains under review while they finalize the outcome.';
+ if(s.admin_decision==='reject'||s.president_decision==='reject')return 'One reviewer has not approved the audition yet. The second reviewer must complete their independent review.';
+ if(s.admin_decision==='accept'||s.president_decision==='accept')return 'One reviewer has approved your audition. The other reviewer is still reviewing the same video.';
+ return 'Your audition video is waiting for independent review by the Admin and President.';
+}
+function auditionPage(){
+ const s=state.status||{},st=s.application_status||'under_review';
+ return '<section class="ka-hero"><div class="ka-eyebrow">YOUR APPLICATION</div><h1>Audition<br><span style="color:var(--ka-accent)">progress</span></h1><p>Track the independent review of your audition video. Both reviewers must approve for Member access, and both must reject for a final rejection.</p></section><section class="ka-panel"><div class="ka-row"><h2 style="margin:0">My Audition Status</h2><span class="ka-chip '+(st==='selected'?'good':st==='rejected'?'bad':'warn')+'">'+esc(st.replaceAll('_',' ').toUpperCase())+'</span></div><p class="ka-muted" style="line-height:1.65">'+esc(statusText(s))+'</p><div class="ka-status-grid">'+decisionCard('Admin Review',s.admin_decision)+decisionCard('President Review',s.president_decision)+'</div><p class="ka-muted" style="font-size:11px;margin-top:15px">Status refreshes automatically. Reviewer comments and internal notes are not visible here.</p></section>';
+}
+function bannerPage(){
+ const featured=(state.events||[]).filter(e=>e.featured);
+ return '<section class="ka-hero"><div class="ka-eyebrow">KINETIC CREW BANNER</div><h1>What’s<br><span style="color:var(--ka-accent)">happening</span></h1><p>Featured events and important crew announcements.</p></section><section class="ka-panel"><div class="ka-section-head"><h2>Featured Events</h2></div>'+(featured.length?'<div class="ka-grid">'+featured.map(eventCard).join('')+'</div>':'<div class="ka-empty">No featured banners right now.</div>')+'</section><section class="ka-panel"><div class="ka-section-head"><h2>Latest Announcements</h2></div>'+(state.announcements.length?state.announcements.map(announcementCard).join(''):'<div class="ka-empty">No announcements yet.</div>')+'</section>';
+}
+function notificationsPage(){
+ const rows=[...(state.announcements||[]).map(a=>({kind:'Announcement',title:a.title,body:a.body,created_at:a.created_at})),...(state.events||[]).map(e=>({kind:'Event',title:e.title,body:e.description,created_at:e.starts_at}))].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+ return '<section class="ka-hero"><div class="ka-eyebrow">UPDATES & ALERTS</div><h1>Notifications</h1><p>Published Kinetic Crew updates and event announcements.</p></section><section class="ka-panel">'+(rows.length?rows.map(r=>'<article class="ka-announcement"><span class="ka-chip">'+esc(r.kind)+'</span><h3 style="margin-top:9px">'+esc(r.title)+'</h3><p>'+esc(r.body||'')+'</p><time>'+esc(date(r.created_at))+'</time></article>').join(''):'<div class="ka-empty">You are all caught up.</div>')+'</section>';
+}
+function profilePage(){return '<section class="ka-hero"><div class="ka-eyebrow">YOUR ACCOUNT</div><h1>Profile</h1><p>Your audition account details.</p></section><section class="ka-panel"><div class="ka-announcement"><small class="ka-muted">FULL NAME</small><h3>'+esc(state.user?.name||'Audition participant')+'</h3></div><div class="ka-announcement"><small class="ka-muted">EMAIL</small><h3>'+esc(state.email||'')+'</h3></div><div class="ka-announcement"><small class="ka-muted">USERNAME</small><h3>'+esc(state.user?.username||'')+'</h3></div><div class="ka-announcement"><small class="ka-muted">ACCOUNT TYPE</small><h3>Audition Participant</h3></div></section>';}
+function settingsPage(){
+ return '<section class="ka-hero"><div class="ka-eyebrow">PREFERENCES</div><h1>App Settings</h1><p>Manage your audition account and app preferences.</p></section><section class="ka-panel"><div class="ka-section-head"><h2>Appearance</h2></div><div class="ka-row"><span class="ka-muted">Theme</span><div><button class="ka-action secondary" data-theme="dark">Dark</button> <button class="ka-action secondary" data-theme="light">Light</button></div></div></section><section class="ka-panel"><div class="ka-section-head"><h2>Security</h2></div><p class="ka-muted">Change your temporary or current password at any time.</p><a class="ka-action" style="display:inline-block;text-decoration:none" href="change-password.html">Change Password →</a></section><section class="ka-panel"><button class="ka-action secondary" id="signOut">Sign out</button></section>';
+}
+function render(){
+ const pages={home:homePage,audition:auditionPage,banner:bannerPage,settings:settingsPage,profile:profilePage,notifications:notificationsPage};
+ root.innerHTML=(pages[state.view]||homePage)();
+ document.querySelectorAll('#auditionDock [data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===state.view));
+}
+async function loadStatus(){
+ const {data,error}=await client.rpc('crew_audition_my_status',{});if(error)throw error;state.status=data||{};
+ if(state.status.application_status==='rejected'){try{localStorage.setItem('kc_audition_notice','rejected');}catch{}await client.auth.signOut({scope:'local'}).catch(()=>{});location.replace('login.html?audition=rejected');return;}
+ if(state.status.application_status==='selected'){location.replace('index.html');return;}
+ if(state.view==='audition')render();
+}
+async function boot(){
+ if(!client)throw new Error(window.KC_CONFIG_ERROR||'Authentication is unavailable.');
+ const {data:sessionData}=await client.auth.getSession();if(!sessionData?.session){location.replace('login.html');return;}
+ const {data:access,error:accessError}=await client.rpc('crew_access_status',{});if(accessError)throw accessError;
+ if(access?.status==='rejected'){try{localStorage.setItem('kc_audition_notice','rejected');}catch{}await client.auth.signOut({scope:'local'}).catch(()=>{});location.replace('login.html?audition=rejected');return;}
+ if(access?.status!=='approved'){location.replace('pending.html');return;}
+ if(access?.must_change_password){location.replace('change-password.html?required=1');return;}
+ if(access?.role==='member'){location.replace('index.html');return;}
+ if(access?.role!=='audition_participant'){location.replace('login.html');return;}
+ const {data:userData}=await client.auth.getUser();state.email=userData?.user?.email||'';
+ const {data:bootData,error:bootError}=await client.rpc('crew_api',{p_action:'bootstrap',p_method:'GET',p_payload:{}});if(bootError)throw bootError;
+ state.user=bootData?.user||{};state.events=Array.isArray(bootData?.events)?bootData.events:[];state.announcements=Array.isArray(bootData?.announcements)?bootData.announcements:[];
+ const {data:settings}=await client.rpc('crew_get_app_settings',{});state.settings=settings||{};
+ await loadStatus();render();
+ setInterval(async()=>{try{const {data:latest,error}=await client.rpc('crew_access_status',{});if(error)throw error;if(latest?.status==='rejected'){try{localStorage.setItem('kc_audition_notice','rejected');}catch{}await client.auth.signOut({scope:'local'}).catch(()=>{});location.replace('login.html?audition=rejected');return;}if(latest?.role==='member'&&latest?.status==='approved'){location.replace('index.html');return;}await loadStatus();}catch(error){console.warn('Audition status refresh failed:',error);}},20000);
+}
+document.getElementById('menuOpen').addEventListener('click',()=>{renderMenu();menu.classList.add('open');});
+document.getElementById('menuClose').addEventListener('click',()=>menu.classList.remove('open'));
+menu.addEventListener('click',e=>{if(e.target===menu)menu.classList.remove('open');});
+document.addEventListener('click',e=>{
+ const view=e.target.closest('[data-view]');if(view){state.view=view.dataset.view;menu.classList.remove('open');render();window.scrollTo({top:0,behavior:'smooth'});}
+ const theme=e.target.closest('[data-theme]');if(theme){document.documentElement.dataset.theme=theme.dataset.theme;try{localStorage.setItem('kc_theme',theme.dataset.theme);}catch{}}
+ if(e.target.closest('#signOut'))client.auth.signOut({scope:'local'}).then(()=>location.replace('login.html'));
+});
+boot().catch(error=>{console.error(error);root.innerHTML='<div class="ka-error">'+esc(error.message||'Could not load the Audition Portal.')+'</div>';});
+})();</script></body></html>
