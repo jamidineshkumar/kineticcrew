@@ -154,3 +154,39 @@
 .kg-story-viewer{width:min(94vw,500px);padding:12px}
 .kg-story-viewer img,.kg-story-viewer video{width:100%;max-height:75vh;object-fit:contain;border-radius:18px;background:#000}
 @media(max-width:560px){.kg-header{margin-top:4px}.kg-create-button{width:52px;height:52px}.kg-top-tabs{margin-bottom:18px}.kg-post-media{max-height:70vh}}
+
+
+/* Mobile interaction and scroll budget: keep the glass surfaces, skip expensive
+   per-card backdrop repaints and entrance animations on low-power devices. */
+@media (max-width: 900px) {
+  #app .surface,
+  #app .event,
+  #app .announcement,
+  #app .stat,
+  #app .feature-card,
+  #app .kce-event-card,
+  #app .kce-ticket-wallet-card,
+  #app .kc-poll-card,
+  #app .kc-meet-info-grid article,
+  #app .social-post-card {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    animation: none !important;
+  }
+  #app .event,
+  #app .announcement,
+  #app .feature-card,
+  #app .kce-event-card,
+  #app .kc-poll-card,
+  #app .social-post-card {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 260px;
+  }
+  #app .surface,
+  #app .event,
+  #app .announcement,
+  #app .feature-card,
+  #app .social-post-card {
+    transition-property: border-color, opacity !important;
+  }
+}
