@@ -527,6 +527,14 @@ function showDynamicIsland(detail={}){
 }
 window.addEventListener('kc:notification',event=>{const detail=event.detail||{};showDynamicIsland(detail);if(notificationPrefs().sound)playNoticeSound();});
 let kcKnownAnnouncementIds=null,kcAnnouncementPoll=null;
+let kcLastInteractionAt=0,kcDeferredSnapshotPaintTimer=0;
+document.addEventListener('pointerdown',()=>{kcLastInteractionAt=Date.now();},{passive:true});
+document.addEventListener('keydown',event=>{if(/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName||''))kcLastInteractionAt=Date.now();},{passive:true});
+function kcPaintSnapshotWhenIdle(){
+ if(!S.user||document.hidden)return;
+ if(Date.now()-kcLastInteractionAt<1100){kcDeferredSnapshotPaintTimer=setTimeout(kcPaintSnapshotWhenIdle,650);return;}
+ paint();
+}
 function seedAnnouncementNotifications(){kcKnownAnnouncementIds=new Set((S.announcements||[]).map(a=>String(a.id)));}
 let kcSnapshotBusy=false;
 function kcSnapshotSignature(rows,keys){
@@ -570,7 +578,7 @@ async function syncCrewSnapshot(){
   const rehearsalChanged=kcSnapshotSignature(S.featureItems.rehearsals||[],['id','updated_at','created_at','title','status','starts_at'])!==kcSnapshotSignature(nextRehearsals,['id','updated_at','created_at','title','status','starts_at']);
   S.events=nextEvents;S.announcements=rows;S.members=nextMembers;S.socialPosts=nextPostRows;S.featureItems.rehearsals=nextRehearsals;S.featureItems.polls=nextPolls;
   await loadGlobalDeletedNotifications();
-  if(changed||rehearsalChanged){paintUser();paint();}
+  if(changed||rehearsalChanged){paintUser();if(Date.now()-kcLastInteractionAt>=1100)paint();else{clearTimeout(kcDeferredSnapshotPaintTimer);kcDeferredSnapshotPaintTimer=setTimeout(kcPaintSnapshotWhenIdle,1200);}}
   const fresh=[...incomingAnnouncements.map(a=>({type:'announcement',title:a.title,body:a.body})),...incomingEvents.map(a=>({type:'event',title:a.title,body:a.description||'A new event was added.'})),...incomingPosts.map(a=>({type:'post',title:'New Kinetic Gram post',body:a.caption||'A crew member shared a post.'})),...incomingPolls.map(p=>({type:'poll',title:'New crew poll: '+p.title,body:'A new poll is ready for your vote.'}))];
   if(fresh.length){
    const latest=fresh[0];
