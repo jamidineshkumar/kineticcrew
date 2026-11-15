@@ -85,7 +85,7 @@ function openAuth(mode){document.body.classList.add('kc-auth-open');document.bod
 function showWelcome(){document.body.classList.remove('kc-auth-open');document.body.classList.add('kc-welcome-open');if(auth)auth.hidden=true;window.scrollTo(0,0);}
 document.querySelectorAll('[data-auth-open]').forEach(button=>button.addEventListener('click',()=>openAuth(button.dataset.authOpen)));
 const back=document.getElementById('kcAuthBack');if(back)back.addEventListener('click',showWelcome);
-function revealWelcome(){document.body.classList.add('kc-welcome-open');if(splash){splash.classList.add('kc-splash-out');setTimeout(()=>{splash.hidden=true;},700);}}
+function revealWelcome(){if(document.body.classList.contains('kc-auth-open'))return;document.body.classList.add('kc-welcome-open');if(splash){splash.classList.add('kc-splash-out');setTimeout(()=>{splash.hidden=true;},700);}}
 setTimeout(revealWelcome,900);
 setTimeout(()=>{if(splash&&!splash.hidden)revealWelcome();},2500);
 })();
