@@ -117,6 +117,10 @@ Deno.serve(async(req:Request)=>{
       const alreadyAudition=profile.approval_status==="approved"&&profile.role==="audition_participant";
       const recoverablePending=profile.approval_status==="pending"&&profile.role==="member"&&String(profile.email||"").toLowerCase()===email&&username===String(app.username||"").toLowerCase();
       if(recoverablePending) {
+        const {error:resetError}=await db.auth.admin.updateUserById(app.auth_id,{
+          password,email_confirm:true,user_metadata:{full_name:String(app.name||"Audition applicant"),username}
+        });
+        if(resetError) throw resetError;
         const {data:attached,error:attachError}=await userClient.rpc("crew_audition_attach_account",{
           p_application_id:id,p_auth_id:app.auth_id,p_username:username
         });
@@ -149,6 +153,12 @@ Deno.serve(async(req:Request)=>{
           return json({error:"This sign-in account is already linked to another audition application."},409);
         }
         username=String(existingProfile.username).toLowerCase();
+        if(recoverablePending) {
+          const {error:resetError}=await db.auth.admin.updateUserById(existingProfile.auth_id,{
+            password,email_confirm:true,user_metadata:{full_name:String(app.name||"Audition applicant"),username}
+          });
+          if(resetError) throw resetError;
+        }
         const {data:linked,error:linkError}=await userClient.rpc("crew_audition_attach_account",{
           p_application_id:id,p_auth_id:existingProfile.auth_id,p_username:username
         });
