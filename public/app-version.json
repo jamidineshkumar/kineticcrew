@@ -1,6 +1,6 @@
 {
-  "version": "1.6.17",
+  "version": "1.6.22",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-14T00:00:00.000Z",
-  "release_notes": "Event admins can enable automatic personal ticket emails after registration. Tickets include the member QR code and full event details. Kinetic Gram also shows posted stories only and live online crew presence."
+  "updated_at": "2026-11-15T00:00:00.000Z",
+  "release_notes": "Audition application loading and submission feedback improvements. Automatic app updates now use a synchronized release version and refreshed service-worker cache."
 }
