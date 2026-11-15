@@ -43,7 +43,7 @@ async function review(id,decision){
  const {data:r,error}=await client.rpc('crew_audition_review',{p_application_id:id,p_decision:decision});if(error)throw error;
  if(r?.deleted){state.notice='Both reviewers rejected the initial application. The applicant record and personal application data were deleted.';}
  else if(r?.application_status==='audition_invited'){
-  const {data:mail,error:mailError}=await client.functions.invoke('send-audition-invitation',{body:{applicationId:id}});
+  const {data:mail,error:mailError}=await client.functions.invoke('send-audition-invitation',{body:{applicationId:id,resend:true}});
   state.notice=mailError?'Both reviewers accepted the application, but the audition invitation email failed. Use “Send / retry audition invitation”.':mail?.alreadySent?'Application accepted. The audition invitation was already emailed.':mail?.inProgress?'Application accepted. The invitation email is being processed.':'Application accepted. Separate Audition Portal login details were emailed to '+a.email+'.';
   if(mail?.error)state.notice='Application accepted, but invitation email failed: '+mail.error;
  }else if(r?.application_status==='review_disagreement')state.notice='The initial reviewers disagree. The application remains pending review; no audition access has been issued.';
@@ -64,7 +64,7 @@ async function reviewVideo(id,decision){
  state.error=false;const {data}=await client.rpc('crew_audition_list_applications',{});state.apps=Array.isArray(data)?data:[];render();
 }
 async function sendInvitation(id){
- const {data,error}=await client.functions.invoke('send-audition-invitation',{body:{applicationId:id}});
+ const {data,error}=await client.functions.invoke('send-audition-invitation',{body:{applicationId:id,resend:true}});
  if(error)throw error;if(data?.error)throw new Error(data.error);
  setNotice(data?.alreadySent?'Audition invitation was already emailed.':data?.inProgress?'Audition invitation is already being processed.':'Audition invitation and separate portal login details sent.',false);
 }
