@@ -1172,7 +1172,9 @@ async function openDirectMessage(memberId){
  const safeId=value=>/^[a-zA-Z0-9-]{16,64}$/.test(String(value));
  if(!safeId(id)||!safeId(S.user.auth_id))throw Error('This member account ID is invalid.');
  $('#modalRoot').innerHTML='<div class="modalback kc-dm-backdrop" id="kcDmBackdrop"><section class="modal kc-dm-modal" role="dialog" aria-modal="true" aria-labelledby="kcDmTitle"><button type="button" class="iconbutton modalclose" id="kcDmClose" aria-label="Close message">×</button><span class="eyebrow">PRIVATE CREW CHAT</span><h2 id="kcDmTitle">'+esc(person.name||'Crew member')+'</h2><div class="kc-dm-thread" id="kcDmThread"><p class="hint">Loading conversation…</p></div><form id="kcDirectMessageForm" data-recipient-id="'+esc(id)+'"><textarea name="body" rows="2" maxlength="4000" placeholder="Write a message…" required></textarea><button type="submit" class="primary">Send message ↗</button></form></section></div>';
- const close=()=>{$('#modalRoot').innerHTML='';};$('#kcDmClose').onclick=close;$('#kcDmBackdrop').addEventListener('click',e=>{if(e.target.id==='kcDmBackdrop')close();});
+ const close=()=>{if(S.dmChannel){client.removeChannel(S.dmChannel);S.dmChannel=null;}$('#modalRoot').innerHTML='';};$('#kcDmClose').onclick=close;$('#kcDmBackdrop').addEventListener('click',e=>{if(e.target.id==='kcDmBackdrop')close();});
+ if(S.dmChannel)client.removeChannel(S.dmChannel);
+ S.dmChannel=client.channel('kg-dm-'+uid+'-'+rid).on('postgres_changes',{event:'INSERT',schema:'public',table:'crew_direct_messages'},payload=>{const m=payload.new||{};if((String(m.sender_id)===uid&&String(m.recipient_id)===rid)||(String(m.sender_id)===rid&&String(m.recipient_id)===uid))refreshDirectMessageThread(id).catch(()=>{});}).subscribe();
  await refreshDirectMessageThread(id);
 }
 async function refreshDirectMessageThread(recipientId){
