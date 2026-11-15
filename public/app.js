@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
-window.KC_APP_VERSION='1.6.28';
+window.KC_APP_VERSION='1.6.35';
 let kcUpdatePending=false,kcUpdateReloading=false,kcPendingVersion='';
 const KC_UPDATE_GUARD='kc_update_reload_guard_v1';
 function kcReloadAlreadyUsed(version=''){try{return sessionStorage.getItem(KC_UPDATE_GUARD)===String(version||'service-worker');}catch{return new URL(location.href).searchParams.has('kc_refresh');}}
@@ -268,15 +268,15 @@ async function refresh(){
   const cfg=jobs[0].status==='fulfilled'?jobs[0].value:null;
   const promoPref=jobs[1].status==='fulfilled'?jobs[1].value:null;
   if(promoPref&&!promoPref.error)S.promotionalUpdatesEnabled=promoPref.data!==false;
-  const metaResult=jobs[1].status==='fulfilled'?jobs[1].value:null;
-  const statusResult=jobs[2].status==='fulfilled'?jobs[2].value:null;
+  const metaResult=jobs[2].status==='fulfilled'?jobs[2].value:null;
+  const statusResult=jobs[3].status==='fulfilled'?jobs[3].value:null;
   const meta=[...(Array.isArray(metaResult?.data)?metaResult.data:[]),...(Array.isArray(statusResult?.data)?statusResult.data:[])];
   if(cfg&&!cfg.error)S.appSettings=cfg.data||{};
   const eventMeta=new Map(meta.map(item=>[String(item.id),item]));
   if(meta.length)S.events=(S.events||[]).map(event=>({...event,...(eventMeta.get(String(event.id))||{})}));
   const featureNames=['rehearsals','chat','polls'];
   for(let i=0;i<featureNames.length;i++){
-   const result=jobs[i+3];
+   const result=jobs[i+4];
    if(result.status!=='fulfilled')continue;
    const value=result.value;
    S.featureItems[featureNames[i]]=Array.isArray(value)?value:(value?.data||[]);
