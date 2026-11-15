@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0a0408"><meta name="robots" content="noindex,nofollow"><title>Kinetic Crew · Audition Application</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="supabase-client.js"></script>
+<style>
+:root{color-scheme:dark;--pink:#ec4899;--purple:#a855f7;--muted:#b8aeb7}*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:24px 14px 48px;background:radial-gradient(ellipse at 15% 0%,#42112c 0,transparent 42%),linear-gradient(135deg,#0a0405,#2a0606);color:#fff;font:15px/1.55 Inter,system-ui,sans-serif}.wrap{width:min(100%,680px);margin:auto}.brand{text-align:center;margin:12px 0 24px;font-weight:900;letter-spacing:.16em}.brand small{display:block;color:#f9a8d4;font-size:10px;letter-spacing:.28em;margin-top:4px}.panel{border:1px solid #ffffff24;border-radius:24px;padding:clamp(18px,4vw,34px);background:#ffffff0c;backdrop-filter:blur(22px);box-shadow:0 24px 80px #0008}h1{font-size:clamp(26px,5vw,38px);line-height:1.12;margin:0 0 8px}p.sub{color:var(--muted);margin:0 0 24px}.field{margin:17px 0}.field label{display:block;font-weight:650;margin-bottom:7px}.field input,.field textarea{width:100%;min-height:50px;padding:12px 14px;border:1px solid #ffffff30;border-radius:12px;background:#100b11;color:#fff;font:inherit;outline:none}.field textarea{min-height:96px;resize:vertical}.field input:focus,.field textarea:focus{border-color:#ec4899;box-shadow:0 0 0 3px #ec489926}.hint{color:#b9aeb8;font-size:12px;margin-top:5px}.required{color:#fb7185}.btn{width:100%;border:0;border-radius:14px;padding:15px 20px;color:#fff;font-weight:800;font-size:15px;background:linear-gradient(110deg,#ec4899,#a855f7);cursor:pointer}.btn:disabled{opacity:.55;cursor:wait}.status{margin-top:15px;padding:14px;border-radius:13px;background:#ffffff0d;color:#fce7f3}.status.error{color:#fecaca;background:#7f1d1d44}.status.success{color:#bbf7d0;background:#14532d44}.status[hidden]{display:none}.back{display:inline-block;margin-top:18px;color:#f9a8d4;text-decoration:none;font-size:13px}.consent{display:flex;gap:10px;align-items:flex-start;margin:22px 0}.consent input{width:18px;height:18px;accent-color:#ec4899;margin-top:3px}.success{display:none;text-align:center;padding:18px 4px}.success.show{display:block}.success .tick{font-size:54px;color:#86efac}.reference{display:inline-block;margin:12px 0;padding:10px 14px;border:1px solid #ffffff24;border-radius:12px;background:#ffffff0c;font:12px ui-monospace,monospace;overflow-wrap:anywhere}@media(max-width:560px){.panel{border-radius:20px}}
+</style></head><body><main class="wrap"><div class="brand">KINETIC CREW<small>AUDITION APPLICATION</small></div><section class="panel">
+<div id="formView"><h1>Apply to Kinetic Crew</h1><p class="sub">Submit your details and audition video. Your application will be reviewed independently by the Kinetic Crew Admin and Super Admin.</p>
+<form id="applicationForm">
+<div class="field"><label for="name">Full name <span class="required">*</span></label><input id="name" maxlength="100" autocomplete="name" required></div>
+<div class="field"><label for="email">Personal email <span class="required">*</span></label><input id="email" type="email" maxlength="254" autocomplete="email" required><div class="hint">Your private application tracking link and final selection details will be sent to this address.</div></div>
+<div class="field"><label for="phone">Contact number <span class="required">*</span></label><input id="phone" type="tel" inputmode="numeric" pattern="[0-9]{10,15}" maxlength="15" required><div class="hint">Enter 10–15 digits without spaces or symbols.</div></div>
+<div class="field"><label for="registration">College registration number <span class="required">*</span></label><input id="registration" maxlength="40" autocomplete="off" required></div>
+<div class="field"><label for="instagram">Instagram ID</label><input id="instagram" maxlength="100" placeholder="@username"></div>
+<div class="field"><label for="video">Audition video link <span class="required">*</span></label><input id="video" type="url" inputmode="url" placeholder="https://drive.google.com/…" required><div class="hint">Use a Google Drive link with access set to Anyone with the link · Viewer, or a direct HTTPS video link.</div></div>
+<label class="consent"><input id="consent" type="checkbox" required><span>I confirm that the information and audition video link provided are correct. <span class="required">*</span></span></label>
+<button class="btn" id="submitBtn" type="submit">Submit audition application</button><div class="status" id="status" role="status" aria-live="polite" hidden></div>
+</form></div>
+<div class="success" id="successView"><div class="tick">✓</div><h1>Application received</h1><p class="sub">Your Kinetic Crew audition application has been saved. A private Track Application link has been sent to your personal email address.</p><div class="reference" id="reference"></div><p class="hint">Keep your tracking email private. You can use its link to view your application status and both review decisions.</p><a class="btn" style="display:block;text-decoration:none" href="login.html">Back to Kinetic Crew</a></div>
+</section><a class="back" href="login.html">← Back to Kinetic Crew</a></main>
+<script>
+(()=>{'use strict';
+const db=window.kcSupabase,form=document.getElementById('applicationForm'),submit=document.getElementById('submitBtn'),status=document.getElementById('status');
+let pendingEmail=null;
+const $=id=>document.getElementById(id);
+const show=(message,error=false)=>{status.textContent=message;status.className='status'+(error?' error':'');status.hidden=false;};
+async function sendTrackingEmail(){
+ if(!pendingEmail)return;
+ const {data,error}=await db.functions.invoke('send-audition-application-link',{body:{applicationId:pendingEmail.id,trackingToken:pendingEmail.token}});
+ if(error)throw new Error(error.message||'The tracking email could not be sent.');
+ if(data?.error)throw new Error(data.error);
+ $('formView').hidden=true;$('successView').classList.add('show');$('reference').textContent='Application reference: '+pendingEmail.id;
+ try{sessionStorage.removeItem('kc_audition_pending_email');}catch{}
+}
+try{const saved=JSON.parse(sessionStorage.getItem('kc_audition_pending_email')||'null');if(saved?.id&&saved?.token)pendingEmail=saved;}catch{}
+if(pendingEmail){show('Your application is already saved. Retry sending your private tracking email.',true);const retry=document.createElement('button');retry.type='button';retry.className='btn';retry.textContent='Retry tracking email';retry.style.marginTop='10px';retry.addEventListener('click',async()=>{retry.disabled=true;try{await sendTrackingEmail();}catch(e){show(e.message,true);retry.disabled=false;}});$('status').after(retry);}
+form.addEventListener('submit',async event=>{
+ event.preventDefault();status.hidden=true;
+ if(!form.reportValidity())return;
+ if(!db){show(window.KC_CONFIG_ERROR||'The application service is unavailable. Please try again later.',true);return;}
+ submit.disabled=true;submit.textContent='Submitting application…';
+ const payload={
+  p_name:$('name').value.trim(),
+  p_email:$('email').value.trim().toLowerCase(),
+  p_video_url:$('video').value.trim(),
+  p_details:{
+   phone:$('phone').value.trim(),
+   registrationNumber:$('registration').value.trim().toUpperCase(),
+   instagram:$('instagram').value.trim()
+  },
+  p_video_storage_path:null
+ };
+ try{
+  const {data,error}=await db.rpc('crew_audition_submit',payload);
+  if(error)throw error;
+  if(!data?.ok||!data?.application_id||!data?.tracking_token)throw new Error(data?.message||'The server did not confirm the application.');
+  pendingEmail={id:data.application_id,token:data.tracking_token};
+  try{sessionStorage.setItem('kc_audition_pending_email',JSON.stringify(pendingEmail));}catch{}
+  submit.textContent='Sending private tracking link…';
+  await sendTrackingEmail();
+ }catch(error){
+  show(error.message||'Application submission failed. Please retry.',true);
+  if(pendingEmail){
+   const retry=document.createElement('button');retry.type='button';retry.className='btn';retry.textContent='Retry tracking email';retry.style.marginTop='10px';
+   retry.addEventListener('click',async()=>{retry.disabled=true;try{await sendTrackingEmail();}catch(e){show(e.message,true);retry.disabled=false;}});
+   if(!$('retryTracking')){retry.id='retryTracking';$('status').after(retry);}
+  }
+ }finally{submit.disabled=false;submit.textContent='Submit audition application';}
+});
+if(!db)show(window.KC_CONFIG_ERROR||'The application service is unavailable.',true);
+})();
+</script></body></html>

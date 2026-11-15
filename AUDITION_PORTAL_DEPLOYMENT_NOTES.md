@@ -1,36 +1,32 @@
-# Audition Portal deployment notes
+# Kinetic Crew Audition Portal
 
-## Supabase project
-
+## Live Supabase project
 Project: lkdfjiweqxshbbcadfna
 
-Applied live migrations:
-- 20261115043541 — audition portal base schema and role-gated read-only API
-- 20261115043918 — account attachment and rejection cleanup workflow
-- 20261115044005 — temporary credentials
-- 20261115044120 — credential verification hardening and attempt limits
-- 20261115044321 — forced temporary-password change guard
-- 20261115044340 — rejection cleanup retry/finalization
-- 20261115044649 — event feed and username fields for the audition client
-- 20261115044900 — audition admin review payload includes video storage path
-- 20261115044912 — unique audition usernames
-- 20261115045216 — allow the audition_participant profile role
+## Public application flow
+- The login page's “Not a crew member yet?” link opens \`/audition-application.html\`.
+- The native form submits to \`crew_audition_submit\`.
+- Supabase stores the applicant details, audition video URL and a hash of a private tracking token.
+- The browser invokes \`send-audition-application-link\`; only the personal email supplied by the applicant receives the private Track Application link.
+- \`/track-application.html?token=...\` verifies the token through \`crew_audition_track_status\` and shows the submitted details, video and current review decisions.
 
-Important RPCs:
-- crew_audition_submit
-- crew_audition_list_applications
-- crew_audition_prepare_credentials
-- crew_audition_verify_credentials
-- crew_audition_claim_credentials
-- crew_audition_my_status
-- crew_audition_review
-- crew_audition_prepare_rejection_delete
-- crew_audition_finalize_rejection
+## Admin review
+- Admin and Super Admin review the same submitted audition video independently.
+- Review does not require the applicant to create an account or receive credentials first.
+- Both Accept: status becomes \`selected\`; the selection email function issues a unique username and 8-character temporary password.
+- Both Reject: status becomes \`rejected\`.
+- Different decisions: status becomes \`review_disagreement\`; no member access is issued.
+- The Admin page refreshes the application list automatically and supports Excel export.
 
-## External KC Forma
+## Final member activation
+- The selected applicant receives member credentials at the personal email address.
+- The applicant opens the supplied login link, signs up with the exact username, personal email and temporary password, and verifies the email.
+- The credential claim attaches the new account to the selected application and promotes it to the regular Member role.
+- The applicant is required to change the temporary password before entering the main app.
 
-The Base44 form still needs to call crew_audition_submit. See BASE44_AUDITION_FORM_INTEGRATION.md. The existing Base44 UI was not modified from this repository.
+## Email functions
+- \`send-audition-application-link\`: public invocation, but validates the application ID and private tracking token before sending.
+- \`send-audition-selection-email\`: authenticated Admin/Super Admin only; requires final \`selected\` status and sends member credentials.
+- Both functions use Supabase Edge Function secrets \`SMTP_USER\` and \`SMTP_PASS\`; the default sender is \`kineticcreww@gmail.com\`.
 
-## Email behaviour
-
-Admin generates an 8-character temporary password. It is hashed in Supabase, then the Admin's default email app opens a draft to the applicant. Admin must review and tap Send. This avoids storing a plaintext temporary password or exposing SMTP secrets in browser code.
+The old Base44 form integration is retired. The separate Crew Confirmation page now redirects to the native audition application.

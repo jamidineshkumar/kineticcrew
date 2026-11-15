@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#080910"><meta name="robots" content="noindex,nofollow"><title>Kinetic Crew · Track Application</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="supabase-client.js"></script>
+<style>
+:root{color-scheme:dark;--muted:#b8b4c0}*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:24px 14px 48px;background:radial-gradient(ellipse at 15% 0%,#32142f 0,transparent 42%),linear-gradient(135deg,#080910,#1d1020);color:#fff;font:15px/1.55 Inter,system-ui,sans-serif}.wrap{width:min(100%,720px);margin:auto}.brand{text-align:center;margin:12px 0 24px;font-weight:900;letter-spacing:.16em}.brand small{display:block;color:#f0a2cf;font-size:10px;letter-spacing:.28em;margin-top:4px}.panel{margin:14px 0;padding:22px;border:1px solid #ffffff24;border-radius:22px;background:#ffffff0c;backdrop-filter:blur(18px)}h1{font-size:clamp(27px,5vw,38px);line-height:1.12;margin:0 0 8px}h2{margin:0 0 12px;font-size:19px}.muted{color:var(--muted)}.chip{display:inline-block;padding:6px 10px;border-radius:99px;background:#ffffff16;font-size:11px;letter-spacing:.08em;font-weight:800}.good{color:#86efac;background:#14532d66}.bad{color:#fca5a5;background:#7f1d1d66}.warn{color:#fcd34d;background:#713f1266}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.item{padding:13px;border:1px solid #ffffff18;border-radius:14px;background:#0002;overflow-wrap:anywhere}.item small{display:block;color:#aaa3b1;font-size:10px;text-transform:uppercase;letter-spacing:.1em}.item b{display:block;margin-top:5px;font-size:14px}.btn{border:1px solid #ffffff30;border-radius:12px;padding:10px 14px;background:#ffffff12;color:#fff;font:inherit;cursor:pointer}.video{width:100%;aspect-ratio:16/9;min-height:220px;border:0;border-radius:15px;background:#000}.error{color:#fecaca}.back{display:inline-block;margin-top:18px;color:#f0a2cf;text-decoration:none;font-size:13px}@media(max-width:560px){.grid{grid-template-columns:1fr}.panel{padding:18px}}
+</style></head><body><main class="wrap"><div class="brand">KINETIC CREW<small>PRIVATE APPLICATION TRACKER</small></div><section class="panel" id="main"><p class="muted">Verifying your private tracking link…</p></section><a class="back" href="login.html">← Back to Kinetic Crew</a></main>
+<script>
+(()=>{'use strict';
+const db=window.kcSupabase,root=document.getElementById('main'),token=new URLSearchParams(location.search).get('token')||'';
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const date=v=>{const d=new Date(v);return Number.isNaN(+d)?'—':d.toLocaleString([],{dateStyle:'medium',timeStyle:'short'});};
+function statusCopy(s){
+ if(s==='selected')return ['SELECTED','Both Admin and Super Admin reviewers approved your audition. Your member login credentials will be sent to your personal email.','good'];
+ if(s==='rejected')return ['NOT SELECTED','Both reviewers did not approve this application. Thank you for auditioning with Kinetic Crew.','bad'];
+ if(s==='review_disagreement')return ['REVIEW DISAGREEMENT','The reviewers have different decisions. Your application remains under review until the decision is resolved.','warn'];
+ if(s==='under_review')return ['UNDER REVIEW','One reviewer has recorded a decision. The other reviewer is still reviewing the same audition video.','warn'];
+ return ['APPLICATION RECEIVED','Your application has been received and is waiting for independent Admin and Super Admin review.','warn'];
+}
+function video(url){
+ const u=String(url||'').trim();if(!/^https:\/\//i.test(u))return '<p class="muted">No audition video link is available.</p>';
+ const drive=(u.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?id=)([A-Za-z0-9_-]+)/i)||[])[1];
+ if(drive)return '<iframe class="video" src="https://drive.google.com/file/d/'+encodeURIComponent(drive)+'/preview" title="Your audition video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+ if(/\.(mp4|webm|ogg)(\?|$)/i.test(u))return '<video class="video" controls playsinline preload="metadata" src="'+esc(u)+'"></video>';
+ return '<a target="_blank" rel="noopener noreferrer" href="'+esc(u)+'">Open audition video ↗</a>';
+}
+function render(a){
+ const [label,message,kind]=statusCopy(a.application_status);
+ const details=a.application_data||{};
+ const items=Object.entries(details).map(([k,v])=>'<div class="item"><small>'+esc(k.replace(/[_\s]+/g,' '))+'</small><b>'+esc(typeof v==='object'?JSON.stringify(v):v)+'</b></div>').join('');
+ root.innerHTML='<div class="muted" style="font-size:11px;letter-spacing:.16em">APPLICATION STATUS</div><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0 12px"><h1>'+esc(a.name)+'</h1><span class="chip '+kind+'">'+label+'</span></div><p class="muted">'+message+'</p><div class="grid"><div class="item"><small>Application reference</small><b>'+esc(a.id)+'</b></div><div class="item"><small>Submitted</small><b>'+date(a.created_at)+'</b></div><div class="item"><small>Admin review</small><b>'+esc(a.admin_decision||'Pending')+'</b></div><div class="item"><small>Super Admin review</small><b>'+esc(a.president_decision||'Pending')+'</b></div></div><section class="panel" style="padding:16px;margin-top:16px"><h2>Submitted details</h2><div class="grid">'+items+'</div><p class="muted" style="font-size:12px;margin-bottom:0">Personal email: '+esc(a.email)+'</p></section><section class="panel" style="padding:16px;margin-top:16px"><h2>Your audition video</h2>'+video(a.video_url)+'</section><button class="btn" id="refresh">Refresh status ↻</button><p class="muted" style="font-size:11px">This private page refreshes automatically. Keep the tracking link to yourself.</p>';
+ document.getElementById('refresh').addEventListener('click',load);
+}
+async function load(){
+ if(!db){root.innerHTML='<p class="error">'+esc(window.KC_CONFIG_ERROR||'The tracking service is unavailable.')+'</p>';return;}
+ if(!/^[0-9a-f]{64}$/i.test(token)){root.innerHTML='<h1>Invalid tracking link</h1><p class="error">Open the private Track Application link sent to your personal email.</p>';return;}
+ try{const {data,error}=await db.rpc('crew_audition_track_status',{p_token:token});if(error)throw error;if(!data?.ok||!data.application){root.innerHTML='<h1>Link unavailable</h1><p class="error">'+esc(data?.message||'This tracking link is invalid or no longer available.')+'</p>';return;}render(data.application);}
+ catch(error){root.innerHTML='<h1>Could not load application</h1><p class="error">'+esc(error.message||'Check your connection and retry.')+'</p><button class="btn" id="retry">Retry</button>';document.getElementById('retry')?.addEventListener('click',load);}
+}
+load();setInterval(()=>{if(document.visibilityState==='visible')load();},20000);
+})();
+</script></body></html>
