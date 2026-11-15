@@ -24,7 +24,8 @@ function card(a){
  (a.application_status==='audition_invited'?'<div style="margin-top:16px"><button class="ka-action secondary" data-send-invitation="'+esc(a.id)+'">Send / retry audition invitation</button></div>':'')+
  (videoReview?'<div style="margin-top:16px;border-top:1px solid var(--ka-line);padding-top:14px"><div class="ka-row"><b>'+(state.role==='admin'?'Audition Admin Review':'Audition President Review')+'</b></div><div class="ka-row" style="margin-top:12px"><button class="ka-action" data-video-review="'+esc(a.id)+'" data-decision="accept">Select applicant</button><button class="ka-action secondary" data-video-review="'+esc(a.id)+'" data-decision="reject">Reject audition</button></div><p class="ka-muted" style="font-size:11px">Both approvals are required for Member access.</p></div>':'')+
  (a.application_status==='selected'?'<div style="margin-top:16px"><button class="ka-action secondary" data-send-selection="'+esc(a.id)+'">Send / retry final Member access email</button></div>':'')+
- (cleanup?'<div style="margin-top:16px"><button class="ka-action secondary" data-cleanup="'+esc(a.id)+'">Retry rejected-account cleanup</button></div>':'')+'</article>';
+ (cleanup?'<div style="margin-top:16px"><button class="ka-action secondary" data-cleanup="'+esc(a.id)+'">Retry rejected-account cleanup</button></div>':'')+
+ '<div style="margin-top:16px;border-top:1px solid var(--ka-line);padding-top:14px"><button class="ka-action secondary" data-delete-application="'+esc(a.id)+'" style="border-color:#a44;color:#f1a4a4">Delete Application &amp; All Data</button></div>'+'</article>';
 }
 function render(){const total=state.apps.length,pending=state.apps.filter(a=>['submitted','credentials_sent','under_review','review_disagreement'].includes(a.application_status)).length;
  root.innerHTML='<section class="ka-hero"><div class="ka-eyebrow">'+(state.role==='super_admin'?'PRESIDENT / SUPER ADMIN':'ADMIN')+' CONTROL CENTER</div><h1>Audition<br><span style="color:var(--ka-accent)">Management</span></h1><p>Review applicant details and audition videos. Decisions are independent and apply to the same submitted video.</p><div class="ka-row" style="margin-top:16px;flex-wrap:wrap"><button class="ka-action" id="exportApplicants">Export applicants to Excel ↓</button><button class="ka-action secondary" id="refreshList">Refresh applications ↻</button></div></section>'+(state.notice?'<div class="'+(state.error?'ka-error':'ka-notice')+'">'+esc(state.notice)+'</div>':'')+
@@ -67,16 +68,27 @@ async function sendInvitation(id){
  if(error)throw error;if(data?.error)throw new Error(data.error);
  setNotice(data?.alreadySent?'Audition invitation was already emailed.':data?.inProgress?'Audition invitation is already being processed.':'Audition invitation and separate portal login details sent.',false);
 }
+async function deleteApplication(id){
+ const a=state.apps.find(x=>String(x.id)===String(id));if(!a)return;
+ const phrase='DELETE '+String(a.name||'').trim();
+ const typed=prompt('Permanently delete this application, review history, submitted audition video'+(a.auth_id?' and audition-only login account':'')+'? This cannot be undone. Type exactly: '+phrase);
+ if(typed!==phrase){if(typed!==null)setNotice('Deletion cancelled: confirmation text did not match.',true);return;}
+ const {data,error}=await client.functions.invoke('delete-audition-application',{body:{applicationId:id}});
+ if(error)throw error;if(data?.error)throw new Error(data.error);
+ state.notice=data?.message||'Application and associated data permanently deleted.';state.error=false;
+ const {data:apps,error:refreshError}=await client.rpc('crew_audition_list_applications',{});
+ if(refreshError)throw refreshError;state.apps=Array.isArray(apps)?apps:[];render();
+}
 async function cleanupById(id){const a=state.apps.find(x=>String(x.id)===String(id));if(!a)return;await cleanup(a);state.notice='Rejected applicant cleanup completed.';state.error=false;const {data}=await client.rpc('crew_audition_list_applications',{});state.apps=Array.isArray(data)?data:[];render();}
 document.addEventListener('click',async e=>{
- const send=e.target.closest('[data-send]'),reviewButton=e.target.closest('[data-review]'),videoReview=e.target.closest('[data-video-review]'),invitation=e.target.closest('[data-send-invitation]'),selection=e.target.closest('[data-send-selection]'),clean=e.target.closest('[data-cleanup]');
+ const send=e.target.closest('[data-send]'),reviewButton=e.target.closest('[data-review]'),videoReview=e.target.closest('[data-video-review]'),invitation=e.target.closest('[data-send-invitation]'),selection=e.target.closest('[data-send-selection]'),clean=e.target.closest('[data-cleanup]'),deleteApp=e.target.closest('[data-delete-application]');
  try{
   if(send){send.disabled=true;await sendCredentials(send.dataset.send);}
   else if(reviewButton){reviewButton.disabled=true;await review(reviewButton.dataset.review,reviewButton.dataset.decision);}
   else if(videoReview){videoReview.disabled=true;await reviewVideo(videoReview.dataset.videoReview,videoReview.dataset.decision);}
   else if(invitation){invitation.disabled=true;await sendInvitation(invitation.dataset.sendInvitation);}
   else if(selection){selection.disabled=true;const {data,error}=await client.functions.invoke('send-audition-selection-email',{body:{applicationId:selection.dataset.sendSelection}});if(error)throw error;if(data?.error)throw new Error(data.error);setNotice(data?.alreadySent?'Final Member access email was already sent.':data?.inProgress?'Final email is already being processed.':'Final Member access email sent and Member role activated.',false);}
-  else if(clean){clean.disabled=true;await cleanupById(clean.dataset.cleanup);}
+  else if(clean){clean.disabled=true;await cleanupById(clean.dataset.cleanup);}\n  else if(deleteApp){deleteApp.disabled=true;await deleteApplication(deleteApp.dataset.deleteApplication);}
   else if(e.target.closest('#exportApplicants'))exportApplicants();
   else if(e.target.closest('#refresh')||e.target.closest('#refreshList')||e.target.closest('#retryLoad'))await load();
   else if(e.target.closest('#openDraft'))openDraft();
