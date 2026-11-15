@@ -77,6 +77,11 @@ Deno.serve(async (req) => {
     const { data: valid, error: authError } = await admin.rpc("crew_validate_notification_cron_secret", { p_secret: cronSecret });
     if (authError || valid !== true) return json({ error: "Scheduler authentication failed." }, 401);
 
+    await admin.from("crew_scheduled_pushes")
+      .update({ status: "pending", last_error: "Recovered after an interrupted delivery attempt.", updated_at: new Date().toISOString() })
+      .eq("status", "sending")
+      .lt("updated_at", new Date(Date.now() - 10 * 60 * 1000).toISOString());
+
     const { data: due, error: dueError } = await admin
       .from("crew_scheduled_pushes")
       .select("id,recipient_auth_id,source_type,source_id,notification_key,title,body,attempts")
