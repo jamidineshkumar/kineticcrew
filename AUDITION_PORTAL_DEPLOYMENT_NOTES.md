@@ -14,6 +14,7 @@ Applied live migrations:
 - 20261115044649 — event feed and username fields for the audition client
 - 20261115044900 — audition admin review payload includes video storage path
 - 20261115044912 — unique audition usernames
+- 20261115045216 — allow the audition_participant profile role
 
 Important RPCs:
 - crew_audition_submit
