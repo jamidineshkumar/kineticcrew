@@ -108,12 +108,23 @@ Deno.serve(async(req:Request)=>{
         .select("auth_id,email,username,role,approval_status")
         .eq("auth_id",app.auth_id).maybeSingle();
       if(profileError) throw profileError;
-      if(!profile||profile.approval_status!=="approved"||profile.role!=="audition_participant") {
+      if(!profile) {
         await releaseClaim();
-        return json({error:"The linked account is not an active Audition Portal account. Contact the Super Admin."},409);
+        return json({error:"The linked sign-in account could not be found. Contact the Super Admin."},409);
       }
       username=String(profile.username||username).trim().toLowerCase();
       if(!username) throw new Error("The audition username is missing. Retry account provisioning.");
+      const alreadyAudition=profile.approval_status==="approved"&&profile.role==="audition_participant";
+      const recoverablePending=profile.approval_status==="pending"&&profile.role==="member"&&String(profile.email||"").toLowerCase()===email&&username===String(app.username||"").toLowerCase();
+      if(recoverablePending) {
+        const {data:attached,error:attachError}=await userClient.rpc("crew_audition_attach_account",{
+          p_application_id:id,p_auth_id:app.auth_id,p_username:username
+        });
+        if(attachError||!attached?.ok) throw attachError||new Error("Could not recover the existing audition account.");
+      } else if(!alreadyAudition) {
+        await releaseClaim();
+        return json({error:"The linked account is not an active Audition Portal account. Contact the Super Admin."},409);
+      }
     } else {
       if(app.application_status!=="audition_invited") {
         await releaseClaim();
@@ -129,6 +140,13 @@ Deno.serve(async(req:Request)=>{
         if(!app.username||String(existingProfile.username||"").toLowerCase()!==String(app.username).toLowerCase()||(!reusableRole&&!recoverablePending)) {
           await releaseClaim();
           return json({error:"This email already belongs to a different Kinetic Crew account. An existing member account will not be overwritten; ask an Admin to review the application."},409);
+        }
+        const {data:otherApplication,error:otherApplicationError}=await db.from("crew_audition_applications")
+          .select("id").eq("auth_id",existingProfile.auth_id).neq("id",id).maybeSingle();
+        if(otherApplicationError) throw otherApplicationError;
+        if(otherApplication) {
+          await releaseClaim();
+          return json({error:"This sign-in account is already linked to another audition application."},409);
         }
         username=String(existingProfile.username).toLowerCase();
         const {data:linked,error:linkError}=await userClient.rpc("crew_audition_attach_account",{
