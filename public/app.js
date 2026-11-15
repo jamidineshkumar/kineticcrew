@@ -13,7 +13,7 @@ function kcRegisterAutoUpdates(){if(!('serviceWorker'in navigator))return;const 
 window.addEventListener('focus',kcApplyPendingUpdate);window.addEventListener('pageshow',kcApplyPendingUpdate);document.addEventListener('visibilitychange',()=>{if(!document.hidden)kcApplyPendingUpdate();});document.addEventListener('focusout',()=>setTimeout(kcApplyPendingUpdate,250));
 setInterval(()=>{if(!document.hidden)kcCheckAppVersion();},5*60*1000);
 window.addEventListener('load',()=>{kcCheckAppVersion();kcRegisterAutoUpdates();},{once:true});
-const S={user:null,view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],pendingMembers:[],pendingPoll:null,pendingPollBusy:false,pendingAlertIds:[],pendingAlertTimer:null,profileSetupRedirected:false,publicMembers:[],memberFavorites:[],blockedMemberIds:[],featureItems:{},pollScreen:'home',selectedPoll:null,pollSummary:[],pollRespondents:[],socialPosts:[],socialLikes:[],socialComments:[],onlineCrew:[],profileDashboard:null,profileTab:'uploads',roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',attendanceSection:'home',error:'',peopleQuery:'',eventsFilter:'all',eventQuery:'',editingEventId:null,sharedDraft:null,qrStream:null,qrScanning:false,qrProcessing:false,};
+const S={user:null,promotionalUpdatesEnabled:true,view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],pendingMembers:[],pendingPoll:null,pendingPollBusy:false,pendingAlertIds:[],pendingAlertTimer:null,profileSetupRedirected:false,publicMembers:[],memberFavorites:[],blockedMemberIds:[],featureItems:{},pollScreen:'home',selectedPoll:null,pollSummary:[],pollRespondents:[],socialPosts:[],socialLikes:[],socialComments:[],onlineCrew:[],profileDashboard:null,profileTab:'uploads',roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',attendanceSection:'home',error:'',peopleQuery:'',eventsFilter:'all',eventQuery:'',editingEventId:null,sharedDraft:null,qrStream:null,qrScanning:false,qrProcessing:false,};
 window.KC_SEARCH_API={
  snapshot:()=>({events:S.events||[],announcements:S.announcements||[],members:S.publicMembers||[],posts:S.socialPosts||[],role:S.user?.role||'member'}),
  load:async()=>{const jobs=[];if(!S.publicMembers?.length)jobs.push(rpc('crew_profile_directory',{}).then(({data,error})=>{if(error)throw error;S.publicMembers=Array.isArray(data)?data:[];}));if(!S.socialPosts?.length)jobs.push(loadSocialFeed());await Promise.all(jobs);},
@@ -257,6 +257,7 @@ async function refresh(){
  const hydrate=async()=>{
   const jobs=await Promise.allSettled([
    rpc('crew_get_app_settings',{}),
+   rpc('crew_get_promotion_preference',{}),
    rpc('crew_event_metadata',{}),
    rpc('crew_event_statuses',{}),
    loadRehearsalItems(),
@@ -265,6 +266,8 @@ async function refresh(){
    loadGlobalDeletedNotifications()
   ]);
   const cfg=jobs[0].status==='fulfilled'?jobs[0].value:null;
+  const promoPref=jobs[1].status==='fulfilled'?jobs[1].value:null;
+  if(promoPref&&!promoPref.error)S.promotionalUpdatesEnabled=promoPref.data!==false;
   const metaResult=jobs[1].status==='fulfilled'?jobs[1].value:null;
   const statusResult=jobs[2].status==='fulfilled'?jobs[2].value:null;
   const meta=[...(Array.isArray(metaResult?.data)?metaResult.data:[]),...(Array.isArray(statusResult?.data)?statusResult.data:[])];
@@ -1481,7 +1484,7 @@ function appearanceSettingsPage(){
 function notificationSettingsPage(){
  const prefs=notificationPrefs();
  return settingsSubpage('Notification settings','Control how Kinetic Crew alerts you.',
- '<section class="surface settings-card kc-settings-detail"><span class="settings-kicker">ALERT PREFERENCES</span><h3>Stay in the loop</h3><label class="settings-toggle"><span><b>In-app sound</b><small>Play a louder, longer alert tone for crew activity.</small></span><input id="settingsSound" type="checkbox" '+(prefs.sound?'checked':'')+'></label><label class="settings-toggle"><span><b>Push notifications</b><small>Receive alerts when Kinetic Crew is not open.</small></span><button type="button" class="outline" id="enablePush">'+(prefs.push?'Enabled ✓':'Enable')+'</button></label><button type="button" class="outline" data-view="notifications">Open notification inbox →</button></section>');
+ '<section class="surface settings-card kc-settings-detail"><span class="settings-kicker">ALERT PREFERENCES</span><h3>Stay in the loop</h3><label class="settings-toggle"><span><b>In-app sound</b><small>Play a louder, longer alert tone for crew activity.</small></span><input id="settingsSound" type="checkbox" '+(prefs.sound?'checked':'')+'></label><label class="settings-toggle"><span><b>Push notifications</b><small>Receive alerts when Kinetic Crew is not open.</small></span><button type="button" class="outline" id="enablePush">'+(prefs.push?'Enabled ✓':'Enable')+'</button></label>'+(S.user?.role!=='audition_participant'?'<label class="settings-toggle"><span><b>Promotional updates</b><small>Occasional event promotions, crew inspiration and app highlights. Delivery times vary. You can turn this off anytime.</small></span><input type="checkbox" id="promotionalUpdates" '+(S.promotionalUpdatesEnabled?'checked':'')+'></label>':'')+'<button type="button" class="outline" data-view="notifications">Open notification inbox →</button></section>');
 }
 function deviceSettingsPage(){
  return settingsSubpage('Device & session','Manage temporary app files on this device.',
@@ -1913,6 +1916,7 @@ document.addEventListener('click',async event=>{
 });
 document.addEventListener('change',async e=>{
  if(e.target.id==='settingsSound'){saveNotificationPrefs({sound:e.target.checked});if(e.target.checked)playNoticeSound();notice(e.target.checked?'In-app sounds enabled.':'In-app sounds muted.');}
+ if(e.target.id==='promotionalUpdates'){const input=e.target;input.disabled=true;try{const result=await rpc('crew_set_promotion_preference',{p_enabled:input.checked});if(result.error)throw result.error;S.promotionalUpdatesEnabled=input.checked;notice(input.checked?'Promotional updates enabled.':'Promotional updates paused.');}catch(error){input.checked=!input.checked;notice(error.message||'Could not update promotional preferences.');}finally{input.disabled=false;}}
  if(e.target.id==='introAudioUpload'){const file=e.target.files?.[0];if(!file)return;if(!admin()){notice('Admin access required.');return;}if(!file.type.startsWith('audio/')||file.size>15*1024*1024){notice('Choose an audio file under 15 MB.');return;}try{const path='admin/intro-'+Date.now()+'-'+file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const uploaded=await client.storage.from('crew-intro-audio').upload(path,file,{upsert:true,contentType:file.type});if(uploaded.error)throw uploaded.error;const url=client.storage.from('crew-intro-audio').getPublicUrl(uploaded.data.path).data.publicUrl;const saved=await rpc('crew_set_app_setting',{p_key:'intro_audio_url',p_value:JSON.stringify(url)});if(saved.error)throw saved.error;S.appSettings={...(S.appSettings||{}),intro_audio_url:url};notice('Crew intro soundtrack saved.');}catch(err){notice(err.message||'Soundtrack upload failed.');}}
 });
 document.addEventListener('click',async e=>{
