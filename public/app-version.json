@@ -1,6 +1,6 @@
 {
-  "version": "1.6.29",
+  "version": "1.6.30",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-15T13:17:49.917Z",
-  "release_notes": "Audition management now shows only Application Status, Audition Admin Status, and President Review."
+  "updated_at": "2026-11-15T13:18:30.172Z",
+  "release_notes": "Audition management shows Application Status, Audition Admin Review, and President Review only."
 }
