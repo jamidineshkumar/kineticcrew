@@ -31,7 +31,7 @@ if(messaging)messaging.onBackgroundMessage(async payload=>{
     // `icon` is the compact app mark; `image` gives Android a large,
     // full-colour crew logo in the expanded notification.
     icon:logo||BASE+"kinetic-crew-logo.jpg",
-    image:logo||BASE+"kinetic-crew-logo.jpg",
+    ...(payload.notification?.image ? { image: payload.notification.image } : {}),
     badge:BASE+"kc-notification-badge.svg",
     tag:payload.data?.notificationId||("kc-"+title+"-"+(payload.notification?.body||"").slice(0,80)),
     renotify:false,
