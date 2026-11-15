@@ -9,7 +9,7 @@ const db=window.kcSupabase,root=document.getElementById('main'),token=new URLSea
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=v=>{const d=new Date(v);return Number.isNaN(+d)?'—':d.toLocaleString([],{dateStyle:'medium',timeStyle:'short'});};
 function statusCopy(s){
- if(s==='selected')return ['SELECTED','Both Admin and Super Admin reviewers approved your audition. Your member login credentials will be sent to your personal email.','good'];
+ if(s==='selected')return ['SELECTED','Both Admin and Super Admin reviewers approved your audition. Your member login credentials are being sent to your personal email.','good'];
  if(s==='rejected')return ['NOT SELECTED','Both reviewers did not approve this application. Thank you for auditioning with Kinetic Crew.','bad'];
  if(s==='review_disagreement')return ['REVIEW DISAGREEMENT','The reviewers have different decisions. Your application remains under review until the decision is resolved.','warn'];
  if(s==='under_review')return ['UNDER REVIEW','One reviewer has recorded a decision. The other reviewer is still reviewing the same audition video.','warn'];
