@@ -814,34 +814,24 @@ function socialEmbed(url){
 }
 
 async function loadSocialFeed(){
- const posts=await client.from('crew_social_posts').select('*').order('created_at',{ascending:false}).limit(30);
+ const posts=await client.from('crew_social_posts').select('*').order('created_at',{ascending:false}).limit(40);
  if(posts.error)throw posts.error;
- const rows=posts.data||[],ids=rows.map(post=>post.id);
- const [likes,comments,people]=await Promise.all([
+ const rows=posts.data||[],ids=rows.map(post=>post.id),uid=String(S.user?.auth_id||'');
+ const [likes,comments,people,storyResult,messageResult]=await Promise.all([
   ids.length?client.from('crew_social_likes').select('post_id,user_id').in('post_id',ids):Promise.resolve({data:[],error:null}),
   ids.length?client.from('crew_social_comments').select('*').in('post_id',ids).order('created_at',{ascending:true}).limit(150):Promise.resolve({data:[],error:null}),
-  rpc('crew_profile_directory',{})
+  rpc('crew_profile_directory',{}),
+  client.from('crew_social_stories').select('*').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(60),
+  uid?client.from('crew_direct_messages').select('id,sender_id,recipient_id,body,created_at,read_at').or('sender_id.eq.'+uid+',recipient_id.eq.'+uid).order('created_at',{ascending:false}).limit(250):Promise.resolve({data:[],error:null})
  ]);
- for(const result of [likes,comments,people])if(result.error)throw result.error;
- S.socialPosts=rows;S.socialLikes=likes.data||[];S.socialComments=comments.data||[];
+ for(const result of [likes,comments,people,storyResult,messageResult])if(result.error)throw result.error;
+ const sign=async path=>{if(!path)return '';const {data,error}=await client.storage.from('crew-gram-media').createSignedUrl(path,3600);return error?'':(data?.signedUrl||'');};
+ S.socialPosts=await Promise.all(rows.map(async post=>({...post,signed_media_url:await sign(post.storage_path)})));
+ S.socialLikes=likes.data||[];S.socialComments=comments.data||[];
  S.publicMembers=Array.isArray(people.data)?people.data:[];
+ S.socialStories=await Promise.all((storyResult.data||[]).map(async story=>({...story,signed_media_url:story.storage_path?await sign(story.storage_path):story.media_url||''})));
+ S.gramMessages=messageResult.data||[];
  updateHomeOnlineCrew();
-}
-
-async function loadMemories(){
- const {data,error}=await rpc('crew_memories_list',{});
- if(error)throw error;
- const rows=Array.isArray(data)?data:[];
- S.featureItems.memories=await Promise.all(rows.map(async item=>{
-  const details={...(item.data||{})};
-  if(details.storage_path){
-   const {data:signed,error:signError}=await client.storage.from('crew-memories').createSignedUrl(details.storage_path,7200);
-   if(signError)details.media_error=signError.message||'Photo could not be opened.';
-   else details.signed_media_url=signed?.signedUrl||'';
-  }
-  return {...item,data:details};
- }));
- return S.featureItems.memories;
 }
 
 function socialPostCard(post){
@@ -853,7 +843,7 @@ function socialPostCard(post){
  const commentMarkup=comments.map(c=>{const person=people.find(m=>String(m.auth_id)===String(c.user_id))||{name:'Crew member'};return '<article class="social-comment"><b>'+esc(person.name)+'</b><p>'+esc(c.body)+'</p><time>'+esc(dt(c.created_at))+'</time></article>';}).join('');
  return '<article class="surface social-post-card" data-social-post="'+esc(post.id)+'"><header class="social-post-head">'+avatarMarkup(author,'social-author-avatar')+'<div><b>'+esc(author.name||'Crew member')+'</b><small>'+esc(role(author.role))+' · '+esc(dt(post.created_at))+'</small></div>'+(owned||admin()?'<button type="button" class="social-delete" data-social-delete="'+esc(post.id)+'" aria-label="Delete post">×</button>':'')+'</header>'+
  (post.caption?'<p class="social-post-caption">'+esc(post.caption)+'</p>':'')+
- (url?socialEmbed(url):'<div class="social-invalid-link">This shared link is unavailable.</div>')+
+ (post.signed_media_url?(String(post.media_mime_type||'').startsWith('video/')?'<video class="kg-post-media" src="'+esc(post.signed_media_url)+'" controls playsinline preload="metadata"></video>':'<img class="kg-post-media" src="'+esc(post.signed_media_url)+'" alt="Crew post" loading="lazy">'):(url?socialEmbed(url):'<div class="social-invalid-link">This post has no media.</div>'))+
  '<div class="social-post-stats"><span>'+likes.length+' '+(likes.length===1?'like':'likes')+'</span><span>'+comments.length+' '+(comments.length===1?'comment':'comments')+'</span></div>'+
  '<div class="social-post-actions"><button type="button" class="'+(liked?'social-action liked':'social-action')+'" data-social-like="'+esc(post.id)+'" data-liked="'+(liked?'true':'false')+'">'+(liked?'♥ Liked':'♡ Like')+'</button><button type="button" class="social-action" data-social-comments-toggle="'+esc(post.id)+'">▢ Comment</button><button type="button" class="social-action" data-social-share="'+esc(post.id)+'">↗ Share</button></div>'+
  '<section class="social-comments" data-social-comments="'+esc(post.id)+'" hidden><div class="social-comments-list">'+(commentMarkup||'<p class="social-no-comments">Start the conversation.</p>')+'</div><form class="social-comment-form" data-social-comment-form="'+esc(post.id)+'"><input name="body" maxlength="800" required placeholder="Write a comment…"><button type="submit" aria-label="Send comment">➤</button></form></section></article>';
