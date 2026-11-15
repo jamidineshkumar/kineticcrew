@@ -130,21 +130,25 @@ function kcRememberSignedInAccount(user){
 }
 function kcOpenAccountSwitcher(){
  const root=$('#modalRoot');if(!root||!S.user)return;
- let accounts=[];try{accounts=JSON.parse(localStorage.getItem(KC_ACCOUNT_LIST_KEY)||'[]');}catch{}
- const current=String(S.user.email||'').toLowerCase();
- const rows=[...new Set([current,...accounts].filter(Boolean))];
- root.innerHTML='<div class="kc-account-list">'+rows.map(email=>'<div style="display:flex;align-items:center;gap:8px"><button type="button" class="kc-account-row" style="flex:1;min-width:0" data-kc-account-email="'+esc(email)+'"><span class="kc-account-avatar">'+esc(initials(email.split('@')[0]))+'</span><span><b>'+esc(email===current?(S.user.name||email):email)+'</b><small>'+esc(email)+'</small></span><i>'+(email===current?'CURRENT':'↗')+'</i></button>'+(email!==current?'<button type="button" data-kc-remove-account="'+esc(email)+'" aria-label="Remove saved profile" title="Remove saved profile" style="flex:0 0 42px;width:42px;height:42px;border:1px solid rgba(255,255,255,.16);border-radius:12px;background:rgba(255,100,100,.10);color:#ff9b9b;font-size:20px">×</button>':'')+'</div>').join('')+'</div>'button type="button" class="primary full" id="kcAddAccount">＋ Add profile</button><form id="kcAccountLogin" class="kc-account-login" hidden><label class="field">Email address<input name="email" type="email" autocomplete="username" required></label><label class="field">Password<input name="password" type="password" autocomplete="current-password" required></label><button type="submit" class="primary full">Continue to profile →</button><button type="button" class="outline full" id="kcAccountCancel">Cancel</button><p class="hint" id="kcAccountError" role="alert"></p></form></section></div>';
+ let accounts=[];
+ try{const parsed=JSON.parse(localStorage.getItem(KC_ACCOUNT_LIST_KEY)||'[]');accounts=Array.isArray(parsed)?parsed:[];}catch{}
+ const current=String(S.user.email||'').trim().toLowerCase();
+ const valid=accounts.map(value=>String(value||'').trim().toLowerCase()).filter(email=>/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email));
+ const rows=[...new Set([current,...valid].filter(Boolean))];
+ localStorage.setItem(KC_ACCOUNT_LIST_KEY,JSON.stringify(rows));
+ root.innerHTML='<div class="modalback" id="kcAccountBackdrop"><section class="modal kc-account-modal" role="dialog" aria-modal="true" aria-labelledby="kcAccountTitle"><button type="button" class="icon-button" id="kcAccountClose" aria-label="Close">×</button><span class="kc-confirm-kicker">KINETIC CREW / ACCOUNTS</span><h2 id="kcAccountTitle">Switch profile</h2><p class="hint">Choose an account or add another crew account. For security, enter its password when switching.</p><div class="kc-account-list">'+rows.map(email=>'<div class="kc-account-entry"><button type="button" class="kc-account-row" data-kc-account-email="'+esc(email)+'"><span class="kc-account-avatar">'+esc(initials(email.split('@')[0]))+'</span><span><b>'+esc(email===current?(S.user.name||email):email)+'</b><small>'+esc(email)+'</small></span><i>'+(email===current?'CURRENT':'↗')+'</i></button>'+(email!==current?'<button type="button" class="kc-account-remove" data-kc-remove-account="'+esc(email)+'" aria-label="Remove '+esc(email)+' from saved profiles" title="Remove saved profile">×</button>':'')+'</div>').join('')+'</div><button type="button" class="primary full" id="kcAddAccount">＋ Add profile</button><form id="kcAccountLogin" class="kc-account-login" hidden><label class="field">Email address<input name="email" type="email" autocomplete="username" required></label><label class="field">Password<input name="password" type="password" autocomplete="current-password" required></label><button type="submit" class="primary full">Continue to profile →</button><button type="button" class="outline full" id="kcAccountCancel">Cancel</button><p class="hint" id="kcAccountError" role="alert"></p></form></section></div>';
  const close=()=>{root.innerHTML='';};
- $('#kcAccountClose')?.addEventListener('click',close);
- $('#kcAccountBackdrop')?.addEventListener('click',e=>{if(e.target.id==='kcAccountBackdrop')close();});
  const form=$('#kcAccountLogin'),emailInput=form?.elements.namedItem('email');
  const showLogin=email=>{form.hidden=false;emailInput.value=email||'';emailInput.readOnly=!!email;form.elements.namedItem('password').value='';form.querySelector('input[type="password"]')?.focus();};
+ $('#kcAccountClose')?.addEventListener('click',close);
+ $('#kcAccountBackdrop')?.addEventListener('click',event=>{if(event.target.id==='kcAccountBackdrop')close();});
  root.querySelectorAll('[data-kc-remove-account]').forEach(button=>button.addEventListener('click',event=>{
   event.preventDefault();event.stopPropagation();
-  const email=String(button.dataset.kcRemoveAccount||'').toLowerCase();
+  const email=String(button.dataset.kcRemoveAccount||'').trim().toLowerCase();
   if(!email||email===current)return;
-  if(!window.confirm('Remove '+email+' from saved profiles on this device? This does not delete the Kinetic Crew account.'))return;
-  try{const saved=JSON.parse(localStorage.getItem(KC_ACCOUNT_LIST_KEY)||'[]');localStorage.setItem(KC_ACCOUNT_LIST_KEY,JSON.stringify(saved.filter(item=>String(item).toLowerCase()!==email)));}catch(error){console.warn('Could not remove saved account:',error);}
+  if(!window.confirm('Remove '+email+' from saved profiles on this device? The actual Kinetic Crew account will not be deleted.'))return;
+  const saved=rows.filter(item=>item!==email);
+  try{localStorage.setItem(KC_ACCOUNT_LIST_KEY,JSON.stringify(saved));}catch(error){console.warn('Could not remove saved account:',error);}
   kcOpenAccountSwitcher();
  }));
  root.querySelectorAll('[data-kc-account-email]').forEach(button=>button.addEventListener('click',()=>{
