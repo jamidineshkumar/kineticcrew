@@ -1,6 +1,6 @@
 {
-  "version": "1.6.35",
+  "version": "1.6.36",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-15T14:26:16.797Z",
-  "release_notes": "Opt-in daily promotional push updates with varied delivery times; essential alerts remain independent."
+  "updated_at": "2026-11-15T14:38:40.641Z",
+  "release_notes": "Custom alert images are isolated to their own notification; default images removed from other alerts."
 }
