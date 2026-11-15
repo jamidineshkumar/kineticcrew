@@ -162,6 +162,7 @@ Deno.serve(async(req:Request)=>{
     }
 
     const loginUrl=new URL("login.html","https://kineticcrew.vercel.app");
+    loginUrl.searchParams.set("audition","invitation");
     const mailer=nodemailer.createTransport({host:"smtp.gmail.com",port:465,secure:true,auth:{user:smtpUser,pass:smtpPass}});
     await mailer.verify();
     await mailer.sendMail({
