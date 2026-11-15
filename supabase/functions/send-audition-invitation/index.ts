@@ -15,6 +15,7 @@ Deno.serve(async(req:Request)=>{
  const db=createClient(url,service);
  const {data:actor,error:actorError}=await db.from("crew_profiles").select("auth_id,role,approval_status").eq("auth_id",authData.user.id).maybeSingle();
  if(actorError||!actor||actor.approval_status!=="approved"||!["admin","super_admin"].includes(actor.role)) return json({error:"Only approved Admins and Super Admins can send audition invitations."},403);
+ let claimKey="", claimEmail="", claimOwned=false;
  try{
   const body=await req.json(), id=String(body.applicationId||"").trim(), forceResend=body.resend===true;
   if(!/^[0-9a-f-]{36}$/i.test(id)) return json({error:"A valid application ID is required."},400);
@@ -25,21 +26,29 @@ Deno.serve(async(req:Request)=>{
   if(app.auth_id) return json({ok:true,alreadyActivated:true});
   const email=String(app.email||"").trim().toLowerCase();
   const key="audition-invitation:"+app.id;
-  const {data:existing,error:existingError}=await db.from("crew_email_delivery_log").select("status").eq("idempotency_key",key).eq("recipient_email",email).maybeSingle();
+  claimKey=key; claimEmail=email;
+  const {data:existing,error:existingError}=await db.from("crew_email_delivery_log").select("status,created_at").eq("idempotency_key",key).eq("recipient_email",email).maybeSingle();
   if(existingError) throw existingError;
   if(existing?.status==="sent"&&!forceResend) return json({ok:true,alreadySent:true,resendRequired:true});
-  if(existing?.status==="sent"&&forceResend){const {error:deleteSentError}=await db.from("crew_email_delivery_log").delete().eq("idempotency_key",key).eq("recipient_email",email).eq("status","sent");if(deleteSentError) throw deleteSentError;}
-  const stale=new Date(Date.now()-15*60*1000).toISOString();
-  await db.from("crew_email_delivery_log").delete().eq("idempotency_key",key).eq("recipient_email",email).eq("status","sending").lt("created_at",stale);
+  if(existing?.status==="sending"){
+   const createdAt=Date.parse(existing.created_at||"");
+   if(Number.isFinite(createdAt)&&Date.now()-createdAt<15*60*1000) return json({ok:true,inProgress:true});
+  }
+  if(existing){
+   const {error:clearExistingError}=await db.from("crew_email_delivery_log").delete().eq("idempotency_key",key).eq("recipient_email",email);
+   if(clearExistingError) throw clearExistingError;
+  }
   const {data:claim,error:claimError}=await db.from("crew_email_delivery_log").insert({idempotency_key:key,recipient_email:email,status:"sending"}).select("recipient_email").maybeSingle();
   if(claimError?.code==="23505") return json({ok:true,inProgress:true});
   if(claimError) throw claimError;
   if(!claim) return json({ok:true,inProgress:true});
+  claimOwned=true;
   const smtpUser=Deno.env.get("SMTP_USER")||"kineticcreww@gmail.com", smtpPass=Deno.env.get("SMTP_PASS");
   if(!smtpPass){await db.from("crew_email_delivery_log").delete().eq("idempotency_key",key).eq("recipient_email",email);return json({error:"SMTP_PASS is not configured in Supabase Edge Function secrets."},503);}
   const dob=String(app.application_data?.dob||"").trim();
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(dob)) throw new Error("Applicant date of birth is missing or invalid. Update the application before sending credentials.");
-  const password=dob.slice(8,10)+dob.slice(5,7)+dob.slice(0,4);
+  const dobMatch=dob.match(/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/);
+  if(!dobMatch) throw new Error("Applicant date of birth is missing or invalid. Update the application before sending credentials.");
+  const password=dobMatch[3]+dobMatch[2]+dobMatch[1];
   let username="",prepared=false,lastCredentialError="";
   for(let attempt=1;attempt<=30&&!prepared;attempt++){
    username=nameUsername(String(app.name||""),attempt);
@@ -66,5 +75,12 @@ Deno.serve(async(req:Request)=>{
    console.error("Audition invitation email failed:",String(mailError));
    return json({error:"The audition invitation credentials were prepared, but the email could not be delivered. Retry from Audition Management."},503);
   }
- }catch(error){console.error("send-audition-invitation:",error);return json({error:error instanceof Error?error.message:"Audition invitation failed."},500);}
+ }catch(error){
+  console.error("send-audition-invitation:",error);
+  if(claimOwned&&claimKey&&claimEmail){
+   const {error:releaseError}=await db.from("crew_email_delivery_log").delete().eq("idempotency_key",claimKey).eq("recipient_email",claimEmail).eq("status","sending");
+   if(releaseError) console.error("Could not release failed audition email claim:",releaseError);
+  }
+  return json({error:error instanceof Error?error.message:"Audition invitation failed."},500);
+ }
 });
