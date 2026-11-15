@@ -33,12 +33,15 @@ async function sha256(value: string) {
 Deno.serve(async(req:Request)=>{
   if(req.method==="OPTIONS") return new Response("ok",{headers:cors});
   if(req.method!=="POST") return json({error:"POST required."},405);
+  let db: any = null;
+  let activeApplicationId = "";
   try {
     const body=await req.json();
     const applicationId=String(body.applicationId||"").trim();
+    activeApplicationId = applicationId;
     const trackingToken=String(body.trackingToken||"").trim();
     if(applicationId.length!==36 || !/^[a-f0-9]{64}$/i.test(trackingToken)) return json({error:"Invalid application notification request."},400);
-    const db=createClient(Deno.env.get("SUPABASE_URL")!,Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    db=createClient(Deno.env.get("SUPABASE_URL")!,Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     const {data:app,error:appError}=await db.from("crew_audition_applications").select("id,name,application_status,tracking_token_sha256").eq("id",applicationId).maybeSingle();
     if(appError) throw appError;
     if(!app || !app.tracking_token_sha256 || await sha256(trackingToken)!==app.tracking_token_sha256) return json({error:"Application verification failed."},403);
@@ -85,11 +88,14 @@ Deno.serve(async(req:Request)=>{
       }
     }
     if(invalid.length) await db.from("crew_push_tokens").delete().in("token",invalid);
-    const status=sent>0?"sent":"failed";
+    const status=sent===tokens.length?"sent":"failed";
     await db.from("crew_audition_push_events").update({status,sent_count:sent,failed_count:failures.length+invalid.length,last_error:failures.length?failures.slice(0,3).join(" | "):null,updated_at:new Date().toISOString(),sent_at:sent>0?new Date().toISOString():null}).eq("application_id",applicationId);
     return json({ok:sent>0,sent,failed:failures.length+invalid.length,message:"Audition alert delivered to "+sent+" Admin / Super Admin device(s)."},sent>0?200:503);
   } catch(error) {
     console.error("notify-audition-application:",error);
+    if (db && activeApplicationId.length === 36) {
+      await db.from("crew_audition_push_events").update({status:"failed",last_error:String(error instanceof Error?error.message:error).slice(0,500),updated_at:new Date().toISOString()}).eq("application_id",activeApplicationId).catch(()=>{});
+    }
     return json({error:error instanceof Error?error.message:"Audition application notification failed."},500);
   }
 });
