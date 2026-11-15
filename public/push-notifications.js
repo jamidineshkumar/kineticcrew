@@ -103,7 +103,7 @@ async function installForegroundListener(messaging, onMessage) {
       const options = {
         body,
         icon: window.kcPath("icon.svg"),
-        image: payload.notification?.image || window.kcPath("kinetic-crew-logo.jpg"),
+        ...(payload.notification?.image ? { image: payload.notification.image } : {}),
         badge: window.kcPath("kc-notification-badge.svg"),
         tag: payload.data?.notificationId || payload.data?.id || "kinetic-crew-update",
         renotify: false,
