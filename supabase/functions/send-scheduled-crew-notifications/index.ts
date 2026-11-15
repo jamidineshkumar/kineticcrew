@@ -80,6 +80,22 @@ Deno.serve(async (req) => {
     const { error: promotionError } = await admin.rpc("crew_enqueue_daily_promotions");
     if (promotionError) throw promotionError;
 
+    const { data: cleanupRows, error: cleanupQueryError } = await admin
+      .from("crew_alert_media_cleanup")
+      .select("id,object_path")
+      .is("deleted_at", null)
+      .lte("cleanup_after", new Date().toISOString())
+      .limit(100);
+    if (cleanupQueryError) throw cleanupQueryError;
+    for (const cleanup of cleanupRows || []) {
+      const { error: storageError } = await admin.storage.from("crew-alert-media").remove([cleanup.object_path]);
+      if (storageError) {
+        await admin.from("crew_alert_media_cleanup").update({ last_error: storageError.message }).eq("id", cleanup.id);
+      } else {
+        await admin.from("crew_alert_media_cleanup").update({ deleted_at: new Date().toISOString(), last_error: null }).eq("id", cleanup.id);
+      }
+    }
+
     await admin.from("crew_scheduled_pushes")
       .update({ status: "pending", last_error: "Recovered after an interrupted delivery attempt.", updated_at: new Date().toISOString() })
       .eq("status", "sending")
@@ -164,7 +180,6 @@ Deno.serve(async (req) => {
                   title: item.title,
                   body: item.body,
                   icon: "/icon.svg",
-                  image: "/kinetic-crew-logo.jpg",
                   badge: "/kc-notification-badge.svg",
                   tag: notificationId,
                   renotify: false,
