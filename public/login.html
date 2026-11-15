@@ -31,13 +31,19 @@ let installPrompt=null;
 const isInstalled=()=>window.matchMedia?.('(display-mode: standalone)').matches||window.navigator.standalone===true;
 const isIOS=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 function removeDuplicateInstallControls(){
- document.querySelectorAll('button,a,[role="button"]').forEach(el=>{
-  if(el===installButton||el.closest('#kcWelcomeInstall'))return;
+ const root=document.getElementById('kcEntryWelcome')||document;
+ root.querySelectorAll('*').forEach(el=>{
+  if(el===installButton||el.closest('#kcWelcomeInstall')||el.closest('#kcWelcomeInstallStatus'))return;
   const label=(el.innerText||el.textContent||'').replace(/[↓⬇↧]/g,'').trim().replace(/\s+/g,' ').toLowerCase();
-  if(label==='install app')el.remove();
+  const looksLikeControl=el.matches('button,a,[role="button"],[class*="install"],[id*="install"],[data-install]')||el.children.length===0;
+  if(label==='install app'&&looksLikeControl)el.remove();
  });
 }
 removeDuplicateInstallControls();
+// Some install helpers inject a second control after the welcome screen loads.
+// Keep the single, intentionally styled welcome button as the only install action.
+const installDeduper=new MutationObserver(()=>removeDuplicateInstallControls());
+installDeduper.observe(document.getElementById('kcEntryWelcome')||document.body,{childList:true,subtree:true});
 if(installButton){
  installButton.hidden=isInstalled();
  if(isIOS()&&!isInstalled())installButton.hidden=false;
