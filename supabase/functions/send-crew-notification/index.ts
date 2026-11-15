@@ -121,7 +121,7 @@ Deno.serve(async (req) => {
           message: {
             token,
             notification: { title, body: message, ...(imageUrl ? { image: imageUrl } : {}) },
-            webpush: { notification: { title, body: message, icon: "/icon.svg", image: imageUrl || "/kinetic-crew-logo.jpg", badge: "/kc-notification-badge.svg", tag: notificationId, renotify: false }, fcmOptions: { link: "/" } },
+            webpush: { notification: { title, body: message, icon: "/icon.svg", ...(imageUrl ? { image: imageUrl } : {}), badge: "/kc-notification-badge.svg", tag: notificationId, renotify: false }, fcmOptions: { link: "/" } },
             android: { priority: "HIGH", notification: { channel_id: "crew_updates", sound: "default", tag: notificationId, ...(imageUrl ? { image: imageUrl } : {}) } },
             data: { url: "/", notificationId },
           },
@@ -136,6 +136,16 @@ Deno.serve(async (req) => {
       }
     }
     if (invalid.length) await adminClient.from("crew_push_tokens").delete().in("token", invalid);
+    if (imageUrl && sent > 0) {
+      const objectPath = decodeURIComponent(new URL(imageUrl).pathname.split("/storage/v1/object/public/crew-alert-media/")[1] || "");
+      if (!objectPath.startsWith("alerts/") || objectPath.includes("..")) throw new Error("Attached alert image path is invalid.");
+      const { error: cleanupError } = await adminClient.from("crew_alert_media_cleanup").upsert({
+        object_path: objectPath,
+        cleanup_after: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+        last_error: null,
+      }, { onConflict: "object_path" });
+      if (cleanupError) throw cleanupError;
+    }
     return json({ ok: true, sent, failed: failures.length, removed: invalid.length, message: `Delivered to ${sent} device(s).` });
   } catch (error) {
     console.error("send-crew-notification:", error);
