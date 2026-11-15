@@ -235,3 +235,19 @@
     transition-duration: .01ms !important;
   }
 }
+
+
+/* Search results are filtered in place to avoid rebuilding whole screens on every keystroke. */
+@media (max-width: 900px) {
+  .kce-events-grid > [hidden],
+  #profileDirectoryGrid > [hidden],
+  .notice-feed > [hidden],
+  .kce-events .kce-featured-event[hidden],
+  .kce-events .kce-category-mosaic[hidden] {
+    display: none !important;
+  }
+  .kc-search-empty {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
