@@ -77,6 +77,24 @@ Deno.serve(async (req) => {
     const { data: valid, error: authError } = await admin.rpc("crew_validate_notification_cron_secret", { p_secret: cronSecret });
     if (authError || valid !== true) return json({ error: "Scheduler authentication failed." }, 401);
 
+    // Remove only alert images whose per-alert retention window has expired.
+    // Each row identifies one uploaded object; shared brand assets are untouched.
+    const { data: expiredAlertMedia, error: expiredMediaError } = await admin
+      .from("crew_alert_media_cleanup")
+      .select("id,object_path")
+      .is("deleted_at", null)
+      .lte("cleanup_after", new Date().toISOString())
+      .limit(50);
+    if (expiredMediaError) throw expiredMediaError;
+    for (const media of expiredAlertMedia || []) {
+      const { error: removeError } = await admin.storage.from("crew-alert-media").remove([media.object_path]);
+      if (removeError) {
+        await admin.from("crew_alert_media_cleanup").update({ last_error: removeError.message }).eq("id", media.id);
+      } else {
+        await admin.from("crew_alert_media_cleanup").update({ deleted_at: new Date().toISOString(), last_error: null }).eq("id", media.id);
+      }
+    }
+
     const { error: promotionError } = await admin.rpc("crew_enqueue_daily_promotions");
     if (promotionError) throw promotionError;
 
