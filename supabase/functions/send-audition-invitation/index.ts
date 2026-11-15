@@ -115,17 +115,7 @@ Deno.serve(async(req:Request)=>{
       username=String(profile.username||username).trim().toLowerCase();
       if(!username) throw new Error("The audition username is missing. Retry account provisioning.");
       const alreadyAudition=profile.approval_status==="approved"&&profile.role==="audition_participant";
-      const recoverablePending=profile.approval_status==="pending"&&profile.role==="member"&&String(profile.email||"").toLowerCase()===email&&username===String(app.username||"").toLowerCase();
-      if(recoverablePending) {
-        const {error:resetError}=await db.auth.admin.updateUserById(app.auth_id,{
-          password,email_confirm:true,user_metadata:{full_name:String(app.name||"Audition applicant"),username}
-        });
-        if(resetError) throw resetError;
-        const {data:attached,error:attachError}=await userClient.rpc("crew_audition_attach_account",{
-          p_application_id:id,p_auth_id:app.auth_id,p_username:username
-        });
-        if(attachError||!attached?.ok) throw attachError||new Error("Could not recover the existing audition account.");
-      } else if(!alreadyAudition) {
+      if(!alreadyAudition) {
         await releaseClaim();
         return json({error:"The linked account is not an active Audition Portal account. Contact the Super Admin."},409);
       }
@@ -140,8 +130,7 @@ Deno.serve(async(req:Request)=>{
 
       if(existingProfile) {
         const reusableRole=existingProfile.role==="audition_participant"&&existingProfile.approval_status==="approved";
-        const recoverablePending=existingProfile.role==="member"&&existingProfile.approval_status==="pending";
-        if(!app.username||String(existingProfile.username||"").toLowerCase()!==String(app.username).toLowerCase()||(!reusableRole&&!recoverablePending)) {
+        if(!app.username||String(existingProfile.username||"").toLowerCase()!==String(app.username).toLowerCase()||!reusableRole) {
           await releaseClaim();
           return json({error:"This email already belongs to a different Kinetic Crew account. An existing member account will not be overwritten; ask an Admin to review the application."},409);
         }
@@ -153,12 +142,6 @@ Deno.serve(async(req:Request)=>{
           return json({error:"This sign-in account is already linked to another audition application."},409);
         }
         username=String(existingProfile.username).toLowerCase();
-        if(recoverablePending) {
-          const {error:resetError}=await db.auth.admin.updateUserById(existingProfile.auth_id,{
-            password,email_confirm:true,user_metadata:{full_name:String(app.name||"Audition applicant"),username}
-          });
-          if(resetError) throw resetError;
-        }
         const {data:linked,error:linkError}=await userClient.rpc("crew_audition_attach_account",{
           p_application_id:id,p_auth_id:existingProfile.auth_id,p_username:username
         });
