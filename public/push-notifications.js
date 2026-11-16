@@ -35,6 +35,13 @@ async function invoke(action, extra = {}) {
   return result;
 }
 let nativePushReady = false;
+let localNotificationActionReady = false;
+function openNotificationTarget(target) {
+  let url;
+  try { url = new URL(String(target || "/?kc_notification_view=notifications"), window.location.origin); if (url.origin !== window.location.origin) throw new Error("External notification URL blocked"); }
+  catch { url = new URL("/?kc_notification_view=notifications", window.location.origin); }
+  window.location.assign(url.href);
+}
 async function enableNativePush() {
   const { PushNotifications } = await import("https://esm.sh/@capacitor/push-notifications@7.0.2");
   let permission = await PushNotifications.checkPermissions();
@@ -74,7 +81,9 @@ async function enableNativePush() {
             id: Math.max(1, Date.now() % 2147483647),
             channelId: "crew_updates",
             schedule: { at: new Date(Date.now() + 300) },
-            extra: notification.data || {}
+            smallIcon: "ic_stat_notification",
+            largeIcon: "ic_launcher",
+            extra: { ...(notification.data || {}), url: notification.data?.url || "/?kc_notification_view=notifications" }
           }] });
         }
       } catch (error) {
@@ -82,9 +91,15 @@ async function enableNativePush() {
       }
     });
     await PushNotifications.addListener("pushNotificationActionPerformed", action => {
-      const target = action.notification?.data?.url || "/";
-      window.location.href = window.kcPath(target.replace(/^\//, ""));
+      openNotificationTarget(action.notification?.data?.url);
     });
+    if (!localNotificationActionReady) {
+      localNotificationActionReady = true;
+      const { LocalNotifications } = await import("https://esm.sh/@capacitor/local-notifications@7.0.2");
+      await LocalNotifications.addListener("localNotificationActionPerformed", action => {
+        openNotificationTarget(action.notification?.extra?.url);
+      });
+    }
   }
   await PushNotifications.register();
   return { ok: true, message: "Android push registration started. This device will receive crew alerts after Firebase registration completes." };
