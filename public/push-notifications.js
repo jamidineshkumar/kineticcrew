@@ -184,7 +184,7 @@ async function invokeEmail(title, body, audience, emailKey, emailType) {
 }
 async function send(title, body, audience = "all", options = {}) {
   const imageUrl = String(options?.imageUrl || '').trim();
-  const pushResult = await invoke("send", { title, body, audience, imageUrl });
+  const pushResult = await invoke("send", { title, body, audience, imageUrl, url: options?.url || "/?kc_notification_view=notifications" });
   if (options?.sendEmail === true) {
     const emailKey = String(options.emailKey || "").trim();
     if (!emailKey) throw new Error("Email could not be sent because the release key is missing.");
