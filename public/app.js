@@ -1420,7 +1420,7 @@ if(S.view==='overview'){
 function brandSettingsPage(){
  if(!superadmin())return empty('Super Admin access required','Only the Super Admin can change the official Kinetic Crew logo.');
  const current=S.appSettings?.brand_logo_url||window.KC_BRAND_LOGO_URL||window.kcPath('kinetic-crew-logo.svg');
- const brandTargets=S.appSettings?.brand_logo_targets||{app:true,browser:true,pwa:true,signin:true};
+ const brandTargets=S.appSettings?.brand_logo_targets||{app:true,browser:true,pwa:true,signin:true,notifications:true};
  setTimeout(()=>{kcBrandDraw();kcBrandSetControls(!!kcBrandEditor.image);},0);
  return welcome('Brand identity','Choose exactly where the new official logo should appear across Kinetic Crew.')+
  '<section class="surface settings-card kc-brand-settings-card">'+
@@ -1441,7 +1441,7 @@ function brandSettingsPage(){
  '<div class="kc-brand-editor-actions"><button type="button" id="brandLogoRotate" disabled>↻ Rotate 90°</button><button type="button" id="brandLogoCenter" disabled>Center image</button></div>'+
  '</div>'+
  '<small class="kc-brand-file-help">PNG, JPG or WebP · maximum 5 MB · transparent areas are preserved. The final icon is exported at 512 × 512.</small><div class="kc-brand-targets"><div class="kc-brand-targets-head"><b>WHERE SHOULD THIS LOGO UPDATE?</b><span>Select destinations</span></div><label><input type="checkbox" data-brand-target="app" '+(brandTargets.app?'checked':'')+'><span><b>App interface</b><small>Headers, menus, profile and in-app logo placements</small></span></label><label><input type="checkbox" data-brand-target="browser" '+(brandTargets.browser?'checked':'')+'><span><b>Browser icon</b><small>Favicon and browser tab branding</small></span></label><label><input type="checkbox" data-brand-target="pwa" '+(brandTargets.pwa?'checked':'')+'><span><b>Installed app icon</b><small>Android / iOS home-screen and PWA icon</small></span></label><label><input type="checkbox" data-brand-target="signin" '+(brandTargets.signin?'checked':'')+'><span><b>Sign-in & welcome screens</b><small>Login, signup and entry branding</small></span></label>'+
- '<label><input type="checkbox" data-brand-target="email" '+(brandTargets.email?'checked':'')+'><span><b>Authentication emails</b><small>Verification and one-time login email header</small></span></label></div>'+
+ '<label><input type="checkbox" data-brand-target="email" '+(brandTargets.email?'checked':'')+'><span><b>Authentication emails</b><small>Verification and one-time login email header</small></span></label><label><input type="checkbox" data-brand-target="notifications" '+(brandTargets.notifications?'checked':'')+'><span><b>Notifications</b><small>Push notification icon and notification branding</small></span></label></div>'+
  '<button type="button" class="primary" id="uploadBrandLogo" disabled>Publish logo everywhere →</button>'+
  '<p class="kc-brand-security-note">Your Super Admin account can publish the official logo. PNG, JPG or WebP images up to 5 MB are supported.</p>'+
  '</section>';
@@ -1939,7 +1939,7 @@ document.addEventListener('click',async event=>{
  if(!kcBrandEditor.image){notice('Choose a logo image first.');return;}
  const oldLabel=button.textContent;button.disabled=true;button.textContent='Preparing logo…';
  try{
-  const targets=Object.fromEntries(['app','browser','pwa','signin','email'].map(key=>[key,!!document.querySelector('[data-brand-target="'+key+'"]')?.checked]));
+  const targets=Object.fromEntries(['app','browser','pwa','signin','email','notifications'].map(key=>[key,!!document.querySelector('[data-brand-target="'+key+'"]')?.checked]));
   if(!Object.values(targets).some(Boolean))throw Error('Select at least one destination for the new logo.');
   const canvas=document.createElement('canvas');canvas.width=512;canvas.height=512;
   const ctx=canvas.getContext('2d');if(!ctx)throw Error('Your browser could not prepare the logo image.');
