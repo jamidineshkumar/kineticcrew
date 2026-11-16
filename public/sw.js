@@ -7,7 +7,7 @@ const CDN_CACHE="kinetic-crew-cdn-v1";
 
 const BRAND_LOGO_RPC='https://lkdfjiweqxshbbcadfna.supabase.co/rest/v1/rpc/crew_get_brand_logo';
 const BRAND_LOGO_KEY='sb_publishable_8-7_og12Zot7nA-W_tz-rw_yDS1I9cp';
-async function getNotificationBrandLogo(){try{const endpoint='https://lkdfjiweqxshbbcadfna.supabase.co/rest/v1/rpc/crew_get_brand_identity';const response=await fetch(endpoint,{method:'POST',headers:{apikey:BRAND_LOGO_KEY,Authorization:'Bearer '+BRAND_LOGO_KEY,'Content-Type':'application/json'},body:'{}',cache:'no-store'});if(!response.ok)return null;const value=await response.json();const targets=value?.targets||{},assets=value?.assets||{},url=assets.notifications||value?.logo_url;return targets.notifications===true&&typeof url==='string'&&url.startsWith('https://lkdfjiweqxshbbcadfna.supabase.co/storage/v1/object/public/crew-brand-assets/brand/')?url:null;}catch{return null;}}
+async function getNotificationBrandLogo(){try{const endpoint='https://lkdfjiweqxshbbcadfna.supabase.co/rest/v1/rpc/crew_get_brand_identity';const response=await fetch(endpoint,{method:'POST',headers:{apikey:BRAND_LOGO_KEY,Authorization:'Bearer '+BRAND_LOGO_KEY,'Content-Type':'application/json'},body:'{}',cache:'no-store'});if(!response.ok)return null;const value=await response.json();const targets=value?.targets||{},assets=value?.assets||{},url=assets.notifications||value?.logo_url;return typeof url==='string'&&url.startsWith('https://lkdfjiweqxshbbcadfna.supabase.co/storage/v1/object/public/crew-brand-assets/brand/')?url:null;}catch{return null;}}
 let messaging=null;
 try{
 importScripts("https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js");
