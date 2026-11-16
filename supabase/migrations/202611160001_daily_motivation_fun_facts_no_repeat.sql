@@ -169,9 +169,22 @@ begin
       order by random()
       limit 1;
 
-      -- If the unique library is exhausted, do not repeat a message silently.
+      -- Once a member has seen the complete library, start a fresh cycle.
+      -- No message repeats until all active items have been used once.
       if not found then
-        continue;
+        delete from public.crew_promotion_content_history
+        where recipient_auth_id=v_profile.auth_id;
+
+        select c.content_key,c.content_type,c.body
+        into v_content
+        from public.crew_promotion_content c
+        where c.active=true
+        order by random()
+        limit 1;
+
+        if not found then
+          continue;
+        end if;
       end if;
 
       if v_content.content_type='motivation' then
