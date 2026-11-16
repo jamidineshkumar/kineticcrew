@@ -89,6 +89,11 @@ async function loadData(){
   }
  }
  renderList();
+ const requested=window.__kgOpenConversation;
+ if(requested){window.__kgOpenConversation=null;openConversation(String(requested)).catch(err=>notify(err.message||'Could not open chat.'));}
+ const unreadTotal=Object.values(state.unreadByConversation||{}).reduce((a,b)=>a+b,0);
+ const chatShortcut=document.querySelector('[data-gram-route="gram-chat"]');
+ if(chatShortcut){chatShortcut.dataset.unread=String(unreadTotal);chatShortcut.setAttribute('aria-label',unreadTotal?('Chats, '+unreadTotal+' unread'):'Chats');}
 }
 function renderList(){const list=$('#kgWaList');if(list)list.innerHTML=listMarkup();}
 function renderThread(){
