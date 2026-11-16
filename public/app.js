@@ -1182,16 +1182,14 @@ function memberActionRingMarkup(memberId,memberRole,memberName){
  return '<div class="kc-member-action-ring" role="group" aria-label="Member actions"><div class="kc-member-action-orbit">'+buttons+'</div></div>';
 }
 async function openDirectMessage(memberId){
- const id=String(memberId||''),uid=String(S.user?.auth_id||''),rid=id;if(!id||id===uid)return;
- const person=(S.publicMembers||[]).concat(S.members||[]).find(m=>String(m.auth_id)===id)||{auth_id:id,name:'Crew member'};
- await rpc('crew_assert_not_blocked',{});
+ const id=String(memberId||''),uid=String(S.user?.auth_id||'');
+ if(!id||id===uid)return;
  const safeId=value=>/^[a-zA-Z0-9-]{16,64}$/.test(String(value));
- if(!safeId(id)||!safeId(S.user.auth_id))throw Error('This member account ID is invalid.');
- $('#modalRoot').innerHTML='<div class="modalback kc-dm-backdrop" id="kcDmBackdrop"><section class="modal kc-dm-modal" role="dialog" aria-modal="true" aria-labelledby="kcDmTitle"><button type="button" class="iconbutton modalclose" id="kcDmClose" aria-label="Close message">×</button><span class="eyebrow">PRIVATE CREW CHAT</span><h2 id="kcDmTitle">'+esc(person.name||'Crew member')+'</h2><div class="kc-dm-thread" id="kcDmThread"><p class="hint">Loading conversation…</p></div><form id="kcDirectMessageForm" data-recipient-id="'+esc(id)+'"><textarea name="body" rows="2" maxlength="4000" placeholder="Write a message…" required></textarea><button type="submit" class="primary">Send message ↗</button></form></section></div>';
- const close=()=>{if(S.dmChannel){client.removeChannel(S.dmChannel);S.dmChannel=null;}$('#modalRoot').innerHTML='';};$('#kcDmClose').onclick=close;$('#kcDmBackdrop').addEventListener('click',e=>{if(e.target.id==='kcDmBackdrop')close();});
- if(S.dmChannel)client.removeChannel(S.dmChannel);
- S.dmChannel=client.channel('kg-dm-'+uid+'-'+rid).on('postgres_changes',{event:'INSERT',schema:'public',table:'crew_direct_messages'},payload=>{const m=payload.new||{};if((String(m.sender_id)===uid&&String(m.recipient_id)===rid)||(String(m.sender_id)===rid&&String(m.recipient_id)===uid))refreshDirectMessageThread(id).catch(()=>{});}).subscribe();
- await refreshDirectMessageThread(id);
+ if(!safeId(id)||!safeId(uid))throw Error('This member account ID is invalid.');
+ const {data,error}=await rpc('kg_open_direct_chat',{p_other_user_id:id});
+ if(error)throw error;
+ window.__kgOpenConversation=String(data);
+ await go('gram-chat');
 }
 async function refreshDirectMessageThread(recipientId){
  const uid=String(S.user.auth_id),rid=String(recipientId);
