@@ -25,10 +25,9 @@ async function main() {
       });
       if (response.ok) {
         const identity = await response.json();
-        const logoUrl = identity?.logo_url;
-        const allowed = identity?.targets?.pwa === true &&
-          typeof logoUrl === 'string' &&
-          /^https:\/\/lkdfjiweqxshbbcadfna\.supabase\.co\/storage\/v1\/object\/public\/crew-brand-assets\/brand\/kinetic-crew-logo\.png(?:\?.*)?$/.test(logoUrl);
+        const logoUrl = identity?.assets?.pwa || identity?.logo_url;
+        const allowed = typeof logoUrl === 'string' &&
+          /^https:\/\/lkdfjiweqxshbbcadfna\.supabase\.co\/storage\/v1\/object\/public\/crew-brand-assets\/brand\/(?:destinations\/pwa|kinetic-crew-logo)\.png(?:\?.*)?$/.test(logoUrl);
         if (allowed) {
           const imageResponse = await fetch(logoUrl, { cache: 'no-store' });
           if (!imageResponse.ok) throw new Error('Published install icon could not be downloaded: HTTP ' + imageResponse.status);
@@ -38,7 +37,7 @@ async function main() {
           source = imageBuffer;
           console.log('Using the currently published Kinetic Crew install icon from Supabase.');
         } else {
-          console.log('Installed app icon destination is not enabled; using the repository fallback icon.');
+          console.log('No published install icon was found; using the repository fallback icon.');
         }
       } else {
         console.warn('Could not read the published brand identity; using the repository fallback icon.');
