@@ -37,7 +37,7 @@
  });
  const nav=document.getElementById('nav'),app=document.getElementById('app');
  if(nav)new MutationObserver(sync).observe(nav,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
- if(app)new MutationObserver(sync).observe(app,{childList:true,subtree:true});
+ if(app)new MutationObserver(sync).observe(app,{childList:true});
  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
  sync();
 })();
