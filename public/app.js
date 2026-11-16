@@ -1419,8 +1419,10 @@ if(S.view==='overview'){
 }
 function brandSettingsPage(){
  if(!superadmin())return empty('Super Admin access required','Only the Super Admin can change the official Kinetic Crew logo.');
- const current=S.appSettings?.brand_logo_url||window.KC_BRAND_LOGO_URL||window.kcPath('kinetic-crew-logo.svg');
- const brandTargets={app:true,browser:true,pwa:true,signin:true,notifications:true,...(S.appSettings?.brand_logo_targets||{})};
+ const brandAssets=S.appSettings?.brand_logo_assets||{};
+ const current=brandAssets.app||S.appSettings?.brand_logo_url||window.KC_BRAND_LOGO_URL||window.kcPath('kinetic-crew-logo.svg');
+ const brandTargets={app:true,browser:true,pwa:true,signin:true,email:false,notifications:true,...(S.appSettings?.brand_logo_targets||{})};
+ const allBrandTargets=['app','browser','pwa','signin','email','notifications'].every(key=>brandTargets[key]);
  setTimeout(()=>{kcBrandDraw();kcBrandSetControls(!!kcBrandEditor.image);},0);
  return welcome('Brand identity','Choose exactly where the new official logo should appear across Kinetic Crew.')+
  '<section class="surface settings-card kc-brand-settings-card">'+
@@ -1939,35 +1941,52 @@ document.addEventListener('click',async event=>{
  if(!kcBrandEditor.image){notice('Choose a logo image first.');return;}
  const oldLabel=button.textContent;button.disabled=true;button.textContent='Preparing logo…';
  try{
-  const targets=Object.fromEntries(['app','browser','pwa','signin','email','notifications'].map(key=>[key,!!document.querySelector('[data-brand-target="'+key+'"]')?.checked]));
-  if(!Object.values(targets).some(Boolean))throw Error('Select at least one destination for the new logo.');
+  const keys=['app','browser','pwa','signin','email','notifications'];
+  const targets=Object.fromEntries(keys.map(key=>[key,!!document.querySelector('[data-brand-target="'+key+'"]')?.checked]));
+  const selected=keys.filter(key=>targets[key]);
+  if(!selected.length)throw Error('Select at least one destination for the new logo.');
   const canvas=document.createElement('canvas');canvas.width=512;canvas.height=512;
   const ctx=canvas.getContext('2d');if(!ctx)throw Error('Your browser could not prepare the logo image.');
   kcBrandClampPan();const p=kcBrandEditor,m=kcBrandMetrics(),img=p.image;
   ctx.clearRect(0,0,512,512);ctx.translate(256+p.x,256+p.y);ctx.rotate(m.rot*Math.PI/180);ctx.scale(m.scale,m.scale);ctx.drawImage(img,-img.width/2,-img.height/2);
   const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
   if(!blob)throw Error('Could not export the edited logo. Try another image.');
-  button.textContent='Uploading logo…';
   const storage=client.storage.from('crew-brand-assets');
-  const uploaded=await storage.upload('brand/kinetic-crew-logo.png',blob,{upsert:true,contentType:'image/png',cacheControl:'0'});
-  if(uploaded.error)throw uploaded.error;
-  if(targets.email){button.textContent='Updating email logo…';const emailUpload=await storage.upload('brand/email-logo.png',blob,{upsert:true,contentType:'image/png',cacheControl:'0'});if(emailUpload.error)throw emailUpload.error;}
-  const publicUrl=storage.getPublicUrl(uploaded.data.path).data.publicUrl+'?v='+Date.now();
-  button.textContent='Saving destinations…';
+  const assets={...(S.appSettings?.brand_logo_assets||{})};
+  for(const key of selected){
+   button.textContent='Updating '+key+' logo…';
+   const path='brand/destinations/'+key+'.png';
+   const uploaded=await storage.upload(path,blob,{upsert:true,contentType:'image/png',cacheControl:'0'});
+   if(uploaded.error)throw uploaded.error;
+   assets[key]=storage.getPublicUrl(path).data.publicUrl+'?v='+Date.now();
+   if(key==='email'){
+    const emailUpload=await storage.upload('brand/email-logo.png',blob,{upsert:true,contentType:'image/png',cacheControl:'0'});
+    if(emailUpload.error)throw emailUpload.error;
+   }
+  }
+  button.textContent='Saving selected destinations…';
   const targetSaved=await rpc('crew_set_app_setting',{p_key:'brand_logo_targets',p_value:targets});
   if(targetSaved.error)throw targetSaved.error;
-  button.textContent='Applying selected destinations…';
-  const saved=await rpc('crew_set_app_setting',{p_key:'brand_logo_url',p_value:publicUrl});
-  if(saved.error)throw saved.error;
-  S.appSettings={...(S.appSettings||{}),brand_logo_url:publicUrl,brand_logo_targets:targets};
-  window.kcApplyBrandLogo?.(publicUrl,targets);
-  const current=$('#brandLogoCurrent');if(current){current.onerror=()=>window.kcShowBrandFallback?.(current);current.src=publicUrl;}
-  kcBrandEditor.status='Published successfully · This logo is now live across Kinetic Crew';const status=$('#brandLogoEditorStatus');if(status)status.textContent=kcBrandEditor.status;
-  notice('Official logo updated on the selected destinations.');paint();
-  requestAnimationFrame(()=>{window.kcApplyBrandLogo?.(publicUrl,targets);const live=$('#brandLogoCurrent');if(live&&live.getAttribute('src')!==publicUrl)live.src=publicUrl;});
+  const assetSaved=await rpc('crew_set_app_setting',{p_key:'brand_logo_assets',p_value:assets});
+  if(assetSaved.error)throw assetSaved.error;
+  S.appSettings={...(S.appSettings||{}),brand_logo_assets:assets,brand_logo_targets:targets};
+  window.kcApplyBrandLogo?.(assets,targets,S.appSettings?.brand_logo_url||'');
+  const previewUrl=assets[selected[0]];
+  const current=$('#brandLogoCurrent');if(current){current.onerror=()=>window.kcShowBrandFallback?.(current);current.src=previewUrl;}
+  kcBrandEditor.status='Published successfully · Only the selected destinations were updated';const status=$('#brandLogoEditorStatus');if(status)status.textContent=kcBrandEditor.status;
+  notice('Logo updated only on the selected destinations.');paint();
+  requestAnimationFrame(()=>{window.kcApplyBrandLogo?.(assets,targets,S.appSettings?.brand_logo_url||'');const live=$('#brandLogoCurrent');if(live&&live.getAttribute('src')!==previewUrl)live.src=previewUrl;});
  }catch(error){kcBrandEditor.status=error.message||'Logo upload failed. Your current logo is unchanged.';const status=$('#brandLogoEditorStatus');if(status)status.textContent=kcBrandEditor.status;notice(kcBrandEditor.status);button.disabled=!kcBrandEditor.image;button.textContent=oldLabel;}
 });
 document.addEventListener('change',async e=>{
+ if(e.target.matches('[data-brand-select-all]')){
+  document.querySelectorAll('[data-brand-target]').forEach(input=>{input.checked=e.target.checked;});
+ }
+ if(e.target.matches('[data-brand-target]')){
+  const boxes=[...document.querySelectorAll('[data-brand-target]')];
+  const all=document.querySelector('[data-brand-select-all]');
+  if(all)all.checked=boxes.length>0&&boxes.every(input=>input.checked);
+ }
  if(e.target.id==='settingsSound'){saveNotificationPrefs({sound:e.target.checked});if(e.target.checked)playNoticeSound();notice(e.target.checked?'In-app sounds enabled.':'In-app sounds muted.');}
  if(e.target.id==='promotionalUpdates'){const input=e.target;input.disabled=true;try{const result=await rpc('crew_set_promotion_preference',{p_enabled:input.checked});if(result.error)throw result.error;S.promotionalUpdatesEnabled=input.checked;notice(input.checked?'Promotional updates enabled.':'Promotional updates paused.');}catch(error){input.checked=!input.checked;notice(error.message||'Could not update promotional preferences.');}finally{input.disabled=false;}}
  if(e.target.id==='introAudioUpload'){const file=e.target.files?.[0];if(!file)return;if(!admin()){notice('Admin access required.');return;}if(!file.type.startsWith('audio/')||file.size>15*1024*1024){notice('Choose an audio file under 15 MB.');return;}try{const path='admin/intro-'+Date.now()+'-'+file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const uploaded=await client.storage.from('crew-intro-audio').upload(path,file,{upsert:true,contentType:file.type});if(uploaded.error)throw uploaded.error;const url=client.storage.from('crew-intro-audio').getPublicUrl(uploaded.data.path).data.publicUrl;const saved=await rpc('crew_set_app_setting',{p_key:'intro_audio_url',p_value:JSON.stringify(url)});if(saved.error)throw saved.error;S.appSettings={...(S.appSettings||{}),intro_audio_url:url};notice('Crew intro soundtrack saved.');}catch(err){notice(err.message||'Soundtrack upload failed.');}}
