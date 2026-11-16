@@ -84,7 +84,7 @@ Deno.serve(async(req:Request)=>{
         body:JSON.stringify({message:{
           token,notification:{title,body:message},
           webpush:{notification:{title,body:message,icon:"/icon.svg",badge:"/kc-notification-badge.svg",tag:notificationId,renotify:false},fcmOptions:{link:"https://kineticcrew.vercel.app/audition-admin.html"}},
-          android:{priority:"HIGH",notification:{channel_id:"crew_updates",sound:"default",tag:notificationId}},
+          android:{priority:"HIGH",notification:{channel_id:"crew_updates",sound:"default",icon:"ic_stat_notification",tag:notificationId}},
           data:{url:"/audition-admin.html",notificationId,applicationId}
         }})
       });
