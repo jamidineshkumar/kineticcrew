@@ -2363,6 +2363,21 @@ async function boot(){
   }catch(error){
    if(!restoreOffline(session.user))throw error;
   }
+  // Notification deep links are applied after authentication and data refresh so
+  // the destination screen can resolve its event/crew data before rendering.
+  const notificationParams=new URLSearchParams(location.search);
+  const notificationView=notificationParams.get('kc_notification_view');
+  const notificationEventId=notificationParams.get('kc_event_id');
+  if(notificationView){
+   const allowedNotificationViews=new Set(['notifications','events','event-detail','rehearsals','chat','feed']);
+   const destination=allowedNotificationViews.has(notificationView)?notificationView:'notifications';
+   const cleanNotificationUrl=new URL(location.href);
+   cleanNotificationUrl.searchParams.delete('kc_notification_view');
+   cleanNotificationUrl.searchParams.delete('kc_event_id');
+   try{history.replaceState({...history.state,kcApp:true},'',cleanNotificationUrl.pathname+cleanNotificationUrl.search+cleanNotificationUrl.hash);}catch{}
+   if(destination==='event-detail'&&notificationEventId)S.selectedEvent=notificationEventId;
+   await go(destination,{fromPop:true});
+  }
   startPendingApprovalAlerts();
   // Re-check access when the app returns to the foreground; a newly blocked account
   // is signed out on this device even if its access token has not expired yet.
