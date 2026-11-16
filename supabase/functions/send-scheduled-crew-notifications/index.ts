@@ -8,7 +8,7 @@ const cors = {
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json" } });
 
-const APP_ORIGIN = (Deno.env.get("KC_APP_ORIGIN") || "https://kineticcrew.vercel.app").replace(/\\/+$/, "");
+const APP_ORIGIN = (Deno.env.get("KC_APP_ORIGIN") || "https://kineticcrew.vercel.app").replace(/\/+$/, "");
 function notificationDestination(item: { source_type?: string; source_id?: string; notification_key?: string }) {
   const hint = (String(item.source_type || "") + " " + String(item.notification_key || "")).toLowerCase();
   if (hint.includes("audition")) return "/audition-admin.html";
@@ -185,7 +185,8 @@ Deno.serve(async (req) => {
       }
 
       const notificationId = String(item.id);
-      const url = notificationDestination(item);\n      const absoluteUrl = APP_ORIGIN + url;
+      const url = notificationDestination(item);
+      const absoluteUrl = APP_ORIGIN + url;
       const results = await Promise.all(tokens.map(async (token: string) => {
         const response = await fetch(`https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`, {
           method: "POST",
