@@ -47,3 +47,10 @@
 @media(prefers-reduced-motion:reduce){.kg-wa-composer .recording{animation:none}}
 
 .kg-head-actions button[data-gram-route="gram-chat"]{position:relative}.kg-head-actions button[data-gram-route="gram-chat"][data-unread]:not([data-unread="0"])::after{content:attr(data-unread);position:absolute;top:-4px;right:-4px;min-width:17px;height:17px;padding:0 4px;display:grid;place-items:center;border-radius:20px;background:#20c879;color:#06180f;font:800 9px/1 system-ui,sans-serif;border:2px solid #111a1e}
+
+/* Message actions are contextual, not permanently displayed under every bubble. */
+.kg-wa-message-actions{display:none!important}
+.kg-wa-message{position:relative;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.kg-wa-message-selected{outline:1px solid #20c879;box-shadow:0 0 0 3px #20c87922}
+.kg-wa-option{display:flex;align-items:center;width:100%;min-height:46px;padding:11px 12px;border:0;border-bottom:1px solid #ffffff12;background:transparent;color:#e9f2ef;text-align:left;font:500 14px system-ui,sans-serif}
+.kg-wa-option:last-child{border-bottom:0}
