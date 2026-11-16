@@ -1420,7 +1420,7 @@ if(S.view==='overview'){
 function brandSettingsPage(){
  if(!superadmin())return empty('Super Admin access required','Only the Super Admin can change the official Kinetic Crew logo.');
  const current=S.appSettings?.brand_logo_url||window.KC_BRAND_LOGO_URL||window.kcPath('kinetic-crew-logo.svg');
- const brandTargets=S.appSettings?.brand_logo_targets||{app:true,browser:true,pwa:true,signin:true,notifications:true};
+ const brandTargets={app:true,browser:true,pwa:true,signin:true,notifications:true,...(S.appSettings?.brand_logo_targets||{})};
  setTimeout(()=>{kcBrandDraw();kcBrandSetControls(!!kcBrandEditor.image);},0);
  return welcome('Brand identity','Choose exactly where the new official logo should appear across Kinetic Crew.')+
  '<section class="surface settings-card kc-brand-settings-card">'+
