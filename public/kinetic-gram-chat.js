@@ -135,7 +135,7 @@ function messageMarkup(){
    (deleted?'<p class="kg-wa-deleted">This message was deleted</p>':(m.body?'<p>'+esc(m.body)+'</p>':'')+files+gif)+
    '<footer><time>'+esc(fmt(m.created_at))+'</time>'+(m.edited_at?'<small>edited</small>':'')+tick+'</footer>'+
    (reactions.length?'<div class="kg-wa-reactions">'+reactions.map(r=>'<button type="button" data-kg-react="'+esc(m.id)+'" data-kg-emoji="'+esc(r.emoji)+'">'+esc(r.emoji)+'</button>').join('')+'</div>':'')+
-   '<div class="kg-wa-message-actions"><button type="button" data-kg-reply="'+esc(m.id)+'">Reply</button><button type="button" data-kg-forward="'+esc(m.id)+'">Forward</button><button type="button" data-kg-react-menu="'+esc(m.id)+'">☺</button>'+(own&&!deleted?'<button type="button" data-kg-edit="'+esc(m.id)+'">Edit</button><button type="button" data-kg-delete="'+esc(m.id)+'">Delete</button>':'')+'</div></article>';
+   '</article>';
  }).join('')||'<div class="kg-wa-thread-empty"><span>✉</span><b>This is the beginning</b><small>Send a message to start the conversation.</small></div>';
 }
 async function loadMessages(id){
@@ -234,6 +234,17 @@ function groupInfo(id){
  const people=memberFor(c);
  modal('<button type="button" class="kg-wa-modal-close" data-kg-modal-close>×</button><span class="kg-wa-kicker">GROUP INFORMATION</span><h2>'+esc(c.title||'Group')+'</h2><p>'+esc(c.description||'')+'</p><h3>'+people.length+' participants</h3>'+people.map(m=>{const p=profileById(m.user_id);return '<div class="kg-wa-person-option">'+avatar(p,p.name)+'<span><b>'+esc(p.name||'Crew member')+'</b><small>'+esc(m.role)+'</small></span>'+(m.role!=='owner'?'<button type="button" data-kg-remove-member="'+esc(m.user_id)+'" data-kg-conversation="'+esc(id)+'">Remove</button>':'')+'</div>';}).join('')+'<button type="button" class="kg-wa-option" data-kg-add-members="'+esc(id)+'">＋ Add members</button>');
 }
+function messageMenu(messageId){
+ const m=state.messages.find(x=>String(x.id)===String(messageId));if(!m)return;
+ const own=String(m.sender_id)===String(state.user.id),deleted=!!m.deleted_at;
+ modal('<button type="button" class="kg-wa-modal-close" data-kg-modal-close>×</button><span class="kg-wa-kicker">MESSAGE OPTIONS</span><h2>Message</h2>'+
+ '<button type="button" class="kg-wa-option" data-kg-reply="'+esc(messageId)+'">↩ Reply</button>'+
+ '<button type="button" class="kg-wa-option" data-kg-react-menu="'+esc(messageId)+'">☺ React</button>'+
+ '<button type="button" class="kg-wa-option" data-kg-forward="'+esc(messageId)+'">⇢ Forward</button>'+
+ '<button type="button" class="kg-wa-option" data-kg-copy="'+esc(messageId)+'">▢ Copy</button>'+
+ (own&&!deleted?'<button type="button" class="kg-wa-option" data-kg-edit="'+esc(messageId)+'">✎ Edit</button><button type="button" class="kg-wa-option" data-kg-delete="'+esc(messageId)+'">⌫ Delete</button>':'')+
+ '</div>');
+}
 function forwardModal(messageId){
  modal('<button type="button" class="kg-wa-modal-close" data-kg-modal-close>×</button><span class="kg-wa-kicker">FORWARD MESSAGE</span><h2>Forward to…</h2>'+state.conversations.filter(c=>c.kind!=='community').map(c=>'<button type="button" class="kg-wa-option" data-kg-forward-to="'+esc(c.id)+'" data-kg-message-id="'+esc(messageId)+'">'+esc(c.kind==='direct'?directTitle(c):c.title)+'</button>').join(''));
 }
@@ -298,6 +309,7 @@ async function handleClick(e){
  if(t.matches('[data-kg-voice]')){try{state.recording?await stopVoice():await startVoice();}catch(err){notify(err.message)}return;}
  if(t.matches('[data-kg-cancel-reply]')){state.reply=null;renderThread();return;}
  if(t.matches('[data-kg-reply]')){const m=state.messages.find(x=>x.id===t.dataset.kgReply);if(m){state.reply={...m,sender_name:profileById(m.sender_id).name};renderThread();$('#kgWaText')?.focus()}return;}
+ if(t.matches('[data-kg-copy]')){const m=state.messages.find(x=>String(x.id)===String(t.dataset.kgCopy));if(m){const text=m.body||'';if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(()=>notify('Message copied.')).catch(()=>notify('Could not copy message.'));else notify('Clipboard is unavailable in this browser.');}closeModal();return;}
  if(t.matches('[data-kg-forward]')){forwardModal(t.dataset.kgForward);return;}
  if(t.matches('[data-kg-forward-to]')){const m=state.messages.find(x=>x.id===t.dataset.kgMessageId);try{await call('kg_send_message',{p_conversation_id:t.dataset.kgForwardTo,p_body:m?.body||'',p_message_type:m?.message_type||'text',p_forwarded_from_id:m?.id||null});closeModal();notify('Message forwarded.');await loadData();}catch(err){notify(err.message)}return;}
  if(t.matches('[data-kg-react-menu]')){emojiModal(t.dataset.kgReactMenu);return;}
@@ -309,6 +321,33 @@ async function handleClick(e){
  if(t.matches('[data-kg-add-members]')){const id=t.dataset.kgAddMembers;modal('<button type="button" class="kg-wa-modal-close" data-kg-modal-close>×</button><h2>Add group members</h2><div class="kg-wa-person-list">'+memberPicker()+'</div><button type="button" class="kg-wa-primary" data-kg-add-selected="'+esc(id)+'">Add selected</button>');return;}
  if(t.matches('[data-kg-add-selected]')){const id=t.dataset.kgAddSelected,selected=$$('input[name="member"]:checked',$('#kgWaModalRoot')).map(x=>x.value);try{for(const member of selected)await call('kg_add_conversation_member',{p_conversation_id:id,p_user_id:member,p_role:'member'});closeModal();await loadData();groupInfo(id)}catch(err){notify(err.message)}return;}
 }
+// WhatsApp-style message gestures: long press opens contextual actions; swipe right replies.
+let kgPressTimer=null,kgPressTarget=null,kgPointerStart=null,kgGestureConsumed=false;
+document.addEventListener('pointerdown',e=>{
+ const msg=e.target.closest('#kgWaMessages [data-kg-message]');if(!msg||e.target.closest('a,button,input,video,audio'))return;
+ kgGestureConsumed=false;kgPressTarget=msg;kgPointerStart={x:e.clientX,y:e.clientY,id:msg.dataset.kgMessage};
+ clearTimeout(kgPressTimer);
+ kgPressTimer=setTimeout(()=>{kgGestureConsumed=true;kgPressTarget?.classList.add('kg-wa-message-selected');messageMenu(kgPointerStart?.id);},520);
+},{passive:true});
+document.addEventListener('pointermove',e=>{
+ if(!kgPointerStart)return;
+ if(Math.abs(e.clientX-kgPointerStart.x)>12||Math.abs(e.clientY-kgPointerStart.y)>14)clearTimeout(kgPressTimer);
+},{passive:true});
+document.addEventListener('pointerup',e=>{
+ clearTimeout(kgPressTimer);
+ if(!kgPointerStart)return;
+ const dx=e.clientX-kgPointerStart.x,dy=e.clientY-kgPointerStart.y,id=kgPointerStart.id;
+ if(!kgGestureConsumed&&dx>58&&Math.abs(dy)<42){
+  const m=state.messages.find(x=>String(x.id)===String(id));
+  if(m){state.reply={...m,sender_name:profileById(m.sender_id).name};renderThread();$('#kgWaText')?.focus();}
+ }
+ kgPointerStart=null;kgPressTarget=null;
+},{passive:true});
+document.addEventListener('pointercancel',()=>{clearTimeout(kgPressTimer);kgPointerStart=null;kgPressTarget=null;},{passive:true});
+document.addEventListener('contextmenu',e=>{
+ const msg=e.target.closest('#kgWaMessages [data-kg-message]');if(!msg)return;
+ e.preventDefault();clearTimeout(kgPressTimer);kgGestureConsumed=true;messageMenu(msg.dataset.kgMessage);
+});
 document.addEventListener('click',e=>{if(e.target.closest('#kgWaApp'))handleClick(e).catch(err=>notify(err.message||'Chat action failed.'))});
 document.addEventListener('submit',async e=>{
  const f=e.target;
