@@ -41,11 +41,12 @@ if(messaging)messaging.onBackgroundMessage(async payload=>{
 }catch(error){console.warn("Background notifications disabled:",error);}
 self.addEventListener("notificationclick",event=>{
   event.notification.close();
-  let target;\n  try{target=new URL(event.notification.data?.url||BASE+"?kc_notification_view=notifications",self.location.origin);if(target.origin!==self.location.origin)throw new Error("External notification target blocked");}\n  catch{target=new URL(BASE+"?kc_notification_view=notifications",self.location.origin);}
+  let target;\n  try{target=new URL(event.notification.data?.url||BASE+"?kc_notification_view=notifications",self.location.origin);if(target.origin!==self.location.origin)throw new Error("External notification target blocked");}
+  catch{target=new URL(BASE+"?kc_notification_view=notifications",self.location.origin);}
   event.waitUntil((async()=>{
     const clients=await self.clients.matchAll({type:"window",includeUncontrolled:true});
-    for(const client of clients){if(client.url.startsWith(self.location.origin)&&"focus"in client){await client.navigate(target);return client.focus();}}
-    return self.clients.openWindow(target);
+    for(const client of clients){if(client.url.startsWith(self.location.origin)&&"focus"in client){await client.navigate(target.href);return client.focus();}}
+    return self.clients.openWindow(target.href);
   })());
 });
 self.addEventListener("message",event=>{if(event.data?.type==="SKIP_WAITING")self.skipWaiting();});
