@@ -41,7 +41,8 @@ if(messaging)messaging.onBackgroundMessage(async payload=>{
 }catch(error){console.warn("Background notifications disabled:",error);}
 self.addEventListener("notificationclick",event=>{
   event.notification.close();
-  let target;\n  try{target=new URL(event.notification.data?.url||BASE+"?kc_notification_view=notifications",self.location.origin);if(target.origin!==self.location.origin)throw new Error("External notification target blocked");}
+  let target;
+  try{target=new URL(event.notification.data?.url||BASE+"?kc_notification_view=notifications",self.location.origin);if(target.origin!==self.location.origin)throw new Error("External notification target blocked");}
   catch{target=new URL(BASE+"?kc_notification_view=notifications",self.location.origin);}
   event.waitUntil((async()=>{
     const clients=await self.clients.matchAll({type:"window",includeUncontrolled:true});
