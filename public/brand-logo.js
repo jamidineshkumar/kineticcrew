@@ -2,7 +2,7 @@
 (function(){
  'use strict';
  const CACHE_KEY='kc-global-brand-logo-v5';
- let activeUrl='', activeTargets={app:true,browser:true,pwa:true,signin:true}, manifestObjectUrl='';
+ let activeUrl='', activeTargets={app:true,browser:true,pwa:true,signin:true,notifications:true}, manifestObjectUrl='';
  const validUrl=value=>{try{const u=new URL(String(value||''));return u.protocol==='https:'&&u.hostname==='lkdfjiweqxshbbcadfna.supabase.co'&&u.pathname==='/storage/v1/object/public/crew-brand-assets/brand/kinetic-crew-logo.png';}catch{return false;}};
  const isBrandImage=img=>{
   const src=img.getAttribute('src')||'', cls=String(img.className?.baseVal||img.className||'');
@@ -35,7 +35,7 @@
  };
  const apply=(url,targets=activeTargets)=>{
   if(!validUrl(url))return false;
-  activeUrl=url;activeTargets={app:true,browser:true,pwa:true,signin:true,...(targets||{})};window.KC_BRAND_LOGO_URL=url;
+  activeUrl=url;activeTargets={app:true,browser:true,pwa:true,signin:true,notifications:true,...(targets||{})};window.KC_BRAND_LOGO_URL=url;window.KC_NOTIFICATION_ICON_URL=activeTargets.notifications?url:'';
   try{localStorage.setItem(CACHE_KEY,url);}catch{}
   const original=window.kcPath;
   if(typeof original==='function'&&!original.__kcBrandWrapped){const wrapped=function(path){const signin=!!document.querySelector('#kcAuthScreen'),selected=signin?activeTargets.signin:activeTargets.app;if(selected&&/(?:^|\/)kinetic-crew-logo\.(?:svg|jpe?g|png|webp)(?:[?#]|$)/i.test(String(path||'')))return activeUrl;return original.call(this,path);};wrapped.__kcBrandWrapped=true;window.kcPath=wrapped;}
