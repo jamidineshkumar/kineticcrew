@@ -13,6 +13,23 @@ $$;
 revoke all on function public.crew_get_brand_identity() from public;
 grant execute on function public.crew_get_brand_identity() to anon,authenticated;
 
+-- Seed every destination with the currently live logo before any destination-specific
+-- replacement is uploaded, so unselected destinations retain their current appearance.
+insert into public.crew_app_settings(setting_key,setting_value,updated_at,updated_by)
+select 'brand_logo_assets',
+ jsonb_build_object(
+  'app',setting_value #>> '{}',
+  'browser',setting_value #>> '{}',
+  'pwa',setting_value #>> '{}',
+  'signin',setting_value #>> '{}',
+  'email',setting_value #>> '{}',
+  'notifications',setting_value #>> '{}'
+ ),now(),null
+from public.crew_app_settings
+where setting_key='brand_logo_url'
+  and not exists(select 1 from public.crew_app_settings where setting_key='brand_logo_assets')
+on conflict(setting_key) do nothing;
+
 create or replace function public.crew_set_app_setting(p_key text,p_value jsonb) returns jsonb
 language plpgsql security definer set search_path=pg_catalog,public,auth as $$
 declare v_uid text; v_role text; v_text text;
