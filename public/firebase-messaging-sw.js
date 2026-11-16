@@ -10,11 +10,26 @@ firebase.initializeApp({
   appId: "1:797058143037:web:f39507213d6e53dd082b54"
 });
 const messaging = firebase.messaging();
-messaging.onBackgroundMessage((payload) => {
+async function getNotificationBrandLogo() {
+  try {
+    const response = await fetch("https://lkdfjiweqxshbbcadfna.supabase.co/rest/v1/rpc/crew_get_brand_identity", {
+      method: "POST",
+      headers: { apikey: "sb_publishable_8-7_og12Zot7nA-W_tz-rw_yDS1I9cp", Authorization: "Bearer sb_publishable_8-7_og12Zot7nA-W_tz-rw_yDS1I9cp", "Content-Type": "application/json" },
+      body: "{}",
+      cache: "no-store"
+    });
+    if (!response.ok) return null;
+    const identity = await response.json();
+    const url = identity?.logo_url;
+    return identity?.targets?.notifications === true && typeof url === "string" && url.startsWith("https://lkdfjiweqxshbbcadfna.supabase.co/storage/v1/object/public/crew-brand-assets/brand/kinetic-crew-logo.png") ? url : null;
+  } catch { return null; }
+}
+messaging.onBackgroundMessage(async (payload) => {
   const title = payload.notification?.title || "Kinetic Crew";
+  const notificationLogo = await getNotificationBrandLogo();
   const options = {
     body: payload.notification?.body || "You have a new crew update.",
-    icon: "/icon.svg",
+    icon: notificationLogo || "/icon.svg",
     ...(payload.notification?.image ? { image: payload.notification.image } : {}),
     badge: "/kc-notification-badge.svg",
     tag: payload.data?.notificationId || "kinetic-crew",
