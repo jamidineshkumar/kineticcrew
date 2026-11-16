@@ -1,0 +1,257 @@
+/* KINETIC CREW — unified graphite / soft-neumorphic finish.
+   Visual layer only: intentionally does not change DOM, navigation, dimensions,
+   feature visibility, interaction logic, or existing Kinetic Crew artwork. */
+:root:not([data-theme="light"]){
+  --kc-surface-0:#111315;
+  --kc-surface-1:#1b1e20;
+  --kc-surface-2:#222629;
+  --kc-surface-3:#292e31;
+  --kc-edge:rgba(255,255,255,.075);
+  --kc-edge-soft:rgba(255,255,255,.045);
+  --kc-warm:#ff7657;
+  --kc-warm-hi:#ff9b78;
+  --kc-warm-soft:rgba(255,118,87,.13);
+  --kc-raised:7px 8px 18px rgba(0,0,0,.38),-5px -5px 15px rgba(255,255,255,.025),inset 1px 1px 0 rgba(255,255,255,.025);
+  --kc-inset:inset 4px 4px 9px rgba(0,0,0,.32),inset -3px -3px 8px rgba(255,255,255,.022);
+}
+:root:not([data-theme="light"]) body{
+  background:
+    radial-gradient(ellipse at 12% 8%,rgba(110,120,132,.11),transparent 34%),
+    radial-gradient(ellipse at 88% 18%,rgba(255,105,76,.065),transparent 31%),
+    radial-gradient(ellipse at 52% 100%,rgba(120,92,105,.045),transparent 42%),
+    #101214!important;
+  color:#f1f0ee!important;
+}
+:root:not([data-theme="light"]) .side,
+:root:not([data-theme="light"]) .side.open{
+  background:linear-gradient(148deg,#202427 0%,#191c1f 58%,#202326 100%)!important;
+  border-color:var(--kc-edge)!important;
+  box-shadow:12px 0 34px rgba(0,0,0,.34),inset -1px 0 rgba(255,255,255,.025)!important;
+}
+:root:not([data-theme="light"]) .workspace,
+:root:not([data-theme="light"]) .motto,
+:root:not([data-theme="light"]) .profile,
+:root:not([data-theme="light"]) .nav-group-toggle,
+:root:not([data-theme="light"]) .navitem,
+:root:not([data-theme="light"]) .kc-nav-signout{
+  background:linear-gradient(145deg,#292e31,#1b1f22)!important;
+  border:1px solid var(--kc-edge)!important;
+  color:#efeeec!important;
+  box-shadow:var(--kc-raised)!important;
+}
+:root:not([data-theme="light"]) .workspace,
+:root:not([data-theme="light"]) .motto,
+:root:not([data-theme="light"]) .profile{border-radius:19px!important}
+:root:not([data-theme="light"]) .nav-group-toggle{
+  border-radius:20px!important;
+  min-height:76px;
+  padding:13px 15px!important;
+  text-align:left!important;
+}
+:root:not([data-theme="light"]) .nav-group-toggle:hover,
+:root:not([data-theme="light"]) .navitem:hover,
+:root:not([data-theme="light"]) .kc-nav-signout:hover{
+  background:linear-gradient(145deg,#303538,#202427)!important;
+  border-color:rgba(255,255,255,.12)!important;
+}
+:root:not([data-theme="light"]) .nav-group.expanded>.nav-group-toggle,
+:root:not([data-theme="light"]) .navitem.active{
+  background:linear-gradient(145deg,#2b2e30,#1b1e20)!important;
+  border-color:rgba(255,132,101,.27)!important;
+  color:#ffb094!important;
+  box-shadow:var(--kc-inset),0 0 0 1px rgba(255,118,87,.035)!important;
+}
+:root:not([data-theme="light"]) .nav-group-symbol,
+:root:not([data-theme="light"]) .navitem .nicon,
+:root:not([data-theme="light"]) .kc-nav-signout>span,
+:root:not([data-theme="light"]) .workspace>span:first-child,
+:root:not([data-theme="light"]) .motto>span{
+  color:var(--kc-warm-hi)!important;
+  background:linear-gradient(145deg,#3a2925,#211e1d)!important;
+  border:1px solid rgba(255,139,108,.16)!important;
+  box-shadow:inset 2px 2px 5px rgba(0,0,0,.22),inset -1px -1px 4px rgba(255,255,255,.025)!important;
+}
+:root:not([data-theme="light"]) .nav-group-symbol{border-radius:15px!important}
+:root:not([data-theme="light"]) .nav-group-label b,
+:root:not([data-theme="light"]) .navitem,
+:root:not([data-theme="light"]) .kc-nav-signout b{color:#efeeec!important}
+:root:not([data-theme="light"]) .nav-group-label small,
+:root:not([data-theme="light"]) .navtitle,
+:root:not([data-theme="light"]) .workspace small,
+:root:not([data-theme="light"]) .profile small{color:#a2a4a5!important}
+:root:not([data-theme="light"]) .nav-group-chevron{color:#a8abad!important}
+:root:not([data-theme="light"]) .nav-group-items{
+  border-left:1px solid rgba(255,255,255,.075)!important;
+}
+:root:not([data-theme="light"]) .nav-group-items .navitem{
+  background:rgba(255,255,255,.018)!important;
+  border-color:rgba(255,255,255,.045)!important;
+  box-shadow:inset 1px 1px 3px rgba(0,0,0,.2)!important;
+}
+:root:not([data-theme="light"]) .nav-group-items .navitem.active{
+  background:rgba(255,118,87,.09)!important;
+  border-color:rgba(255,118,87,.22)!important;
+  color:#ffb094!important;
+}
+:root:not([data-theme="light"]) .kc-nav-signout{
+  background:linear-gradient(145deg,#332321,#211a1a)!important;
+  border-color:rgba(255,118,87,.22)!important;
+  color:#ffb094!important;
+}
+:root:not([data-theme="light"]) .kc-mobile-topbar,
+:root:not([data-theme="light"]) .topbar{
+  background:rgba(25,28,30,.9)!important;
+  border-color:var(--kc-edge)!important;
+  box-shadow:0 8px 26px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.035)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(120%)!important;
+  backdrop-filter:blur(22px) saturate(120%)!important;
+}
+:root:not([data-theme="light"]) .kc-mobile-topbar button,
+:root:not([data-theme="light"]) .kc-menu-button,
+:root:not([data-theme="light"]) .kc-header-actions button,
+:root:not([data-theme="light"]) .topright .iconbutton{
+  background:linear-gradient(145deg,#2b3033,#1c2023)!important;
+  border:1px solid var(--kc-edge)!important;
+  color:#f2f0ee!important;
+  box-shadow:var(--kc-raised)!important;
+}
+:root:not([data-theme="light"]) .content .surface,
+:root:not([data-theme="light"]) .content .stat,
+:root:not([data-theme="light"]) .content .event,
+:root:not([data-theme="light"]) .content .announcement,
+:root:not([data-theme="light"]) .content .feature-card,
+:root:not([data-theme="light"]) .content .notification-item,
+:root:not([data-theme="light"]) .content .crew-profile-tile,
+:root:not([data-theme="light"]) .content .social-post-card,
+:root:not([data-theme="light"]) .content .kc-detail-panel,
+:root:not([data-theme="light"]) .content .kce-event-card,
+:root:not([data-theme="light"]) .content .kce-detail-panel,
+:root:not([data-theme="light"]) .content .kce-reserve-panel,
+:root:not([data-theme="light"]) .content .notice-settings,
+:root:not([data-theme="light"]) .content .notice-feed,
+:root:not([data-theme="light"]) .content .formgrid,
+:root:not([data-theme="light"]) .content .publish,
+:root:not([data-theme="light"]) .content .verifyform,
+:root:not([data-theme="light"]) .content .wa-chat-shell,
+:root:not([data-theme="light"]) .content .kc-home-updates,
+:root:not([data-theme="light"]) .content .kc-exact-quick,
+:root:not([data-theme="light"]) .content .kc-exact-gram-entry,
+:root:not([data-theme="light"]) .content .kc-exact-friends,
+:root:not([data-theme="light"]) .content .kc-exact-update,
+:root:not([data-theme="light"]) .content .kc-exact-event-card,
+:root:not([data-theme="light"]) .content .kc-exact-empty-card{
+  background:linear-gradient(145deg,#252a2d,#1a1e21)!important;
+  border:1px solid var(--kc-edge)!important;
+  color:#f0efed!important;
+  box-shadow:var(--kc-raised)!important;
+}
+:root:not([data-theme="light"]) .content .banner,
+:root:not([data-theme="light"]) .content .kc-more-banner,
+:root:not([data-theme="light"]) .content .kc-profile-hero,
+:root:not([data-theme="light"]) .content .kce-detail-hero,
+:root:not([data-theme="light"]) .content .kc-exact-hero{
+  background:radial-gradient(ellipse at 82% 12%,rgba(255,118,87,.12),transparent 42%),linear-gradient(145deg,#292d30,#1b1f22)!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  box-shadow:var(--kc-raised)!important;
+}
+:root:not([data-theme="light"]) .content .primary{
+  background:linear-gradient(145deg,#ff9877,#e9684d)!important;
+  border:1px solid rgba(255,184,155,.25)!important;
+  color:#211411!important;
+  box-shadow:0 7px 18px rgba(0,0,0,.28),inset 1px 1px 0 rgba(255,255,255,.22)!important;
+}
+:root:not([data-theme="light"]) .content .secondary,
+:root:not([data-theme="light"]) .content .outline,
+:root:not([data-theme="light"]) .content .iconbutton,
+:root:not([data-theme="light"]) .content .feature-actions button,
+:root:not([data-theme="light"]) .content .poll-options button{
+  background:linear-gradient(145deg,#2b3033,#1c2023)!important;
+  border:1px solid var(--kc-edge)!important;
+  color:#e9e7e4!important;
+  box-shadow:var(--kc-raised)!important;
+}
+:root:not([data-theme="light"]) .content .outline,
+:root:not([data-theme="light"]) .content .feature-link,
+:root:not([data-theme="light"]) .content .crew-profile-open,
+:root:not([data-theme="light"]) .content .social-action,
+:root:not([data-theme="light"]) .content .textlink{
+  color:#ffab8d!important;
+}
+:root:not([data-theme="light"]) .content input:not([type="checkbox"]):not([type="radio"]),
+:root:not([data-theme="light"]) .content select,
+:root:not([data-theme="light"]) .content textarea,
+:root:not([data-theme="light"]) .content [contenteditable="true"],
+:root:not([data-theme="light"]) .content .field input,
+:root:not([data-theme="light"]) .content .field select,
+:root:not([data-theme="light"]) .content .field textarea{
+  background:linear-gradient(145deg,#191d20,#24292c)!important;
+  border:1px solid rgba(255,255,255,.085)!important;
+  color:#f1efec!important;
+  box-shadow:var(--kc-inset)!important;
+}
+:root:not([data-theme="light"]) .content input::placeholder,
+:root:not([data-theme="light"]) .content textarea::placeholder{color:#929698!important}
+:root:not([data-theme="light"]) .content .datechip,
+:root:not([data-theme="light"]) .content .pill,
+:root:not([data-theme="light"]) .content .role-pill,
+:root:not([data-theme="light"]) .content .feature-status,
+:root:not([data-theme="light"]) .content .status,
+:root:not([data-theme="light"]) .content .kce-detail-status{
+  background:var(--kc-warm-soft)!important;
+  border-color:rgba(255,118,87,.23)!important;
+  color:#ffb094!important;
+}
+:root:not([data-theme="light"]) .content h1,
+:root:not([data-theme="light"]) .content h2,
+:root:not([data-theme="light"]) .content h3{color:#f2f0ed}
+:root:not([data-theme="light"]) .content p,
+:root:not([data-theme="light"]) .content small{color:inherit}
+:root:not([data-theme="light"]) .kc-mobile-dock,
+:root:not([data-theme="light"]) .mobile-dock,
+:root:not([data-theme="light"]) .bottom-nav,
+:root:not([data-theme="light"]) .kc-bottom-nav{
+  background:rgba(26,29,31,.93)!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+  box-shadow:0 14px 36px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.06)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(125%)!important;
+  backdrop-filter:blur(24px) saturate(125%)!important;
+}
+:root:not([data-theme="light"]) .kc-mobile-dock .active,
+:root:not([data-theme="light"]) .mobile-dock .active,
+:root:not([data-theme="light"]) .bottom-nav .active,
+:root:not([data-theme="light"]) .kc-bottom-nav .active{color:#ffad8f!important}
+:root:not([data-theme="light"]) .toast,
+:root:not([data-theme="light"]) .notice,
+:root:not([data-theme="light"]) .empty,
+:root:not([data-theme="light"]) .kc-empty{
+  background:linear-gradient(145deg,#292e31,#1b1f22)!important;
+  border:1px solid var(--kc-edge)!important;color:#e9e7e4!important;box-shadow:var(--kc-raised)!important;
+}
+:root:not([data-theme="light"]) .modal,
+:root:not([data-theme="light"]) .modal-card,
+:root:not([data-theme="light"]) [role="dialog"],
+:root:not([data-theme="light"]) #modalRoot>div{
+  background:linear-gradient(145deg,#282d30,#191d20)!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+  color:#f1efec!important;box-shadow:0 22px 55px rgba(0,0,0,.5),inset 1px 1px 0 rgba(255,255,255,.035)!important;
+}
+:root:not([data-theme="light"]) .content hr,
+:root:not([data-theme="light"]) .content footer{border-color:var(--kc-edge)!important}
+:root:not([data-theme="light"]) button{ -webkit-tap-highlight-color:transparent; }
+@media(prefers-reduced-motion:no-preference){
+  :root:not([data-theme="light"]) .surface,
+  :root:not([data-theme="light"]) .stat,
+  :root:not([data-theme="light"]) .event,
+  :root:not([data-theme="light"]) .announcement,
+  :root:not([data-theme="light"]) .feature-card,
+  :root:not([data-theme="light"]) .notification-item,
+  :root:not([data-theme="light"]) .nav-group-toggle,
+  :root:not([data-theme="light"]) .navitem,
+  :root:not([data-theme="light"]) .kc-nav-signout{
+    transition:background .2s ease,border-color .2s ease,box-shadow .2s ease,color .2s ease!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  :root:not([data-theme="light"]) *{scroll-behavior:auto!important}
+}
+/* Preserve all existing responsive geometry, dock sizing and feature layouts. */
