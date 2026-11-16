@@ -68,6 +68,7 @@ async function api(path,method='GET',body){
  return data;
 }
 const featureKeys=['leave','memories','auditions','polls','chat','expenses','achievements','rehearsals','leaderboard'];
+const featureLabels={leave:'Leave requests',memories:'KC Memories',auditions:'Auditions',polls:'Polls & voting',chat:'Crew chat',expenses:'Crew expenses',achievements:'Crew achievements',rehearsals:'Rehearsals',leaderboard:'Leaderboard'};
 const FEATURE_ALIASES={'leave request':'leave','leave requests':'leave','kc memories':'memories','audition portal':'auditions','polls & voting':'polls','crew chat':'chat','crew expenses':'expenses','crew achievements':'achievements','crew rehearsals':'rehearsals','rehearsal':'rehearsals','practice session':'rehearsals','practice sessions':'rehearsals'};
 function normalizeFeatureKey(value,payload){
  const raw=String(value??payload?.feature??'').trim().toLowerCase();
