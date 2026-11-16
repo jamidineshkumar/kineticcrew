@@ -1051,14 +1051,7 @@ const pill=(view,key,label,disabled=false)=>'<button type="button" class="kc-mor
 const other=(view,key,label,disabled=false)=>'<button type="button" class="kc-more-other '+(disabled?'is-disabled':'')+'" '+(disabled?'disabled':'data-view="'+view+'"')+'><span class="kc-more-other-icon">'+icon(key)+'</span><b>'+label+'</b></button>';
 return '<div class="kc-more-reference">'+
 '<header class="kc-more-reference-header"><button type="button" class="kc-more-back" data-view="overview" aria-label="Back to home"><svg viewBox="0 0 24 24"><path d="m15 4-8 8 8 8"/></svg></button><h1><em>More</em></h1><span class="kc-more-spacer"></span></header>'+
-'<div class="kc-more-logo-wrap kc-more-intro" aria-label="Kinetic Crew introduction"><div class="kc-more-intro-track">'+
-'<div class="kc-more-intro-slide"><span class="kc-intro-index">01 / THE MOVEMENT</span><b class="kc-intro-line">WE ARE <em>KINETIC</em><br>CREW.</b><small>One crew. One rhythm. Endless energy.</small></div>'+
-'<div class="kc-more-intro-slide"><span class="kc-intro-index">02 / THE ENERGY</span><b class="kc-intro-line">MOVE WITH<br><em>PURPOSE.</em></b><small>Every beat brings us together.</small></div>'+
-'<div class="kc-more-intro-slide"><span class="kc-intro-index">03 / THE CULTURE</span><b class="kc-intro-line">BUILT ON<br><em>RHYTHM.</em></b><small>Driven by passion. United by dance.</small></div>'+
-'<div class="kc-more-intro-slide"><span class="kc-intro-index">04 / THE PEOPLE</span><b class="kc-intro-line">ONE CREW.<br><em>INFINITE MOVES.</em></b><small>Different styles. Shared heartbeat.</small></div>'+
-'<div class="kc-more-intro-slide"><span class="kc-intro-index">05 / THE CRAFT</span><b class="kc-intro-line">CREATE.<br><em>PERFORM. REPEAT.</em></b><small>Make every moment a performance.</small></div>'+
-'<div class="kc-more-intro-slide"><span class="kc-intro-index">06 / THE IDENTITY</span><b class="kc-intro-line">THIS IS<br><em>KINETIC CREW.</em></b><small>Feel the beat. Become the movement.</small></div>'+
-'</div><div class="kc-more-intro-progress" aria-hidden="true"><i></i></div></div>'+
+'<div class="kc-more-logo-wrap kc-more-intro kc-more-reference-hero" aria-label="One crew. One rhythm."><div class="kc-more-reference-hero-copy">ONE CREW.<br>ONE <em>RHYTHM.</em></div></div>'+
 '<section class="kc-more-reference-group"><h2>My Crew</h2><div class="kc-more-reference-pills">'+
 pill('events','events','Events')+
 pill('rehearsals','rehearsal','Rehearsals')+pill('polls','polls','Polls & voting')+pill('attendance','attendance','Attendance')+
@@ -2174,7 +2167,7 @@ function setMobileMenu(open){
  if(toggle){toggle.setAttribute('aria-expanded',open?'true':'false');toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');}
  document.body.classList.toggle('kc-menu-open',!!open);
 }
-document.addEventListener('click',event=>{const toggle=event.target.closest('#menuToggle');if(!toggle)return;event.preventDefault();event.stopPropagation();setMobileMenu(!$('#sidebar')?.classList.contains('open'));});
+document.addEventListener('click',event=>{const toggle=event.target.closest('#menuToggle');if(!toggle)return;event.preventDefault();event.stopPropagation();setMobileMenu(false);go('more');});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('#sidebar')?.classList.contains('open'))setMobileMenu(false);});
 let kcBackExitAt=0;window.addEventListener('popstate',event=>{if($('#sidebar')?.classList.contains('open'))setMobileMenu(false);const state=event.state;if(state?.kcApp&&typeof state.kcView==='string'){kcBackExitAt=0;go(state.kcView,{fromPop:true});return;}const now=Date.now();if(kcBackExitAt&&now-kcBackExitAt<=1800){const nativeApp=window.Capacitor?.Plugins?.App;if(nativeApp?.exitApp){nativeApp.exitApp();return;}kcBackExitAt=0;return;}kcBackExitAt=now;try{history.pushState({kcApp:true,kcView:S.view,kcRoot:true},'',location.href);}catch{}notice('Press back again to exit Kinetic Crew.');});
 $('#nav')?.addEventListener('click',event=>{if(event.target.closest('[data-view]'))setMobileMenu(false);});
