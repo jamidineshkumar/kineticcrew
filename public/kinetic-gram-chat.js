@@ -134,10 +134,7 @@ function messageMarkup(){
  }).join('')||'<div class="kg-wa-thread-empty"><span>✉</span><b>This is the beginning</b><small>Send a message to start the conversation.</small></div>';
 }
 async function loadMessages(id){
- const [m,a]=await Promise.all([
-  client.from('kg_messages').select('*').eq('conversation_id',id).order('created_at',{ascending:true}).limit(300),
-  client.from('kg_message_attachments').select('*').in('message_id',(state.messages||[]).map(x=>x.id).slice(0,0))
- ]);
+ const m=await client.from('kg_messages').select('*').eq('conversation_id',id).order('created_at',{ascending:true}).limit(300);
  if(m.error)throw m.error;
  state.messages=m.data||[];
  const ids=state.messages.map(x=>x.id);
@@ -202,7 +199,8 @@ function modal(content){const root=$('#kgWaModalRoot');if(root)root.innerHTML='<
 function closeModal(){$('#kgWaModalRoot')&&($('#kgWaModalRoot').innerHTML='');}
 function memberPicker(){const picked=[];return (state.people||[]).filter(p=>String(p.auth_id)!==state.user.id).map(p=>'<label class="kg-wa-person-option">'+avatar(p,p.name)+'<span><b>'+esc(p.name||'Crew member')+'</b><small>@'+esc(p.username||'crew-member')+'</small></span><input type="checkbox" name="member" value="'+esc(p.auth_id)+'"></label>').join('');}
 function newDirectModal(){
- modal('<button type="button" class="kg-wa-modal-close" data-kg-modal-close>×</button><span class="kg-wa-kicker">NEW CONVERSATION</span><h2>Start a private chat</h2><input class="kg-wa-modal-search" id="kgWaPeopleSearch" placeholder="Search crew members…"><div class="kg-wa-person-list" id="kgWaPeopleList">'+memberPicker()+'</div>');
+ const people=(state.people||[]).filter(p=>String(p.auth_id)!==state.user.id);
+ modal('<button type="button" class="kg-wa-modal-close" data-kg-modal-close>×</button><span class="kg-wa-kicker">NEW CONVERSATION</span><h2>Start a private chat</h2><input class="kg-wa-modal-search" id="kgWaPeopleSearch" placeholder="Search crew members…"><div class="kg-wa-person-list" id="kgWaPeopleList">'+(people.map(p=>'<button type="button" class="kg-wa-person-option kg-wa-start-person" data-kg-start-direct="'+esc(p.auth_id)+'">'+avatar(p,p.name)+'<span><b>'+esc(p.name||'Crew member')+'</b><small>@'+esc(p.username||'crew-member')+'</small></span><i>›</i></button>').join('')||'<p class="kg-wa-muted">No other approved crew profiles found.</p>')+'</div>');
 }
 function newGroupModal(){
  modal('<button type="button" class="kg-wa-modal-close" data-kg-modal-close>×</button><span class="kg-wa-kicker">GROUP CHAT</span><h2>Create a group</h2><form id="kgWaGroupForm"><label>Group name<input name="title" required maxlength="80" placeholder="e.g. Kinetic Crew Rehearsals"></label><label>Description<textarea name="description" maxlength="500" placeholder="What is this group for?"></textarea></label><div class="kg-wa-person-list">'+memberPicker()+'</div><button type="submit" class="kg-wa-primary">Create group</button></form>');
@@ -268,6 +266,7 @@ async function handleClick(e){
  if(t.matches('[data-kg-new="direct"]')){newDirectModal();return;}
  if(t.matches('[data-kg-new="group"]')){newGroupModal();return;}
  if(t.matches('[data-kg-new-community]')){newCommunityModal();return;}
+ if(t.matches('[data-kg-start-direct]')){try{const id=await call('kg_open_direct_chat',{p_other_user_id:t.dataset.kgStartDirect});closeModal();await loadData();await openConversation(id)}catch(err){notify(err.message||'Could not start private chat.')}return;}
  if(t.matches('[data-kg-modal-close]')||t.matches('[data-kg-modal-backdrop]')){closeModal();return;}
  if(t.matches('[data-kg-open]')){closeModal();const id=t.dataset.kgOpen;try{await openConversation(id)}catch(err){notify(err.message||'Could not open chat.')}return;}
  if(t.matches('[data-kg-back]')){if(state.channel)client.removeChannel(state.channel);state.channel=null;state.active=null;$('#kgWaThreadView').hidden=true;$('#kgWaListView').hidden=false;$('.kg-wa-fab-wrap').hidden=false;await loadData();return;}
@@ -326,5 +325,5 @@ document.addEventListener('change',async e=>{
 document.addEventListener('click',e=>{if(e.target.matches('[data-kg-search-clear]')){state.search='';$('#kgWaSearch').value='';e.target.hidden=true;renderList();}});
 const observer=new MutationObserver(()=>{const root=$('#kgWaApp');if(root&&!root.dataset.kgInit){root.dataset.kgInit='1';loadData().catch(err=>{const list=$('#kgWaList');if(list)list.innerHTML='<div class="kg-wa-empty"><b>Could not load Kinetic Gram chats</b><small>'+esc(err.message||'Please retry.')+'</small><button type="button" data-kg-retry>Retry</button></div>'});}});
 observer.observe(document.documentElement,{childList:true,subtree:true});
-document.addEventListener('click',()=>{if($('#kgWaApp')&&event?.target?.closest?.('[data-kg-retry]'))loadData().catch(err=>notify(err.message))});
+document.addEventListener('click',e=>{if($('#kgWaApp')&&e.target.closest('[data-kg-retry]'))loadData().catch(err=>notify(err.message))});
 })();
