@@ -328,7 +328,7 @@ document.addEventListener('change',async e=>{
  if(e.target.id==='kgWaFileInput'&&e.target.files?.length){try{await uploadFiles([...e.target.files]);notify('Media sent.')}catch(err){notify(err.message||'Upload failed.')}finally{e.target.value='';}}
 });
 document.addEventListener('click',e=>{if(e.target.matches('[data-kg-search-clear]')){state.search='';$('#kgWaSearch').value='';e.target.hidden=true;renderList();}});
-const observer=new MutationObserver(()=>{const root=$('#kgWaApp');if(root&&!root.dataset.kgInit){root.dataset.kgInit='1';loadData().catch(err=>{const list=$('#kgWaList');if(list)list.innerHTML='<div class="kg-wa-empty"><b>Could not load Kinetic Gram chats</b><small>'+esc(err.message||'Please retry.')+'</small><button type="button" data-kg-retry>Retry</button></div>'});}});
+const observer=new MutationObserver(()=>{const root=$('#kgWaApp');if(root&&!root.dataset.kgInit){root.dataset.kgInit='1';loadData().catch(err=>{const list=$('#kgWaList');if(list)list.innerHTML='<div class="kg-wa-empty"><b>Could not load Kinetic Gram chats</b><small>'+esc(err.message||'Please retry.')+'</small><button type="button" data-kg-retry>Retry</button></div>'});}else if(!root&&state.channel){client.removeChannel(state.channel);state.channel=null;state.active=null;}});
 observer.observe(document.documentElement,{childList:true,subtree:true});
 document.addEventListener('click',e=>{if($('#kgWaApp')&&e.target.closest('[data-kg-retry]'))loadData().catch(err=>notify(err.message))});
 })();
