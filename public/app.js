@@ -67,6 +67,7 @@ async function api(path,method='GET',body){
  if(error)throw Error(error.message||error.details||'Crew service request failed.');
  return data;
 }
+const featureKeys=['leave','memories','auditions','polls','chat','expenses','achievements','rehearsals','leaderboard'];
 const FEATURE_ALIASES={'leave request':'leave','leave requests':'leave','kc memories':'memories','audition portal':'auditions','polls & voting':'polls','crew chat':'chat','crew expenses':'expenses','crew achievements':'achievements','crew rehearsals':'rehearsals','rehearsal':'rehearsals','practice session':'rehearsals','practice sessions':'rehearsals'};
 function normalizeFeatureKey(value,payload){
  const raw=String(value??payload?.feature??'').trim().toLowerCase();
