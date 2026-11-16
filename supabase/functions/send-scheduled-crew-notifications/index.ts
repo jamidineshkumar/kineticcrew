@@ -8,6 +8,15 @@ const cors = {
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json" } });
 
+const APP_ORIGIN = (Deno.env.get("KC_APP_ORIGIN") || "https://kineticcrew.vercel.app").replace(/\\/+$/, "");
+function notificationDestination(item: { source_type?: string; source_id?: string; notification_key?: string }) {
+  const hint = (String(item.source_type || "") + " " + String(item.notification_key || "")).toLowerCase();
+  if (hint.includes("audition")) return "/audition-admin.html";
+  if (hint.includes("event") && item.source_id) return "/?kc_notification_view=event-detail&kc_event_id=" + encodeURIComponent(String(item.source_id));
+  if (hint.includes("rehearsal")) return "/?kc_notification_view=rehearsals";
+  return "/?kc_notification_view=notifications";
+}
+
 function readKey(primary: string, legacy: string) {
   const raw = Deno.env.get(primary);
   if (raw) {
@@ -176,7 +185,7 @@ Deno.serve(async (req) => {
       }
 
       const notificationId = String(item.id);
-      const url = "/";
+      const url = notificationDestination(item);\n      const absoluteUrl = APP_ORIGIN + url;
       const results = await Promise.all(tokens.map(async (token: string) => {
         const response = await fetch(`https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`, {
           method: "POST",
@@ -197,16 +206,16 @@ Deno.serve(async (req) => {
                 notification: {
                   title: item.title,
                   body: item.body,
-                  icon: "/kc-notification-badge.svg",
+                  icon: "/icon.svg",
                   badge: "/kc-notification-badge.svg",
                   tag: notificationId,
                   renotify: false,
                 },
-                fcmOptions: { link: url },
+                fcmOptions: { link: absoluteUrl },
               },
               android: {
                 priority: "HIGH",
-                notification: { channel_id: "crew_updates", sound: "default", tag: notificationId },
+                notification: { channel_id: "crew_updates", sound: "default", icon: "ic_stat_notification", tag: notificationId },
               },
               apns: { headers: { "apns-priority": "10" }, payload: { aps: { sound: "default" } } },
             },
