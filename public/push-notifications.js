@@ -117,7 +117,7 @@ async function installForegroundListener(messaging, onMessage) {
     if ("Notification" in window && Notification.permission === "granted") {
       const options = {
         body,
-        icon: window.kcPath("icon.svg"),
+        icon: window.KC_NOTIFICATION_ICON_URL || window.kcPath("icon.svg"),
         ...(payload.notification?.image ? { image: payload.notification.image } : {}),
         badge: window.kcPath("kc-notification-badge.svg"),
         tag: payload.data?.notificationId || payload.data?.id || "kinetic-crew-update",
