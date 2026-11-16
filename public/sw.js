@@ -1,6 +1,6 @@
 const BASE=new URL(self.registration.scope).pathname.replace(/\/?$/,'/');
-const CACHE='kinetic-crew-shell-v185';
-const CORE=['','index.html','connect.html','login.html','audition-application.html','track-application.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','icon.svg','kinetic-crew-logo.svg','kinetic-crew-logo.jpg','theme.js','theme-overrides.css','stumagz-redesign.css','mobile-dock.js','push-notifications.js','crew-enhancements.js','crew-enhancements.css','app-version.json','audition.html','audition-admin.html','crew-confirmation.html','kc-meet.js','kc-meet.css','vibe-home.css', 'approved-mobile-shell.css','kc-home-glass-tiles.css','kc-exact-home.css','icon.svg','founder-crown.svg','onboarding.css','more-menu-reference.css','kc-more-neumorphic.css','kc-dock-final.css','kinetic-gram-experience.css','kinetic-gram-experience.js','kc-home-featured-carousel.css','kc-profile-liquid.css','kc-header-alignment-fix.css','kc-home-header-greeting-refresh.css','kc-transition.css','kc-transition.js','student-tribe-interface.css','global-search.js','global-search.css','events-experience.css','gram-onboarding.js','gram-onboarding.css','kc-memories-sharing.css','kc-notifications-inbox.css','kc-home-logo-menu-dedupe.css','kc-profile-single-edit.css','kc-profile-flip-hint.css','kc-app-neumorphic-system.css','kc-attendance-report.css','kc-search-events-polish.css','kc-more-event-ads.css','kc-more-event-ads.js','brand-logo.js','brand-logo-admin.css','kc-admin-shortcuts.css','kc-admin-role-tools.css','kc-admin-menu-shortcuts.css','kc-custom-alerts.css','kc-admin-menu-shortcuts.js','kc-member-action-ring.css','kc-visitor-profile.css','kc-global-minimal-ui.css','kc-home-poll-layout.css','kc-developer-photo.css','kc-performance.css'];
+const CACHE='kinetic-crew-shell-v186';
+const CORE=['','index.html','connect.html','login.html','audition-application.html','track-application.html','styles.css','mobile.css','app.js','config.js','supabase-client.js','manifest.webmanifest','icon.svg','kc-notification-badge.svg','kinetic-crew-logo.svg','kinetic-crew-logo.jpg','theme.js','theme-overrides.css','stumagz-redesign.css','mobile-dock.js','push-notifications.js','crew-enhancements.js','crew-enhancements.css','app-version.json','audition.html','audition-admin.html','crew-confirmation.html','kc-meet.js','kc-meet.css','vibe-home.css', 'approved-mobile-shell.css','kc-home-glass-tiles.css','kc-exact-home.css','icon.svg','founder-crown.svg','onboarding.css','more-menu-reference.css','kc-more-neumorphic.css','kc-dock-final.css','kinetic-gram-experience.css','kinetic-gram-experience.js','kc-home-featured-carousel.css','kc-profile-liquid.css','kc-header-alignment-fix.css','kc-home-header-greeting-refresh.css','kc-transition.css','kc-transition.js','student-tribe-interface.css','global-search.js','global-search.css','events-experience.css','gram-onboarding.js','gram-onboarding.css','kc-memories-sharing.css','kc-notifications-inbox.css','kc-home-logo-menu-dedupe.css','kc-profile-single-edit.css','kc-profile-flip-hint.css','kc-app-neumorphic-system.css','kc-attendance-report.css','kc-search-events-polish.css','kc-more-event-ads.css','kc-more-event-ads.js','brand-logo.js','brand-logo-admin.css','kc-admin-shortcuts.css','kc-admin-role-tools.css','kc-admin-menu-shortcuts.css','kc-custom-alerts.css','kc-admin-menu-shortcuts.js','kc-member-action-ring.css','kc-visitor-profile.css','kc-global-minimal-ui.css','kc-home-poll-layout.css','kc-developer-photo.css','kc-performance.css'];
 const ASSETS=CORE.map(path=>BASE+path);
 const CDN_ASSETS=["https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2","https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js","https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"];
 const CDN_CACHE="kinetic-crew-cdn-v1";
@@ -30,18 +30,18 @@ if(messaging)messaging.onBackgroundMessage(async payload=>{
     body:payload.notification?.body||"You have a new crew update.",
     // `icon` is the compact app mark; `image` gives Android a large,
     // full-colour crew logo in the expanded notification.
-    icon:BASE+"kc-notification-badge.svg",
-    ...(payload.data?.notificationType === "custom_alert" && payload.data?.imageUrl && payload.notification?.image === payload.data.imageUrl ? { image: payload.notification.image } : {}),
+    icon:BASE+"icon.svg",
+    ...(payload.notification?.image ? { image: payload.notification.image } : {}),
     badge:BASE+"kc-notification-badge.svg",
     tag:payload.data?.notificationId||("kc-"+title+"-"+(payload.notification?.body||"").slice(0,80)),
     renotify:false,
-    data:{url:payload.data?.url||BASE,notificationId:payload.data?.notificationId||""}
+    data:{url:payload.data?.url||BASE+"?kc_notification_view=notifications",notificationId:payload.data?.notificationId||"",sourceType:payload.data?.sourceType||"",sourceId:payload.data?.sourceId||""}
   });
 });
 }catch(error){console.warn("Background notifications disabled:",error);}
 self.addEventListener("notificationclick",event=>{
   event.notification.close();
-  const target=new URL(event.notification.data?.url||BASE,self.location.origin).href;
+  let target;\n  try{target=new URL(event.notification.data?.url||BASE+"?kc_notification_view=notifications",self.location.origin);if(target.origin!==self.location.origin)throw new Error("External notification target blocked");}\n  catch{target=new URL(BASE+"?kc_notification_view=notifications",self.location.origin);}
   event.waitUntil((async()=>{
     const clients=await self.clients.matchAll({type:"window",includeUncontrolled:true});
     for(const client of clients){if(client.url.startsWith(self.location.origin)&&"focus"in client){await client.navigate(target);return client.focus();}}
