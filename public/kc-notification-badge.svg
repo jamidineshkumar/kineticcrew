@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <title>KC notification mark</title>
-  <path fill="#fff" d="M14 12h13v31l31-31h19L48 44l32 44H63L40 57 27 70v18H14z"/>
-  <path fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" d="M82 30a31 31 0 1 0 0 40"/>
+  <title>Kinetic Crew notification mark</title>
+  <!-- A single bold K stays distinct at Android's small status-bar size. -->
+  <path fill="#fff" d="M20 10h16v32L66 10h21L55 46l33 44H67L44 58 36 67v23H20z"/>
 </svg>
