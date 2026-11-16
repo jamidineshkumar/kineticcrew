@@ -1,6 +1,6 @@
 {
-  "version": "1.6.39",
+  "version": "1.6.40",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-16T00:00:00+05:30",
-  "release_notes": "Fix mobile menu toggle, filter searches without rebuilding pages, batch Kinetic Gram media signing, and defer offscreen media."
+  "updated_at": "2026-11-16T07:30:00+05:30",
+  "release_notes": "Use the KC monochrome notification mark, retain the full-colour crew logo, and route notification taps to the relevant app screen."
 }
