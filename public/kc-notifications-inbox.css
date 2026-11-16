@@ -31,3 +31,21 @@ html[data-theme="light"] .kc-nav-signout,html[data-theme="light"] .kc-more-signo
 .notice-delete-button:disabled{opacity:.45;cursor:wait}
 .notification-item:has(.notice-delete-button) .notification-copy{padding-right:26px}
 @media(max-width:600px){.notice-actions{flex-wrap:wrap}.notice-actions #clearAllNotifications,.notice-actions #markAllRead{min-height:38px;padding-inline:10px;font-size:11px}.notice-delete-button{right:8px;top:8px;width:28px;height:28px}}
+
+
+/* Kinetic Crew inbox empty state: gentle, playful motion without shifting layout. */
+.kc-notice-empty{min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:42px 24px;overflow:hidden;position:relative}
+.kc-notice-empty-art{width:112px;height:112px;position:relative;display:grid;place-items:center;margin:0 auto 24px}
+.kc-notice-empty-art:before{content:"";position:absolute;inset:8px;border-radius:30px;background:#f0eaff;border:2px solid rgba(255,255,255,.9);box-shadow:0 10px 35px rgba(160,125,255,.16);animation:kcNoticeFloat 3.2s ease-in-out infinite}
+.kc-notice-star{position:relative;z-index:1;color:#8872c7;font-size:54px;line-height:1;animation:kcNoticeTwinkle 2.6s ease-in-out infinite}
+.kc-notice-orbit{position:absolute;inset:-5px;border:1px solid rgba(255,151,119,.38);border-radius:36px;transform:rotate(-24deg);animation:kcNoticeOrbit 8s linear infinite}
+.kc-notice-spark{position:absolute;z-index:2;color:#ff9a79;font-size:22px;animation:kcNoticeSpark 2.8s ease-in-out infinite}
+.kc-spark-one{right:-2px;top:8px}.kc-spark-two{left:0;bottom:8px;font-size:32px;animation-delay:1.1s}
+.kc-notice-empty>b{font-size:22px;font-weight:750;letter-spacing:-.02em}
+.kc-notice-empty>p{max-width:520px;margin:12px auto 0;color:var(--muted,#a8a8ad);font-size:16px;line-height:1.6}
+.kc-notice-empty-foot{margin-top:18px;color:var(--muted,#999);font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
+@keyframes kcNoticeFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-7px) rotate(2deg)}}
+@keyframes kcNoticeTwinkle{0%,100%{transform:rotate(0) scale(.92);opacity:.8}50%{transform:rotate(18deg) scale(1.08);opacity:1}}
+@keyframes kcNoticeOrbit{to{transform:rotate(336deg)}}
+@keyframes kcNoticeSpark{0%,100%{transform:translateY(0) scale(.8);opacity:.4}50%{transform:translateY(-7px) scale(1.15);opacity:1}}
+@media(prefers-reduced-motion:reduce){.kc-notice-empty-art:before,.kc-notice-star,.kc-notice-orbit,.kc-notice-spark{animation:none!important}}
