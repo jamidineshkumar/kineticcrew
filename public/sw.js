@@ -7,7 +7,7 @@ const CDN_CACHE="kinetic-crew-cdn-v1";
 
 const BRAND_LOGO_RPC='https://lkdfjiweqxshbbcadfna.supabase.co/rest/v1/rpc/crew_get_brand_logo';
 const BRAND_LOGO_KEY='sb_publishable_8-7_og12Zot7nA-W_tz-rw_yDS1I9cp';
-async function getBrandLogo(){try{const response=await fetch(BRAND_LOGO_RPC,{method:'POST',headers:{apikey:BRAND_LOGO_KEY,Authorization:'Bearer '+BRAND_LOGO_KEY,'Content-Type':'application/json'},body:'{}',cache:'no-store'});if(!response.ok)return null;const value=await response.json();return typeof value==='string'&&value.startsWith('https://lkdfjiweqxshbbcadfna.supabase.co/storage/v1/object/public/crew-brand-assets/brand/kinetic-crew-logo.png')?value:null;}catch{return null;}}
+async function getNotificationBrandLogo(){try{const endpoint='https://lkdfjiweqxshbbcadfna.supabase.co/rest/v1/rpc/crew_get_brand_identity';const response=await fetch(endpoint,{method:'POST',headers:{apikey:BRAND_LOGO_KEY,Authorization:'Bearer '+BRAND_LOGO_KEY,'Content-Type':'application/json'},body:'{}',cache:'no-store'});if(!response.ok)return null;const value=await response.json();const url=value?.logo_url,targets=value?.targets||{};return targets.notifications===true&&typeof url==='string'&&url.startsWith('https://lkdfjiweqxshbbcadfna.supabase.co/storage/v1/object/public/crew-brand-assets/brand/kinetic-crew-logo.png')?url:null;}catch{return null;}}
 let messaging=null;
 try{
 importScripts("https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js");
@@ -25,12 +25,12 @@ messaging=firebase.messaging();
 try{
 if(messaging)messaging.onBackgroundMessage(async payload=>{
   const title=payload.notification?.title||"Kinetic Crew";
-  const logo=await getBrandLogo();
+  const notificationLogo=await getNotificationBrandLogo();
   self.registration.showNotification(title,{
     body:payload.notification?.body||"You have a new crew update.",
     // `icon` is the compact app mark; `image` gives Android a large,
     // full-colour crew logo in the expanded notification.
-    icon:BASE+"icon.svg",
+    icon:notificationLogo||BASE+"icon.svg",
     ...(payload.notification?.image ? { image: payload.notification.image } : {}),
     badge:BASE+"kc-notification-badge.svg",
     tag:payload.data?.notificationId||("kc-"+title+"-"+(payload.notification?.body||"").slice(0,80)),
