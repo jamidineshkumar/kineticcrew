@@ -1,6 +1,6 @@
 {
-  "version": "1.6.43",
+  "version": "1.6.44",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-17T00:35:00+05:30",
-  "release_notes": "Complete independent brand logo destination selection with Select All."
+  "updated_at": "2026-11-17T01:05:00+05:30",
+  "release_notes": "Fix immediate logo refresh across updated brand destinations."
 }
