@@ -1716,6 +1716,18 @@ if(e.target.closest('#clearAllNotifications')){
 }
 if(e.target.closest('#markAllRead')){localStorage.setItem(readKey(),JSON.stringify(notificationItems().map(a=>a.notice_id)));paint();notice('All notifications marked as read.');return;}if(e.target.closest('#testNoticeSound')){playNoticeSound();notice('That is your Kinetic Crew alert sound.');return;}if(e.target.closest('#enablePush')){await action(async()=>{const result=await window.kcPush.enable();saveNotificationPrefs({push:true});notice(result.message||'Push alerts enabled on this device.');});return;}});
 document.addEventListener('input',e=>{
+ if(e.target.id==='crewMemberSearch'||e.target.id==='pendingMemberSearch'){
+  const isMembers=e.target.id==='crewMemberSearch',q=e.target.value.trim().toLowerCase();
+  if(isMembers)S.crewMemberQuery=e.target.value;else S.pendingMemberQuery=e.target.value;
+  const list=$(isMembers?'#crewManagedMembers':'#crewPendingMembers'),count=$(isMembers?'#crewMemberSearchCount':'#pendingMemberSearchCount');if(!list)return;
+  const cards=[...list.querySelectorAll(isMembers?'.kc-admin-search-member':'.kc-admin-search-pending')];let visible=0;
+  cards.forEach(card=>{const show=!q||card.textContent.toLowerCase().includes(q);card.hidden=!show;if(show)visible++;});
+  const total=isMembers?(S.members||[]).length:(S.pendingMembers||[]).length;if(count)count.textContent=visible+' / '+total;
+  let noMatch=list.querySelector('.kc-admin-search-empty');
+  if(!visible){if(!noMatch){noMatch=document.createElement('div');noMatch.className='empty kc-admin-search-empty';list.append(noMatch);}noMatch.innerHTML='<div class="emptyicon">⌕</div><b>'+(isMembers?'No matching members':'No matching requests')+'</b><p>Try another name, username, role or email.</p>';}
+  else noMatch?.remove();
+  return;
+ }
  if(e.target.id==='peopleSearch'){
   S.peopleQuery=e.target.value;const q=S.peopleQuery.trim().toLowerCase(),grid=$('#profileDirectoryGrid');if(!grid)return;
   const cards=[...grid.querySelectorAll('.kc-member-directory-card')];let visible=0;
