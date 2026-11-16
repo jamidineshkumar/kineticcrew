@@ -36,6 +36,8 @@ jobs:
           node --check public/global-search.js
           node --check public/theme.js
           node --check public/sw.js
+          node --check public/push-notifications.js
+          node --check public/firebase-messaging-sw.js
       - name: Deploy Worker and static assets
         run: npx --yes wrangler@4.160.0 deploy --config wrangler.jsonc
         env:
