@@ -8,7 +8,7 @@ const cors = {
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json" } });
 
-const APP_ORIGIN = (Deno.env.get("KC_APP_ORIGIN") || "https://kineticcrew.vercel.app").replace(/\\/+$/, "");
+const APP_ORIGIN = (Deno.env.get("KC_APP_ORIGIN") || "https://kineticcrew.vercel.app").replace(/\/+$/, "");
 function safeNotificationPath(value: unknown) {
   const fallback = "/?kc_notification_view=notifications";
   try {
