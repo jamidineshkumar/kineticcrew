@@ -2301,6 +2301,7 @@ $('#logout').addEventListener('click',performCrewSignOut);
 document.addEventListener('click',event=>{if(event.target.closest('[data-kc-signout]'))performCrewSignOut();});
 
 document.addEventListener('click',async event=>{
+ const rewardsTab=event.target.closest('[data-kc-rewards-tab]');if(rewardsTab){setKCRewardsAdminTab(rewardsTab.dataset.kcRewardsTab);return;}
  const retry=event.target.closest('[data-kc-connect-retry]');
  if(retry){loadKCConnectDashboard();return;}
  const copy=event.target.closest('[data-kc-connect-copy]');
