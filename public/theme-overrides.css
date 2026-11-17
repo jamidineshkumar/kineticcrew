@@ -1299,3 +1299,53 @@ body:not(.kc-home-screen) .content .welcome .eyedot{
   line-height:1.01!important;
  }
 }
+
+
+/* Kinetic Crew — 3D Dot Matrix theme toggle, matched to the supplied reference. */
+button[data-theme-toggle].kc-theme-switch{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:9px!important;
+ width:150px!important;min-width:150px!important;max-width:150px!important;height:68px!important;min-height:68px!important;
+ padding:6px 9px!important;border:0!important;border-radius:999px!important;overflow:visible!important;
+ background:transparent!important;color:var(--text)!important;box-shadow:none!important;
+ font:700 9px/1 Inter,system-ui,sans-serif!important;letter-spacing:.15em!important;
+ cursor:pointer!important;touch-action:manipulation!important;-webkit-tap-highlight-color:transparent!important;
+}
+button[data-theme-toggle].kc-theme-switch .kc-theme-track{
+ position:relative!important;display:block!important;flex:0 0 138px!important;width:138px!important;height:58px!important;
+ border-radius:999px!important;overflow:hidden!important;
+ background:linear-gradient(180deg,#17151e 0%,#08080d 48%,#1b1822 100%)!important;
+ border:1px solid #777181!important;
+ box-shadow:inset 0 5px 9px #000c,inset 0 -3px 6px #ffffff12,0 9px 16px #0006,0 2px 3px #ffffff18!important;
+ transition:background .55s ease,border-color .55s ease,box-shadow .55s ease!important;
+}
+button[data-theme-toggle].kc-theme-switch .kc-theme-orb{
+ position:absolute!important;top:4px!important;left:4px!important;width:48px!important;height:48px!important;
+ display:grid!important;place-items:center!important;border-radius:50%!important;
+ background:radial-gradient(circle at 34% 26%,#5a5368 0%,#282431 47%,#100e16 100%)!important;
+ border:1px solid #b7a8d2!important;
+ box-shadow:0 0 10px 3px #a77bff55,0 0 24px 7px #8e5bff44,inset 0 2px 5px #ffffff5c,inset 0 -5px 8px #0009,0 5px 9px #000b!important;
+ transition:transform .62s cubic-bezier(.2,.85,.25,1.2),background .55s ease,border-color .55s ease,box-shadow .55s ease!important;
+}
+button[data-theme-toggle].kc-theme-switch .kc-theme-dots{
+ display:block!important;width:30px!important;height:30px!important;border-radius:50%!important;
+ background-image:radial-gradient(circle,#eee9ff 1.35px,transparent 1.8px),radial-gradient(circle,#eee9ff 1.2px,transparent 1.7px),radial-gradient(circle,#eee9ff 1px,transparent 1.5px)!important;
+ background-size:11px 11px,13px 13px,9px 9px!important;background-position:0 0,5px 3px,2px 6px!important;
+ filter:drop-shadow(0 0 2px #fff9)!important;opacity:.95!important;
+}
+button[data-theme-toggle].kc-theme-switch .kc-theme-state{display:none!important}
+:root[data-theme="light"] button[data-theme-toggle].kc-theme-switch .kc-theme-track{
+ background:linear-gradient(180deg,#ffffff 0%,#e5e3eb 48%,#f9f8fc 100%)!important;
+ border-color:#fff!important;box-shadow:inset 0 5px 9px #8d899c55,inset 0 -3px 6px #fff,0 9px 17px #4c465333,0 2px 3px #fff!important;
+}
+:root[data-theme="light"] button[data-theme-toggle].kc-theme-switch .kc-theme-orb{
+ transform:translateX(78px)!important;
+ background:radial-gradient(circle at 34% 26%,#ffffff 0%,#f5f3f7 56%,#dedbe5 100%)!important;
+ border-color:#fff!important;
+ box-shadow:0 0 10px 3px #ffb35d88,0 0 25px 8px #ff9c3d55,inset 0 2px 5px #fff,inset 0 -4px 8px #aaa5b466,0 5px 10px #77717a55!important;
+}
+:root[data-theme="light"] button[data-theme-toggle].kc-theme-switch .kc-theme-dots{
+ background-image:radial-gradient(circle,#17151c 1.35px,transparent 1.8px),radial-gradient(circle,#17151c 1.2px,transparent 1.7px),radial-gradient(circle,#17151c 1px,transparent 1.5px)!important;
+ filter:none!important;
+}
+button[data-theme-toggle].kc-theme-switch:focus-visible{outline:2px solid #ff9e55!important;outline-offset:5px!important}
+@media(prefers-reduced-motion:reduce){button[data-theme-toggle].kc-theme-switch *,button[data-theme-toggle].kc-theme-switch{transition:none!important}}
