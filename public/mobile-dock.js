@@ -24,6 +24,7 @@
   badge.hidden=value===0;badge.textContent=value>99?'99+':String(value);
   badge.setAttribute('aria-label',value+' unread Kinetic Gram messages');
  };
+ window.kcSetGramUnreadCount(window.kcGramUnreadCount||0);
 
  const dock=document.createElement('nav');dock.id='kcMobileDock';dock.className='kc-mobile-dock';dock.setAttribute('aria-label','Main app navigation');dock.append(home,group);document.body.appendChild(dock);
  function activeView(){
