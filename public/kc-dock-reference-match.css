@@ -1,0 +1,104 @@
+/* Reference-matched mobile dock: four individual raised graphite buttons. */
+@media(max-width:900px){
+ #kcMobileDock.kc-mobile-dock{
+  position:fixed!important;z-index:10000!important;left:50%!important;right:auto!important;top:auto!important;
+  bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;transform:translateX(-50%)!important;
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;align-items:center!important;
+  gap:10px!important;width:calc(100vw - 30px)!important;max-width:520px!important;
+  height:124px!important;min-height:124px!important;max-height:124px!important;
+  box-sizing:border-box!important;margin:0!important;padding:14px 12px 20px!important;
+  border:0!important;border-radius:0!important;background:rgba(9,9,14,.97)!important;color:#f7f6fb!important;
+  box-shadow:0 -1px 0 rgba(255,255,255,.025),0 12px 30px rgba(0,0,0,.42)!important;
+  -webkit-backdrop-filter:blur(20px) saturate(120%)!important;backdrop-filter:blur(20px) saturate(120%)!important;
+  overflow:visible!important;
+ }
+ #kcMobileDock .kc-dock-group{display:contents!important}
+ #kcMobileDock .kc-dock-home,
+ #kcMobileDock .kc-dock-group-item{
+  position:relative!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+  justify-self:stretch!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;
+  height:82px!important;min-height:82px!important;max-height:82px!important;gap:5px!important;
+  margin:0!important;padding:5px 2px!important;border:1px solid rgba(255,255,255,.035)!important;border-radius:25px!important;
+  background:linear-gradient(145deg,#25262d 0%,#17181e 58%,#202127 100%)!important;
+  color:#f5f4fb!important;
+  box-shadow:7px 8px 15px rgba(0,0,0,.62),-5px -5px 13px rgba(255,255,255,.045),
+   inset 1px 1px 2px rgba(255,255,255,.075),inset -2px -2px 5px rgba(0,0,0,.5)!important;
+  white-space:nowrap!important;overflow:visible!important;transform:none!important;
+  -webkit-tap-highlight-color:transparent!important;touch-action:manipulation!important;
+  transition:box-shadow .2s ease,transform .18s ease,background .2s ease!important;
+ }
+ #kcMobileDock .dock-icon{
+  display:grid!important;place-items:center!important;flex:0 0 43px!important;
+  width:43px!important;height:43px!important;min-width:43px!important;min-height:43px!important;
+  margin:0!important;padding:0!important;border:0!important;border-radius:13px!important;
+  background:transparent!important;color:#f2f1fa!important;
+  box-shadow:inset 1px 1px 2px rgba(255,255,255,.025)!important;
+ }
+ #kcMobileDock .dock-icon svg{
+  display:block!important;width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;
+  fill:none!important;stroke:currentColor!important;stroke-width:2.65!important;
+  stroke-linecap:round!important;stroke-linejoin:round!important;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.65))!important;
+ }
+ #kcMobileDock .dock-label{
+  display:block!important;visibility:visible!important;opacity:1!important;max-width:100%!important;
+  margin:0!important;padding:0!important;overflow:visible!important;color:#f5f4fb!important;
+  -webkit-text-fill-color:#f5f4fb!important;font-size:13px!important;font-weight:850!important;
+  line-height:1.05!important;letter-spacing:-.02em!important;white-space:nowrap!important;text-align:center!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.85)!important;
+ }
+ #kcMobileDock .kc-dock-home.active,
+ #kcMobileDock .kc-dock-group-item.active{
+  border:1px solid rgba(239,142,220,.18)!important;
+  background:linear-gradient(145deg,#28252f 0%,#1b1822 58%,#29212e 100%)!important;
+  box-shadow:7px 8px 16px rgba(0,0,0,.62),-4px -4px 12px rgba(255,255,255,.04),
+   inset 1px 1px 2px rgba(255,255,255,.09),0 0 18px rgba(205,99,211,.16)!important;
+  color:#fff!important;
+ }
+ #kcMobileDock .kc-dock-home.active .dock-icon,
+ #kcMobileDock .kc-dock-group-item.active .dock-icon{
+  color:#fff!important;filter:drop-shadow(0 0 7px rgba(220,113,229,.55))!important;
+ }
+ #kcMobileDock .kc-dock-group-item[data-view="feed"] .dock-icon{
+  background:radial-gradient(ellipse at 48% 52%,rgba(213,94,220,.22),transparent 72%)!important;
+  box-shadow:0 0 18px rgba(203,91,214,.24)!important;
+ }
+ #kcMobileDock .kc-dock-group-item[data-view="feed"] .dock-icon svg{
+  filter:drop-shadow(0 0 5px rgba(227,117,230,.65))!important;
+ }
+ #kcMobileDock .kc-dock-group-item[data-view="feed"] .dock-icon svg path{
+  stroke-width:3.2!important;
+ }
+ #kcMobileDock .kc-dock-group-item[data-search-open] .dock-icon svg{
+  stroke-width:3!important;filter:drop-shadow(0 2px 3px rgba(0,0,0,.75))!important;
+ }
+ #kcMobileDock .kc-dock-unread{top:2px!important;right:calc(50% - 28px)!important}
+ #kcMobileDock button:active{transform:scale(.96)!important}
+ main{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))!important}
+ main>footer{display:none!important}
+}
+@media(max-width:380px){
+ #kcMobileDock.kc-mobile-dock{width:calc(100vw - 22px)!important;gap:6px!important;padding:12px 8px 18px!important;height:116px!important;min-height:116px!important;max-height:116px!important}
+ #kcMobileDock .kc-dock-home,#kcMobileDock .kc-dock-group-item{height:76px!important;min-height:76px!important;max-height:76px!important;border-radius:21px!important;gap:3px!important}
+ #kcMobileDock .dock-icon{width:37px!important;height:37px!important;min-width:37px!important;min-height:37px!important;flex-basis:37px!important}
+ #kcMobileDock .dock-icon svg{width:37px!important;height:37px!important;min-width:37px!important;min-height:37px!important}
+ #kcMobileDock .dock-label{font-size:11px!important}
+}
+@media(max-width:340px){
+ #kcMobileDock.kc-mobile-dock{gap:4px!important;padding-left:5px!important;padding-right:5px!important}
+ #kcMobileDock .dock-label{font-size:10px!important}
+}
+html[data-theme="light"] #kcMobileDock.kc-mobile-dock{
+ background:rgba(9,9,14,.97)!important;color:#f7f6fb!important;
+}
+html[data-theme="light"] #kcMobileDock .kc-dock-home,
+html[data-theme="light"] #kcMobileDock .kc-dock-group-item{
+ background:linear-gradient(145deg,#25262d 0%,#17181e 58%,#202127 100%)!important;
+ color:#f5f4fb!important;border-color:rgba(255,255,255,.035)!important;
+}
+html[data-theme="light"] #kcMobileDock .dock-label{color:#f5f4fb!important;-webkit-text-fill-color:#f5f4fb!important}
+html[data-theme="light"] #kcMobileDock .kc-dock-home.active,
+html[data-theme="light"] #kcMobileDock .kc-dock-group-item.active{
+ background:linear-gradient(145deg,#28252f 0%,#1b1822 58%,#29212e 100%)!important;color:#fff!important;
+}
+@media(prefers-reduced-motion:reduce){#kcMobileDock,#kcMobileDock *{transition:none!important;animation:none!important}}
