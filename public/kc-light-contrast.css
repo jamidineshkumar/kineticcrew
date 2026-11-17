@@ -89,3 +89,139 @@
  :root[data-theme="light"] #kcMobileDock .kc-dock-home,
  :root[data-theme="light"] #kcMobileDock .kc-dock-group-item{color:#454b56!important}
 }
+
+
+/* Comfort pass: warm, low-glare light surfaces and softer tonal separation. */
+:root[data-theme="light"]{
+ --text:#383a3d!important;
+ --muted:#777872!important;
+ --panel:#f8f6f2!important;
+ --panel2:#f0eee8!important;
+ --line:#e3dfd7!important;
+ color-scheme:light;
+}
+:root[data-theme="light"] body,
+:root[data-theme="light"] #appRoot,
+:root[data-theme="light"] .shell,
+:root[data-theme="light"] main,
+:root[data-theme="light"] #app{
+ background:#f1efe9!important;
+ color:#383a3d!important;
+}
+:root[data-theme="light"] body{background:#f1efe9!important}
+:root[data-theme="light"] .content{color:#383a3d!important}
+:root[data-theme="light"] .content h1,
+:root[data-theme="light"] .content h2,
+:root[data-theme="light"] .content h3,
+:root[data-theme="light"] .content h4,
+:root[data-theme="light"] .content b,
+:root[data-theme="light"] .content strong,
+:root[data-theme="light"] .content label{
+ color:#41413f!important;
+}
+:root[data-theme="light"] .content p,
+:root[data-theme="light"] .content small,
+:root[data-theme="light"] .content .muted,
+:root[data-theme="light"] .content .hint,
+:root[data-theme="light"] .content .description{
+ color:#777872!important;
+}
+:root[data-theme="light"] .content input:not([type="checkbox"]):not([type="radio"]),
+:root[data-theme="light"] .content textarea,
+:root[data-theme="light"] .content select{
+ color:#454642!important;background:#f8f6f2!important;
+ border-color:#dedad2!important;
+}
+:root[data-theme="light"] .content input::placeholder,
+:root[data-theme="light"] .content textarea::placeholder{color:#92918a!important;opacity:1!important}
+:root[data-theme="light"] .content .surface,
+:root[data-theme="light"] .content .stat,
+:root[data-theme="light"] .content .event,
+:root[data-theme="light"] .content .announcement,
+:root[data-theme="light"] .content .feature-card,
+:root[data-theme="light"] .content .notification-item,
+:root[data-theme="light"] .content .crew-profile-tile,
+:root[data-theme="light"] .content .social-post-card,
+:root[data-theme="light"] .content .kc-detail-panel,
+:root[data-theme="light"] .content .kce-detail-panel,
+:root[data-theme="light"] .content .kce-reserve-panel,
+:root[data-theme="light"] .content .notice-settings,
+:root[data-theme="light"] .content .notice-feed,
+:root[data-theme="light"] .content .formgrid,
+:root[data-theme="light"] .content .publish,
+:root[data-theme="light"] .content .verifyform,
+:root[data-theme="light"] .content .wa-chat-shell,
+:root[data-theme="light"] .content .kc-home-updates,
+:root[data-theme="light"] .content .kc-exact-quick,
+:root[data-theme="light"] .content .kc-exact-gram-entry,
+:root[data-theme="light"] .content .kc-exact-friends,
+:root[data-theme="light"] .content .kc-exact-update,
+:root[data-theme="light"] .content .kc-exact-event-card,
+:root[data-theme="light"] .content .kc-exact-empty-card{
+ background:#f8f6f2!important;
+ color:#41413f!important;
+ border-color:#e3dfd7!important;
+ box-shadow:0 5px 15px rgba(68,62,51,.045),inset 0 1px 0 rgba(255,255,255,.72)!important;
+}
+:root[data-theme="light"] .kce-nightpulse .kce-event-search,
+:root[data-theme="light"] .kce-nightpulse .kce-ticket-shortcut,
+:root[data-theme="light"] .kce-nightpulse .kce-kc-meet-tile,
+:root[data-theme="light"] .kce-nightpulse .kce-tabs button,
+:root[data-theme="light"] .kce-nightpulse .kce-events-grid .kce-event-card,
+:root[data-theme="light"] .kce-nightpulse .kce-events-grid .kce-ticket-wallet-card,
+:root[data-theme="light"] .kce-nightpulse .kce-empty-state{
+ background:#f8f6f2!important;
+ color:#41413f!important;
+ border-color:#e3dfd7!important;
+ box-shadow:0 5px 15px rgba(68,62,51,.045),inset 0 1px 0 rgba(255,255,255,.72)!important;
+}
+:root[data-theme="light"] .kce-nightpulse .kce-event-search input{background:transparent!important}
+:root[data-theme="light"] .kce-nightpulse .kce-kc-meet-copy b,
+:root[data-theme="light"] .kce-nightpulse .kce-event-meta>b{color:#41413f!important}
+:root[data-theme="light"] .kce-nightpulse .kce-kc-meet-copy small,
+:root[data-theme="light"] .kce-nightpulse .kce-kc-meet-copy>span,
+:root[data-theme="light"] .kce-nightpulse .kce-event-meta>small,
+:root[data-theme="light"] .kce-nightpulse .kce-discover-label>span{color:#777872!important}
+:root[data-theme="light"] .kce-nightpulse .kce-tabs button.active{
+ background:#e9dce9!important;color:#754b70!important;border-color:#d9c5d7!important;
+}
+:root[data-theme="light"] .kce-nightpulse .kce-admin-event{
+ background:#d58a73!important;color:#fff!important;border-color:#d58a73!important;
+}
+:root[data-theme="light"] .kce-events .kce-events-head h1,
+:root[data-theme="light"] body:not(.kc-home-screen) .content .welcome h1,
+:root[data-theme="light"] body:not(.kc-home-screen) .content>header h1,
+:root[data-theme="light"] body:not(.kc-home-screen) .content>section>header h1{
+ color:#41413f!important;
+}
+:root[data-theme="light"] .kce-events .kce-events-head p,
+:root[data-theme="light"] body:not(.kc-home-screen) .content .welcome p{color:#777872!important}
+:root[data-theme="light"] .kce-events .kce-events-head h1 em,
+:root[data-theme="light"] body:not(.kc-home-screen) .content .welcome h1 em{
+ background:linear-gradient(100deg,#d18b75,#c77d8d)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;
+}
+:root[data-theme="light"] .kc-mobile-topbar,
+:root[data-theme="light"] .topbar{
+ background:rgba(246,244,239,.88)!important;
+ border-color:rgba(95,88,75,.10)!important;
+ box-shadow:0 7px 22px rgba(62,57,48,.07)!important;
+}
+:root[data-theme="light"] #kcMobileDock.kc-mobile-dock{
+ background:rgba(246,244,239,.94)!important;
+ border-color:rgba(95,88,75,.12)!important;
+ box-shadow:0 8px 22px rgba(62,57,48,.09),inset 0 1px 0 rgba(255,255,255,.8)!important;
+}
+:root[data-theme="light"] #kcMobileDock .dock-label,
+:root[data-theme="light"] #kcMobileDock .kc-dock-home,
+:root[data-theme="light"] #kcMobileDock .kc-dock-group-item{color:#65655f!important;text-shadow:none!important}
+:root[data-theme="light"] #kcMobileDock .kc-dock-home.active,
+:root[data-theme="light"] #kcMobileDock .kc-dock-group-item.active{
+ background:linear-gradient(145deg,#eee8e4,#e9e6e3)!important;
+ border-color:#ded5d1!important;box-shadow:inset 0 1px 0 #fff,0 3px 8px rgba(68,62,51,.05)!important;
+}
+:root[data-theme="light"] #kcMobileDock .kc-dock-home.active .dock-label,
+:root[data-theme="light"] #kcMobileDock .kc-dock-group-item.active .dock-label{color:#494945!important}
+@media(prefers-reduced-motion:reduce){
+ :root[data-theme="light"] *{scroll-behavior:auto!important}
+}
