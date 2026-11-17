@@ -1,0 +1,36 @@
+/* Super Admin managed More-page media banner. No slide has a redirect or CTA. */
+.kc-more-logo-wrap.kc-more-intro.kc-more-event-ads-host{height:auto!important;min-height:0!important;max-height:none!important;display:block!important;overflow:visible!important;margin:10px 0 28px!important;padding:0!important;border:0!important;background:none!important}
+.kc-more-ads-banner{position:relative;isolation:isolate;overflow:hidden;width:100%;height:clamp(205px,34vw,270px);min-height:205px;border:1px solid rgba(255,255,255,.14);border-radius:27px;background:#15151b;box-shadow:0 18px 42px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.08)}
+.kc-more-ads-glow{position:absolute;z-index:3;inset:-45%;pointer-events:none;background:conic-gradient(from 15deg,transparent 0 28%,rgba(229,74,158,.15) 38%,transparent 52%,rgba(43,194,205,.13) 67%,transparent 82%);filter:blur(32px);animation:kcMoreAdsGlow 14s linear infinite}
+.kc-more-ads-track{position:absolute;inset:0;touch-action:pan-y}
+.kc-more-ads-slide{position:absolute;inset:0;overflow:hidden;display:flex;align-items:flex-end;opacity:0;visibility:hidden;transform:translateX(18px) scale(.99);transition:opacity .55s ease,transform .65s cubic-bezier(.2,.7,.2,1),visibility .55s}
+.kc-more-ads-slide.is-active{opacity:1;visibility:visible;transform:translateX(0) scale(1)}
+.kc-more-ads-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;background:linear-gradient(135deg,#20222b,#111820)}
+.kc-more-ads-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,8,12,.88),rgba(7,8,12,.38) 68%,rgba(7,8,12,.12)),linear-gradient(0deg,rgba(7,8,12,.64),transparent 72%)}
+.kc-more-ads-copy{position:relative;z-index:2;display:grid;gap:8px;width:min(82%,620px);padding:22px 22px 30px;color:#fff;pointer-events:none}
+.kc-more-ads-copy small{width:max-content;max-width:100%;padding:6px 10px;border:1px solid rgba(255,255,255,.25);border-radius:99px;background:rgba(14,15,20,.46);font-size:9px;font-weight:900;letter-spacing:.16em}
+.kc-more-ads-copy h2{margin:0;color:#fff;font-size:clamp(24px,6vw,38px);line-height:1.02;letter-spacing:-.05em;text-shadow:0 3px 18px #0009}
+.kc-more-ads-copy p{margin:0;color:#f0edf2;font-size:11px;line-height:1.45;text-shadow:0 2px 8px #0009}
+.kc-more-ads-controls{position:absolute;z-index:4;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 15px;background:linear-gradient(0deg,rgba(7,8,12,.64),transparent)}
+.kc-more-ads-count,.kc-more-ads-brand{font-size:8px;font-weight:850;letter-spacing:.14em;color:#fff9;white-space:nowrap}
+.kc-more-ads-dots{display:flex;align-items:center;gap:6px}
+.kc-more-ads-dots button{width:6px;height:6px;min-width:6px;padding:0;border:0;border-radius:99px;background:#ffffff70}
+.kc-more-ads-dots button.active{width:19px;background:#ff9b78}
+.kc-more-ads-progress{position:absolute;z-index:5;left:0;right:0;bottom:0;height:3px;background:#ffffff20}
+.kc-more-ads-progress i{display:block;width:100%;height:100%;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,#ef589e,#ffae6c,#43d2d1)}
+@keyframes kcMoreAdsProgress{to{transform:scaleX(1)}}
+@keyframes kcMoreAdsGlow{to{transform:rotate(360deg)}}
+.kc-more-ads-empty{min-height:150px;display:grid;align-content:center;gap:8px;padding:24px;border:1px solid rgba(255,255,255,.1);border-radius:24px;background:radial-gradient(ellipse at 82% 10%,#d84f9b32,transparent 48%),radial-gradient(ellipse at 12% 88%,#31c9d233,transparent 50%),linear-gradient(135deg,#20212a,#12161b);color:#fff}
+.kc-more-ads-empty span{font-size:9px;font-weight:900;letter-spacing:.18em;color:#e7a5c5}.kc-more-ads-empty b{font-size:25px;letter-spacing:-.04em}.kc-more-ads-empty p{margin:0;color:#c9c7cf;font-size:11px}
+.kc-more-ads-admin{max-width:900px;margin:0 auto;padding:8px 0 38px}.kc-more-ads-admin-hero{padding:10px 2px 20px}.kc-more-ads-admin-hero small{font-size:9px;font-weight:900;letter-spacing:.16em;color:#e6a1bd}.kc-more-ads-admin-hero h1{margin:7px 0;font-size:clamp(28px,7vw,40px);letter-spacing:-.055em}.kc-more-ads-admin-hero p{margin:0;color:var(--muted,#999);font-size:12px;line-height:1.5}
+.kc-more-ads-admin-panel{margin:0 0 16px;padding:15px;border:1px solid var(--border,rgba(255,255,255,.1));border-radius:19px;background:var(--surface,#202327)}
+.kc-more-ads-admin-form{display:grid;gap:10px}.kc-more-ads-admin-form label{display:grid;gap:5px;font-size:10px;font-weight:750;color:var(--muted,#999)}
+.kc-more-ads-admin-form input:not([type=checkbox]),.kc-more-ads-admin-form textarea,.kc-more-ads-admin-form select{width:100%;min-width:0;padding:10px 11px;border:1px solid var(--border,rgba(255,255,255,.14));border-radius:10px;background:var(--background,#15171a);color:var(--text,#fff);font:inherit;font-size:12px}
+.kc-more-ads-admin-form textarea{resize:vertical}.kc-more-ads-admin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.kc-more-ads-admin-form button,.kc-more-ads-admin-row button{min-height:38px;padding:0 13px;border:0;border-radius:10px;background:linear-gradient(110deg,#ed7690,#a66bd4);color:#fff;font-size:11px;font-weight:850}
+.kc-more-ads-admin-form button.secondary,.kc-more-ads-admin-row button.secondary{background:transparent;border:1px solid var(--border,rgba(255,255,255,.16));color:inherit}
+.kc-more-ads-admin-actions{display:flex;gap:8px;flex-wrap:wrap}.kc-more-ads-admin-preview{width:100%;max-height:190px;object-fit:contain;border-radius:12px;background:#101115}.kc-more-ads-admin-list{display:grid;gap:10px}
+.kc-more-ads-admin-row{display:grid;grid-template-columns:112px minmax(0,1fr);gap:12px;padding:10px;border:1px solid var(--border,rgba(255,255,255,.1));border-radius:15px;background:var(--background,#17191d)}
+.kc-more-ads-admin-row img,.kc-more-ads-admin-row video{width:112px;height:78px;object-fit:cover;border-radius:9px;background:#101115}.kc-more-ads-admin-row>div{display:grid;align-content:start;gap:4px;min-width:0}.kc-more-ads-admin-row b{font-size:12px}.kc-more-ads-admin-row small{font-size:9px;color:var(--muted,#999);overflow-wrap:anywhere}.kc-more-ads-admin-row em{font-size:8px;font-style:normal;font-weight:900;letter-spacing:.12em;color:#73c9a2}.kc-more-ads-admin-row em.off{color:#e58b91}.kc-more-ads-admin-row .actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}.kc-more-ads-admin-row .actions button{min-height:29px;padding:0 9px;font-size:9px}
+@media(max-width:560px){.kc-more-ads-banner{height:clamp(190px,47vw,225px);min-height:190px;border-radius:22px}.kc-more-ads-copy{width:90%;padding:17px 16px 28px;gap:6px}.kc-more-ads-copy h2{font-size:clamp(22px,6.7vw,30px)}.kc-more-ads-copy p{font-size:10px}.kc-more-ads-admin-grid{grid-template-columns:1fr}.kc-more-ads-admin-row{grid-template-columns:88px minmax(0,1fr)}.kc-more-ads-admin-row img,.kc-more-ads-admin-row video{width:88px;height:70px}}
+@media(prefers-reduced-motion:reduce){.kc-more-ads-glow,.kc-more-ads-slide,.kc-more-ads-progress i{animation:none!important;transition:none!important}}
