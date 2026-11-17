@@ -1,0 +1,9 @@
+/* Profile page cleanup: discard accidental boolean text and let the flip shell size to its real front-card content. */
+.kc-single-profile{min-height:0!important;height:auto!important;justify-content:flex-start!important;align-items:stretch!important;overflow:visible!important}
+.kc-single-profile .kc-profile-flip-shell{min-height:0!important;height:auto!important;flex:0 0 auto!important}
+.kc-single-profile .kc-profile-flip-inner{min-height:0!important;height:auto!important}
+.kc-single-profile .kc-profile-card-back{height:auto!important;min-height:100%!important;box-sizing:border-box!important}
+.kc-single-profile .kc-profile-activity{display:block!important;visibility:visible!important;position:relative!important;z-index:2!important;width:min(100%,760px)!important;margin:22px auto 30px!important}
+.kc-single-profile .kc-profile-activity-panel[hidden]{display:none!important}
+.kc-single-profile .kc-profile-flip-hint{flex:0 0 auto!important}
+@media(max-width:640px){.kc-single-profile{padding:10px 12px calc(112px + env(safe-area-inset-bottom))!important;gap:12px!important}.kc-single-profile .kc-profile-flip-shell,.kc-single-profile .kc-profile-flip-inner{min-height:0!important}.kc-single-profile .kc-profile-activity{margin:18px auto 26px!important}}
