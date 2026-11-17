@@ -1,0 +1,90 @@
+/* Kinetic Crew referral and rewards repair — scoped overrides; preserves app navigation. */
+/* Native hidden state must win over component display declarations. */
+.kc-connect-loading[hidden],
+#kcConnectDashboard[hidden],
+#kcRewardsAdminContent[hidden]{display:none!important}
+.kc-connect-loading:not([hidden]){display:flex!important}
+
+/* Default dark theme: the feature cards must not inherit the light surface token. */
+:root:not([data-theme="light"]) .kc-connect-page,
+:root:not([data-theme="light"]) .kc-rewards-admin{color:#f2eef3}
+:root:not([data-theme="light"]) .kc-connect-stats article,
+:root:not([data-theme="light"]) .kc-connect-badges article,
+:root:not([data-theme="light"]) .kc-connect-referrals,
+:root:not([data-theme="light"]) .kc-reward-card,
+:root:not([data-theme="light"]) .kc-redemption-row,
+:root:not([data-theme="light"]) .kc-rewards-admin-section,
+:root:not([data-theme="light"]) .kc-admin-reward-row,
+:root:not([data-theme="light"]) .kc-admin-redemption{
+ background:linear-gradient(145deg,#202027,#17191f)!important;
+ border-color:rgba(255,255,255,.105)!important;
+ color:#f1eef3!important;
+ box-shadow:0 10px 28px rgba(0,0,0,.16)
+}
+:root:not([data-theme="light"]) .kc-connect-stats small,
+:root:not([data-theme="light"]) .kc-connect-badges small,
+:root:not([data-theme="light"]) .kc-connect-badges em,
+:root:not([data-theme="light"]) .kc-connect-referrals article small,
+:root:not([data-theme="light"]) .kc-reward-info p,
+:root:not([data-theme="light"]) .kc-reward-stock,
+:root:not([data-theme="light"]) .kc-rewards-admin-hero p,
+:root:not([data-theme="light"]) .kc-reward-admin-form label,
+:root:not([data-theme="light"]) .kc-reward-admin-form label small,
+:root:not([data-theme="light"]) .kc-admin-reward-row small,
+:root:not([data-theme="light"]) .kc-admin-redemption-head small,
+:root:not([data-theme="light"]) .kc-admin-empty,
+:root:not([data-theme="light"]) .kc-redemption-row small{
+ color:#bcb6c1!important
+}
+:root:not([data-theme="light"]) .kc-connect-stats b,
+:root:not([data-theme="light"]) .kc-connect-badges b,
+:root:not([data-theme="light"]) .kc-connect-referrals article b,
+:root:not([data-theme="light"]) .kc-reward-info>b,
+:root:not([data-theme="light"]) .kc-reward-info>strong,
+:root:not([data-theme="light"]) .kc-rewards-admin-title h2,
+:root:not([data-theme="light"]) .kc-rewards-admin-title>span,
+:root:not([data-theme="light"]) .kc-admin-reward-row b,
+:root:not([data-theme="light"]) .kc-admin-redemption-head b,
+:root:not([data-theme="light"]) .kc-admin-redemption p{
+ color:#f4f0f5!important
+}
+:root:not([data-theme="light"]) .kc-reward-admin-form input:not([type=checkbox]),
+:root:not([data-theme="light"]) .kc-reward-admin-form textarea,
+:root:not([data-theme="light"]) .kc-reward-admin-form select,
+:root:not([data-theme="light"]) .kc-admin-redemption textarea,
+:root:not([data-theme="light"]) .kc-reward-delivery{
+ background:#11171b!important;
+ color:#f5f4f6!important;
+ border-color:rgba(255,255,255,.17)!important;
+ color-scheme:dark
+}
+:root:not([data-theme="light"]) .kc-reward-admin-form input::placeholder,
+:root:not([data-theme="light"]) .kc-reward-admin-form textarea::placeholder,
+:root:not([data-theme="light"]) .kc-reward-delivery::placeholder{
+ color:#8f969c!important;opacity:1
+}
+:root:not([data-theme="light"]) .kc-reward-admin-form select option{
+ background:#11171b;color:#f5f4f6
+}
+:root:not([data-theme="light"]) .kc-reward-active{color:#e8e4e9!important}
+:root:not([data-theme="light"]) .kc-reward-active input{accent-color:#d78aa5}
+
+/* Keep the final fields and redemption actions clear of the persistent mobile dock. */
+.kc-connect-page,
+.kc-rewards-admin{
+ padding-bottom:calc(132px + env(safe-area-inset-bottom))!important
+}
+.kc-rewards-admin-section:last-child{scroll-margin-bottom:150px}
+.kc-connect-section:last-of-type{scroll-margin-bottom:150px}
+@media(max-width:600px){
+ .kc-rewards-admin-section{padding:14px}
+ .kc-reward-admin-fields{gap:8px}
+ .kc-reward-admin-form input:not([type=checkbox]),
+ .kc-reward-admin-form textarea,
+ .kc-reward-admin-form select{min-height:46px;font-size:14px}
+ .kc-reward-admin-form textarea{min-height:86px}
+ .kc-reward-admin-actions{flex-wrap:wrap}
+ .kc-reward-admin-actions button{flex:1}
+ .kc-admin-reward-row{flex-wrap:wrap}
+ .kc-admin-redemption-actions button{flex:1}
+}
