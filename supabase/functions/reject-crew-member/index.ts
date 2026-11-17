@@ -97,7 +97,10 @@ Deno.serve(async (req) => {
 
     // Existing database routine removes profile-linked records and owned content.
     const { error: cleanupError } = await userClient.rpc("crew_admin_delete_member", { p_auth_id: targetId });
-    if (cleanupError) throw new Error(cleanupError.message || "Could not remove the member's profile data.");
+    if (cleanupError) {
+      await admin.from("crew_member_rejection_tombstones").delete().eq("email_sha256", await sha256(email));
+      throw new Error(cleanupError.message || "Could not remove the member's profile data. The request was left unchanged.");
+    }
 
     const { error: authDeleteError } = await admin.auth.admin.deleteUser(targetId);
     if (authDeleteError) {
