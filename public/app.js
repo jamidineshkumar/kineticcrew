@@ -526,15 +526,46 @@ function showDynamicIsland(detail={}){
  const title=String(detail.title||'Kinetic Crew').slice(0,90),body=String(detail.body||'You have a new crew update.').slice(0,180),target=String(detail.target||'notifications');
  let island=document.getElementById('kcDynamicIsland');
  if(!island){island=document.createElement('button');island.type='button';island.id='kcDynamicIsland';island.className='kc-dynamic-island';island.setAttribute('aria-live','polite');island.setAttribute('aria-label','New Kinetic Crew notification');island.innerHTML='<span class="kc-island-mark">KC</span><span class="kc-island-copy"><b></b><small></small></span><span class="kc-island-dot"></span>';document.body.appendChild(island);
- island.addEventListener('click',()=>{const view=island.dataset.target||'notifications';island.classList.remove('is-visible');go(view);});
+ island.addEventListener('click',()=>{const view=island.dataset.target||'notifications',conversationId=island.dataset.conversationId||'';island.classList.remove('is-visible');if(view==='gram-chat'&&conversationId)window.__kgOpenConversation=conversationId;go(view);});
  }
  island.dataset.target=target;
+ island.dataset.conversationId=String(detail.conversationId||'');
  island.querySelector('.kc-island-copy b').textContent=title;
  island.querySelector('.kc-island-copy small').textContent=body;
  island.classList.remove('is-visible');void island.offsetWidth;island.classList.add('is-visible');
  clearTimeout(kcIslandTimer);kcIslandTimer=setTimeout(()=>island.classList.remove('is-visible'),6500);
 }
-window.addEventListener('kc:notification',event=>{const detail=event.detail||{};showDynamicIsland(detail);if(notificationPrefs().sound)playNoticeSound();});
+window.addEventListener('kc:notification',event=>{const detail=event.detail||{};if(detail.conversationId&&String(window.kcGramActiveConversation||'')===String(detail.conversationId))return;showDynamicIsland(detail);if(notificationPrefs().sound)playNoticeSound();});
+
+let kcGramInboxChannel=null,kcGramInboxUserId='';
+function startKcGramInboxRealtime(){
+ const userId=String(S.user?.auth_id||S.user?.id||'');
+ if(!userId||!client?.channel)return;
+ if(kcGramInboxChannel&&kcGramInboxUserId===userId)return;
+ if(kcGramInboxChannel){try{client.removeChannel(kcGramInboxChannel);}catch{}kcGramInboxChannel=null;}
+ kcGramInboxUserId=userId;
+ const channel=client.channel('kc-gram-inbox-'+userId);
+ channel.on('postgres_changes',{event:'INSERT',schema:'public',table:'kg_messages'},async payload=>{
+  const message=payload?.new||{},conversationId=String(message.conversation_id||'');
+  if(!message.id||!conversationId||String(message.sender_id)===userId)return;
+  try{
+   const membership=await client.from('kg_conversation_members')
+    .select('notifications_enabled,muted_until')
+    .eq('conversation_id',conversationId).eq('user_id',userId).maybeSingle();
+   if(!membership.error&&(!membership.data||membership.data.notifications_enabled===false))return;
+   if(!membership.error&&membership.data?.muted_until&&Date.parse(membership.data.muted_until)>Date.now())return;
+  }catch(error){console.warn('Kinetic Gram notification preference check deferred:',error);}
+  const sender=(S.publicMembers||S.members||[]).find(person=>String(person.auth_id||person.id)===String(message.sender_id));
+  const senderName=String(sender?.name||'Crew member');
+  const preview=message.message_type==='image'?'Photo':message.message_type==='video'?'Video':message.message_type==='voice'||message.message_type==='audio'?'Voice message':message.message_type==='document'?'Document':message.message_type==='gif'?'GIF':message.message_type==='location'?'Shared a location':String(message.body||'New message').slice(0,150);
+  window.dispatchEvent(new CustomEvent('kc:kg-message',{detail:{conversationId,messageId:String(message.id),senderId:String(message.sender_id),senderName,preview}}));
+  if(String(window.kcGramActiveConversation||'')!==conversationId){
+   window.dispatchEvent(new CustomEvent('kc:notification',{detail:{title:'Kinetic Gram · '+senderName,body:preview,target:'gram-chat',conversationId}}));
+  }
+ });
+ channel.subscribe(status=>{if(status!=='SUBSCRIBED')console.warn('Kinetic Gram inbox Realtime status:',status);});
+ kcGramInboxChannel=channel;
+}
 let kcKnownAnnouncementIds=null,kcAnnouncementPoll=null;
 let kcLastInteractionAt=0,kcDeferredSnapshotPaintTimer=0;
 document.addEventListener('pointerdown',()=>{kcLastInteractionAt=Date.now();},{passive:true});
@@ -2384,19 +2415,23 @@ async function boot(){
   }catch(error){
    if(!restoreOffline(session.user))throw error;
   }
+  startKcGramInboxRealtime();
   // Notification deep links are applied after authentication and data refresh so
   // the destination screen can resolve its event/crew data before rendering.
   const notificationParams=new URLSearchParams(location.search);
   const notificationView=notificationParams.get('kc_notification_view');
   const notificationEventId=notificationParams.get('kc_event_id');
+  const notificationChatId=notificationParams.get('kc_open_chat');
   if(notificationView){
-   const allowedNotificationViews=new Set(['notifications','events','event-detail','rehearsals','chat','feed']);
+   const allowedNotificationViews=new Set(['notifications','events','event-detail','rehearsals','chat','gram-chat','feed']);
    const destination=allowedNotificationViews.has(notificationView)?notificationView:'notifications';
    const cleanNotificationUrl=new URL(location.href);
    cleanNotificationUrl.searchParams.delete('kc_notification_view');
    cleanNotificationUrl.searchParams.delete('kc_event_id');
+   cleanNotificationUrl.searchParams.delete('kc_open_chat');
    try{history.replaceState({...history.state,kcApp:true},'',cleanNotificationUrl.pathname+cleanNotificationUrl.search+cleanNotificationUrl.hash);}catch{}
    if(destination==='event-detail'&&notificationEventId)S.selectedEvent=notificationEventId;
+   if(destination==='gram-chat'&&notificationChatId)window.__kgOpenConversation=notificationChatId;
    await go(destination,{fromPop:true});
   }
   startPendingApprovalAlerts();
