@@ -2622,8 +2622,56 @@ document.addEventListener('change',async event=>{
  }finally{input.value='';}
 });
 
-document.addEventListener('change',event=>{const input=event.target.closest('#kcEventBannerFile');if(!input)return;const file=input.files?.[0],preview=document.querySelector('#kcEventBannerPreview');if(!preview)return;if(!file){preview.innerHTML='';return;}if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024){notice('Choose a JPG, PNG or WebP image up to 5 MB.');input.value='';return;}const localUrl=URL.createObjectURL(file);preview.innerHTML='<img src="'+localUrl+'" alt="Selected event banner preview"><button type="button" data-event-banner-remove aria-label="Remove banner">Remove</button>';});
-document.addEventListener('click',event=>{const remove=event.target.closest('[data-event-banner-remove]');if(!remove)return;const form=remove.closest('#eventForm'),preview=form?.querySelector('#kcEventBannerPreview'),input=form?.querySelector('#kcEventBannerFile'),hidden=form?.querySelector('[name="cover_url"]');if(input)input.value='';if(hidden)hidden.value='';if(preview)preview.innerHTML='';});
+let kcEventBannerCrop=null;
+function closeEventBannerCrop(resetInput=false){
+ const state=kcEventBannerCrop;if(state?.url)URL.revokeObjectURL(state.url);kcEventBannerCrop=null;
+ document.querySelector('#kcEventBannerCropModal')?.remove();
+ if(resetInput){const input=document.querySelector('#kcEventBannerFile');if(input)input.value='';}
+}
+function drawEventBannerCrop(){
+ const state=kcEventBannerCrop,canvas=document.querySelector('#kcEventBannerCropCanvas');if(!state||!canvas)return;
+ const ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height,scale=Math.max(w/state.img.naturalWidth,h/state.img.naturalHeight)*state.zoom,iw=state.img.naturalWidth*scale,ih=state.img.naturalHeight*scale;
+ ctx.clearRect(0,0,w,h);ctx.fillStyle='#111';ctx.fillRect(0,0,w,h);ctx.drawImage(state.img,(w-iw)/2+state.x,(h-ih)/2+state.y,iw,ih);ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=3;ctx.strokeRect(2,2,w-4,h-4);
+}
+function openEventBannerCrop(file){
+ if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024){notice('Choose a JPG, PNG or WebP image up to 5 MB.');const input=document.querySelector('#kcEventBannerFile');if(input)input.value='';return;}
+ const url=URL.createObjectURL(file),img=new Image();
+ img.onload=()=>{
+  closeEventBannerCrop();kcEventBannerCrop={img,url,zoom:1,x:0,y:0,drag:null};
+  const root=document.createElement('div');root.id='kcEventBannerCropModal';root.className='kc-event-crop-backdrop';
+  root.innerHTML='<section class="kc-event-crop-modal" role="dialog" aria-modal="true" aria-labelledby="kcEventCropTitle"><button type="button" class="kc-event-crop-close" data-event-crop-cancel aria-label="Close">×</button><span class="eyebrow">EVENT BANNER STUDIO</span><h2 id="kcEventCropTitle">Adjust your banner</h2><p>Drag the image to reposition it and use the zoom slider. Your banner will be cropped to a wide 3:1 frame.</p><canvas id="kcEventBannerCropCanvas" width="900" height="300"></canvas><label class="kc-event-crop-zoom">ZOOM <input id="kcEventBannerCropZoom" type="range" min="1" max="3" step=".01" value="1"></label><div class="kc-event-crop-actions"><button type="button" class="outline" data-event-crop-cancel>Cancel</button><button type="button" class="primary" id="kcEventBannerCropApply">Apply crop</button></div></section>';
+  document.querySelector('#modalRoot')?.append(root);
+  const canvas=root.querySelector('#kcEventBannerCropCanvas');
+  canvas.addEventListener('pointerdown',ev=>{const s=kcEventBannerCrop;if(!s)return;s.drag={x:ev.clientX,y:ev.clientY,ox:s.x,oy:s.y};canvas.setPointerCapture(ev.pointerId);});
+  canvas.addEventListener('pointermove',ev=>{const s=kcEventBannerCrop;if(!s?.drag)return;const rect=canvas.getBoundingClientRect();s.x=s.drag.ox+(ev.clientX-s.drag.x)*(canvas.width/rect.width);s.y=s.drag.oy+(ev.clientY-s.drag.y)*(canvas.height/rect.height);drawEventBannerCrop();});
+  canvas.addEventListener('pointerup',()=>{if(kcEventBannerCrop)kcEventBannerCrop.drag=null;});canvas.addEventListener('pointercancel',()=>{if(kcEventBannerCrop)kcEventBannerCrop.drag=null;});
+  root.querySelector('#kcEventBannerCropZoom').addEventListener('input',ev=>{if(kcEventBannerCrop){kcEventBannerCrop.zoom=Number(ev.target.value);drawEventBannerCrop();}});drawEventBannerCrop();
+ };
+ img.onerror=()=>{URL.revokeObjectURL(url);notice('This image could not be opened. Try another file.');const input=document.querySelector('#kcEventBannerFile');if(input)input.value='';};img.src=url;
+}
+async function applyEventBannerCrop(){
+ const state=kcEventBannerCrop,input=document.querySelector('#kcEventBannerFile'),preview=document.querySelector('#kcEventBannerPreview'),canvas=document.querySelector('#kcEventBannerCropCanvas');if(!state||!input||!preview||!canvas)return;
+ const output=document.createElement('canvas');output.width=1200;output.height=400;output.getContext('2d').drawImage(canvas,0,0,1200,400);
+ const blob=await new Promise(resolve=>output.toBlob(resolve,'image/jpeg',.86));if(!blob){notice('Could not process this banner. Please try another image.');return;}
+ const cropped=new File([blob],'event-banner.jpg',{type:'image/jpeg',lastModified:Date.now()});
+ try{const transfer=new DataTransfer();transfer.items.add(cropped);input.files=transfer.files;}catch{notice('Your browser cannot prepare the cropped image. Please update Chrome and try again.');return;}
+ if(S.eventBannerPreviewUrl)URL.revokeObjectURL(S.eventBannerPreviewUrl);S.eventBannerPreviewUrl=URL.createObjectURL(blob);
+ preview.innerHTML='<img src="'+S.eventBannerPreviewUrl+'" alt="Cropped event banner preview"><button type="button" data-event-banner-remove aria-label="Remove banner">Remove</button>';
+ closeEventBannerCrop();notice('Banner crop applied. Publish or save the event to upload it.');
+}
+document.addEventListener('click',event=>{
+ if(event.target.closest('[data-event-crop-cancel]')){closeEventBannerCrop(true);return;}
+ if(event.target.closest('#kcEventBannerCropApply')){applyEventBannerCrop().catch(error=>notice(error.message||'Could not crop this banner.'));return;}
+});
+document.addEventListener('change',event=>{const input=event.target.closest('#kcEventBannerFile');if(input&&input.files?.[0])openEventBannerCrop(input.files[0]);});
+document.addEventListener('click',event=>{
+ const remove=event.target.closest('[data-event-banner-remove]');if(!remove)return;
+ const form=remove.closest('#eventForm'),preview=form?.querySelector('#kcEventBannerPreview'),input=form?.querySelector('#kcEventBannerFile'),hidden=form?.querySelector('[name="cover_url"]');
+ if(input)input.value='';if(hidden)hidden.value='';if(preview)preview.innerHTML='';
+ if(S.eventBannerPreviewUrl){URL.revokeObjectURL(S.eventBannerPreviewUrl);S.eventBannerPreviewUrl='';}
+});
+if(!input)return;const file=input.files?.[0],preview=document.querySelector('#kcEventBannerPreview');if(!preview)return;if(!file){preview.innerHTML='';return;}if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024){notice('Choose a JPG, PNG or WebP image up to 5 MB.');input.value='';return;}const localUrl=URL.createObjectURL(file);preview.innerHTML='<img src="'+localUrl+'" alt="Selected event banner preview"><button type="button" data-event-banner-remove aria-label="Remove banner">Remove</button>';});
+
 window.addEventListener('kc:app-version-updated',()=>{if(S.view==='app-info')paint();});
 window.addEventListener('kc:release-feed-updated',()=>{if(S.view==='app-info')paint();});
 boot().finally(()=>{});
