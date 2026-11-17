@@ -53,7 +53,7 @@ Deno.serve(async(req:Request)=>{
   const db=createClient(url,service,{auth:{persistSession:false,autoRefreshToken:false}});
   const {data:actor,error:actorError}=await db.from("crew_profiles").select("auth_id,role,approval_status").eq("auth_id",authData.user.id).maybeSingle();
   if(actorError||!actor||actor.approval_status!=="approved"||!["admin","super_admin"].includes(actor.role)) {
-    return json({error:"Only approved Admins and Super Admins can send audition invitations."},403);
+    return json({error:"Only approved Kinetic Crew Admins and the President can send audition invitations."},403);
   }
 
   let claimKey="",claimEmail="",claimOwned=false;
@@ -110,14 +110,14 @@ Deno.serve(async(req:Request)=>{
       if(profileError) throw profileError;
       if(!profile) {
         await releaseClaim();
-        return json({error:"The linked sign-in account could not be found. Contact the Super Admin."},409);
+        return json({error:"The linked sign-in account could not be found. Contact the President."},409);
       }
       username=String(profile.username||username).trim().toLowerCase();
       if(!username) throw new Error("The audition username is missing. Retry account provisioning.");
       const alreadyAudition=profile.approval_status==="approved"&&profile.role==="audition_participant";
       if(!alreadyAudition) {
         await releaseClaim();
-        return json({error:"The linked account is not an active Audition Portal account. Contact the Super Admin."},409);
+        return json({error:"The linked account is not an active Audition Portal account. Contact the President."},409);
       }
     } else {
       if(app.application_status!=="audition_invited") {
