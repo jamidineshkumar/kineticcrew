@@ -460,8 +460,9 @@ return '<div class="kc-reference-profile kc-liquid-profile kc-single-profile '+(
 '<div class="kc-liquid-profile-photo">'+(photo?'<img src="'+esc(photo)+'" alt="'+esc(u.name||'Profile photo')+'" loading="eager">':'<span>'+esc(initials(u.name||u.email))+'</span>')+'</div>'+
 '<div class="kc-liquid-profile-copy"><span class="kc-liquid-eyebrow">'+(founder?'FOUNDER':'KINETIC CREW MEMBER')+'</span><h1>'+esc(u.name||'Kinetic Crew Member')+'</h1><p>@'+esc(username)+'</p><div class="kc-single-profile-tags"><span>'+esc(String(job).toUpperCase())+'</span></div>'+(u.bio?'<p class="kc-liquid-bio">'+esc(u.bio)+'</p>':'')+'</div>'+
 '<div class="kc-liquid-orb kc-liquid-orb-pink"></div><div class="kc-liquid-orb kc-liquid-orb-cyan"></div>'+'</section>'+profileCardBackMarkup(u,u.auth_id||u.id,username)+'</div></div>'+
+'<div class="kc-profile-options-stack" aria-label="Profile options and activity">'+
 (showFlipHint?'<div class="kc-profile-flip-hint" data-profile-flip-hint><span class="kc-flip-hint-icon">↻</span><span><b>DOUBLE TAP TO FLIP</b><small>Tap your profile card twice to reveal your member QR</small></span><i class="kc-flip-hint-pulse"></i></div>':'')+
-editForm+activity+'</div>';
+editForm+activity+'</div></div>';
 }
 function publicProfilePage(){
  const p=S.profileSocial?.profile;
@@ -1473,7 +1474,18 @@ return '<section class="nav-group '+(expanded?'expanded':'')+'" data-nav-group-p
 }).join('')+'<button type="button" class="kc-nav-signout" data-kc-signout><span>↗</span><b>Sign out</b></button>';
 const crumb=$('#crumb');if(crumb)crumb.textContent=({overview:'Overview',more:'More','kc-more-ads-admin':'Promotional Banner',events:'Events',meet:'KC Meet','new-event':'Create event','event-edit':'Edit event',chat:'Crew chat','gram-chat':'Kinetic Gram Chats','kc-connect':'KC Connect','kc-rewards-admin':'Rewards Management',feed:'Crew Feed',memes:'Meme Zone','fun-zone-games':'Mini Games',notifications:'Notifications',people:'Discover crew','fun-zone':'Fun Zone',credits:'Credits','public-profile':'Crew profile','crew-management':'Crew Management','member-requests':'Member Requests','custom-alerts':'Custom App Alerts',attendance:'Attendance','brand-settings':'Brand identity',profile:'My profile',settings:'App settings',developer:'Meet the developer','appearance-settings':'Appearance','notification-settings':'Notification settings','device-settings':'Device & session','app-info':'About Kinetic Crew','app-suggestions':'App suggestions',calendar:'Calendar',rehearsals:'Rehearsals',auditions:'Auditions',leaderboard:'Leaderboard'}[S.view]||'Crew management');
 const fn={overview:home,more:morePage,events:eventsPage,meet:meetPage,'event-detail':eventDetailPage,'event-edit':()=>eventForm(S.events.find(x=>String(x.id)===String(S.editingEventId))||null),'new-event':()=>eventForm(),chat:chatPage,'gram-chat':()=>window.kcGramChatPage?window.kcGramChatPage():empty('Kinetic Gram chats','Messaging is loading. Please reopen this page.'),'kc-connect':kcConnectPage,'kc-rewards-admin':kcRewardsAdminPage,'kc-more-ads-admin':()=>window.kcMoreAdsAdminPage?window.kcMoreAdsAdminPage():empty('Promotional Banner','Banner manager is loading.'),feed:socialFeedPage,memes:memeZonePage,'fun-zone-games':miniGamesPage,notifications:notificationsPage,updates:updatesPage,profile:profilePage,'app-settings':settingsPage,people:peoplePage,'public-profile':publicProfilePage,'crew-management':crewManagementPage,'member-requests':memberRequestsPage,'custom-alerts':customAlertsPage,attendance:attendancePage,'brand-settings':brandSettingsPage,settings:settingsPage,developer:developerPage,'appearance-settings':appearanceSettingsPage,'notification-settings':notificationSettingsPage,'device-settings':deviceSettingsPage,'app-info':appInfoPage,'app-suggestions':appSuggestionsPage,rehearsals:()=>featurePage('rehearsals'),calendar:calendarPage,polls:()=>featurePage('polls'),memories:()=>featurePage('memories'),achievements:()=>featurePage('achievements'),leave:()=>featurePage('leave'),'fun-zone':funZonePage,credits:creditsPage}[S.view]||home;
-$('#app').innerHTML=(S.error?'<div class="alert"><span>'+esc(S.error)+'</span><button data-clear>×</button></div>':'')+(S.offline?'<div class="offline-strip">OFFLINE · LAST SAVED DATA</div>':'')+fn();savePageState();
+$('#app').innerHTML=(S.error?'<div class="alert"><span>'+esc(S.error)+'</span><button data-clear>×</button></div>':'')+(S.offline?'<div class="offline-strip">OFFLINE · LAST SAVED DATA</div>':'')+fn();
+ if(S.view==='profile'){
+  const profileRoot=$('#app .kc-single-profile');
+  if(profileRoot){
+   const walker=document.createTreeWalker(profileRoot,NodeFilter.SHOW_TEXT);const stray=[];
+   while(walker.nextNode())if(walker.currentNode.nodeValue.trim()==='false')stray.push(walker.currentNode);
+   stray.forEach(node=>node.remove());
+   const activity=profileRoot.querySelector('.kc-profile-activity');
+   if(activity){activity.hidden=false;activity.style.removeProperty('display');activity.setAttribute('aria-label','Your Kinetic Crew activity');}
+  }
+ }
+ savePageState();
 if(S.view==='kc-connect')loadKCConnectDashboard();
 if(S.view==='kc-rewards-admin')loadKCRewardsAdmin();
 if(S.view==='kc-more-ads-admin'&&window.loadKcMoreAdsAdmin)window.loadKcMoreAdsAdmin();
