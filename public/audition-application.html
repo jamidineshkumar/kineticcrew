@@ -45,7 +45,7 @@ form.addEventListener('submit',async event=>{
   p_email:$('email').value.trim().toLowerCase(),
   p_video_url:null,
   p_details:{
-   referralCode:(()=>{const value=(new URLSearchParams(location.search).get('ref')||'').trim().toUpperCase();return /^KC-[A-F0-9]{10}$/.test(value)?value:'';})(),
+   referralCode:(()=>{const value=(new URLSearchParams(location.search).get('ref')||'').trim().toUpperCase();return /^KC-[A-F0-9]{16}$/.test(value)?value:'';})(),
    phone:$('phone').value.trim(),
    registrationNumber:$('registration').value.trim().toUpperCase(),
    collegeEmail:$('collegeEmail').value.trim().toLowerCase(),
