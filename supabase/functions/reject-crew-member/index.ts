@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
     if (!email || !username) return json({ error: "The request is missing its email or username. Nothing was deleted." }, 409);
 
     // Delete personal uploads first. If storage cleanup fails, leave the account intact.
-    for (const bucket of ["crew-avatars", "crew-profile-documents", "crew-memories", "crew-wardrobe"]) {
+    for (const bucket of ["crew-avatars", "crew-profile-documents", "crew-memories", "crew-wardrobe", "crew-gram-media"]) {
       const paths = await listAllObjects(admin, bucket, targetId);
       for (let i = 0; i < paths.length; i += 100) {
         const { error } = await admin.storage.from(bucket).remove(paths.slice(i, i + 100));
