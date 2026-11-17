@@ -336,12 +336,39 @@ document.addEventListener('input',event=>{
   if(empty)empty.hidden=visible!==0;
  }
 });
+document.addEventListener('click',event=>{
+ const form=event.target.closest('[data-feature-form="memories"]');if(!form)return;
+ if(event.target.closest('[data-memory-add-media]')){const options=form.querySelector('.memory-media-options');if(options)options.hidden=!options.hidden;return;}
+ if(event.target.closest('[data-memory-pick-photo]')){form.querySelector('input[name="memory_photo"]')?.click();return;}
+ if(event.target.closest('[data-memory-add-link]')){const entry=form.querySelector('.memory-link-entry');if(entry)entry.hidden=!entry.hidden;return;}
+ if(event.target.closest('[data-memory-confirm-link]')){
+  const input=form.querySelector('input[name="media_url"]'),value=String(input?.value||'').trim();
+  try{const url=new URL(value);if(url.protocol!=='https:')throw Error();showMemoryMediaPreview(form,url.href,'Shared image link');}
+  catch{notice('Enter a valid HTTPS image link.');}return;
+ }
+ if(event.target.closest('[data-memory-remove-media]')){clearMemoryMediaPreview(form);return;}
+});
+function showMemoryMediaPreview(form,src,label){
+ const preview=form.querySelector('.memory-media-preview'),image=preview?.querySelector('img'),caption=preview?.querySelector('[data-memory-preview-label]');
+ if(!preview||!image)return;image.src=src;if(caption)caption.textContent=label||'Attached photo';preview.hidden=false;
+ const options=form.querySelector('.memory-media-options');if(options)options.hidden=true;
+ const linkEntry=form.querySelector('.memory-link-entry');if(linkEntry)linkEntry.hidden=true;
+}
+function clearMemoryMediaPreview(form){
+ const preview=form.querySelector('.memory-media-preview'),image=preview?.querySelector('img'),file=form.querySelector('input[name="memory_photo"]'),url=form.querySelector('input[name="media_url"]');
+ if(image){if(image.dataset.objectUrl)URL.revokeObjectURL(image.dataset.objectUrl);image.removeAttribute('src');delete image.dataset.objectUrl;}
+ if(file)file.value='';if(url)url.value='';if(preview)preview.hidden=true;
+ const options=form.querySelector('.memory-media-options');if(options)options.hidden=true;
+}
 document.addEventListener('change',event=>{
  const form=event.target.closest('[data-feature-form="memories"]');
  if(!form||!event.target.matches('input[name="memory_photo"]'))return;
- const preview=form.querySelector('.memory-upload-preview'),file=event.target.files?.[0],drop=form.querySelector('.memory-upload-drop');
- if(preview){if(file){if(preview.dataset.objectUrl)URL.revokeObjectURL(preview.dataset.objectUrl);const url=URL.createObjectURL(file);preview.src=url;preview.dataset.objectUrl=url;preview.hidden=false;}else{preview.removeAttribute('src');preview.hidden=true;}}
- if(drop){const title=drop.querySelector('b');if(title)title.textContent=file?file.name:'Choose photo from device';}
+ const file=event.target.files?.[0];if(!file)return;
+ if(!/^image\/(jpeg|png|webp|gif)$/.test(file.type)){notice('Choose a JPG, PNG, WEBP or GIF photo.');event.target.value='';return;}
+ if(file.size>15*1024*1024){notice('Photo must be 15 MB or smaller.');event.target.value='';return;}
+ const image=form.querySelector('.memory-media-preview img');
+ if(image?.dataset.objectUrl)URL.revokeObjectURL(image.dataset.objectUrl);
+ const url=URL.createObjectURL(file);if(image)image.dataset.objectUrl=url;showMemoryMediaPreview(form,url,file.name);
 });
 document.addEventListener('submit',async event=>{
  const form=event.target.closest('[data-designation-form]');
@@ -953,7 +980,7 @@ function featureForm(key){
  (isRehearsal?'<label class="field">Date & time<input name="session_at" type="datetime-local" required></label><label class="field">Location<input name="location" maxlength="160" placeholder="Practice room / studio"></label><label class="field span2 kc-email-optin"><span><input name="send_email" type="checkbox" value="true" checked> Email all approved crew members</span><small>Send rehearsal details by email as well as the in-app notification.</small></label>':'')+
  
  (isAudition?'<label class="field">Dance style<input name="style" maxlength="80" placeholder="Hip-hop / freestyle / classical"></label><label class="field">Audition video URL<input name="media_url" type="url" placeholder="https://…"></label>':'')+
- (isMemory?'<section class="memory-upload-panel"><div class="memory-upload-title"><b>📷 Add a photo</b><small>Upload a JPG, PNG, WEBP or GIF image · maximum 15 MB</small></div><label class="memory-upload-drop"><span>＋</span><b>Choose photo from device</b><small>Tap to browse your gallery</small><input name="memory_photo" type="file" accept="image/jpeg,image/png,image/webp,image/gif"></label><img class="memory-upload-preview" alt="Selected photo preview" hidden><label class="field">Or paste an image URL<input name="media_url" type="url" inputmode="url" placeholder="https://… (optional if uploading)"></label></section>':'')+'<button class="primary full">'+meta[4]+' →</button></form>';
+ (isMemory?'<section class="memory-media-composer"><button type="button" class="memory-add-media" data-memory-add-media><span>＋</span><b>Add photo or link</b></button><div class="memory-media-options" hidden><button type="button" data-memory-pick-photo>📷 Choose from device</button><button type="button" data-memory-add-link>↗ Add image link</button></div><input class="memory-file-input" name="memory_photo" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden><div class="memory-link-entry" hidden><input name="media_url" type="url" inputmode="url" placeholder="Paste HTTPS image link"><button type="button" data-memory-confirm-link>Attach link</button></div><div class="memory-media-preview" hidden><img alt="Memory media preview"><div><span data-memory-preview-label>Attached photo</span><button type="button" data-memory-remove-media aria-label="Remove attachment">×</button></div></div><small class="memory-media-hint">JPG, PNG, WEBP or GIF · max 15 MB</small></section>':'')+'<button class="primary full">'+meta[4]+' →</button></form>';
 }
 
 function featureCard(key,item){
