@@ -548,7 +548,7 @@ async function refreshKcGramUnreadBadge(userId=kcGramInboxUserId){
    .eq('user_id',userId).is('read_at',null);
   if(error)throw error;
   const count=(data||[]).filter(row=>String(row.message?.sender_id||'')!==String(userId)).length;
-  window.kcSetGramUnreadCount?.(count);
+  window.kcGramUnreadCount=count;window.kcSetGramUnreadCount?.(count);
  }catch(error){console.warn('Kinetic Gram unread count refresh deferred:',error.message||error);}
 }
 function startKcGramInboxRealtime(){
