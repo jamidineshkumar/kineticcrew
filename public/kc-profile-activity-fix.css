@@ -31,3 +31,12 @@ html[data-theme="light"] .kc-profile-metrics>button,html[data-theme="light"] .kc
 html[data-theme="light"] .kc-profile-metrics>button b{color:#25282e}
 html[data-theme="light"] .kc-profile-metrics>button span{color:#68707a}
 html[data-theme="light"] .kc-profile-streak-best{color:#93642d}
+
+/* Profile options visibility and mobile overflow repair. Existing visual styling is preserved. */
+.kc-single-profile{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:0!important;height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important;contain:none!important}
+.kc-single-profile>.kc-profile-flip-shell{width:100%;max-width:760px;margin-inline:auto;flex:none!important;overflow:visible!important}
+.kc-single-profile>.kc-profile-options-stack{display:block!important;position:relative!important;width:100%!important;max-width:760px!important;margin:0 auto!important;visibility:visible!important;opacity:1!important;overflow:visible!important}
+.kc-single-profile .kc-profile-activity{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;width:100%!important;max-width:760px!important;height:auto!important;max-height:none!important;overflow:visible!important}
+.kc-single-profile .kc-profile-metrics,.kc-single-profile .kc-profile-activity-head,.kc-single-profile .kc-profile-activity-panel{visibility:visible!important;opacity:1!important}
+.kc-single-profile .kc-profile-activity-panel[hidden],.kc-single-profile .kc-profile-edit-panel[hidden]{display:none!important}
+@media(max-width:640px){.kc-single-profile{padding-bottom:calc(128px + env(safe-area-inset-bottom,0px))!important}.kc-single-profile>.kc-profile-options-stack{padding-inline:2px;box-sizing:border-box}.kc-single-profile .kc-profile-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.kc-single-profile .kc-profile-activity-row{min-width:0;flex-wrap:wrap}.kc-single-profile .kc-profile-activity-row>div{flex:1 1 180px}.kc-single-profile .kc-profile-activity-tabs{max-width:100%;overflow-x:auto}}
