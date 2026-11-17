@@ -93,6 +93,100 @@ Deno.serve(async (req) => {
       if (error) throw error;
       return json({ ok: true });
     }
+
+    if (body.action === "message") {
+      const messageId = String(body.messageId || "");
+      const conversationId = String(body.conversationId || "");
+      if (!/^[0-9a-f-]{36}$/i.test(messageId) || !/^[0-9a-f-]{36}$/i.test(conversationId)) {
+        return json({ error: "A valid message and conversation are required." }, 400);
+      }
+      const { data: message, error: messageError } = await adminClient
+        .from("kg_messages")
+        .select("id,conversation_id,sender_id,message_type,body")
+        .eq("id", messageId).eq("conversation_id", conversationId)
+        .eq("sender_id", authData.user.id).maybeSingle();
+      if (messageError) throw messageError;
+      if (!message) return json({ error: "Message not found or not sent by this account." }, 404);
+
+      const { data: senderMembership, error: senderMembershipError } = await adminClient
+        .from("kg_conversation_members").select("user_id")
+        .eq("conversation_id", conversationId).eq("user_id", authData.user.id).maybeSingle();
+      if (senderMembershipError) throw senderMembershipError;
+      if (!senderMembership) return json({ error: "Conversation membership required." }, 403);
+
+      const [{ data: conversation, error: conversationError }, { data: sender, error: senderError }, { data: members, error: membersError }] = await Promise.all([
+        adminClient.from("kg_conversations").select("kind,title").eq("id", conversationId).maybeSingle(),
+        adminClient.from("crew_profiles").select("name").eq("auth_id", authData.user.id).maybeSingle(),
+        adminClient.from("kg_conversation_members").select("user_id,muted_until,notifications_enabled").eq("conversation_id", conversationId).neq("user_id", authData.user.id),
+      ]);
+      if (conversationError) throw conversationError;
+      if (senderError) throw senderError;
+      if (membersError) throw membersError;
+      if (!conversation) return json({ error: "Conversation not found." }, 404);
+
+      const now = Date.now();
+      const recipientIds = [...new Set((members || [])
+        .filter((member: any) => member.notifications_enabled !== false && (!member.muted_until || Date.parse(member.muted_until) <= now))
+        .map((member: any) => String(member.user_id))
+        .filter(Boolean))];
+      if (!recipientIds.length) return json({ ok: true, sent: 0, message: "No recipients have message notifications enabled." });
+
+      const { data: devices, error: devicesError } = await adminClient
+        .from("crew_push_tokens").select("token,auth_id").in("auth_id", recipientIds);
+      if (devicesError) throw devicesError;
+      const tokens = [...new Set((devices || []).map((device: any) => String(device.token)).filter(Boolean))];
+      if (!tokens.length) return json({ ok: true, sent: 0, message: "Recipients have not enabled push notifications on a device." });
+
+      const senderName = String(sender?.name || "Crew member").slice(0, 80);
+      const type = String(message.message_type || "text");
+      const preview = type === "text" ? String(message.body || "New message")
+        : type === "image" ? "Photo"
+        : type === "video" ? "Video"
+        : type === "voice" || type === "audio" ? "Voice message"
+        : type === "document" ? "Document"
+        : type === "gif" ? "GIF"
+        : type === "location" ? "Shared a location"
+        : "New message";
+      const title = conversation.kind === "direct" ? "Kinetic Gram · " + senderName
+        : "Kinetic Gram · " + String(conversation.title || "Group chat").slice(0, 80);
+      const messageBody = (conversation.kind === "direct" ? preview : senderName + ": " + preview).slice(0, 180);
+      const notificationUrl = safeNotificationPath("/?kc_notification_view=gram-chat&kc_open_chat=" + encodeURIComponent(conversationId));
+      const absoluteNotificationUrl = APP_ORIGIN + notificationUrl;
+      const projectId = Deno.env.get("FCM_PROJECT_ID");
+      if (!projectId) throw new Error("FCM_PROJECT_ID secret is missing.");
+      const accessToken = await googleAccessToken();
+      const notificationId = "kg-" + messageId;
+      let sent = 0;
+      const invalid: string[] = [];
+      const failures: string[] = [];
+      for (const token of tokens) {
+        const response = await fetch(`https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: {
+              token,
+              notification: { title, body: messageBody },
+              webpush: {
+                notification: { title, body: messageBody, icon: "/icon.svg", badge: "/kc-notification-badge.svg", tag: notificationId, renotify: false },
+                fcmOptions: { link: absoluteNotificationUrl },
+              },
+              android: { priority: "HIGH", notification: { channel_id: "crew_updates", sound: "default", icon: "ic_stat_notification", tag: notificationId } },
+              data: { url: notificationUrl, notificationId, notificationType: "kg_message", conversationId, messageId },
+            },
+          }),
+        });
+        if (response.ok) sent++;
+        else {
+          const err = await response.json();
+          const detail = JSON.stringify(err);
+          if (detail.includes("UNREGISTERED") || detail.includes("registration-token-not-registered") || detail.includes("INVALID_ARGUMENT")) invalid.push(token);
+          else failures.push(detail.slice(0, 300));
+        }
+      }
+      if (invalid.length) await adminClient.from("crew_push_tokens").delete().in("token", invalid);
+      return json({ ok: true, sent, failed: failures.length, removed: invalid.length, message: `Delivered to ${sent} device(s).` });
+    }
     if (body.action !== "send") return json({ error: "Unsupported action." }, 400);
     if (!["admin", "super_admin"].includes(profile.role)) return json({ error: "Admin access required." }, 403);
 
