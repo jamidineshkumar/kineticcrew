@@ -538,6 +538,17 @@ function showDynamicIsland(detail={}){
 window.addEventListener('kc:notification',event=>{const detail=event.detail||{};if(detail.conversationId&&String(window.kcGramActiveConversation||'')===String(detail.conversationId))return;showDynamicIsland(detail);if(notificationPrefs().sound)playNoticeSound();});
 
 let kcGramInboxChannel=null,kcGramInboxUserId='';
+async function refreshKcGramUnreadBadge(userId=kcGramInboxUserId){
+ if(!userId||!client?.from)return;
+ try{
+  const {data,error}=await client.from('kg_message_receipts')
+   .select('message_id,message:kg_messages!inner(sender_id)')
+   .eq('user_id',userId).is('read_at',null);
+  if(error)throw error;
+  const count=(data||[]).filter(row=>String(row.message?.sender_id||'')!==String(userId)).length;
+  window.kcSetGramUnreadCount?.(count);
+ }catch(error){console.warn('Kinetic Gram unread count refresh deferred:',error.message||error);}
+}
 function startKcGramInboxRealtime(){
  const userId=String(S.user?.auth_id||S.user?.id||'');
  if(!userId||!client?.channel)return;
@@ -545,7 +556,10 @@ function startKcGramInboxRealtime(){
  if(kcGramInboxChannel){try{client.removeChannel(kcGramInboxChannel);}catch{}kcGramInboxChannel=null;}
  kcGramInboxUserId=userId;
  const channel=client.channel('kc-gram-inbox-'+userId);
+ void refreshKcGramUnreadBadge(userId);
+ channel.on('postgres_changes',{event:'UPDATE',schema:'public',table:'kg_message_receipts',filter:'user_id=eq.'+userId},()=>{void refreshKcGramUnreadBadge(userId);});
  channel.on('postgres_changes',{event:'INSERT',schema:'public',table:'kg_messages'},async payload=>{
+  void refreshKcGramUnreadBadge(userId);
   const message=payload?.new||{},conversationId=String(message.conversation_id||'');
   if(!message.id||!conversationId||String(message.sender_id)===userId)return;
   try{
@@ -555,7 +569,10 @@ function startKcGramInboxRealtime(){
    if(!membership.error&&(!membership.data||membership.data.notifications_enabled===false))return;
    if(!membership.error&&membership.data?.muted_until&&Date.parse(membership.data.muted_until)>Date.now())return;
   }catch(error){console.warn('Kinetic Gram notification preference check deferred:',error);}
-  const sender=(S.publicMembers||S.members||[]).find(person=>String(person.auth_id||person.id)===String(message.sender_id));
+  let sender=(S.publicMembers||S.members||[]).find(person=>String(person.auth_id||person.id)===String(message.sender_id));
+  if(!sender){
+   try{const directory=await rpc('crew_profile_directory',{});if(!directory.error&&Array.isArray(directory.data)){S.publicMembers=directory.data;sender=directory.data.find(person=>String(person.auth_id||person.id)===String(message.sender_id));}}catch{}
+  }
   const senderName=String(sender?.name||'Crew member');
   const preview=message.message_type==='image'?'Photo':message.message_type==='video'?'Video':message.message_type==='voice'||message.message_type==='audio'?'Voice message':message.message_type==='document'?'Document':message.message_type==='gif'?'GIF':message.message_type==='location'?'Shared a location':String(message.body||'New message').slice(0,150);
   window.dispatchEvent(new CustomEvent('kc:kg-message',{detail:{conversationId,messageId:String(message.id),senderId:String(message.sender_id),senderName,preview}}));
