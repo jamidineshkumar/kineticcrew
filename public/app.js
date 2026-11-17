@@ -1120,7 +1120,7 @@ pill('member-requests','notifications','Pending Requests')+
 '</div></section>':'')+
 '<section class="kc-more-reference-group kc-more-reference-others"><h2>More</h2><div class="kc-more-reference-others-grid">'+
 other('updates','announcements','Announcements')+other('notifications','notifications','Notifications')+
-other('profile','profile','My Profile')+other('settings','settings','Settings')+
+other('profile','profile','My Profile')+other('settings','settings','Settings')+other('kc-connect','gift','Refer a Friend')+
 '</div></section>'+
 '<button type="button" class="kc-more-signout" data-kc-signout><span>↗</span><b>Sign out</b><small>Sign out of this device</small></button>'+
 '<div class="kc-more-reference-footer">Made for <span>✦</span> Kinetic Crew</div>'+
