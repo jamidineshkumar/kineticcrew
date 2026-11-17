@@ -1,6 +1,6 @@
 {
-  "version": "1.6.47",
+  "version": "1.6.49",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-17T12:48:00+05:30",
-  "release_notes": "Align App Settings navigation tiles with the existing More menu neumorphic design."
+  "updated_at": "2026-11-17T13:26:00+05:30",
+  "release_notes": "KC Connect now includes a Super Admin managed rewards catalogue, audited point adjustments, gift and voucher redemption, live founder profile and referral-code application prompt."
 }
