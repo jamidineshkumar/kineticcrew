@@ -185,3 +185,55 @@
 .kc-more-reference-footer>span,.kc-more-reference-watermark{display:none!important}
 .kc-notice-empty-art .kc-notice-star,.kc-notice-empty-art .kc-notice-spark,
 .kc-notice-empty-art .kc-notice-orbit{display:none!important}
+
+
+/* More-page live event carousel: compact hierarchy and protect its dark artwork in Light mode. */
+.kc-more-logo-wrap.kc-more-intro.kc-more-event-ads-host{
+ height:196px!important;min-height:196px!important;max-height:196px!important;
+ margin:8px 0 20px!important;overflow:visible!important;
+}
+.kc-more-brand-intro{
+ height:196px!important;min-height:196px!important;max-height:196px!important;
+ padding:15px 17px 14px!important;border-radius:23px!important;
+}
+.kc-brand-intro-stage{height:calc(100% - 43px)!important;min-height:120px!important}
+.kc-brand-intro-slide .kc-brand-content-title{
+ font-size:clamp(22px,5.8vw,29px)!important;line-height:1.08!important;
+ letter-spacing:-.045em!important;font-weight:800!important;
+}
+.kc-brand-intro-slide p{font-size:11px!important;line-height:1.35!important;margin:7px 0 6px!important}
+.kc-brand-intro-slide small{font-size:8px!important;margin-bottom:7px!important}
+.kc-brand-intro-cta{min-height:32px!important;margin-top:3px!important;padding:0 13px!important;font-size:9px!important}
+.kc-brand-intro-bottom{left:17px!important;right:17px!important;bottom:11px!important}
+.kc-event-updated-chip{font-size:8px!important;padding:5px 9px!important}
+@media(max-width:560px){
+ .kc-more-logo-wrap.kc-more-intro.kc-more-event-ads-host,
+ .kc-more-brand-intro{height:190px!important;min-height:190px!important;max-height:190px!important}
+ .kc-more-brand-intro{padding:14px 15px 13px!important}
+ .kc-brand-intro-stage{height:calc(100% - 40px)!important;min-height:116px!important}
+ .kc-brand-intro-slide .kc-brand-content-title{font-size:clamp(21px,6vw,26px)!important}
+ .kc-brand-intro-slide p{font-size:10px!important;max-width:290px}
+ .kc-brand-intro-cta{min-height:30px!important;font-size:8px!important}
+ .kc-brand-intro-bottom{left:15px!important;right:15px!important;bottom:10px!important}
+}
+/* The event carousel intentionally remains a dark surface in both app themes. */
+:root[data-theme="light"] .kc-more-brand-intro,
+:root[data-theme="light"] .kc-more-brand-intro .kc-brand-intro-glow{
+ color:#fbf8fa!important;
+}
+:root[data-theme="light"] .kc-more-brand-intro .kc-brand-intro-slide h2,
+:root[data-theme="light"] .kc-more-brand-intro .kc-brand-intro-slide h2.kc-brand-content-title{
+ color:#fbf8fa!important;
+ -webkit-text-fill-color:#fbf8fa;
+}
+:root[data-theme="light"] .kc-more-brand-intro .kc-brand-intro-slide h2 em{
+ background-image:linear-gradient(95deg,#f24f9c 0%,#ffb46d 48%,#43d1d1 100%)!important;
+ background-clip:text!important;-webkit-background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;color:transparent!important;
+}
+:root[data-theme="light"] .kc-more-brand-intro .kc-brand-intro-slide p{color:rgba(245,240,246,.86)!important}
+:root[data-theme="light"] .kc-more-brand-intro .kc-brand-intro-slide small{color:#f0a8c7!important}
+:root[data-theme="light"] .kc-more-brand-intro .kc-brand-intro-cta{color:#fff!important}
+:root[data-theme="light"] .kc-more-brand-intro .kc-brand-intro-top,
+:root[data-theme="light"] .kc-more-brand-intro .kc-brand-intro-bottom{color:#e8d7e0!important}
+:root[data-theme="light"] .kc-more-brand-intro .kc-event-updated-chip{color:#fff!important}
