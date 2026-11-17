@@ -1489,6 +1489,15 @@ if(S.view==='more'){
  requestAnimationFrame(cleanAdminMenu);
 }
 if(S.view==='event-detail'&&admin())loadTicketRecipientRoster(S.selectedEvent);
+if(S.view==='profile'){
+ const profileRoot=document.querySelector('#app .kc-reference-profile');
+ if(profileRoot){
+  const walker=document.createTreeWalker(profileRoot,NodeFilter.SHOW_TEXT);
+  const stray=[];
+  while(walker.nextNode()){const node=walker.currentNode;if((node.nodeValue||'').trim()==='false')stray.push(node);}
+  stray.forEach(node=>node.remove());
+ }
+}
 renderProfileQrCards();
 kcApplyFeaturePageNavigation();
 const founderProfileEntry=S.view==='profile'&&superadmin()&&!document.body.classList.contains('kc-founder-profile-open');
