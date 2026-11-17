@@ -247,3 +247,57 @@
  box-shadow:0 2px 7px rgba(0,0,0,.18);pointer-events:none;
 }
 #kcMobileDock .kc-dock-unread[hidden]{display:none!important}
+
+/* KC Connect — member referral dashboard, scoped to its own route. */
+.kc-connect-page{max-width:760px;margin:0 auto;padding:8px 0 40px;color:var(--text,#252329)}
+.kc-connect-hero{padding:12px 2px 22px}
+.kc-connect-hero>span,.kc-connect-code-head span,.kc-connect-section-title small{font-size:10px;font-weight:850;letter-spacing:.16em;color:#bd7d78}
+.kc-connect-hero h1{margin:8px 0;font-size:clamp(32px,8vw,48px);font-weight:850;letter-spacing:-.06em}
+.kc-connect-hero h1 em{font-style:normal;background:linear-gradient(100deg,#e58e81,#c36ab1);background-clip:text;-webkit-background-clip:text;color:transparent}
+.kc-connect-hero p{margin:0;max-width:520px;color:var(--muted,#77727b);font-size:14px;line-height:1.55}
+.kc-connect-loading{min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;color:var(--muted,#77727b);font-size:13px}
+.kc-connect-spinner{width:26px;height:26px;border:3px solid #d9d2d5;border-top-color:#d27b82;border-radius:50%;animation:kcConnectSpin .8s linear infinite}
+@keyframes kcConnectSpin{to{transform:rotate(360deg)}}
+.kc-connect-code-card{position:relative;overflow:hidden;padding:23px 21px 20px;border:1px solid rgba(202,148,151,.27);border-radius:25px;background:radial-gradient(ellipse at 85% 8%,rgba(199,99,154,.24),transparent 45%),linear-gradient(135deg,#17161d,#27202a 60%,#191c25);color:#fff;box-shadow:0 16px 42px rgba(30,18,31,.15)}
+.kc-connect-code-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.kc-connect-code-head span{color:#e5b0b1}
+.kc-connect-code-head i{font-size:9px;color:#d8c6d1;font-style:normal;letter-spacing:.1em}
+.kc-connect-code-card>strong{display:block;margin:19px 0 7px;font-size:clamp(30px,8vw,43px);font-weight:900;letter-spacing:.09em;color:#fff}
+.kc-connect-code-card>p{max-width:470px;margin:0;color:#d6ccd4;font-size:12px;line-height:1.55}
+.kc-connect-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:19px}
+.kc-connect-actions button{min-height:42px;padding:0 17px;border:1px solid rgba(255,255,255,.22);border-radius:13px;background:rgba(255,255,255,.1);color:#fff;font-size:12px;font-weight:800}
+.kc-connect-actions button:first-child{background:linear-gradient(100deg,#d77c83,#b96ca9);border-color:transparent}
+.kc-connect-qr-wrap{width:max-content;margin:21px auto 0;padding:12px 14px 10px;border-radius:17px;background:#fff;color:#28232b;text-align:center}
+.kc-connect-qr-wrap>div{width:168px;min-height:168px;display:grid;place-items:center}
+.kc-connect-qr-wrap img,.kc-connect-qr-wrap canvas{max-width:100%;height:auto!important}
+.kc-connect-qr-wrap small{display:block;margin-top:7px;font-size:8px;font-weight:900;letter-spacing:.14em}
+.kc-connect-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:15px 0 27px}
+.kc-connect-stats article{min-width:0;padding:15px 10px;border:1px solid var(--border,rgba(120,110,120,.16));border-radius:17px;background:var(--surface,#f0efed);text-align:center}
+.kc-connect-stats small{display:block;font-size:9px;letter-spacing:.1em;font-weight:850;color:var(--muted,#77727b)}
+.kc-connect-stats b{display:block;margin-top:5px;font-size:25px;font-weight:850;letter-spacing:-.04em}
+.kc-connect-section{margin:0 0 26px}
+.kc-connect-section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.kc-connect-section-title h2{margin:4px 0 0;font-size:21px;font-weight:800;letter-spacing:-.04em}
+.kc-connect-section-title>span{font-size:20px;color:#ce8583}
+.kc-connect-badges{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.kc-connect-badges article{display:flex;min-width:0;min-height:125px;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;padding:12px;border:1px solid var(--border,rgba(120,110,120,.16));border-radius:17px;background:var(--surface,#f0efed)}
+.kc-connect-badges article>span{font-size:21px;color:#cb8a80}
+.kc-connect-badges b{font-size:11px;line-height:1.25}
+.kc-connect-badges small{font-size:9px;line-height:1.35;color:var(--muted,#77727b)}
+.kc-connect-badges em{font-size:8px;font-style:normal;font-weight:900;letter-spacing:.1em;color:#a8a1a8}
+.kc-connect-badges .earned{border-color:rgba(197,133,117,.48);background:linear-gradient(145deg,rgba(213,151,126,.14),rgba(195,106,177,.08))}
+.kc-connect-badges .earned em{color:#b66f70}
+.kc-connect-referrals{overflow:hidden;border:1px solid var(--border,rgba(120,110,120,.16));border-radius:18px;background:var(--surface,#f0efed)}
+.kc-connect-referrals article{display:flex;align-items:center;gap:11px;padding:12px;border-bottom:1px solid var(--border,rgba(120,110,120,.13))}
+.kc-connect-referrals article:last-child{border-bottom:0}
+.kc-connect-referral-avatar{width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,#e5b2a1,#c17aa9);color:#fff;font-weight:900}
+.kc-connect-referrals article>div{display:grid;gap:3px;min-width:0;flex:1}
+.kc-connect-referrals article b{font-size:12px}
+.kc-connect-referrals article small{font-size:10px;color:var(--muted,#77727b)}
+.kc-connect-referrals article em{font-size:8px;font-style:normal;font-weight:900;letter-spacing:.08em}
+.kc-connect-referrals .approved{color:#318567}.kc-connect-referrals .pending{color:#b9854b}
+.kc-connect-empty{display:grid;justify-items:center;gap:7px;padding:25px 15px;border:1px dashed var(--border,rgba(120,110,120,.25));border-radius:18px;text-align:center}
+.kc-connect-empty>span{font-size:26px;color:#c9878a}
+.kc-connect-empty b{font-size:13px}.kc-connect-empty small{font-size:11px;color:var(--muted,#77727b)}
+.kc-connect-footnote{margin:12px 2px 0;color:var(--muted,#77727b);font-size:10px;line-height:1.5}
+@media(max-width:480px){.kc-connect-badges{grid-template-columns:1fr 1fr}.kc-connect-badges article:last-child{grid-column:span 2;min-height:100px}.kc-connect-code-card{padding:19px 16px}.kc-connect-code-card>strong{letter-spacing:.06em}.kc-connect-stats{gap:7px}.kc-connect-stats article{padding:13px 5px}}
