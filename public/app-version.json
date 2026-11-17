@@ -1,6 +1,6 @@
 {
-  "version": "1.6.48",
+  "version": "1.6.47",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-17T13:10:00+05:30",
-  "release_notes": "KC Connect landing redesign, live founder profile, referral code gate, KC Rewards Store and Super Admin reward redemption management."
+  "updated_at": "2026-11-17T12:48:00+05:30",
+  "release_notes": "Align App Settings navigation tiles with the existing More menu neumorphic design."
 }

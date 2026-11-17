@@ -1,0 +1,12 @@
+/* App Settings tiles now use the same graphite neumorphic language as the More menu. */
+.kc-settings-hub .kc-settings-tile{min-height:68px!important;padding:11px 14px!important;gap:11px!important;border:1px solid rgba(255,255,255,.065)!important;border-radius:20px!important;background:linear-gradient(145deg,#292b32,#1b1c22)!important;color:#eeedf2!important;box-shadow:6px 6px 13px rgba(0,0,0,.27),-5px -5px 12px rgba(255,255,255,.025),inset 1px 1px 0 rgba(255,255,255,.035)!important;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease!important}
+.kc-settings-hub .kc-settings-tile:active{transform:scale(.985)!important;box-shadow:inset 4px 4px 9px rgba(0,0,0,.3),inset -3px -3px 8px rgba(255,255,255,.025)!important}
+.kc-settings-hub .kc-settings-tile:hover{border-color:rgba(226,106,86,.3)!important}
+.kc-settings-hub .kc-settings-tile-icon{width:42px!important;height:42px!important;flex:0 0 42px!important;border:1px solid rgba(255,255,255,.065)!important;border-radius:14px!important;background:linear-gradient(145deg,#24262d,#1a1b21)!important;color:#d5a39b!important;box-shadow:inset 2px 2px 5px rgba(0,0,0,.25),inset -2px -2px 5px rgba(255,255,255,.02)!important}
+.kc-settings-hub .kc-settings-tile-icon svg{width:23px!important;height:23px!important}
+.kc-settings-hub .kc-settings-tile-copy{gap:5px!important}
+.kc-settings-hub .kc-settings-tile-copy b{font-size:14px!important;font-weight:550!important;letter-spacing:-.015em!important;color:#eeedf2!important}
+.kc-settings-hub .kc-settings-tile-copy small{font-size:12px!important;line-height:1.35!important;color:#a7a6af!important}
+.kc-settings-hub .kc-settings-tile-arrow{font-size:23px!important;color:#d5a39b!important;opacity:.8!important}
+@media(max-width:560px){.kc-settings-hub{gap:10px!important;margin-top:18px!important}.kc-settings-hub .kc-settings-tile{min-height:62px!important;padding:9px 10px!important;gap:8px!important;border-radius:17px!important}.kc-settings-hub .kc-settings-tile-icon{width:36px!important;height:36px!important;flex-basis:36px!important;border-radius:12px!important}.kc-settings-hub .kc-settings-tile-icon svg{width:21px!important;height:21px!important}.kc-settings-hub .kc-settings-tile-copy b{font-size:13px!important}.kc-settings-hub .kc-settings-tile-copy small{font-size:11px!important}.kc-settings-hub .kc-settings-tile-arrow{font-size:20px!important}}
+@media(prefers-reduced-motion:reduce){.kc-settings-hub .kc-settings-tile{transition:none!important}}
