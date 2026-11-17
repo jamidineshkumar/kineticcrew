@@ -1,0 +1,63 @@
+/* Home-only fast pull-to-refresh motion based on the supplied screen recording. */
+body.kc-home-screen .kc-home-featured{
+  transform-origin:50% 0;
+  animation:kcHomeRefreshSettle 920ms cubic-bezier(.2,.78,.22,1) both;
+}
+body.kc-home-screen .kc-home-featured-track{
+  overflow:hidden!important;
+}
+body.kc-home-screen .kc-home-featured-track:before,
+body.kc-home-screen .kc-home-featured-track:after{
+  content:"";
+  position:absolute;
+  left:50%;
+  z-index:30;
+  pointer-events:none;
+  opacity:0;
+  will-change:transform,opacity;
+}
+body.kc-home-screen .kc-home-featured-track:before{
+  top:-84px;
+  width:19px;
+  height:78px;
+  margin-left:-9px;
+  border-radius:13px 13px 11px 11px;
+  background:linear-gradient(90deg,#b96f4e 0%,#f2c09a 30%,#ffd7b5 62%,#bd7858 100%);
+  box-shadow:inset 2px 0 3px #fff5, inset -2px 0 4px #713b2c55, 0 5px 12px #0005;
+  animation:kcHomeRefreshFinger 980ms cubic-bezier(.22,.72,.25,1) 80ms both;
+}
+body.kc-home-screen .kc-home-featured-track:after{
+  top:-54px;
+  width:55px;
+  height:48px;
+  margin-left:-27px;
+  border-radius:23px 23px 17px 17px;
+  background:linear-gradient(145deg,#f7c9a6 0%,#e7a47d 58%,#a95e45 100%);
+  box-shadow:inset 2px 2px 4px #fff7, inset -3px -3px 5px #713b2c55, 0 7px 16px #0005;
+  animation:kcHomeRefreshPalm 980ms cubic-bezier(.22,.72,.25,1) 80ms both;
+}
+@keyframes kcHomeRefreshFinger{
+  0%{opacity:0;transform:translate3d(0,-72px,0) rotate(-3deg)}
+  18%{opacity:1}
+  48%{opacity:1;transform:translate3d(0,104px,0) rotate(1deg)}
+  68%{opacity:1;transform:translate3d(0,104px,0) rotate(1deg)}
+  100%{opacity:0;transform:translate3d(0,-72px,0) rotate(-3deg)}
+}
+@keyframes kcHomeRefreshPalm{
+  0%{opacity:0;transform:translate3d(0,-72px,0) rotate(-3deg)}
+  18%{opacity:1}
+  48%{opacity:1;transform:translate3d(0,104px,0) rotate(1deg)}
+  68%{opacity:1;transform:translate3d(0,104px,0) rotate(1deg)}
+  100%{opacity:0;transform:translate3d(0,-72px,0) rotate(-3deg)}
+}
+@keyframes kcHomeRefreshSettle{
+  0%{transform:translate3d(0,-9px,0) scale(.985)}
+  42%{transform:translate3d(0,8px,0) scale(1)}
+  72%{transform:translate3d(0,-3px,0) scale(1)}
+  100%{transform:translate3d(0,0,0) scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+  body.kc-home-screen .kc-home-featured{animation:none!important}
+  body.kc-home-screen .kc-home-featured-track:before,
+  body.kc-home-screen .kc-home-featured-track:after{animation:none!important;display:none!important}
+}
