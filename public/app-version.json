@@ -1,6 +1,6 @@
 {
-  "version": "1.6.51",
+  "version": "1.6.52",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-17T18:00:00+05:30",
-  "release_notes": "Floating mobile dock and Dot Matrix moon/sun theme; audition incorrect-details rejection and reapply; event banner uploads and separate HTTPS redirect links."
+  "updated_at": "2026-11-17T20:00:00+05:30",
+  "release_notes": "Emergency Offline Vault foundation: cache app assets and encrypted user/role-scoped RPC snapshots for offline reading."
 }
