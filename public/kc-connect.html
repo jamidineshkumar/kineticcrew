@@ -20,7 +20,7 @@
 </main>
 <script>
 (()=>{'use strict';
-const params=new URLSearchParams(location.search),raw=(params.get('ref')||'').trim().toUpperCase(),code=/^KC-[A-F0-9]{10}$/.test(raw)?raw:'';
+const params=new URLSearchParams(location.search),raw=(params.get('ref')||'').trim().toUpperCase(),code=/^KC-[A-F0-9]{16}$/.test(raw)?raw:'';
 const link=document.getElementById('apply'),status=document.getElementById('status'),referrer=document.getElementById('referrer');
 if(code){link.href='audition-application.html?ref='+encodeURIComponent(code);if(!window.kcSupabase){status.hidden=false;status.textContent='Your invite is ready. Continue to the application to use it.';}else{window.kcSupabase.rpc('crew_referral_resolve_code',{p_code:code}).then(({data,error})=>{if(error||!data?.ok){status.hidden=false;status.textContent=data?.message||'This referral link could not be verified. You can still apply using the regular application form.';link.href='audition-application.html';return;}referrer.hidden=false;referrer.innerHTML='Invited by <b></b> · KC Connect';referrer.querySelector('b').textContent=data.referrer_name||'A Kinetic Crew member';}).catch(()=>{status.hidden=false;status.textContent='Your invite is ready. Continue to the application to use it.';});}}
 })();
