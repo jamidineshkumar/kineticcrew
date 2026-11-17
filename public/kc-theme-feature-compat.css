@@ -237,3 +237,13 @@
 :root[data-theme="light"] .kc-more-brand-intro .kc-brand-intro-top,
 :root[data-theme="light"] .kc-more-brand-intro .kc-brand-intro-bottom{color:#e8d7e0!important}
 :root[data-theme="light"] .kc-more-brand-intro .kc-event-updated-chip{color:#fff!important}
+
+/* Unread Kinetic Gram badge on the existing four-item mobile dock. */
+#kcMobileDock .kc-dock-group-item[data-gram-dock]{position:relative}
+#kcMobileDock .kc-dock-unread{
+ position:absolute;z-index:8;top:7px;right:15px;min-width:18px;height:18px;
+ display:grid;place-items:center;padding:0 5px;border:2px solid #f4f1eb;border-radius:99px;
+ background:#d94d5c;color:#fff;font-size:9px;font-weight:850;line-height:1;
+ box-shadow:0 2px 7px rgba(0,0,0,.18);pointer-events:none;
+}
+#kcMobileDock .kc-dock-unread[hidden]{display:none!important}
