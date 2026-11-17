@@ -1127,6 +1127,38 @@ other('profile','profile','My Profile')+other('settings','settings','Settings')+
 '<div class="kc-more-reference-watermark" aria-hidden="true">KC</div></div>';
 }
 
+
+function kcConnectPage(){
+ return '<section class="kc-connect-page"><header class="kc-connect-hero"><span>ONE CREW · MORE CONNECTIONS</span><h1>KC <em>Connect</em></h1><p>Bring your friends into the movement. Every member has a personal invite identity.</p></header><div id="kcConnectLoading" class="kc-connect-loading"><span class="kc-connect-spinner"></span><b>Preparing your personal invite…</b></div><div id="kcConnectDashboard" hidden></div></section>';
+}
+let kcConnectRequest=0;
+async function loadKCConnectDashboard(){
+ const root=document.getElementById('kcConnectDashboard'),loading=document.getElementById('kcConnectLoading');
+ if(!root||!loading||!S.user)return;
+ const request=++kcConnectRequest;
+ try{
+  const result=await rpc('crew_referral_get_dashboard',{});
+  if(result.error)throw result.error;
+  const data=result.data;
+  if(request!==kcConnectRequest||S.view!=='kc-connect'||!root.isConnected)return;
+  if(!data?.ok||!data.code)throw Error('Your personal referral code could not be created.');
+  const code=String(data.code),landing=new URL(window.kcPath('kc-connect.html'),location.href);
+  landing.searchParams.set('ref',code);
+  const url=landing.toString(),badges=Array.isArray(data.badges)?data.badges:[];
+  const referrals=Array.isArray(data.referrals)?data.referrals:[];
+  const tiers=[['connector','KC Connector','1 approved referral'],['influencer','KC Influencer','3 approved referrals'],['ambassador','KC Ambassador','5 approved referrals']];
+  const referralRows=referrals.map(item=>'<article><span class="kc-connect-referral-avatar">'+esc((item.name||'KC').trim().slice(0,1).toUpperCase())+'</span><div><b>'+esc(item.name||'New applicant')+'</b><small>'+new Date(item.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})+'</small></div><em class="'+(item.status==='approved'?'approved':'pending')+'">'+(item.status==='approved'?'APPROVED':'PENDING')+'</em></article>').join('');
+  const badgeCards=tiers.map(tier=>{const earned=badges.some(b=>b.id===tier[0]);return '<article class="'+(earned?'earned':'locked')+'"><span>'+(earned?'✦':'◇')+'</span><b>'+tier[1]+'</b><small>'+tier[2]+'</small><em>'+(earned?'UNLOCKED':'LOCKED')+'</em></article>';}).join('');
+  root.innerHTML='<div class="kc-connect-code-card"><div class="kc-connect-code-head"><span>YOUR PERMANENT REFERRAL CODE</span><i>KC / ID</i></div><strong>'+esc(code)+'</strong><p>Your code is yours for life. Share it anywhere and every valid application stays linked to you.</p><div class="kc-connect-actions"><button type="button" data-kc-connect-share data-url="'+esc(url)+'">↗ Share invite</button><button type="button" data-kc-connect-copy data-url="'+esc(url)+'">▢ Copy link</button></div><div class="kc-connect-qr-wrap"><div id="kcConnectQr" aria-label="Your referral QR code"></div><small>SCAN TO JOIN KINETIC CREW</small></div></div><div class="kc-connect-stats"><article><small>INVITES</small><b>'+Number(data.total_referrals||0)+'</b></article><article><small>APPROVED</small><b>'+Number(data.approved_referrals||0)+'</b></article><article><small>KC POINTS</small><b>'+Number(data.points||0)+'</b></article></div><section class="kc-connect-section"><div class="kc-connect-section-title"><div><small>YOUR RECOGNITION</small><h2>KC Achievements</h2></div><span>✦</span></div><div class="kc-connect-badges">'+badgeCards+'</div></section><section class="kc-connect-section"><div class="kc-connect-section-title"><div><small>INVITE ACTIVITY</small><h2>Your referrals</h2></div><span>'+referrals.length+'</span></div>'+(referrals.length?'<div class="kc-connect-referrals">'+referralRows+'</div>':'<div class="kc-connect-empty"><span>✧</span><b>Your crew story starts here.</b><small>Share your invite link to welcome your first friend.</small></div>')+'</section><p class="kc-connect-footnote">100 points are credited for each approved new member. Points and achievement badges are tied to your account, not your device.</p>';
+  loading.hidden=true;root.hidden=false;
+  const qr=document.getElementById('kcConnectQr');
+  if(qr&&window.QRCode)new QRCode(qr,{text:url,width:168,height:168,colorDark:'#18151b',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+  else if(qr)qr.textContent='QR code is loading. Use Copy link instead.';
+ }catch(error){
+  if(request!==kcConnectRequest||!root.isConnected)return;
+  loading.innerHTML='<b>Could not load KC Connect</b><small>'+esc(error.message||'Please retry when your connection is stable.')+'</small><button type="button" data-kc-connect-retry>Try again</button>';
+ }
+}
 function meetPage(){
  return '<div class="kc-meet-page"><header class="kc-meet-hero"><span class="kc-meet-eyebrow">KINETIC CREW · CONNECT</span><div class="kc-meet-orbit" aria-hidden="true"><span>KC</span><i></i><i></i><i></i></div><h1>KC <em>Meet</em></h1><p>Bring your crew together. Host meetings, rehearse, plan and connect.</p><div class="kc-meet-actions"><button type="button" class="kc-meet-primary" data-kc-meet-create>＋ New meeting</button><label class="kc-meet-join"><input id="kcMeetCode" maxlength="24" autocomplete="off" placeholder="Enter a meeting code" aria-label="Meeting code"><button type="button" data-kc-meet-join>Join</button></label></div></header><section class="kc-meet-info-grid"><article><span>▣</span><b>Video & audio</b><small>Meet face to face with your crew.</small></article><article><span>▤</span><b>Share your screen</b><small>Show choreography, plans and presentations.</small></article><article><span>♙</span><b>Approved crew access</b><small>All approved members can join. Admins and Super Admins control hosting.</small></article></section><section class="kc-meet-note"><b>How KC Meet works</b><p>Create a room or join an existing meeting using its code. Your camera and microphone permissions are controlled by your device.</p></section></div>';
 }
