@@ -1,0 +1,179 @@
+/* Kinetic Crew — live theme compatibility for newer and dynamically rendered features.
+   All rules are scoped to the selected theme. Dark appearance is intentionally untouched. */
+:root[data-theme="light"]{
+ --kc-light-bg:#f1efe9;
+ --kc-light-surface:#f8f6f2;
+ --kc-light-raised:#f4f1eb;
+ --kc-light-line:#e3dfd7;
+ --kc-light-text:#41413f;
+ --kc-light-muted:#777872;
+ --kc-light-accent:#c98270;
+ --kc-light-soft-accent:#efe1dc;
+}
+:root[data-theme="light"] #app,
+:root[data-theme="light"] #appRoot,
+:root[data-theme="light"] .shell,
+:root[data-theme="light"] .content{
+ color:var(--kc-light-text)!important;
+}
+:root[data-theme="light"] .content :is(h1,h2,h3,h4,b,strong,label,legend){
+ color:var(--kc-light-text);
+}
+:root[data-theme="light"] .content :is(p,small,.muted,.hint,.description,.subtext,.empty-state){
+ color:var(--kc-light-muted);
+}
+:root[data-theme="light"] .content :is(input:not([type=checkbox]):not([type=radio]),textarea,select){
+ color:var(--kc-light-text)!important;
+ background:var(--kc-light-surface)!important;
+ border-color:var(--kc-light-line)!important;
+}
+:root[data-theme="light"] .content :is(input,textarea)::placeholder{color:#96948d!important;opacity:1}
+:root[data-theme="light"] .content :is(.surface,.settings-card,.feature-form,.feature-panel,.feature-card,.kc-feature-page-menu,.kc-feature-page-card,.kc-attendance-feature-card,.kc-attendance-hub-note,.kc-attendance-feature-panel,.kc-poll-action,.kc-poll-list-item,.kc-poll-summary,.kc-poll-total,.kc-poll-respondent,.kc-release-list article,.kc-extra-panel,.kc-wardrobe-card,.kc-update-card,.kc-device-lock-card,.kc-custom-alert-composer,.kc-custom-alert-card,.kc-member-card,.crew-manage-row,.kc-pending-member,.kc-exact-update,.kc-exact-event-card,.kc-exact-empty-card){
+ color:var(--kc-light-text)!important;
+ background:var(--kc-light-surface)!important;
+ border-color:var(--kc-light-line)!important;
+ box-shadow:0 5px 15px rgba(68,62,51,.045),inset 0 1px 0 rgba(255,255,255,.72)!important;
+}
+:root[data-theme="light"] .content :is(.feature-form,.kc-feature-page-menu,.kc-attendance-feature-panel,.kc-poll-summary,.kc-extra-panel,.kc-custom-alert-composer){
+ background:var(--kc-light-surface)!important;
+}
+:root[data-theme="light"] .content :is(button.secondary,button.outline,.kc-feature-page-back,.kc-collection-more,.kc-poll-back,.kc-poll-action,.kc-poll-list-item,.kc-attendance-back,.kc-attendance-feature-card){
+ color:var(--kc-light-text)!important;
+ background:var(--kc-light-raised)!important;
+ border-color:var(--kc-light-line)!important;
+}
+:root[data-theme="light"] .content :is(button.primary,.kc-attendance-scan-btn,.kc-poll-create,.kc-wa-primary){
+ color:#fff!important;background:#b97565!important;border-color:#b97565!important;
+}
+
+/* Kinetic Gram chat — replace hard-coded dark surfaces when Light is selected. */
+:root[data-theme="light"] .kg-wa-app{
+ --kg-bg:#f1efe9;--kg-panel:#f8f6f2;--kg-panel2:#ebe8e1;
+ --kg-text:#41413f;--kg-muted:#777872;--kg-line:rgba(65,65,63,.12);
+ --kg-green:#27845f;--kg-out:#dceee4;
+ background:var(--kg-bg)!important;color:var(--kg-text)!important;
+}
+:root[data-theme="light"] .kg-wa-top,
+:root[data-theme="light"] .kg-wa-thread-head{background:#f1efe9!important;color:var(--kg-text)!important;border-color:var(--kg-line)!important}
+:root[data-theme="light"] .kg-wa-search,
+:root[data-theme="light"] .kg-wa-message-search{background:#e9e6df!important;color:#696b66!important}
+:root[data-theme="light"] .kg-wa-search input,
+:root[data-theme="light"] .kg-wa-message-search input{color:var(--kg-text)!important;background:transparent!important}
+:root[data-theme="light"] .kg-wa-search input::placeholder{color:#929087!important}
+:root[data-theme="light"] .kg-wa-top-actions button,
+:root[data-theme="light"] .kg-wa-thread-head>button,
+:root[data-theme="light"] .kg-wa-message-search button{color:var(--kg-text)!important}
+:root[data-theme="light"] .kg-wa-tabs{border-color:var(--kg-line)!important}
+:root[data-theme="light"] .kg-wa-tabs button{color:#74756f!important}
+:root[data-theme="light"] .kg-wa-tabs button.active{color:#247b59!important}
+:root[data-theme="light"] .kg-wa-chat-row{border-color:var(--kg-line)!important}
+:root[data-theme="light"] .kg-wa-chat-meta time,
+:root[data-theme="light"] .kg-wa-chat-copy small,
+:root[data-theme="light"] .kg-wa-list-tools{color:#777872!important}
+:root[data-theme="light"] .kg-wa-list-tools button{color:#656760!important}
+:root[data-theme="light"] .kg-wa-thread-view{
+ background-color:#f4f1eb!important;
+ background-image:none!important;
+}
+:root[data-theme="light"] .kg-wa-message{background:#e7e5df!important;color:#41413f!important;box-shadow:none!important}
+:root[data-theme="light"] .kg-wa-message.own{background:#dceee4!important;color:#34443b!important}
+:root[data-theme="light"] .kg-wa-message footer,
+:root[data-theme="light"] .kg-wa-message footer i{color:#777d76!important}
+:root[data-theme="light"] .kg-wa-sender{color:#39765c!important}
+:root[data-theme="light"] .kg-wa-replied,
+:root[data-theme="light"] .kg-wa-document{background:rgba(65,65,63,.07)!important;color:#4d514b!important}
+:root[data-theme="light"] .kg-wa-replied span,
+:root[data-theme="light"] .kg-wa-document small,
+:root[data-theme="light"] .kg-wa-forwarded,
+:root[data-theme="light"] .kg-wa-deleted{color:#777872!important}
+:root[data-theme="light"] .kg-wa-message-actions{border-color:var(--kg-line)!important}
+:root[data-theme="light"] .kg-wa-message-actions button{color:#39765c!important}
+:root[data-theme="light"] .kg-wa-composer{background:#f1efe9!important;border-color:var(--kg-line)!important}
+:root[data-theme="light"] .kg-wa-composer textarea{background:#f8f6f2!important;color:#41413f!important}
+:root[data-theme="light"] .kg-wa-composer button{color:#53564f!important}
+:root[data-theme="light"] .kg-wa-modal{background:#f8f6f2!important;color:#41413f!important;border-color:var(--kg-light-line,var(--kg-line))!important}
+:root[data-theme="light"] .kg-wa-modal input:not([type=checkbox]),
+:root[data-theme="light"] .kg-wa-modal textarea,
+:root[data-theme="light"] .kg-wa-modal-search{background:#f1efe9!important;color:#41413f!important;border-color:#e3dfd7!important}
+:root[data-theme="light"] .kg-wa-attach-sheet{background:#f8f6f2!important;color:#41413f!important;border-color:#e3dfd7!important}
+:root[data-theme="light"] .kg-wa-attach-sheet button,
+:root[data-theme="light"] .kg-wa-community-actions button{color:#41413f!important}
+
+/* KC Meet — modal, stage, side panel, participant tiles and controls. */
+:root[data-theme="light"] .kcml-backdrop{background:rgba(55,52,46,.28)!important}
+:root[data-theme="light"] .kcml-dialog{background:#f1efe9!important;color:#41413f!important;border-color:#e3dfd7!important;box-shadow:0 20px 60px rgba(68,62,51,.12)!important}
+:root[data-theme="light"] .kcml-head h2,
+:root[data-theme="light"] .kcml-person,
+:root[data-theme="light"] .kcml-panel-content>b,
+:root[data-theme="light"] .kcml-person-row b{color:#41413f!important}
+:root[data-theme="light"] .kcml-head small,
+:root[data-theme="light"] .kcml-person-row small,
+:root[data-theme="light"] .kcml-panel-empty{color:#777872!important}
+:root[data-theme="light"] .kcml-stage,
+:root[data-theme="light"] .kcml-sidepanel,
+:root[data-theme="light"] .kcml-chat{background:#f8f6f2!important;border-color:#e3dfd7!important;color:#41413f!important}
+:root[data-theme="light"] .kcml-stage-top,
+:root[data-theme="light"] .kcml-stage-bottom{color:#777872!important}
+:root[data-theme="light"] .kcml-stage-top button,
+:root[data-theme="light"] .kcml-panel-tabs button,
+:root[data-theme="light"] .kcml-controls button{background:#e9e6df!important;color:#55574f!important;border-color:#dedad2!important}
+:root[data-theme="light"] .kcml-panel-tabs{border-color:#e3dfd7!important}
+:root[data-theme="light"] .kcml-panel-tabs button.active{background:#e9dcd9!important;color:#8b5d52!important}
+:root[data-theme="light"] .kcml-panel-content #kcml-chat-log p{background:#eeece6!important;color:#41413f!important}
+:root[data-theme="light"] .kcml-panel-content #kcml-chat-log p b{color:#39765c!important}
+:root[data-theme="light"] .kcml-panel-content #kcml-chat-log p.kcml-chat-own{background:#dceee4!important;color:#34443b!important}
+:root[data-theme="light"] .kcml-panel-content input,
+:root[data-theme="light"] .kcml-chat input{background:#f1efe9!important;color:#41413f!important;border-color:#e3dfd7!important}
+:root[data-theme="light"] .kcml-controls .kcml-leave{background:#b94e4e!important;color:#fff!important}
+
+/* Polls, attendance, feature navigation and notifications. */
+:root[data-theme="light"] .kc-poll-action>span,
+:root[data-theme="light"] .kc-poll-list-icon,
+:root[data-theme="light"] .kc-poll-avatar{background:#eee5e7!important;color:#946b78!important}
+:root[data-theme="light"] .kc-poll-total{background:#eeeae3!important;color:#41413f!important}
+:root[data-theme="light"] .kc-poll-track{background:#e5e1d9!important}
+:root[data-theme="light"] .kc-poll-open{background:#e0eee4!important;color:#39765c!important;border-color:#c8dfd0!important}
+:root[data-theme="light"] .kc-feature-page-kicker,
+:root[data-theme="light"] .kc-feature-page-hint{color:#777872!important}
+:root[data-theme="light"] .kc-feature-page-icon{background:#efe1dc!important;color:#a96f60!important}
+:root[data-theme="light"] .kc-attendance-feature-card .kc-task-icon{background:#eee5e0!important;color:#9c6e5c!important}
+:root[data-theme="light"] .kc-attendance-feature-card small{color:#777872!important}
+:root[data-theme="light"] .kc-attendance-feature-card>i{color:#96938b!important}
+:root[data-theme="light"] .kc-attendance-subpage .kc-attendance-roster{background:#f8f6f2!important;border-color:#e3dfd7!important;color:#41413f!important}
+:root[data-theme="light"] .kc-notice-empty-art:before{background:#eee8e3!important;border-color:#e3dfd7!important;box-shadow:0 8px 20px rgba(68,62,51,.05)!important}
+:root[data-theme="light"] .kc-notice-empty>b{color:#41413f!important}
+:root[data-theme="light"] .kc-notice-empty>p{color:#777872!important}
+
+/* Audition portal: bring its independently styled surface onto the same soft palette. */
+:root[data-theme="light"] body.ka-body{--ka-bg:#f1efe9;--ka-panel:#f8f6f2;--ka-line:#e3dfd7;--ka-text:#41413f;--ka-muted:#777872;background:#f1efe9!important;color:#41413f!important}
+:root[data-theme="light"] .ka-hero,
+:root[data-theme="light"] .ka-panel,
+:root[data-theme="light"] .ka-event,
+:root[data-theme="light"] .ka-review,
+:root[data-theme="light"] .ka-menu-card,
+:root[data-theme="light"] .ka-menu-item,
+:root[data-theme="light"] .ka-dock{background:#f8f6f2!important;color:#41413f!important;border-color:#e3dfd7!important;box-shadow:0 5px 15px rgba(68,62,51,.045)!important}
+:root[data-theme="light"] .ka-hero h1,
+:root[data-theme="light"] .ka-section-head h2,
+:root[data-theme="light"] .ka-event h3,
+:root[data-theme="light"] .ka-announcement h3{color:#41413f!important}
+:root[data-theme="light"] .ka-hero p,
+:root[data-theme="light"] .ka-event p,
+:root[data-theme="light"] .ka-announcement p,
+:root[data-theme="light"] .ka-field{color:#777872!important}
+:root[data-theme="light"] .ka-field input{background:#f1efe9!important;color:#41413f!important;border-color:#e3dfd7!important}
+:root[data-theme="light"] .ka-dock button{color:#777872!important}
+:root[data-theme="light"] .ka-dock button.active{background:#eee1dc!important;color:#80594f!important}
+
+/* Remove ornamental glyphs only; retain functional navigation and action icons. */
+.kc-home-featured-label:empty,
+.kc-home-featured-kicker:empty{display:none!important}
+.kc-notice-empty-art .kc-notice-star,
+.kc-notice-empty-art .kc-notice-spark,
+.kc-notice-empty-art .kc-notice-orbit{display:none!important}
+.kc-notice-empty-art:before{animation:none!important}
+.coversymbol{display:none!important}
+.kce-featured-info>i{display:none!important}
+.kc-more-reference-footer>span{display:none!important}
+.kc-more-reference-watermark{display:none!important}
+.kc-fun-hub-foot{display:none!important}
