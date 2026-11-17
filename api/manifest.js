@@ -3,7 +3,7 @@ const SUPABASE_URL = 'https://lkdfjiweqxshbbcadfna.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_8-7_og12Zot7nA-W_tz-rw_yDS1I9cp';
 const FALLBACK_ICON = '/icon.svg';
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.setHeader('CDN-Cache-Control', 'no-store');
