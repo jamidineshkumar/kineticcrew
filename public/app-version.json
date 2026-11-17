@@ -1,6 +1,6 @@
 {
-  "version": "1.6.45",
+  "version": "1.6.46",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-17T01:25:00+05:30",
-  "release_notes": "Move notification preferences into App Settings, add crew member search and animate inbox empty state."
+  "updated_at": "2026-11-17T11:05:00+05:30",
+  "release_notes": "Fix feature form startup error caused by missing featureMeta reference."
 }

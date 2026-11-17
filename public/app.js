@@ -878,7 +878,7 @@ function socialPostCard(post){
 }
 
 function featureForm(key){
- const meta=featureMeta[key],isPoll=key==='polls',isLeave=key==='leave',isExpense=key==='expenses',isAudition=key==='auditions',isMemory=key==='memories',isChat=key==='chat',isRehearsal=key==='rehearsals',isAchievement=key==='achievements';
+ const meta=(window.KC_FEATURE_META&&window.KC_FEATURE_META[key])||[featureLabels[key]||'Crew feature','Share an update with your crew.','Title','Details','Publish'],isPoll=key==='polls',isLeave=key==='leave',isExpense=key==='expenses',isAudition=key==='auditions',isMemory=key==='memories',isChat=key==='chat',isRehearsal=key==='rehearsals',isAchievement=key==='achievements';
  if(isPoll)return '<form class="surface feature-form kc-poll-builder" data-feature-form="polls">'+
  '<div class="kc-poll-builder-top"><span class="kc-poll-builder-icon">◉</span><div><span class="kc-poll-eyebrow">CREW VOTING</span><h2>Create a poll</h2><p>Ask one clear question and let everyone choose an answer.</p></div></div>'+
  '<label class="field kc-poll-question-field"><span>Your question</span><input name="title" maxlength="160" required placeholder="What should we decide?"></label>'+
