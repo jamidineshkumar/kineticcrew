@@ -13,6 +13,18 @@
   {search:true,label:'Search',path:'<circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/>'}
  ];
  group.innerHTML=items.map(item=>'<button type="button" class="kc-dock-group-item" '+(item.search?'data-search-open':'data-view="'+item.view+'"')+' aria-label="'+item.label+'" title="'+item.label+'"><span class="dock-icon">'+svg(item.path)+'</span><span class="dock-label">'+item.label+'</span></button>').join('');
+ const gramButton=group.querySelector('[data-view="feed"]');
+ if(gramButton){
+  gramButton.dataset.gramDock='true';
+  const unread=document.createElement('span');unread.className='kc-dock-unread';unread.dataset.gramUnread='';unread.hidden=true;unread.setAttribute('aria-label','Unread Kinetic Gram messages');gramButton.appendChild(unread);
+ }
+ window.kcSetGramUnreadCount=count=>{
+  const badge=document.querySelector('[data-gram-unread]'),value=Math.max(0,Number(count)||0);
+  if(!badge)return;
+  badge.hidden=value===0;badge.textContent=value>99?'99+':String(value);
+  badge.setAttribute('aria-label',value+' unread Kinetic Gram messages');
+ };
+
  const dock=document.createElement('nav');dock.id='kcMobileDock';dock.className='kc-mobile-dock';dock.setAttribute('aria-label','Main app navigation');dock.append(home,group);document.body.appendChild(dock);
  function activeView(){
   const active=document.querySelector('#nav .navitem.active[data-view],#nav [data-view].active');
