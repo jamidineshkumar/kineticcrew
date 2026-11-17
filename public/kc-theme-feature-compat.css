@@ -177,3 +177,11 @@
 .kc-more-reference-footer>span{display:none!important}
 .kc-more-reference-watermark{display:none!important}
 .kc-fun-hub-foot{display:none!important}
+
+/* Further trim decorative-only symbols while preserving action/navigation icons. */
+.emptyicon,.coversymbol,.kce-featured-info>i,.kce-featured-info strong>span,
+.kce-category>i,.kc-attendance-feature-card>i,
+.kc-home-featured-label,.kc-home-featured-kicker,
+.kc-more-reference-footer>span,.kc-more-reference-watermark{display:none!important}
+.kc-notice-empty-art .kc-notice-star,.kc-notice-empty-art .kc-notice-spark,
+.kc-notice-empty-art .kc-notice-orbit{display:none!important}
