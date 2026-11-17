@@ -162,7 +162,7 @@ async function loadMessages(id){
  const thread=$('#kgWaMessages');if(thread){thread.innerHTML=messageMarkup();thread.scrollTop=thread.scrollHeight;}
 }
 async function openConversation(id){
- state.active=id;state.reply=null;
+ state.active=id;window.kcGramActiveConversation=String(id);state.reply=null;
  await loadMessages(id);
  renderThread();
  subscribeConversation(id);
@@ -177,9 +177,25 @@ function subscribeConversation(id){
  ch.subscribe(async status=>{if(status==='SUBSCRIBED'){await ch.track({user_id:state.user.id,name:state.profile?.name||state.user.name,online_at:new Date().toISOString()});}});
  state.channel=ch;
 }
+
+async function sendMessagePush(messageId,conversationId){
+ try{
+  const {data,error}=await client.auth.getSession();if(error)throw error;
+  const token=data?.session?.access_token;if(!token)return;
+  const cfg=window.KC_CONFIG||{},base=String(cfg.supabaseUrl||'').replace(/\/+$/,'');
+  if(!base||!cfg.supabaseAnonKey)return;
+  const response=await fetch(base+'/functions/v1/send-crew-notification',{
+   method:'POST',
+   headers:{'Content-Type':'application/json',apikey:cfg.supabaseAnonKey,Authorization:'Bearer '+token},
+   body:JSON.stringify({action:'message',messageId:String(messageId),conversationId:String(conversationId)})
+  });
+  if(!response.ok){const result=await response.json().catch(()=>({}));console.warn('Kinetic Gram push delivery was not confirmed:',result.error||response.status);}
+ }catch(error){console.warn('Kinetic Gram push delivery deferred:',error.message||error);}
+}
 async function sendText(body,type='text',replyId=null,forwardId=null){
  const conv=activeConv();if(!conv)throw Error('Open a conversation first.');
  const id=await call('kg_send_message',{p_conversation_id:conv.id,p_body:body,p_message_type:type,p_reply_to_id:replyId,p_forwarded_from_id:forwardId});
+ void sendMessagePush(id,conv.id);
  state.reply=null;const input=$('#kgWaText');if(input)input.value='';
  await loadMessages(conv.id);await loadData();renderThread();subscribeConversation(conv.id);
 }
@@ -196,6 +212,7 @@ async function uploadFiles(files){
    const messageId=await call('kg_send_message',{p_conversation_id:conv.id,p_body:'',p_message_type:type,p_reply_to_id:state.reply?.id||null,p_forwarded_from_id:null});
    const duration=type==='audio'&&Number.isFinite(file.duration)?file.duration:null;
    await call('kg_add_message_attachment',{p_message_id:messageId,p_storage_path:path,p_file_name:file.name,p_mime_type:mime,p_size_bytes:file.size,p_duration_seconds:duration});
+   void sendMessagePush(messageId,conv.id);
   }catch(error){await client.storage.from('kg-chat-media').remove([path]);throw error;}
  }
  state.reply=null;await loadMessages(conv.id);await loadData();renderThread();subscribeConversation(conv.id);
@@ -285,7 +302,7 @@ async function handleClick(e){
  if(t.matches('[data-kg-start-direct]')){try{const id=await call('kg_open_direct_chat',{p_other_user_id:t.dataset.kgStartDirect});closeModal();await loadData();await openConversation(id)}catch(err){notify(err.message||'Could not start private chat.')}return;}
  if(t.matches('[data-kg-modal-close]')||t.matches('[data-kg-modal-backdrop]')){closeModal();return;}
  if(t.matches('[data-kg-open]')){closeModal();const id=t.dataset.kgOpen;try{await openConversation(id)}catch(err){notify(err.message||'Could not open chat.')}return;}
- if(t.matches('[data-kg-back]')){if(state.channel)client.removeChannel(state.channel);state.channel=null;state.active=null;$('#kgWaThreadView').hidden=true;$('#kgWaListView').hidden=false;$('.kg-wa-fab-wrap').hidden=false;await loadData();return;}
+ if(t.matches('[data-kg-back]')){if(state.channel)client.removeChannel(state.channel);state.channel=null;state.active=null;window.kcGramActiveConversation='';$('#kgWaThreadView').hidden=true;$('#kgWaListView').hidden=false;$('.kg-wa-fab-wrap').hidden=false;await loadData();return;}
  if(t.matches('[data-kg-community]')){await communityInfo(t.dataset.kgCommunity);return;}
  if(t.matches('[data-kg-join-community]')){try{await call('kg_join_community',{p_community_id:t.dataset.kgJoinCommunity});notify('You joined the community.');await loadData();closeModal();renderList();}catch(err){notify(err.message)}return;}
  if(t.matches('[data-kg-row-menu]')){rowMenu(t.dataset.kgRowMenu);return;}
@@ -311,7 +328,7 @@ async function handleClick(e){
  if(t.matches('[data-kg-reply]')){const m=state.messages.find(x=>x.id===t.dataset.kgReply);if(m){state.reply={...m,sender_name:profileById(m.sender_id).name};renderThread();$('#kgWaText')?.focus()}return;}
  if(t.matches('[data-kg-copy]')){const m=state.messages.find(x=>String(x.id)===String(t.dataset.kgCopy));if(m){const text=m.body||'';if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(()=>notify('Message copied.')).catch(()=>notify('Could not copy message.'));else notify('Clipboard is unavailable in this browser.');}closeModal();return;}
  if(t.matches('[data-kg-forward]')){forwardModal(t.dataset.kgForward);return;}
- if(t.matches('[data-kg-forward-to]')){const m=state.messages.find(x=>x.id===t.dataset.kgMessageId);try{await call('kg_send_message',{p_conversation_id:t.dataset.kgForwardTo,p_body:m?.body||'',p_message_type:m?.message_type||'text',p_forwarded_from_id:m?.id||null});closeModal();notify('Message forwarded.');await loadData();}catch(err){notify(err.message)}return;}
+ if(t.matches('[data-kg-forward-to]')){const m=state.messages.find(x=>x.id===t.dataset.kgMessageId);try{const forwardedId=await call('kg_send_message',{p_conversation_id:t.dataset.kgForwardTo,p_body:m?.body||'',p_message_type:m?.message_type||'text',p_forwarded_from_id:m?.id||null});void sendMessagePush(forwardedId,t.dataset.kgForwardTo);closeModal();notify('Message forwarded.');await loadData();}catch(err){notify(err.message)}return;}
  if(t.matches('[data-kg-react-menu]')){emojiModal(t.dataset.kgReactMenu);return;}
  if(t.matches('[data-kg-react]')){try{await call('kg_set_message_reaction',{p_message_id:t.dataset.kgReact,p_emoji:t.dataset.kgEmoji});closeModal();await loadMessages(state.active);}catch(err){notify(err.message)}return;}
  if(t.matches('[data-kg-edit]')){const m=state.messages.find(x=>x.id===t.dataset.kgEdit),body=prompt('Edit message',m?.body||'');if(body!==null){try{await call('kg_edit_message',{p_message_id:m.id,p_body:body});await loadMessages(state.active)}catch(err){notify(err.message)}}return;}
@@ -367,7 +384,17 @@ document.addEventListener('change',async e=>{
  if(e.target.id==='kgWaFileInput'&&e.target.files?.length){try{await uploadFiles([...e.target.files]);notify('Media sent.')}catch(err){notify(err.message||'Upload failed.')}finally{e.target.value='';}}
 });
 document.addEventListener('click',e=>{if(e.target.matches('[data-kg-search-clear]')){state.search='';$('#kgWaSearch').value='';e.target.hidden=true;renderList();}});
-const observer=new MutationObserver(()=>{const root=$('#kgWaApp');if(root&&!root.dataset.kgInit){root.dataset.kgInit='1';loadData().catch(err=>{const list=$('#kgWaList');if(list)list.innerHTML='<div class="kg-wa-empty"><b>Could not load Kinetic Gram chats</b><small>'+esc(err.message||'Please retry.')+'</small><button type="button" data-kg-retry>Retry</button></div>'});}else if(!root&&state.channel){client.removeChannel(state.channel);state.channel=null;state.active=null;}});
+
+window.addEventListener('kc:kg-message',event=>{
+ const detail=event.detail||{},conversationId=String(detail.conversationId||'');
+ if(!conversationId||!$('#kgWaApp'))return;
+ if(state.active&&String(state.active)===conversationId){
+  loadMessages(conversationId).then(()=>renderThread()).catch(error=>console.warn('Live conversation refresh failed:',error));
+ }else{
+  loadData().catch(error=>console.warn('Live inbox refresh failed:',error));
+ }
+});
+const observer=new MutationObserver(()=>{const root=$('#kgWaApp');if(root&&!root.dataset.kgInit){root.dataset.kgInit='1';loadData().catch(err=>{const list=$('#kgWaList');if(list)list.innerHTML='<div class="kg-wa-empty"><b>Could not load Kinetic Gram chats</b><small>'+esc(err.message||'Please retry.')+'</small><button type="button" data-kg-retry>Retry</button></div>'});}else if(!root){if(state.channel){client.removeChannel(state.channel);state.channel=null;}state.active=null;window.kcGramActiveConversation='';}});
 observer.observe(document.documentElement,{childList:true,subtree:true});
 document.addEventListener('click',e=>{if($('#kgWaApp')&&e.target.closest('[data-kg-retry]'))loadData().catch(err=>notify(err.message))});
 })();
