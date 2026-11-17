@@ -301,3 +301,47 @@
 .kc-connect-empty b{font-size:13px}.kc-connect-empty small{font-size:11px;color:var(--muted,#77727b)}
 .kc-connect-footnote{margin:12px 2px 0;color:var(--muted,#77727b);font-size:10px;line-height:1.5}
 @media(max-width:480px){.kc-connect-badges{grid-template-columns:1fr 1fr}.kc-connect-badges article:last-child{grid-column:span 2;min-height:100px}.kc-connect-code-card{padding:19px 16px}.kc-connect-code-card>strong{letter-spacing:.06em}.kc-connect-stats{gap:7px}.kc-connect-stats article{padding:13px 5px}}
+
+/* KC Connect rewards store */
+.kc-rewards-intro{margin:-3px 0 14px;color:var(--muted,#77727b);font-size:12px;line-height:1.55}
+.kc-reward-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.kc-reward-card{overflow:hidden;border:1px solid var(--border,rgba(120,110,120,.16));border-radius:19px;background:var(--surface,#f0efed)}
+.kc-reward-image{height:130px;display:grid;place-items:center;overflow:hidden;background:linear-gradient(135deg,rgba(211,136,139,.16),rgba(168,115,181,.13))}
+.kc-reward-image img{width:100%;height:100%;object-fit:cover}.kc-reward-image span{font-size:39px}
+.kc-reward-info{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:12px}
+.kc-reward-info>small:first-child{font-size:8px;font-weight:900;letter-spacing:.13em;color:#b77a83}
+.kc-reward-info>b{font-size:13px;line-height:1.25}.kc-reward-info p{margin:0;min-height:32px;color:var(--muted,#77727b);font-size:10px;line-height:1.5}
+.kc-reward-info>strong{font-size:13px;font-weight:900;letter-spacing:.03em}.kc-reward-stock{font-size:9px;color:var(--muted,#77727b)}
+.kc-reward-delivery{width:100%;min-width:0;padding:9px;border:1px solid var(--border,rgba(120,110,120,.2));border-radius:9px;background:transparent;color:inherit;font-size:10px}
+.kc-reward-info button,.kc-reward-admin-form button,.kc-admin-redemption-actions button,.kc-admin-reward-row button{min-height:36px;padding:0 12px;border:0;border-radius:10px;background:linear-gradient(100deg,#d77c83,#b96ca9);color:white;font-size:10px;font-weight:850}
+.kc-reward-info button{width:100%;margin-top:3px}.kc-reward-info button:disabled{opacity:.45;filter:grayscale(1)}
+.kc-redemption-list,.kc-admin-reward-list,.kc-admin-redemption-list{display:grid;gap:9px}
+.kc-redemption-row,.kc-admin-reward-row{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border,rgba(120,110,120,.16));border-radius:14px;background:var(--surface,#f0efed)}
+.kc-redemption-row>div{display:grid;gap:4px;min-width:0;flex:1}.kc-redemption-row b{font-size:12px}.kc-redemption-row small{font-size:9px;color:var(--muted,#77727b)}
+.kc-redemption-row em,.kc-admin-reward-row em,.kc-admin-redemption-head em{font-size:8px;font-style:normal;font-weight:900;letter-spacing:.08em}
+.kc-redemption-row em.pending,.kc-admin-redemption-head em.pending{color:#b9854b}.kc-redemption-row em.approved,.kc-redemption-row em.fulfilled,.kc-admin-redemption-head em.approved,.kc-admin-redemption-head em.fulfilled,.kc-admin-reward-row em.active{color:#318567}
+.kc-redemption-row em.rejected,.kc-admin-redemption-head em.rejected,.kc-admin-reward-row em.inactive{color:#b85d68}
+.kc-redemption-row code,.kc-admin-redemption code{display:inline-block;width:max-content;padding:5px 8px;border-radius:7px;background:#19161d;color:#f4d7e1;font-size:11px}
+.kc-voucher-copy{width:max-content;padding:4px 8px;border:1px solid var(--border,rgba(120,110,120,.2));border-radius:7px;background:transparent;color:inherit;font-size:9px}
+.kc-rewards-admin{max-width:850px;margin:0 auto;padding:8px 0 40px}
+.kc-rewards-admin-hero{padding:12px 2px 22px}.kc-rewards-admin-hero>span,.kc-rewards-admin-title small{font-size:9px;font-weight:900;letter-spacing:.15em;color:#bd7d78}
+.kc-rewards-admin-hero h1{margin:8px 0;font-size:clamp(30px,7vw,43px);letter-spacing:-.06em}.kc-rewards-admin-hero h1 em{font-style:normal;color:#c77b9f}
+.kc-rewards-admin-hero p{margin:0;color:var(--muted,#77727b);font-size:12px;line-height:1.55}
+.kc-rewards-admin-section{margin:0 0 19px;padding:16px;border:1px solid var(--border,rgba(120,110,120,.17));border-radius:19px;background:var(--surface,#f0efed)}
+.kc-rewards-admin-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+.kc-rewards-admin-title h2{margin:4px 0 0;font-size:18px;letter-spacing:-.04em}.kc-rewards-admin-title>span{font-size:10px;color:var(--muted,#77727b)}
+.kc-reward-admin-form{display:grid;gap:11px}.kc-reward-admin-form label{display:grid;gap:5px;font-size:10px;font-weight:750;color:var(--muted,#77727b)}
+.kc-reward-admin-form input:not([type=checkbox]),.kc-reward-admin-form textarea,.kc-reward-admin-form select,.kc-admin-redemption textarea{width:100%;min-width:0;padding:10px 11px;border:1px solid var(--border,rgba(120,110,120,.2));border-radius:10px;background:var(--background,#fff);color:var(--text,#252329);font:inherit;font-size:12px}
+.kc-reward-admin-form textarea,.kc-admin-redemption textarea{resize:vertical}
+.kc-reward-admin-form label small{font-size:9px;font-weight:500}
+.kc-reward-admin-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.kc-reward-active{display:flex!important;align-items:center;gap:8px!important}.kc-reward-active input{accent-color:#bd79a6}
+.kc-reward-admin-actions{display:flex;gap:8px}.kc-reward-admin-form button.secondary,.kc-admin-redemption-actions button.secondary{background:transparent;border:1px solid var(--border,rgba(120,110,120,.25));color:var(--text,#252329)}
+.kc-admin-reward-row>div{display:grid;gap:4px;flex:1;min-width:0}.kc-admin-reward-row b{font-size:12px}.kc-admin-reward-row small{font-size:9px;color:var(--muted,#77727b)}
+.kc-admin-reward-row button{min-height:31px}
+.kc-admin-redemption{padding:13px;border:1px solid var(--border,rgba(120,110,120,.16));border-radius:14px;background:var(--background,#fff)}
+.kc-admin-redemption-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.kc-admin-redemption-head>div{display:grid;gap:4px}.kc-admin-redemption-head b{font-size:12px}.kc-admin-redemption-head small{font-size:9px;color:var(--muted,#77727b)}
+.kc-admin-redemption p{margin:8px 0;font-size:10px;overflow-wrap:anywhere}
+.kc-admin-redemption textarea{margin:9px 0;font-size:10px}
+.kc-admin-redemption-actions{display:flex;gap:8px}.kc-admin-empty{color:var(--muted,#77727b);font-size:11px}
+@media(max-width:480px){.kc-reward-grid{grid-template-columns:1fr 1fr}.kc-reward-image{height:105px}.kc-reward-info{padding:10px}.kc-reward-info>b{font-size:11px}.kc-reward-admin-fields{grid-template-columns:1fr 1fr}.kc-reward-admin-fields label:last-child{grid-column:span 2}}
