@@ -1,0 +1,34 @@
+/* Profile page should be content-height; the identity card owns its own surface. */
+#app .kc-reference-profile.kc-single-profile{
+ display:flex!important;
+ width:100%!important;
+ max-width:980px!important;
+ min-height:0!important;
+ height:auto!important;
+ margin:0 auto!important;
+ padding:14px 12px calc(112px + env(safe-area-inset-bottom))!important;
+ overflow:visible!important;
+ border:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+}
+#app .kc-reference-profile.kc-single-profile:before,
+#app .kc-reference-profile.kc-single-profile:after{pointer-events:none!important}
+#app .kc-reference-profile.kc-single-profile .kc-profile-flip-shell,
+#app .kc-reference-profile.kc-single-profile .kc-profile-flip-inner{
+ width:100%!important;
+ max-width:100%!important;
+ flex:0 0 auto!important;
+}
+#app .kc-reference-profile.kc-single-profile .kc-liquid-profile-card{
+ margin-left:auto!important;
+ margin-right:auto!important;
+}
+#app .kc-reference-profile.kc-single-profile .kc-profile-activity{
+ flex:0 0 auto!important;
+ margin-bottom:22px!important;
+}
+@media(max-width:640px){
+ #app .kc-reference-profile.kc-single-profile{padding:10px 12px calc(112px + env(safe-area-inset-bottom))!important;gap:13px!important}
+}
