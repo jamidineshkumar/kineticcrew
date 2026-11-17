@@ -342,8 +342,8 @@ document.addEventListener('click',event=>{
  if(event.target.closest('[data-memory-pick-photo]')){form.querySelector('input[name="memory_photo"]')?.click();return;}
  if(event.target.closest('[data-memory-add-link]')){const entry=form.querySelector('.memory-link-entry');if(entry)entry.hidden=!entry.hidden;return;}
  if(event.target.closest('[data-memory-confirm-link]')){
-  const input=form.querySelector('input[name="media_url"]'),value=String(input?.value||'').trim();
-  try{const url=new URL(value);if(url.protocol!=='https:')throw Error();showMemoryMediaPreview(form,url.href,'Shared image link');}
+  const input=form.querySelector('input[name="media_url"]'),file=form.querySelector('input[name="memory_photo"]'),value=String(input?.value||'').trim();
+  try{const url=new URL(value);if(url.protocol!=='https:')throw Error();if(file)file.value='';showMemoryMediaPreview(form,url.href,'Shared image link');}
   catch{notice('Enter a valid HTTPS image link.');}return;
  }
  if(event.target.closest('[data-memory-remove-media]')){clearMemoryMediaPreview(form);return;}
@@ -364,6 +364,7 @@ document.addEventListener('change',event=>{
  const form=event.target.closest('[data-feature-form="memories"]');
  if(!form||!event.target.matches('input[name="memory_photo"]'))return;
  const file=event.target.files?.[0];if(!file)return;
+ const urlField=form.querySelector('input[name="media_url"]');if(urlField)urlField.value='';
  if(!/^image\/(jpeg|png|webp|gif)$/.test(file.type)){notice('Choose a JPG, PNG, WEBP or GIF photo.');event.target.value='';return;}
  if(file.size>15*1024*1024){notice('Photo must be 15 MB or smaller.');event.target.value='';return;}
  const image=form.querySelector('.memory-media-preview img');
@@ -974,7 +975,7 @@ function featureForm(key){
  '<button type="button" class="kc-poll-add-option" data-poll-add-option>＋ Add option</button></div>'+
  '<div class="kc-poll-settings"><span class="kc-poll-settings-icon">↻</span><span><b>Change vote</b><small>Members can update their choice until the poll closes.</small></span><span class="kc-poll-setting-state">ON</span></div>'+
  '<input type="hidden" name="body" value=""><button class="primary full kc-poll-publish" type="submit">Publish poll <span>→</span></button></form>';
- return '<form class="surface feature-form" data-feature-form="'+key+'">'+formTitle('✦',meta[0],meta[1])+(isChat?'<input type="hidden" name="title" value="Crew message">':'<label class="field">'+meta[2]+'<input name="title" maxlength="160" required placeholder="'+meta[2]+'"></label>')+'<label class="field">'+meta[3]+'<textarea name="body" rows="3" maxlength="5000" '+(isChat?'required':'')+' placeholder="'+(isExpense?'e.g. ₹1200 · costumes · event name':isMemory?'Add a caption and paste a shareable media URL':isAudition?'Dance style, applicant details and video URL':isLeave?'Dates and reason':isChat?'Message the crew…':'Add useful details…')+'"></textarea></label>'+
+ return '<form class="surface feature-form" data-feature-form="'+key+'">'+formTitle('✦',meta[0],meta[1])+(isChat?'<input type="hidden" name="title" value="Crew message">':'<label class="field">'+meta[2]+'<input name="title" maxlength="160" required placeholder="'+meta[2]+'"></label>')+'<label class="field">'+meta[3]+'<textarea name="body" rows="3" maxlength="5000" '+(isChat?'required':'')+' placeholder="'+(isExpense?'e.g. ₹1200 · costumes · event name':isMemory?'Add a caption for this memory…':isAudition?'Dance style, applicant details and video URL':isLeave?'Dates and reason':isChat?'Message the crew…':'Add useful details…')+'"></textarea></label>'+
 
  (isLeave?'<label class="field">From<input name="from_date" type="date" required></label><label class="field">To<input name="to_date" type="date" required></label>':'')+
  (isRehearsal?'<label class="field">Date & time<input name="session_at" type="datetime-local" required></label><label class="field">Location<input name="location" maxlength="160" placeholder="Practice room / studio"></label><label class="field span2 kc-email-optin"><span><input name="send_email" type="checkbox" value="true" checked> Email all approved crew members</span><small>Send rehearsal details by email as well as the in-app notification.</small></label>':'')+
