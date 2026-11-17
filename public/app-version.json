@@ -1,6 +1,6 @@
 {
-  "version": "1.6.49",
+  "version": "1.6.48",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-17T13:26:00+05:30",
-  "release_notes": "KC Connect now includes a Super Admin managed rewards catalogue, audited point adjustments, gift and voucher redemption, live founder profile and referral-code application prompt."
+  "updated_at": "2026-11-17T13:00:00+05:30",
+  "release_notes": "Fix profile page stray boolean text and profile card/activity layout."
 }
