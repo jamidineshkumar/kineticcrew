@@ -1,6 +1,6 @@
 {
-  "version": "1.6.52",
+  "version": "1.6.53",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-17T20:00:00+05:30",
-  "release_notes": "Emergency Offline Vault foundation: cache app assets and encrypted user/role-scoped RPC snapshots for offline reading."
+  "updated_at": "2026-11-18T02:30:00+05:30",
+  "release_notes": "Membership rejection cleanup: rejected accounts and personal data are deleted, while a privacy-safe rejection marker shows the official KC Forma application link. Admins can view anonymized rejection history."
 }
