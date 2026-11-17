@@ -1,5 +1,8 @@
 (()=>{'use strict';
 const root=document.documentElement,key='kc-theme';
+const themeStyle=document.createElement('style');
+themeStyle.textContent=`.kc-appearance-dotmatrix{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:16px 0 18px;padding:14px 16px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,var(--panel2),var(--panel));}.kc-appearance-dotmatrix-copy{display:grid;gap:5px;min-width:0}.kc-appearance-dotmatrix-copy b{font-size:13px;color:var(--text)}.kc-appearance-dotmatrix-copy small{font-size:11px;line-height:1.45;color:var(--muted)}.kc-appearance-dotmatrix button[data-theme-toggle]{flex:0 0 150px}.kc-appearance-dotmatrix+.settings-choice button.is-selected{border-color:var(--accent)!important;background:var(--accent-soft)!important;color:var(--accent)!important;box-shadow:inset 0 0 0 1px var(--accent)!important}.kc-theme-dots{animation:kcDotMatrixPulse 2.8s ease-in-out infinite}@keyframes kcDotMatrixPulse{0%,100%{opacity:.72;filter:drop-shadow(0 0 1px #fff7)}50%{opacity:1;filter:drop-shadow(0 0 5px #fff)}}@media(max-width:560px){.kc-appearance-dotmatrix{align-items:flex-start;padding:12px;gap:8px}.kc-appearance-dotmatrix-copy{padding-top:8px}.kc-appearance-dotmatrix button[data-theme-toggle]{flex-basis:138px;transform:scale(.9);transform-origin:right center;margin-right:-7px}}@media(prefers-reduced-motion:reduce){.kc-theme-dots{animation:none!important}}`;
+document.head.appendChild(themeStyle);
 const media=window.matchMedia('(prefers-color-scheme: dark)');
 let mode='dark';
 try{mode=localStorage.getItem(key)||'dark';}catch{}
