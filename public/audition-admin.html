@@ -71,8 +71,8 @@ async function sendInvitation(id){
 }
 async function deleteApplication(id,incorrectDetails=false){
  const a=state.apps.find(x=>String(x.id)===String(id));if(!a)return;
- const phrase='DELETE '+String(a.name||'').trim();
- const typed=prompt((incorrectDetails?'Reject this application because the submitted details are incorrect, email the applicant with a reapplication link, and permanently delete the application, review history, submitted audition video'+(a.auth_id?' and audition-only login account':'')+'?':'Permanently delete this application, review history, submitted audition video'+(a.auth_id?' and audition-only login account':'')+'? This cannot be undone.')+' Type exactly: '+(incorrectDetails?'REJECT AND DELETE ':'DELETE ')+String(a.name||'').trim());
+ const phrase=(incorrectDetails?'REJECT AND DELETE ':'DELETE ')+String(a.name||'').trim();
+ const typed=prompt((incorrectDetails?'Reject this application because the submitted details are incorrect, email the applicant with a reapplication link, and permanently delete the application, review history, submitted audition video'+(a.auth_id?' and audition-only login account':'')+'?':'Permanently delete this application, review history, submitted audition video'+(a.auth_id?' and audition-only login account':'')+'? This cannot be undone.')+' Type exactly: '+phrase);
  if(typed!==phrase){if(typed!==null)setNotice('Deletion cancelled: confirmation text did not match.',true);return;}
  const {data,error}=await client.functions.invoke('delete-audition-application',{body:{applicationId:id,incorrectDetails}});
  if(error)throw error;if(data?.error)throw new Error(data.error);
