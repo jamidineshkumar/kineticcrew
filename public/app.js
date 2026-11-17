@@ -1517,7 +1517,7 @@ if(S.view==='overview'){
  const homeDots=[...(homeCarousel?.querySelectorAll('[data-home-slide-to]')||[])];
  if(homeSlides.length>1){
   let current=0;
-  const show=next=>{current=(next+homeSlides.length)%homeSlides.length;homeSlides.forEach((slide,i)=>slide.classList.toggle('is-active',i===current));homeDots.forEach((dot,i)=>dot.classList.toggle('active',i===current));};
+  const show=next=>{current=(next+homeSlides.length)%homeSlides.length;homeSlides.forEach((slide,i)=>{slide.classList.toggle('is-active',i===current);slide.classList.toggle('is-prev',i===(current-1+homeSlides.length)%homeSlides.length);slide.classList.toggle('is-next',i===(current+1)%homeSlides.length);slide.classList.toggle('is-hidden-side',i!==current&&i!==(current-1+homeSlides.length)%homeSlides.length&&i!==(current+1)%homeSlides.length);});homeDots.forEach((dot,i)=>dot.classList.toggle('active',i===current));};
   homeDots.forEach(dot=>dot.addEventListener('click',()=>{show(Number(dot.dataset.homeSlideTo));clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=setInterval(()=>show(current+1),5200);}));
   S.homeCarouselTimer=setInterval(()=>show(current+1),5200);
   let swipeStartX=0,swipeStartY=0;
