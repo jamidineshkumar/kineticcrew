@@ -12,3 +12,17 @@
 .kc-event-redirect-field input{width:100%;min-width:0}
 .kce-external-event-link{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;margin:0 0 12px;padding:13px 16px;border:1px solid rgba(190,112,255,.34);border-radius:14px;background:rgba(190,112,255,.1);color:var(--text,#fff);font-weight:700;text-decoration:none}
 .kce-external-event-link:active{transform:scale(.99)}
+
+/* Event banner crop editor */
+.kc-event-crop-backdrop{position:fixed;inset:0;z-index:100500;display:grid;place-items:center;padding:18px;background:rgba(3,5,8,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.kc-event-crop-modal{position:relative;width:min(560px,100%);max-height:min(92dvh,820px);overflow:auto;padding:24px;border:1px solid var(--line,rgba(255,255,255,.16));border-radius:26px;background:var(--surface,#1c2224);box-shadow:0 24px 80px rgba(0,0,0,.55);color:var(--text,#f4f4f5)}
+.kc-event-crop-modal h2{margin:8px 38px 8px 0;font-size:clamp(22px,5vw,28px)}
+.kc-event-crop-modal p{margin:0 0 18px;color:var(--muted,#a1a1aa);line-height:1.5;font-size:14px}
+.kc-event-crop-close{position:absolute;right:14px;top:14px;width:38px;height:38px;border:1px solid var(--line,rgba(255,255,255,.16));border-radius:50%;background:rgba(255,255,255,.06);color:inherit;font-size:25px}
+#kcEventBannerCropCanvas{display:block;width:100%;aspect-ratio:3/1;height:auto;border:1px solid rgba(255,255,255,.2);border-radius:16px;background:#111;touch-action:none;cursor:grab}
+#kcEventBannerCropCanvas:active{cursor:grabbing}
+.kc-event-crop-zoom{display:flex;align-items:center;gap:14px;margin:18px 0 20px;font-size:11px;font-weight:800;letter-spacing:.12em}
+.kc-event-crop-zoom input{flex:1;min-width:0;accent-color:var(--accent,#c66bff)}
+.kc-event-crop-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.kc-event-crop-actions button{min-height:44px;border-radius:14px;padding:10px 18px}
+@media(max-width:480px){.kc-event-crop-modal{padding:20px 16px;border-radius:22px}.kc-event-crop-actions{display:grid;grid-template-columns:1fr 1fr}.kc-event-crop-actions button{width:100%}}
