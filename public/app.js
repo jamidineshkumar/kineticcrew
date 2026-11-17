@@ -43,7 +43,8 @@ async function rpc(name,args){
   }
   kcAccessGuard={userId,checkedAt:Date.now()};
  }
- return withTimeout(client.rpc(name,args),25000,'The crew service is taking too long. Your connection may be weak; retry when it stabilizes.');
+ window.KC_CURRENT_ROLE=String(S.user?.role||'unknown');
+ try{const result=await withTimeout(client.rpc(name,args),25000,'The crew service is taking too long. Your connection may be weak; retry when it stabilizes.');if(!result.error&&window.KCOfflineVault)window.KCOfflineVault.putRpc(name,args,result.data).catch(()=>{});return result;}catch(error){if(window.KCOfflineVault){const cached=await window.KCOfflineVault.getRpc(name,args);if(cached)return {data:cached.data,error:null,offline:true,updated:cached.updated};}throw error;}
 }
 const role=r=>({super_admin:'Super Admin',admin:'Admin',member:'Member',audition_participant:'Audition Participant'}[r]||'Member');
 const memberDescriptor=m=>String(m?.crew_title||m?.occupation||role(m?.role)||'Member').trim();
