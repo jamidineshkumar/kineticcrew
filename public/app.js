@@ -2670,7 +2670,7 @@ document.addEventListener('click',event=>{
  if(input)input.value='';if(hidden)hidden.value='';if(preview)preview.innerHTML='';
  if(S.eventBannerPreviewUrl){URL.revokeObjectURL(S.eventBannerPreviewUrl);S.eventBannerPreviewUrl='';}
 });
-if(!input)return;const file=input.files?.[0],preview=document.querySelector('#kcEventBannerPreview');if(!preview)return;if(!file){preview.innerHTML='';return;}if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024){notice('Choose a JPG, PNG or WebP image up to 5 MB.');input.value='';return;}const localUrl=URL.createObjectURL(file);preview.innerHTML='<img src="'+localUrl+'" alt="Selected event banner preview"><button type="button" data-event-banner-remove aria-label="Remove banner">Remove</button>';});
+
 
 window.addEventListener('kc:app-version-updated',()=>{if(S.view==='app-info')paint();});
 window.addEventListener('kc:release-feed-updated',()=>{if(S.view==='app-info')paint();});
