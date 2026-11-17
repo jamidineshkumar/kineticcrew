@@ -88,3 +88,22 @@
  .kc-admin-reward-row{flex-wrap:wrap}
  .kc-admin-redemption-actions button{flex:1}
 }
+
+
+/* Compact Rewards Control: one task-focused panel at a time. */
+.kc-rewards-admin-tabs{position:sticky;top:calc(env(safe-area-inset-top,0px) + 6px);z-index:40;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:14px 0 12px;padding:6px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(24,25,31,.96);backdrop-filter:blur(18px)}
+.kc-rewards-admin-tabs button{min-width:0;min-height:42px;padding:8px 5px;border:1px solid transparent;border-radius:12px;background:transparent;color:#c8c2ce;font-size:12px;font-weight:700;line-height:1.2;white-space:normal}
+.kc-rewards-admin-tabs button.active{color:#fff;background:linear-gradient(120deg,rgba(108,100,190,.42),rgba(205,112,143,.3));border-color:rgba(228,169,194,.34);box-shadow:0 5px 18px rgba(0,0,0,.2)}
+.kc-rewards-admin-panel[hidden]{display:none!important}
+.kc-rewards-admin-panel{scroll-margin-top:90px}
+.kc-rewards-admin{padding-bottom:calc(180px + env(safe-area-inset-bottom))!important}
+.kc-rewards-admin-panel .kc-reward-admin-form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.kc-rewards-admin-panel .kc-reward-admin-form>label,.kc-rewards-admin-panel .kc-reward-admin-form>.kc-reward-admin-fields,.kc-rewards-admin-panel .kc-reward-admin-form>.kc-reward-admin-actions,.kc-rewards-admin-panel .kc-reward-admin-form>button{grid-column:1/-1}
+.kc-rewards-admin-panel .kc-reward-admin-form>.kc-reward-admin-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kc-rewards-admin-panel .kc-reward-admin-form label{min-width:0}
+.kc-rewards-admin-panel .kc-reward-admin-form input:not([type=checkbox]),.kc-rewards-admin-panel .kc-reward-admin-form select{min-width:0;width:100%}
+.kc-rewards-admin-panel .kc-reward-admin-form textarea{width:100%;min-height:72px}
+.kc-rewards-admin-panel .kc-rewards-admin-title{margin-bottom:12px}
+.kc-rewards-admin-panel .kc-admin-reward-list,.kc-rewards-admin-panel .kc-admin-redemption-list{display:grid;gap:10px}
+@media(max-width:600px){.kc-rewards-admin-tabs{gap:4px;padding:5px;margin:10px 0}.kc-rewards-admin-tabs button{font-size:11px;min-height:44px;padding:6px 3px}.kc-rewards-admin-panel{padding:14px!important}.kc-rewards-admin-panel .kc-reward-admin-form{gap:10px}.kc-rewards-admin-panel .kc-reward-admin-form>.kc-reward-admin-fields{gap:8px}.kc-rewards-admin-panel .kc-reward-admin-form input:not([type=checkbox]),.kc-rewards-admin-panel .kc-reward-admin-form select{min-height:44px;font-size:14px}.kc-rewards-admin-panel .kc-reward-admin-form textarea{min-height:66px}}
+@media(prefers-reduced-motion:reduce){.kc-rewards-admin-tabs{backdrop-filter:none}}
