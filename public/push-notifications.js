@@ -71,7 +71,7 @@ async function enableNativePush() {
       const title = notification.title || "Kinetic Crew";
       const body = notification.body || "You have a new crew update.";
       console.info("Crew push received in foreground:", title);
-      window.dispatchEvent(new CustomEvent("kc:notification", { detail: { title, body, target: notification.data?.url?.includes("gram-chat") ? "gram-chat" : notification.data?.url?.includes("chat") ? "chat" : "notifications", conversationId: notification.data?.conversationId || "" } }));
+      window.dispatchEvent(new CustomEvent("kc:notification", { detail: { title, body, target: notification.data?.url?.includes("gram-chat") ? "gram-chat" : notification.data?.url?.includes("chat") ? "chat" : "notifications", conversationId: notification.data?.conversationId || "", messageId: notification.data?.messageId || "" } }));
       try {
         const { LocalNotifications } = await import("https://esm.sh/@capacitor/local-notifications@7.0.2");
         const permission = await LocalNotifications.checkPermissions();
@@ -112,7 +112,7 @@ async function installForegroundListener(messaging, onMessage) {
     const body = payload.notification?.body || "You have a new crew update.";
     const url = payload.data?.url || "/";
     window.dispatchEvent(new CustomEvent("kc:notification", {
-      detail: { title, body, target: url.includes("gram-chat") ? "gram-chat" : url.includes("chat") ? "chat" : "notifications", conversationId: payload.data?.conversationId || "" }
+      detail: { title, body, target: url.includes("gram-chat") ? "gram-chat" : url.includes("chat") ? "chat" : "notifications", conversationId: payload.data?.conversationId || "", messageId: payload.data?.messageId || "" }
     }));
     if ("Notification" in window && Notification.permission === "granted") {
       const options = {
