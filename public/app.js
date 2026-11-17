@@ -522,7 +522,9 @@ function notificationItems(){
 }
 function unread(){return notificationItems().filter(a=>!isRead(a.notice_id||a.id)).length}
 let kcIslandTimer=null;
+let kcLastMessageNotificationId='';
 function showDynamicIsland(detail={}){
+ const messageId=String(detail.messageId||'');if(messageId&&messageId===kcLastMessageNotificationId)return;if(messageId)kcLastMessageNotificationId=messageId;
  const title=String(detail.title||'Kinetic Crew').slice(0,90),body=String(detail.body||'You have a new crew update.').slice(0,180),target=String(detail.target||'notifications');
  let island=document.getElementById('kcDynamicIsland');
  if(!island){island=document.createElement('button');island.type='button';island.id='kcDynamicIsland';island.className='kc-dynamic-island';island.setAttribute('aria-live','polite');island.setAttribute('aria-label','New Kinetic Crew notification');island.innerHTML='<span class="kc-island-mark">KC</span><span class="kc-island-copy"><b></b><small></small></span><span class="kc-island-dot"></span>';document.body.appendChild(island);
@@ -577,7 +579,7 @@ function startKcGramInboxRealtime(){
   const preview=message.message_type==='image'?'Photo':message.message_type==='video'?'Video':message.message_type==='voice'||message.message_type==='audio'?'Voice message':message.message_type==='document'?'Document':message.message_type==='gif'?'GIF':message.message_type==='location'?'Shared a location':String(message.body||'New message').slice(0,150);
   window.dispatchEvent(new CustomEvent('kc:kg-message',{detail:{conversationId,messageId:String(message.id),senderId:String(message.sender_id),senderName,preview}}));
   if(String(window.kcGramActiveConversation||'')!==conversationId){
-   window.dispatchEvent(new CustomEvent('kc:notification',{detail:{title:'Kinetic Gram · '+senderName,body:preview,target:'gram-chat',conversationId}}));
+   window.dispatchEvent(new CustomEvent('kc:notification',{detail:{title:'Kinetic Gram · '+senderName,body:preview,target:'gram-chat',conversationId,messageId:String(message.id)}}));
   }
  });
  channel.subscribe(status=>{if(status!=='SUBSCRIBED')console.warn('Kinetic Gram inbox Realtime status:',status);});
