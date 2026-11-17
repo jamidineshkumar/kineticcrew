@@ -1,0 +1,91 @@
+/* Kinetic Crew — light theme contrast and legibility pass.
+   Scoped to light mode; dark mode and existing component layouts are unchanged. */
+:root[data-theme="light"]{
+  --text:#262a33!important;--muted:#68707c!important;--panel:#fff!important;
+  --panel2:#f0f2f5!important;--line:#d9dde4!important;color-scheme:light;
+}
+:root[data-theme="light"] body,
+:root[data-theme="light"] #app,
+:root[data-theme="light"] #app.content{color:#262a33!important}
+:root[data-theme="light"] body:not(.kc-home-screen) .content .welcome h1,
+:root[data-theme="light"] body:not(.kc-home-screen) .content>header h1,
+:root[data-theme="light"] body:not(.kc-home-screen) .content>section>header h1,
+:root[data-theme="light"] .kce-events .kce-events-head h1,
+:root[data-theme="light"] .kce-event-detail .kce-detail-content h1,
+:root[data-theme="light"] .kc-attendance-home .kc-attendance-heading h1{
+ color:#252a33!important;text-shadow:none!important;
+}
+:root[data-theme="light"] body:not(.kc-home-screen) .content .welcome h1 em,
+:root[data-theme="light"] body:not(.kc-home-screen) .content>header h1 em,
+:root[data-theme="light"] body:not(.kc-home-screen) .content>section>header h1 em,
+:root[data-theme="light"] .kce-events .kce-events-head h1 em,
+:root[data-theme="light"] .kce-event-detail .kce-detail-content h1 em{
+ color:transparent!important;background:linear-gradient(100deg,#c96c53 0%,#e77c5d 52%,#c84f39 100%)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;
+}
+:root[data-theme="light"] body:not(.kc-home-screen) .content .welcome p,
+:root[data-theme="light"] .kce-events .kce-events-head p{color:#68707c!important}
+:root[data-theme="light"] body:not(.kc-home-screen) .content .welcome .eyebrow,
+:root[data-theme="light"] .kce-events .kce-eyebrow,
+:root[data-theme="light"] .kce-event-detail .kce-eyebrow{color:#9a5a48!important}
+:root[data-theme="light"] .kce-nightpulse .kce-discover-label h2,
+:root[data-theme="light"] .kce-nightpulse .kce-list-heading h2{color:#282c35!important}
+:root[data-theme="light"] .kce-nightpulse .kce-discover-label>span,
+:root[data-theme="light"] .kce-nightpulse .kce-list-heading>span{color:#68707c!important}
+:root[data-theme="light"] .kce-nightpulse .kce-event-search{
+ background:linear-gradient(145deg,#fff,#f1f3f6)!important;border:1px solid #d8dde4!important;color:#4d5662!important;
+ box-shadow:inset 2px 2px 5px rgba(35,43,55,.07),0 5px 14px rgba(35,43,55,.07)!important;
+}
+:root[data-theme="light"] .kce-nightpulse .kce-event-search input{color:#252a33!important}
+:root[data-theme="light"] .kce-nightpulse .kce-event-search input::placeholder{color:#737b86!important;opacity:1!important}
+:root[data-theme="light"] .kce-nightpulse .kce-ticket-shortcut,
+:root[data-theme="light"] .kce-nightpulse .kce-admin-event{
+ color:#292e37!important;background:linear-gradient(145deg,#fff,#eef0f4)!important;border:1px solid #d7dce3!important;
+ box-shadow:0 5px 14px rgba(35,43,55,.08),inset 0 1px 0 #fff!important;
+}
+:root[data-theme="light"] .kce-nightpulse .kce-admin-event{
+ color:#fff!important;background:linear-gradient(110deg,#b75b48,#df8060)!important;border-color:transparent!important;
+}
+:root[data-theme="light"] .kce-nightpulse .kce-kc-meet-tile{
+ color:#292e37!important;background:linear-gradient(145deg,#fff,#edf1f2)!important;border:1px solid #d4dcda!important;
+ box-shadow:0 12px 28px rgba(39,50,48,.12),inset 0 1px 0 #fff!important;
+}
+:root[data-theme="light"] .kce-nightpulse .kce-kc-meet-mark{
+ color:#a66d45!important;background:linear-gradient(145deg,#fff7e9,#e9f3f0)!important;border:1px solid #b9ddd5!important;
+}
+:root[data-theme="light"] .kce-nightpulse .kce-kc-meet-copy small{color:#69717b!important}
+:root[data-theme="light"] .kce-nightpulse .kce-kc-meet-copy b{color:#292e37!important}
+:root[data-theme="light"] .kce-nightpulse .kce-kc-meet-copy>span{color:#58646a!important}
+:root[data-theme="light"] .kce-nightpulse .kce-kc-meet-arrow{color:#a96b4d!important}
+:root[data-theme="light"] .kce-nightpulse .kce-tabs button{
+ color:#4e5661!important;background:linear-gradient(145deg,#fff,#eef0f4)!important;border-color:#d7dce3!important;
+ box-shadow:0 4px 10px rgba(35,43,55,.06)!important;
+}
+:root[data-theme="light"] .kce-nightpulse .kce-tabs button.active{
+ color:#fff!important;background:linear-gradient(110deg,#8d35a9,#c13b91)!important;border-color:#a63b9d!important;
+}
+:root[data-theme="light"] .kce-nightpulse .kce-events-grid .kce-event-card,
+:root[data-theme="light"] .kce-nightpulse .kce-events-grid .kce-ticket-wallet-card{
+ color:#292e37!important;background:#fff!important;border-color:#dce0e6!important;
+ box-shadow:0 7px 18px rgba(35,43,55,.08)!important;
+}
+:root[data-theme="light"] .kce-nightpulse .kce-event-meta>b,
+:root[data-theme="light"] .kce-nightpulse .kce-event-meta>span{color:#343a44!important}
+:root[data-theme="light"] .kce-nightpulse .kce-event-meta>small{color:#68717d!important}
+:root[data-theme="light"] .kce-nightpulse .kce-empty-state{
+ color:#292e37!important;background:#fff!important;border-color:#d8dde4!important;
+}
+:root[data-theme="light"] .kce-nightpulse .kce-empty-state>small{color:#68717d!important}
+:root[data-theme="light"] .kc-meet-page{color:#292e37!important}
+:root[data-theme="light"] .kc-meet-event-tile{color:#f3f8f6!important}
+@media(max-width:900px){
+ :root[data-theme="light"] #kcMobileDock.kc-mobile-dock{
+  background:rgba(250,251,253,.97)!important;border-color:rgba(42,48,58,.15)!important;color:#343a44!important;
+  box-shadow:0 12px 30px rgba(35,43,55,.15),inset 0 1px 0 #fff!important;
+ }
+ :root[data-theme="light"] #kcMobileDock .dock-label{color:#454b56!important;text-shadow:none!important}
+ :root[data-theme="light"] #kcMobileDock .kc-dock-home.active .dock-label,
+ :root[data-theme="light"] #kcMobileDock .kc-dock-group-item.active .dock-label{color:#292e37!important}
+ :root[data-theme="light"] #kcMobileDock .kc-dock-home,
+ :root[data-theme="light"] #kcMobileDock .kc-dock-group-item{color:#454b56!important}
+}
