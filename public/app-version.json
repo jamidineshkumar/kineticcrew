@@ -1,6 +1,6 @@
 {
-  "version": "1.6.50",
+  "version": "1.6.49",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-17T15:30:00+05:30",
-  "release_notes": "More page banner now rotates upcoming events and Super Admin-managed Kinetic Crew image/video promotions. No slide redirects; includes media upload, scheduling and slide controls."
+  "updated_at": "2026-11-17T13:08:00+05:30",
+  "release_notes": "Audition application: exactly 10 numeric contact digits; WhatsApp preferred."
 }
