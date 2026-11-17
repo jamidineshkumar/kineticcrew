@@ -112,3 +112,9 @@
 
 /* The featured carousel keeps its visual progression dots; hide the numeric counter. */
 .kc-home-featured-count{display:none!important}
+
+
+/* Banner image layer fix: keep the artwork above the slide background and below its content. */
+.kc-home-feature-slide:before{z-index:0!important;inset:0!important;background-size:cover!important;background-position:center center!important;}
+.kc-home-featured-art,.kc-home-featured-glass{position:relative!important;z-index:1!important;}
+.kc-home-feature-slide:after{z-index:0!important;}
