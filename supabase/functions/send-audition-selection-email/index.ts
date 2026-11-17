@@ -21,7 +21,7 @@ Deno.serve(async(req:Request)=>{
  if(authError||!authData.user)return json({error:"Sign in required."},401);
  const db=createClient(url,service);
  const {data:actor,error:actorError}=await db.from("crew_profiles").select("auth_id,role,approval_status").eq("auth_id",authData.user.id).maybeSingle();
- if(actorError||!actor||actor.approval_status!=="approved"||!["admin","super_admin"].includes(actor.role))return json({error:"Only approved Admins and Super Admins can issue final Member access."},403);
+ if(actorError||!actor||actor.approval_status!=="approved"||!["admin","super_admin"].includes(actor.role))return json({error:"Only approved Kinetic Crew Admins and the President can issue final Member access."},403);
  try{
   const body=await req.json(),id=String(body.applicationId||"").trim();
   if(!/^[0-9a-f-]{36}$/i.test(id))return json({error:"A valid application ID is required."},400);
