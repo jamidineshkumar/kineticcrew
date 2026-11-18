@@ -2721,9 +2721,6 @@ document.addEventListener('click',event=>{
 
 window.addEventListener('kc:app-version-updated',()=>{if(S.view==='app-info')paint();});
 window.addEventListener('kc:release-feed-updated',()=>{if(S.view==='app-info')paint();});
-boot().finally(()=>{});
-})();
-
 document.addEventListener('click',async event=>{
  const retry=event.target.closest('[data-kc-connect-retry],[data-kc-rewards-admin-retry]');
  if(retry){if(retry.hasAttribute('data-kc-rewards-admin-retry'))loadKCRewardsAdmin();else loadKCConnectDashboard();return;}
@@ -2741,3 +2738,6 @@ document.addEventListener('submit',async event=>{
  if(event.target.id==='kcRewardForm'){event.preventDefault();const button=event.target.querySelector('[type="submit"]');button.disabled=true;try{const vouchers=document.getElementById('kcRewardVouchers').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);const result=await rpc('crew_rewards_admin_upsert',{p_reward_id:document.getElementById('kcRewardEditId').value||null,p_title:document.getElementById('kcRewardTitle').value.trim(),p_description:document.getElementById('kcRewardDescription').value.trim(),p_reward_type:String(document.getElementById('kcRewardType').value||'').trim().toLowerCase(),p_points_cost:Number(document.getElementById('kcRewardPoints').value),p_image_url:document.getElementById('kcRewardImage').value.trim()||null,p_quantity:Number(document.getElementById('kcRewardQuantity').value||0),p_is_active:document.getElementById('kcRewardActive').checked,p_voucher_codes:vouchers});if(result.error)throw result.error;if(!result.data?.ok||!result.data?.reward_id)throw Error(result.data?.message||'The database did not confirm that the reward was saved.');notice('Reward saved and published settings updated.');event.target.reset();document.getElementById('kcRewardEditId').value='';syncKCRewardInventoryFields();await loadKCRewardsAdmin();setKCRewardsAdminTab('inventory');}catch(error){console.error('KC reward save failed:',error);notice(error.message||'Could not save reward. Check the voucher codes and try again.');}finally{button.disabled=false;}return;}
  if(event.target.id==='kcPointsForm'){event.preventDefault();const button=event.target.querySelector('[type="submit"]');button.disabled=true;try{const result=await rpc('crew_reward_points_adjust',{p_user_id:document.getElementById('kcPointsMember').value,p_points_delta:Number(document.getElementById('kcPointsDelta').value),p_reason:document.getElementById('kcPointsReason').value.trim()});if(result.error)throw result.error;notice('Points adjusted. New balance: '+result.data.points_balance);event.target.reset();}catch(error){notice(error.message||'Could not adjust points.');}finally{button.disabled=false;}return;}
 });
+
+boot().finally(()=>{});
+})();
