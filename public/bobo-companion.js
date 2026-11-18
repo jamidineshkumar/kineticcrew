@@ -34,9 +34,7 @@ const mascot=(extra='')=>`<svg class="kc-bobo-svg ${extra}" viewBox="0 0 500 340
  <path d="M243 184 Q250 190 258 184" fill="none" stroke="#bd805f" stroke-width="4" stroke-linecap="round"/>
  <path class="bobo-mouth" d="M224 203 Q250 224 276 203" fill="none" stroke="#8b4039" stroke-width="5" stroke-linecap="round"/>
  <ellipse cx="201" cy="190" rx="13" ry="7" fill="#ed8f7b" opacity=".5"/><ellipse cx="300" cy="190" rx="13" ry="7" fill="#ed8f7b" opacity=".5"/>
- <path d="M152 117 Q139 149 156 187" fill="none" stroke="url(#boboOrange)" stroke-width="13" stroke-linecap="round"/>
- <path d="M354 117 Q367 149 350 187" fill="none" stroke="url(#boboOrange)" stroke-width="13" stroke-linecap="round"/>
- <circle cx="153" cy="158" r="20" fill="#17191f" stroke="#ff8b35" stroke-width="7"/><circle cx="353" cy="158" r="20" fill="#17191f" stroke="#ff8b35" stroke-width="7"/>
+
  <path d="M141 158h24" stroke="#ffb16b" stroke-width="4"/>
  <g class="bobo-cover"><path d="M188 150 Q190 127 210 132 Q224 136 228 154 L236 177 Q240 192 225 195 Q214 198 207 181Z" fill="url(#boboSkin)" stroke="#c58c68" stroke-width="3"/><path d="M270 154 Q274 132 291 132 Q311 132 312 153 L293 181 Q284 195 272 190 Q261 185 270 154Z" fill="url(#boboSkin)" stroke="#c58c68" stroke-width="3"/></g>
 </g>
@@ -73,10 +71,10 @@ function addVoiceControl(){
   welcomeActions.appendChild(button);
  }
 }
-addVoiceControl();
-document.querySelectorAll('[data-auth-open]').forEach(btn=>btn.addEventListener('click',()=>{if(voiceState.enabled)speak(btn.dataset.authOpen==='signup'?'Yay! Let us create your crew account!':'Namasthe! Welcome back! Enter your username and I will follow along.');}));
+// Voice starts automatically after the first user gesture (browser autoplay policy). No extra setup is required.\n// Keep the optional voice toggle available for accessibility.
+document.querySelectorAll('[data-auth-open]').forEach(btn=>btn.addEventListener('click',()=>{if(voiceState.enabled)speak(btn.dataset.authOpen==='signup'?'Yay! Let us create your crew account!':'Namasthe! Welcome back! Enter your username and I will follow along.',true);}));
 const welcomeSpeech=$('.kc-welcome-copy');
-if(welcomeSpeech){const startVoice=()=>{if(voiceState.enabled)speak('Namasthe! Welcome to Kinetic Crew! I am Bobo, your little crew buddy. Let me help you get started.');};document.addEventListener('pointerdown',startVoice,{once:true,passive:true});document.addEventListener('keydown',startVoice,{once:true});}
+if(welcomeSpeech){const startVoice=()=>{if(voiceState.enabled)speak('Namasthe! Welcome to Kinetic Crew! I am Bobo, your little crew buddy. Let me help you get started.',true);};document.addEventListener('pointerdown',startVoice,{once:true,passive:true});document.addEventListener('keydown',startVoice,{once:true});}
 
 function setState(state){svg().forEach(el=>{el.classList.toggle('is-password',state==='password'||state==='peeking');el.classList.toggle('is-peeking',state==='peeking');el.classList.toggle('is-happy',state==='happy');el.classList.toggle('is-error',state==='error');});}
 function follow(input){const value=input.value||'',len=value.length,selection=input.selectionStart??len,ratio=Math.min(1,selection/Math.max(1,input.maxLength||Math.max(24,len||24)));const x=(ratio-.5)*11;svg().forEach(el=>{el.style.setProperty('--bobo-eye-x',x.toFixed(1)+'px');el.style.setProperty('--bobo-eye-y',(input.type==='password'?0:Math.min(3,len*.12))+'px');});}
