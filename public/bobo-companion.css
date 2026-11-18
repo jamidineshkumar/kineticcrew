@@ -41,3 +41,7 @@
 @keyframes boboHappy{0%,100%{transform:translateY(0)}35%{transform:translateY(-12px) rotate(-3deg)}70%{transform:translateY(-5px) rotate(3deg)}}
 @media(max-height:700px){.kc-bobo-welcome{height:190px;margin:-5vh auto 0}.kc-bobo-auth{height:145px;margin:-25px auto 0}}
 @media(prefers-reduced-motion:reduce){.kc-bobo-svg,.kc-bobo-svg *,.kc-bobo-welcome,.kc-bobo-auth{animation:none!important;transition:none!important}}
+
+.kc-bobo-voice-toggle{display:flex;align-items:center;justify-content:center;gap:9px;width:max-content;min-width:150px;min-height:42px;margin:2px auto 0;padding:0 18px;border:1px solid #ffad6b55;border-radius:999px;background:#ff9b4b12;color:#ffd2ae;font:650 12px system-ui,sans-serif;cursor:pointer;transition:background .2s,border-color .2s}
+.kc-bobo-voice-toggle[aria-pressed="false"]{border-color:#ffffff24;background:#ffffff08;color:#a99a8e}
+.kc-bobo-voice-toggle:focus-visible{outline:2px solid #ffad6b;outline-offset:3px}
