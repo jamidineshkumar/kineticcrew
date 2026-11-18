@@ -47,12 +47,43 @@ if(welcome&&brand&&copy&&!welcome.querySelector('.kc-bobo-welcome'))welcome.inse
 const auth=$('#kcAuthScreen'),form=$('#loginForm');
 if(auth&&form&&!auth.querySelector('.kc-bobo-auth'))form.parentElement.insertBefore(stage('auth'),form);
 const svg=()=>document.querySelectorAll('.kc-bobo-svg');
+/* Friendly child-like BOBO voice. Uses the device's built-in speech engine; no audio is sent to a server. */
+const voiceState={enabled:true,voices:[],lastSpoken:0};
+const speech=window.speechSynthesis;
+function chooseVoice(){
+ if(!speech)return null;
+ const voices=speech.getVoices?.()||[];
+ const preferred=voices.filter(v=>/^en(-IN|-GB|-US)?$/i.test(v.lang)||/^en-/i.test(v.lang));
+ return preferred.find(v=>/child|kid|junior|female|girl|natural|neural/i.test(v.name))||
+ preferred.find(v=>/Google.*English|Microsoft.*(Aria|Jenny|Sonia|Ava|Emma|Ana|Neerja)/i.test(v.name))||
+ preferred.find(v=>/en-IN/i.test(v.lang))||preferred[0]||voices[0]||null;
+}
+if(speech){voiceState.voices=speech.getVoices?.()||[];speech.addEventListener?.('voiceschanged',()=>{voiceState.voices=speech.getVoices?.()||[];});}
+function speak(line,force=false){
+ if(!speech||!line||(!voiceState.enabled&&!force))return;
+ const now=Date.now();if(!force&&now-voiceState.lastSpoken<1800)return;
+ voiceState.lastSpoken=now;
+ try{speech.cancel();const utterance=new SpeechSynthesisUtterance(line);const voice=chooseVoice();if(voice)utterance.voice=voice;utterance.lang=voice?.lang||'en-IN';utterance.rate=.88;utterance.pitch=1.55;utterance.volume=.92;speech.speak(utterance);}catch(error){console.info('BOBO voice unavailable on this device.',error);}
+}
+function addVoiceControl(){
+ const welcomeActions=$('.kc-welcome-actions');
+ if(welcomeActions&&!$('#kcBoboVoiceToggle')){
+  const button=document.createElement('button');button.type='button';button.id='kcBoboVoiceToggle';button.className='kc-bobo-voice-toggle';button.innerHTML='<span aria-hidden="true">🔊</span> Hear BOBO';button.setAttribute('aria-pressed','true');
+  button.addEventListener('click',()=>{voiceState.enabled=!voiceState.enabled;button.setAttribute('aria-pressed',String(voiceState.enabled));button.innerHTML=voiceState.enabled?'<span aria-hidden="true">🔊</span> Hear BOBO':'<span aria-hidden="true">🔇</span> Voice off';if(voiceState.enabled)speak('Namasthe! Welcome to Kinetic Crew! I am Bobo. Let us get started!',true);else speech?.cancel();});
+  welcomeActions.appendChild(button);
+ }
+}
+addVoiceControl();
+document.querySelectorAll('[data-auth-open]').forEach(btn=>btn.addEventListener('click',()=>{if(voiceState.enabled)speak(btn.dataset.authOpen==='signup'?'Yay! Let us create your crew account!':'Namasthe! Welcome back! Enter your username and I will follow along.');}));
+const welcomeSpeech=$('.kc-welcome-copy');
+if(welcomeSpeech){const startVoice=()=>{if(voiceState.enabled)speak('Namasthe! Welcome to Kinetic Crew! I am Bobo, your little crew buddy. Let me help you get started.');};document.addEventListener('pointerdown',startVoice,{once:true,passive:true});document.addEventListener('keydown',startVoice,{once:true});}
+
 function setState(state){svg().forEach(el=>{el.classList.toggle('is-password',state==='password'||state==='peeking');el.classList.toggle('is-peeking',state==='peeking');el.classList.toggle('is-happy',state==='happy');el.classList.toggle('is-error',state==='error');});}
 function follow(input){const value=input.value||'',len=value.length,selection=input.selectionStart??len,ratio=Math.min(1,selection/Math.max(1,input.maxLength||Math.max(24,len||24)));const x=(ratio-.5)*11;svg().forEach(el=>{el.style.setProperty('--bobo-eye-x',x.toFixed(1)+'px');el.style.setProperty('--bobo-eye-y',(input.type==='password'?0:Math.min(3,len*.12))+'px');});}
-function attach(input){if(!input||input.dataset.boboBound)return;input.dataset.boboBound='1';input.addEventListener('focus',()=>{setState(input.type==='password'?'password':'');follow(input);});input.addEventListener('input',()=>{follow(input);if(input.type==='password')setState('password');});input.addEventListener('click',()=>follow(input));input.addEventListener('keyup',()=>follow(input));}
+function attach(input){if(!input||input.dataset.boboBound)return;input.dataset.boboBound='1';input.addEventListener('focus',()=>{setState(input.type==='password'?'password':'');follow(input);if(input.type!=='password'&&voiceState.enabled)speak(input.id==='loginUsername'?'Tell me your crew username!':input.id==='fullName'?'What should I call you?':'I am watching your typing!');});input.addEventListener('input',()=>{follow(input);if(input.type==='password')setState('password');});input.addEventListener('click',()=>follow(input));input.addEventListener('keyup',()=>follow(input));}
 document.querySelectorAll('#loginUsername,#fullName,#newUsername,#newEmail,#verifyCode').forEach(attach);
-document.querySelectorAll('#loginPassword,#newPassword,#confirmPassword').forEach(input=>{attach(input);const wrap=document.createElement('span');wrap.className='kc-bobo-field-wrap';input.parentNode.insertBefore(wrap,input);wrap.appendChild(input);const button=document.createElement('button');button.type='button';button.className='kc-bobo-reveal';button.setAttribute('aria-label','Show password');button.textContent='◉';wrap.appendChild(button);button.addEventListener('click',()=>{const reveal=input.type==='password';input.type=reveal?'text':'password';button.setAttribute('aria-label',reveal?'Hide password':'Show password');button.textContent=reveal?'◎':'◉';setState(reveal?'peeking':'password');});});
-document.querySelectorAll('form').forEach(f=>f.addEventListener('submit',()=>{setState('happy');}));
-const message=$('#message');if(message){new MutationObserver(()=>{if(message.classList.contains('error')&&message.textContent.trim())setState('error');else if(message.textContent.trim())setState('happy');}).observe(message,{childList:true,subtree:true,characterData:true});}
+document.querySelectorAll('#loginPassword,#newPassword,#confirmPassword').forEach(input=>{attach(input);const wrap=document.createElement('span');wrap.className='kc-bobo-field-wrap';input.parentNode.insertBefore(wrap,input);wrap.appendChild(input);const button=document.createElement('button');button.type='button';button.className='kc-bobo-reveal';button.setAttribute('aria-label','Show password');button.textContent='◉';wrap.appendChild(button);button.addEventListener('click',()=>{const reveal=input.type==='password';input.type=reveal?'text':'password';button.setAttribute('aria-label',reveal?'Hide password':'Show password');button.textContent=reveal?'◎':'◉';setState(reveal?'peeking':'password');if(voiceState.enabled)speak(reveal?'Oh! I can see it now!':'Oops! My eyes are closed. Your password is secret!');});});
+document.querySelectorAll('form').forEach(f=>f.addEventListener('submit',()=>{setState('happy');if(voiceState.enabled)speak('Fingers crossed! Let us do this!');}));
+const message=$('#message');if(message){new MutationObserver(()=>{if(message.classList.contains('error')&&message.textContent.trim()){setState('error');if(voiceState.enabled)speak('Oopsie! That did not work. Let us try again!');}else if(message.textContent.trim()){setState('happy');if(voiceState.enabled)speak('Yay! That worked!');}}).observe(message,{childList:true,subtree:true,characterData:true});}
 document.querySelectorAll('[data-auth-open]').forEach(btn=>btn.addEventListener('click',()=>setTimeout(()=>{auth?.querySelector('input')?.focus({preventScroll:true});},250)));
 })();
