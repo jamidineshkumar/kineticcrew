@@ -45,3 +45,45 @@
 .kc-bobo-voice-toggle{display:flex;align-items:center;justify-content:center;gap:9px;width:max-content;min-width:150px;min-height:42px;margin:2px auto 0;padding:0 18px;border:1px solid #ffad6b55;border-radius:999px;background:#ff9b4b12;color:#ffd2ae;font:650 12px system-ui,sans-serif;cursor:pointer;transition:background .2s,border-color .2s}
 .kc-bobo-voice-toggle[aria-pressed="false"]{border-color:#ffffff24;background:#ffffff08;color:#a99a8e}
 .kc-bobo-voice-toggle:focus-visible{outline:2px solid #ffad6b;outline-offset:3px}
+
+/* BOBO polish pass: remove headset-like visual styling and correct mobile composition. */
+.kc-bobo-welcome{width:min(68vw,270px);height:clamp(190px,27vh,245px);margin:0 auto 4px;isolation:isolate}
+.kc-bobo-welcome:before{content:"";position:absolute;z-index:-1;left:12%;right:12%;bottom:8%;height:18px;border-radius:50%;background:#ff8b35;filter:blur(22px);opacity:.5}
+.kc-bobo-welcome .kc-bobo-svg{width:100%;height:100%;transform:translateZ(0);filter:drop-shadow(0 16px 24px #ff7a2540)}
+.kc-bobo-speech{right:-16%;top:0;max-width:158px;padding:9px 12px;font-size:11px;z-index:3}
+.kc-bobo-auth{width:min(68vw,230px);height:clamp(145px,20vh,185px);margin:4px auto 12px;overflow:visible}
+.kc-bobo-auth .kc-bobo-svg{width:100%;height:100%;filter:drop-shadow(0 12px 22px #ff7a2530)}
+.kc-bobo-svg{transform-style:preserve-3d;backface-visibility:hidden}
+.kc-bobo-svg .bobo-head{transform-origin:250px 160px;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.kc-bobo-svg.is-happy .bobo-head{animation:boboNod .55s ease-in-out}
+.kc-bobo-svg.is-error .bobo-head{transform:rotate(-4deg) translateX(-3px)}
+.kc-bobo-svg.is-password .bobo-head{transform:rotateY(-7deg)}
+.kc-bobo-svg .bobo-cover{transform-origin:250px 170px}
+.kc-bobo-auth .bobo-body{opacity:.96}
+.kc-bobo-welcome .kc-bobo-speech{right:-20%;top:2%}
+@keyframes boboNod{0%,100%{transform:rotate(0)}35%{transform:rotate(-7deg) translateY(-5px)}70%{transform:rotate(5deg) translateY(-2px)}}
+@media(max-width:420px){
+ .kc-entry-welcome{gap:13px;padding-left:22px;padding-right:22px}
+ .kc-welcome-brand{display:none}
+ .kc-bobo-welcome{width:min(64vw,245px);height:clamp(175px,24vh,215px);margin:0 auto}
+ .kc-bobo-speech{right:-13%;top:0;max-width:145px;font-size:10px}
+ .kc-welcome-copy{padding-top:0!important;margin:0 auto 1vh}
+ .kc-welcome-copy h1{margin:10px 0 8px;font-size:clamp(34px,8.8vw,44px)}
+ .kc-welcome-copy p{font-size:12px;line-height:1.55}
+ .kc-welcome-kicker{display:none}
+ .kc-welcome-actions{gap:9px}
+ .kc-glow-button,.kc-quiet-button{min-height:50px}
+ #kcAuthScreen .signinpanel{padding:calc(155px + env(safe-area-inset-top)) 22px calc(24px + env(safe-area-inset-bottom))}
+ #kcAuthScreen .signinpanel:before{top:-55px;height:240px}
+ #kcAuthScreen .signinpanel:after{top:5px;height:155px}
+ #kcAuthScreen .signform{margin:0 auto}
+ #kcAuthScreen .signform h2{font-size:27px}
+ .kc-bobo-auth{width:190px;height:140px;margin:4px auto 12px}
+}
+@media(max-height:720px){
+ .kc-entry-welcome{gap:9px}
+ .kc-bobo-welcome{height:165px}
+ .kc-welcome-copy{padding-top:0!important;margin-bottom:0}
+ #kcAuthScreen .signinpanel{padding-top:130px}
+ .kc-bobo-auth{height:125px}
+}
