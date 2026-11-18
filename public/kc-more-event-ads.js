@@ -6,8 +6,8 @@ const validUrl=v=>{try{const u=new URL(String(v||''),location.href);return u.pro
 function mergeSlides(events,ads){
  const now=Date.now(),eventSlides=(events||[]).filter(e=>e&&e.id&&e.title&&e.starts_at&&new Date(e.starts_at).getTime()>=now&&e.event_status!=='cancelled')
  .sort((a,b)=>Number(!!b.featured)-Number(!!a.featured)||new Date(a.starts_at)-new Date(b.starts_at))
- .map(e=>({kind:'event',id:'event-'+e.id,title:e.title,caption:[date(e.starts_at),e.location||'Venue to be announced',e.event_status&&e.event_status!=='scheduled'?String(e.event_status).toUpperCase():''].filter(Boolean).join(' · '),media_type:'image',media_url:validUrl(e.cover_url||e.poster_url),label:'UPCOMING EVENT'}));
- const promoSlides=(ads||[]).filter(a=>a&&a.media_url).map(a=>({...a,kind:'promotion',label:'KINETIC CREW · PROMOTION',media_url:validUrl(a.media_url)})).filter(a=>a.media_url);
+ .map(e=>({kind:'event',id:'event-'+e.id,title:e.title,caption:[date(e.starts_at),e.location||'Venue to be announced',e.event_status&&e.event_status!=='scheduled'?String(e.event_status).toUpperCase():''].filter(Boolean).join(' · '),media_type:'image',media_url:validUrl(e.cover_url||e.image_url||e.banner_url||e.poster_url||e.image),label:'UPCOMING EVENT'}));
+ const promoSlides=(ads||[]).filter(a=>a&&a.media_url&&a.is_active!==false).map(a=>({...a,kind:'promotion',label:'KINETIC CREW · PROMOTION',media_url:validUrl(a.media_url)})).filter(a=>a.media_url);
  const result=[];let ei=0,pi=0;
  while(ei<eventSlides.length||pi<promoSlides.length){
   if(ei<eventSlides.length)result.push(eventSlides[ei++]);
@@ -27,7 +27,7 @@ function render(root){
   root.dataset.kcAdsReady='yes';root.dataset.kcAdsSignature=signature;return;
  }
  root.innerHTML='<section class="kc-more-ads-banner" aria-label="Kinetic Crew events and promotions"><div class="kc-more-ads-glow"></div><div class="kc-more-ads-track">'+slides.map((s,i)=>{
-  const media=s.media_type==='video'?'<video class="kc-more-ads-media" muted playsinline loop preload="metadata"'+(i===0?' autoplay':'')+' src="'+safe(s.media_url)+'"></video>':(s.media_url?'<img class="kc-more-ads-media" src="'+safe(s.media_url)+'" alt="" loading="'+(i===0?'eager':'lazy')+'">':'');
+  const media=s.media_type==='video'?'<video class="kc-more-ads-media" muted playsinline loop preload="metadata"'+(i===0?' autoplay':'')+' src="'+safe(s.media_url)+'" onerror="this.closest(\'.kc-more-ads-slide\')?.classList.add(\'media-error\')"></video>':(s.media_url?'<img class="kc-more-ads-media" src="'+safe(s.media_url)+'" alt="" loading="'+(i===0?'eager':'lazy')+'" onerror="this.closest(\'.kc-more-ads-slide\')?.classList.add(\'media-error\')">':'');
   return '<article class="kc-more-ads-slide'+(i===0?' is-active':'')+'" data-slide="'+i+'" aria-hidden="'+(i===0?'false':'true')+'">'+media+'<div class="kc-more-ads-shade"></div><div class="kc-more-ads-copy"><small>'+safe(s.label)+'</small><h2>'+safe(s.title||'Kinetic Crew')+'</h2>'+(s.caption?'<p>'+safe(s.caption)+'</p>':'')+'</div></article>';
  }).join('')+'</div><div class="kc-more-ads-controls"><span class="kc-more-ads-count">01 / '+String(slides.length).padStart(2,'0')+'</span><div class="kc-more-ads-dots">'+slides.map((s,i)=>'<button type="button" data-slide-to="'+i+'" class="'+(i===0?'active':'')+'" aria-label="Show slide '+(i+1)+'"></button>').join('')+'</div><span class="kc-more-ads-brand">KINETIC CREW</span></div><div class="kc-more-ads-progress"><i></i></div></section>';
  const nodes=[...root.querySelectorAll('.kc-more-ads-slide')],dots=[...root.querySelectorAll('[data-slide-to]')],bar=root.querySelector('.kc-more-ads-progress i'),count=root.querySelector('.kc-more-ads-count');let active=0,timer=null;
