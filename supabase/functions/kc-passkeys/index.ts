@@ -21,7 +21,7 @@ Deno.serve(async req=>{
   const getChallenge=async(purpose:string)=>{const {data,error}=await admin.from("kc_passkey_challenges").select("*").eq("user_id",user.id).eq("purpose",purpose).gt("expires_at",new Date().toISOString()).maybeSingle();if(error||!data)throw new Error("Security challenge expired. Try again.");if(data.origin!==origin||data.rp_id!==rpID)throw new Error("Passkey belongs to a different app origin.");return data;};
   if(body.action==="register-options"){
    const {data:existing}=await admin.from("kc_passkey_credentials").select("credential_id").eq("user_id",user.id);
-   const options=await generateRegistrationOptions({rpName:"Kinetic Crew",rpID,userID:new TextEncoder().encode(user.id),userName:user.email||user.id,userDisplayName:user.user_metadata?.full_name||user.email||"Kinetic Crew member",attestationType:"none",excludeCredentials:(existing||[]).map((x:any)=>({id:x.credential_id})),authenticatorSelection:{residentKey:"preferred",userVerification:"required"},timeout:60000});
+   const options=await generateRegistrationOptions({rpName:"Kinetic Crew",rpID,userID:new TextEncoder().encode(user.id),userName:user.email||user.id,userDisplayName:user.user_metadata?.full_name||user.email||"Kinetic Crew member",attestationType:"none",excludeCredentials:(existing||[]).map((x:any)=>({id:x.credential_id})),authenticatorSelection:{authenticatorAttachment:"platform",residentKey:"preferred",userVerification:"required"},timeout:60000});
    await saveChallenge(options.challenge,"registration");return json({options});
   }
   if(body.action==="register-verify"){
