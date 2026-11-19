@@ -1823,11 +1823,36 @@ document.addEventListener('animationend',event=>{
  try{localStorage.setItem('kc_profile_flip_intro_v1','1');}catch{}
 });
 document.addEventListener('click',event=>{const edit=event.target.closest('[data-edit-event]');if(!edit)return;event.preventDefault();if(!admin()){notice('Admin access required to edit events.');return;}S.editingEventId=edit.dataset.editEvent;go('event-edit');});
+async function kcRunBiometric(reason){
+ const module=await import('./kc-biometric.js');
+ return module.authenticateKCBiometric(reason);
+}
+function kcBiometricPreferenceKey(){return 'kc_biometric_enabled_'+String(S.user?.auth_id||S.user?.id||'guest');}
+async function kcSetBiometricPreference(enabled){
+ if(enabled){
+  const module=await import('./kc-biometric.js');
+  const result=await module.checkKCBiometric();
+  if(!result.availability?.isAvailable)throw Error(result.availability?.reason||'Enroll a fingerprint or face unlock that apps can use, then try again.');
+  await result.auth.authenticate({reason:'Confirm biometric unlock for Kinetic Crew',cancelTitle:'Cancel',allowDeviceCredential:false,androidTitle:'Enable biometric unlock',androidSubtitle:'Confirm this device owner',androidConfirmationRequired:false,androidBiometryStrength:0});
+ }
+ S.biometricEnabled=!!enabled;
+ try{if(enabled)localStorage.setItem(kcBiometricPreferenceKey(),'1');else localStorage.removeItem(kcBiometricPreferenceKey());}catch{}
+ paint();
+ notice(enabled?'Biometric unlock enabled on this device.':'Biometric unlock disabled.');
+}
+document.addEventListener('click',async event=>{
+ const toggle=event.target.closest('#kcBiometricEnable');
+ if(toggle){toggle.disabled=true;try{await kcSetBiometricPreference(!S.biometricEnabled);}catch(error){notice(error.message||'Could not configure biometric unlock.');toggle.disabled=false;}return;}
+ const appUnlock=event.target.closest('[data-kc-biometric-app-unlock]');
+ if(appUnlock){appUnlock.disabled=true;try{await kcRunBiometric('Authenticate to unlock Kinetic Crew');S.appLocked=false;document.getElementById('kcAppLockOverlay')?.remove();notice('Kinetic Crew unlocked.');}catch(error){notice(error.message||'Biometric authentication was not completed. Use your mPIN.');appUnlock.disabled=false;}return;}
+ const historyUnlock=event.target.closest('[data-kc-biometric-history]');
+ if(historyUnlock){historyUnlock.disabled=true;try{if(!S.profileHistoryPinSession)throw Error('Unlock once with your mPIN after opening the app, then biometric unlock is available for this session.');await kcRunBiometric('Authenticate to view member profile history');const target=String(S.historyTargetId||S.user?.auth_id||''),{data,error}=await rpc('crew_profile_history_get',{p_target_auth_id:target,p_pin:S.profileHistoryPinSession});if(error)throw error;if(data?.ok===false)throw Error(data.message||'Profile history could not be unlocked.');S.profileHistoryData=data||{};S.profileHistoryUnlocked=true;paint();notice('Profile history unlocked with biometrics.');}catch(error){notice(error.message||'Biometric authentication failed. Use your mPIN.');historyUnlock.disabled=false;}return;}
+});
 function kcRenderAppLock(){
  if(!S.appLocked||!S.user)return;
  let overlay=document.getElementById('kcAppLockOverlay');
  if(!overlay){overlay=document.createElement('div');overlay.id='kcAppLockOverlay';document.body.appendChild(overlay);}
- overlay.innerHTML='<section class="kc-app-lock-card" role="dialog" aria-modal="true" aria-labelledby="kcAppLockTitle"><span class="kc-attendance-kicker">KINETIC CREW · PRIVATE DEVICE</span><div class="kc-app-lock-emblem">KC</div><h2 id="kcAppLockTitle">App locked</h2><p>Enter your four-digit mPIN to continue.</p><form id="kcAppLockUnlock"><input name="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="4" pattern="[0-9]{4}" required placeholder="••••" aria-label="Four-digit mPIN"><button type="submit">Unlock app →</button></form></section>';
+ overlay.innerHTML='<section class="kc-app-lock-card" role="dialog" aria-modal="true" aria-labelledby="kcAppLockTitle"><span class="kc-attendance-kicker">KINETIC CREW · PRIVATE DEVICE</span><div class="kc-app-lock-emblem">KC</div><h2 id="kcAppLockTitle">App locked</h2><p>Enter your four-digit mPIN to continue.</p><form id="kcAppLockUnlock"><input name="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="4" pattern="[0-9]{4}" required placeholder="••••" aria-label="Four-digit mPIN"><button type="submit">Unlock app →</button></form>'+(S.biometricEnabled?'<button type="button" class="outline kc-app-lock-biometric" data-kc-biometric-app-unlock>♙ &nbsp; Unlock with biometrics</button>':'')+'</section>';
 }
 document.addEventListener('visibilitychange',()=>{
  if(!S.user||!S.appLockEnabled)return;
