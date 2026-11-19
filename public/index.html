@@ -123,14 +123,24 @@ window.addEventListener('error',function(e){
  if(e.filename&&/app\.js(?:\?|$)/.test(e.filename)){
   const root=document.getElementById('app');
   if(root&&root.textContent.includes('Opening Kinetic Crew')){
-   root.innerHTML='<div class="kc-start-error" role="alert"><strong>Kinetic Crew could not start</strong><p>The app script failed to load. Please reload once. If this continues, contact the crew administrator.</p><button type="button" onclick="location.reload()">Reload app</button></div>';
+   const detail=String(e.message||'Unknown JavaScript error')+' (line '+String(e.lineno||'?')+', column '+String(e.colno||'?')+')';
+   root.innerHTML='<div class="kc-start-error" role="alert"><strong>Kinetic Crew could not start</strong><p>The startup script raised an error. Share the diagnostic below with the administrator.</p><pre id="kc-start-diagnostic" style="white-space:pre-wrap;overflow-wrap:anywhere;text-align:left;font-size:12px;max-width:100%;opacity:.85"></pre><button type="button" onclick="location.reload()">Reload app</button></div>';
+   const detailNode=document.getElementById('kc-start-diagnostic');if(detailNode)detailNode.textContent=detail;
   }
  }
 },true);
+window.addEventListener('unhandledrejection',function(e){
+ const root=document.getElementById('app');
+ if(root&&root.textContent.includes('Opening Kinetic Crew')){
+  const detail=String(e.reason?.stack||e.reason?.message||e.reason||'Unknown promise rejection');
+  root.innerHTML='<div class="kc-start-error" role="alert"><strong>Kinetic Crew could not start</strong><p>Startup promise failed. Share this diagnostic with the administrator.</p><pre id="kc-start-diagnostic" style="white-space:pre-wrap;overflow-wrap:anywhere;text-align:left;font-size:12px;max-width:100%;opacity:.85"></pre><button type="button" onclick="location.reload()">Reload app</button></div>';
+  const detailNode=document.getElementById('kc-start-diagnostic');if(detailNode)detailNode.textContent=detail.slice(0,1200);
+ }
+});
 </script>
 <script src="kc-transition.js?v=20261112-smoothfade3" defer></script>
 <script src="kc-profile-liquid.js?v=20261111-liquidprofile1" defer></script>
-<script src="app.js?v=20261119-startupfix2" defer></script>
+<script src="app.js?v=20261119-startupdiag3" defer></script>
 <script src="kc-more-ads-admin.js?v=20261118-media-preview1" defer></script>
 <script>
 setTimeout(function(){const root=document.getElementById('app');if(root&&root.textContent.includes('Opening Kinetic Crew')){root.innerHTML='<div class="kc-start-error" role="alert"><strong>Kinetic Crew is taking too long to start</strong><p>The app script did not finish loading. Check your connection and retry.</p><button type="button" onclick="location.reload()">Reload app</button></div>'; }},22000);
