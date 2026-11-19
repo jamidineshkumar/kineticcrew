@@ -1,6 +1,6 @@
 {
-  "version": "1.6.53",
+  "version": "1.6.51",
   "minimum_version": "1.2.7",
   "updated_at": "2026-11-18T02:30:00+05:30",
-  "release_notes": "Membership rejection cleanup: rejected accounts and personal data are deleted, while a privacy-safe rejection marker shows the official KC Forma application link. Admins can view anonymized rejection history."
+  "release_notes": "Adds optional native fingerprint and face unlock for Profile History and App Lock, with four-digit mPIN fallback."
 }
