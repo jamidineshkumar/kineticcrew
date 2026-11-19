@@ -3,11 +3,11 @@ const DURATION=6500, mounted=new WeakMap();
 const safe=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=v=>{const d=new Date(v);return Number.isNaN(+d)?'Date to be announced':d.toLocaleDateString('en-IN',{day:'numeric',month:'short'});};
 const validUrl=v=>{try{const u=new URL(String(v||''),location.href);return u.protocol==='https:'||u.origin===location.origin?u.href:'';}catch{return '';}};
-function mergeSlides(events,ads){
- const now=Date.now(),eventSlides=(events||[]).filter(e=>e&&e.id&&e.title&&e.starts_at&&new Date(e.starts_at).getTime()>=now&&e.event_status!=='cancelled')
+function mergeSlides(events,ads,settings={}){
+ const now=Date.now(),eventSlides=(settings.show_upcoming_events===false?[]:(events||[])).filter(e=>e&&e.id&&e.title&&e.starts_at&&new Date(e.starts_at).getTime()>=now&&e.event_status!=='cancelled')
  .sort((a,b)=>Number(!!b.featured)-Number(!!a.featured)||new Date(a.starts_at)-new Date(b.starts_at))
  .map(e=>({kind:'event',id:'event-'+e.id,title:e.title,caption:[date(e.starts_at),e.location||'Venue to be announced',e.event_status&&e.event_status!=='scheduled'?String(e.event_status).toUpperCase():''].filter(Boolean).join(' · '),media_type:'image',media_url:validUrl(e.cover_url||e.image_url||e.banner_url||e.poster_url||e.image),label:'UPCOMING EVENT'}));
- const promoSlides=(ads||[]).filter(a=>a&&a.media_url&&a.is_active!==false).map(a=>({...a,kind:'promotion',label:'KINETIC CREW · PROMOTION',media_url:validUrl(a.media_url)})).filter(a=>a.media_url);
+ const promoSlides=(settings.show_promotions===false?[]:(ads||[])).filter(a=>a&&a.media_url&&a.is_active!==false).map(a=>({...a,kind:'promotion',label:'KINETIC CREW · PROMOTION',media_url:validUrl(a.media_url)})).filter(a=>a.media_url);
  const result=[];let ei=0,pi=0;
  while(ei<eventSlides.length||pi<promoSlides.length){
   if(ei<eventSlides.length)result.push(eventSlides[ei++]);
@@ -18,7 +18,7 @@ function mergeSlides(events,ads){
 function render(root){
  if(!root)return;
  const api=window.KC_SEARCH_API,snapshot=api&&typeof api.snapshot==='function'?api.snapshot():{};
- const slides=mergeSlides(snapshot.events||[],root._kcMoreAds||[]);
+ const slides=mergeSlides(snapshot.events||[],root._kcMoreAds||[],root._kcMoreAdsSettings||{});
  const signature=JSON.stringify(slides.map(s=>[s.id,s.title,s.caption,s.media_type,s.media_url]));
  if(root.dataset.kcAdsReady==='yes'&&root.dataset.kcAdsSignature===signature)return;
  const old=mounted.get(root);if(old)clearInterval(old.timer);
@@ -42,7 +42,7 @@ function render(root){
 }
 async function loadPromotions(root){
  const client=window.kcSupabase;if(!client||!client.rpc){root._kcMoreAds=[];render(root);return;}
- try{const {data,error}=await client.rpc('crew_more_ads_public_get');if(error)throw error;root._kcMoreAds=Array.isArray(data?.items)?data.items:[];}
+ try{const {data,error}=await client.rpc('crew_more_ads_public_get');if(error)throw error;root._kcMoreAds=Array.isArray(data?.items)?data.items:[];root._kcMoreAdsSettings={show_upcoming_events:data?.show_upcoming_events!==false,show_promotions:data?.show_promotions!==false};}
  catch(error){console.warn('More-page promotions unavailable:',error);root._kcMoreAds=[];}
  render(root);
 }
