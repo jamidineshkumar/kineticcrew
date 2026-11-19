@@ -25,7 +25,15 @@ async function registerKCBiometric(){
  const options=await api('registration-options');
  options.challenge=b64uToBytes(options.challenge);options.user.id=b64uToBytes(options.user.id);
  options.excludeCredentials=(options.excludeCredentials||[]).map(x=>({...x,id:b64uToBytes(x.id)}));
- const credential=await navigator.credentials.create({publicKey:options});
+ let credential;
+ try{credential=await navigator.credentials.create({publicKey:options});}
+ catch(error){
+  const name=String(error?.name||'');
+  if(name==='NotReadableError')throw new Error('Android Credential Manager could not create the passkey. This is usually an Android password-manager/provider problem, not your Kinetic Crew mPIN. Update Chrome and Google Play services, then set Google Password Manager as your passkey provider in Android Settings → Passwords, passkeys & accounts. If it still fails, try the same Kinetic Crew page in Firefox to check whether this is Chrome-specific.');
+  if(name==='NotSupportedError')throw new Error('Android reports that its passkey/password store is unavailable. Enable Google Password Manager or another passkey provider in Android Settings → Passwords, passkeys & accounts.');
+  if(name==='SecurityError')throw new Error('Android rejected the website origin for passkey creation. Open the official https://kineticcrew.vercel.app address directly.');
+  throw new Error('Android passkey registration failed ('+(name||'unknown error')+'): '+String(error?.message||'Try again after checking your Android passkey provider.'));
+ }
  if(!credential)throw new Error('Device registration was cancelled.');
  const response={id:credential.id,rawId:bytesToB64u(credential.rawId),type:credential.type,response:{clientDataJSON:bytesToB64u(credential.response.clientDataJSON),attestationObject:bytesToB64u(credential.response.attestationObject),transports:credential.response.getTransports?credential.response.getTransports():[]},clientExtensionResults:credential.getClientExtensionResults()};
  const result=await api('registration-verify',response);if(!result.verified)throw new Error('The server could not verify this device authenticator.');return {verified:true,registered:true};
