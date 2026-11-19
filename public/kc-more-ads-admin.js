@@ -23,11 +23,22 @@ function byId(id){return currentItems.find(x=>String(x.id)===String(id));}
 async function saveRow(item){const {data,error}=await client().rpc('crew_more_ads_save',item);if(error)throw error;return data;}
 async function upload(file){const c=client();if(!c)throw Error('Storage connection is unavailable.');const ext=(file.name.split('.').pop()||'').toLowerCase(),mime=file.type||'',isVideo=mime.startsWith('video/')||['mp4','webm','mov'].includes(ext),allowedVideo=mime==='video/mp4'||mime==='video/webm'||(!mime&&['mp4','webm'].includes(ext)),allowedImage=['image/jpeg','image/png','image/webp','image/gif','image/avif'].includes(mime);if(isVideo&&!allowedVideo)throw Error('For reliable Android playback, upload MP4 (H.264) or WebM. MOV files must be converted to MP4 first.');if(!isVideo&&!allowedImage)throw Error('Choose JPG, PNG, WebP, GIF, AVIF, MP4 or WebM media.');if(file.size>100*1024*1024)throw Error('Media must be 100 MB or smaller.');const clean=file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,'-').slice(-90);const path=Date.now()+'-'+(crypto.randomUUID?crypto.randomUUID():'kc-'+Math.random().toString(36).slice(2))+'-'+clean;const {data,error}=await c.storage.from('kc-more-ads').upload(path,file,{cacheControl:'31536000',upsert:false,contentType:file.type||(ext==='mp4'?'video/mp4':ext==='webm'?'video/webm':undefined)});if(error)throw Error('Media upload failed: '+(error.message||'Storage rejected the file.'));if(!data?.path)throw Error('Storage did not return an uploaded file path.');const {data:pub}=c.storage.from('kc-more-ads').getPublicUrl(data.path);if(!pub?.publicUrl)throw Error('Could not create a public media URL.');return {url:pub.publicUrl,path:data.path,type:isVideo?'video':'image'};}
 document.addEventListener('change',e=>{if(e.target.matches('#kcMoreAdsForm [name="media"]')){const f=e.target.files?.[0];const label=$('#kcMoreAdsSelectedFile');if(label)label.textContent=f?f.name+' · '+(f.size/1024/1024).toFixed(2)+' MB':'No file selected.';if(!f)return;if(previewObjectUrl)URL.revokeObjectURL(previewObjectUrl);previewObjectUrl=URL.createObjectURL(f);preview(previewObjectUrl,f.type.startsWith('video/')?'video':'image');}});
+document.addEventListener('click',e=>{
+ const save=e.target.closest('#kcMoreAdsForm [type="submit"]');
+ if(!save)return;
+ const form=save.form||$('#kcMoreAdsForm'),status=$('#kcMoreAdsFormStatus');
+ if(!form)return;
+ if(!form.checkValidity()){
+  if(status)status.textContent='Complete the slide title and choose an image or video before saving.';
+  form.reportValidity();
+ }else if(status)status.textContent='Starting promotion save…';
+},true);
 document.addEventListener('submit',async e=>{
  if(e.target.id!=='kcMoreAdsForm')return;
  e.preventDefault();
  if(!isAdmin()){notice('Only the Super Admin can manage this banner.');return;}
  const f=e.target,button=f.querySelector('[type=submit]'),status=$('#kcMoreAdsFormStatus');
+ if(!button||!status)return;
  if(button.disabled)return;
  button.disabled=true;status.textContent='Preparing your promotion…';
  let uploaded=null,persisted=false;
@@ -50,7 +61,7 @@ document.addEventListener('submit',async e=>{
   if(uploaded?.path&&!persisted){try{await client().storage.from('kc-more-ads').remove([uploaded.path]);}catch(cleanupError){console.warn('Temporary upload cleanup failed:',cleanupError);}}
   status.textContent=(persisted?'Slide saved, but verification needs attention: ':'Save failed: ')+(err.message||'Please retry.');notice(status.textContent);
  }finally{if(button.isConnected)button.disabled=false;}
-});
+},true);
 document.addEventListener('click',async e=>{
  if(e.target.closest('#kcMoreAdsSaveVisibility')){await saveVisibility();return;}
  if(e.target.closest('[data-kc-more-ad-reset]')){reset();return;}
