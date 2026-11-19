@@ -13,7 +13,7 @@ function kcRegisterAutoUpdates(){if(!('serviceWorker'in navigator))return;const 
 window.addEventListener('focus',kcApplyPendingUpdate);window.addEventListener('pageshow',kcApplyPendingUpdate);document.addEventListener('visibilitychange',()=>{if(!document.hidden)kcApplyPendingUpdate();});document.addEventListener('focusout',()=>setTimeout(kcApplyPendingUpdate,250));
 setInterval(()=>{if(!document.hidden)kcCheckAppVersion();},5*60*1000);
 window.addEventListener('load',()=>{kcCheckAppVersion();kcRegisterAutoUpdates();},{once:true});
-const S={user:null,promotionalUpdatesEnabled:true,customAlertImageUrl:'',customAlertImagePath:'',view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],pendingMembers:[],rejectedMembers:[],pendingPoll:null,pendingPollBusy:false,pendingAlertIds:[],pendingAlertTimer:null,profileSetupRedirected:false,publicMembers:[],memberFavorites:[],blockedMemberIds:[],featureItems:{},pollScreen:'home',selectedPoll:null,pollSummary:[],pollRespondents:[],socialPosts:[],socialLikes:[],socialComments:[],onlineCrew:[],profileDashboard:null,profileTab:'uploads',roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',attendanceSection:'home',error:'',peopleQuery:'',eventsFilter:'all',eventQuery:'',editingEventId:null,sharedDraft:null,qrStream:null,qrScanning:false,qrProcessing:false,profileHistoryPinStatus:null,profileHistoryData:null,profileHistoryUnlocked:false,pinConfigured:false,historyMembers:[],historyTargetId:'',historyLoading:false,appLockEnabled:false,appLocked:false,biometricEnabled:false,profileHistoryPinSession:''};
+const S={user:null,promotionalUpdatesEnabled:true,customAlertImageUrl:'',customAlertImagePath:'',view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],pendingMembers:[],rejectedMembers:[],pendingPoll:null,pendingPollBusy:false,pendingAlertIds:[],pendingAlertTimer:null,profileSetupRedirected:false,publicMembers:[],memberFavorites:[],blockedMemberIds:[],featureItems:{},pollScreen:'home',selectedPoll:null,pollSummary:[],pollRespondents:[],socialPosts:[],socialLikes:[],socialComments:[],onlineCrew:[],profileDashboard:null,profileTab:'uploads',roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',attendanceSection:'home',error:'',peopleQuery:'',eventsFilter:'all',eventQuery:'',editingEventId:null,sharedDraft:null,qrStream:null,qrScanning:false,qrProcessing:false,profileHistoryPinStatus:null,profileHistoryData:null,profileHistoryUnlocked:false,pinConfigured:false,historyMembers:[],historyTargetId:'',historyLoading:false,appLockEnabled:false,appLocked:false,biometricEnabled:false,biometricAvailable:false,biometricReason:'',profileHistoryPinSession:''};
 window.KC_SEARCH_API={
  snapshot:()=>({events:S.events||[],announcements:S.announcements||[],members:S.publicMembers||[],posts:S.socialPosts||[],role:S.user?.role||'member'}),
  load:async()=>{const jobs=[];if(!S.publicMembers?.length)jobs.push(rpc('crew_profile_directory',{}).then(({data,error})=>{if(error)throw error;S.publicMembers=Array.isArray(data)?data:[];}));if(!S.socialPosts?.length)jobs.push(loadSocialFeed());await Promise.all(jobs);},
@@ -250,7 +250,7 @@ async function refresh(){
  // The authenticated bootstrap is the only data dependency required to open the app.
  // Load it first, render immediately, and hydrate optional sections in the background.
  const d=await api('bootstrap');
- S.user=d.user;kcRememberSignedInAccount(S.user);try{S.biometricEnabled=localStorage.getItem('kc_biometric_enabled_'+String(S.user.auth_id||S.user.id))==='1';}catch{S.biometricEnabled=false;}S.events=d.events||[];S.announcements=d.announcements||[];S.members=d.members||[];try{const lockStatus=await rpc('crew_profile_history_pin_status',{});if(!lockStatus.error){S.profileHistoryPinStatus=lockStatus.data||{};S.pinConfigured=!!lockStatus.data?.pin_configured;S.appLockEnabled=!!lockStatus.data?.app_lock_enabled;}S.appLocked=S.appLockEnabled;}catch(lockError){console.warn('App Lock status could not be checked:',lockError);}
+ S.user=d.user;kcRememberSignedInAccount(S.user);S.events=d.events||[];S.announcements=d.announcements||[];S.members=d.members||[];try{const lockStatus=await rpc('crew_profile_history_pin_status',{});if(!lockStatus.error){S.profileHistoryPinStatus=lockStatus.data||{};S.pinConfigured=!!lockStatus.data?.pin_configured;S.appLockEnabled=!!lockStatus.data?.app_lock_enabled;}S.appLocked=S.appLockEnabled;}catch(lockError){console.warn('App Lock status could not be checked:',lockError);}try{await kcAutoDetectNativeBiometric();}catch(biometricError){console.warn('Native biometric availability check failed:',biometricError);}
  try{const access=await rpc('crew_access_status',{});if(!access.error&&access.data?.role)S.user.role=access.data.role;}catch(error){console.warn('Crew role could not be refreshed:',error);}
  S.offline=false;S.error='';
  paintUser();paint();if(S.appLocked)kcRenderAppLock();
@@ -1710,7 +1710,7 @@ function notificationSettingsPage(){
 function deviceSettingsPage(){
  const configured=!!S.pinConfigured;
  return settingsSubpage('Device & session','Manage your device lock, mPIN and temporary app files.',
- '<section class="surface settings-card kc-settings-detail"><span class="settings-kicker">MPIN SECURITY</span><h3>'+(configured?'Change your four-digit mPIN':'Set up your four-digit mPIN')+'</h3><p>'+(configured?'Verify your current mPIN before replacing it.':'Create a four-digit mPIN. It protects Profile History and can unlock the app when App Lock is enabled.')+'</p><form id="kcDevicePinForm" class="kc-device-pin-form">'+(configured?'<label class="field"><span>Current mPIN</span><input name="currentPin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="4" pattern="[0-9]{4}" required placeholder="••••"></label>':'')+'<label class="field"><span>'+(configured?'New mPIN':'Four-digit mPIN')+'</span><input name="pin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" pattern="[0-9]{4}" required placeholder="••••"></label><label class="field"><span>Confirm mPIN</span><input name="confirmPin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" pattern="[0-9]{4}" required placeholder="••••"></label><button type="submit" class="outline">'+(configured?'Update mPIN':'Save mPIN')+'</button></form><small class="settings-update-state">Your mPIN is stored as a one-way password hash. Kinetic Crew cannot display your existing PIN.</small><label class="kc-history-lock-toggle"><span><b>Lock the entire app</b><small>Ask for your mPIN or registered biometric when you return to Kinetic Crew.</small></span><input id="kcAppLockToggle" type="checkbox" '+(S.appLockEnabled?'checked':'')+' '+(!configured?'disabled':'')+'></label></section><section class="surface settings-card kc-settings-detail"><span class="settings-kicker">BIOMETRIC SECURITY</span><h3>Fingerprint & face unlock</h3><p>Use your Android device’s screen-lock authenticator to unlock Kinetic Crew. Your mPIN remains the fallback.</p><p class="settings-update-state">'+(S.biometricEnabled?'Biometric unlock is enabled on this device.':'Biometric unlock is disabled on this device.')+'</p><button type="button" class="outline" id="kcBiometricEnable">'+(S.biometricEnabled?'Disable biometric unlock':'Enable biometric unlock')+'</button></section><section class="surface settings-card kc-settings-detail"><span class="settings-kicker">DEVICE MAINTENANCE</span><h3>App cache</h3><p>Clear temporary cached files without changing your crew account.</p><button type="button" class="outline" id="clearAppCache">Clear app cache</button></section>');
+ '<section class="surface settings-card kc-settings-detail"><span class="settings-kicker">MPIN SECURITY</span><h3>'+(configured?'Change your four-digit mPIN':'Set up your four-digit mPIN')+'</h3><p>'+(configured?'Verify your current mPIN before replacing it.':'Create a four-digit mPIN. It protects Profile History and can unlock the app when App Lock is enabled.')+'</p><form id="kcDevicePinForm" class="kc-device-pin-form">'+(configured?'<label class="field"><span>Current mPIN</span><input name="currentPin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="4" pattern="[0-9]{4}" required placeholder="••••"></label>':'')+'<label class="field"><span>'+(configured?'New mPIN':'Four-digit mPIN')+'</span><input name="pin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" pattern="[0-9]{4}" required placeholder="••••"></label><label class="field"><span>Confirm mPIN</span><input name="confirmPin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" pattern="[0-9]{4}" required placeholder="••••"></label><button type="submit" class="outline">'+(configured?'Update mPIN':'Save mPIN')+'</button></form><small class="settings-update-state">Your mPIN is stored as a one-way password hash. Kinetic Crew cannot display your existing PIN.</small><label class="kc-history-lock-toggle"><span><b>Lock the entire app</b><small>Ask for your mPIN or registered biometric when you return to Kinetic Crew.</small></span><input id="kcAppLockToggle" type="checkbox" '+(S.appLockEnabled?'checked':'')+' '+(!configured?'disabled':'')+'></label></section><section class="surface settings-card kc-settings-detail"><span class="settings-kicker">ANDROID BIOMETRIC SECURITY</span><h3>Device fingerprint & face unlock</h3><p>Kinetic Crew automatically detects the biometrics already enrolled in Android. No passkey or separate in-app enrolment is required. Android displays its native prompt when you unlock.</p><p class="settings-update-state">'+(S.biometricEnabled?'Connected to this device’s enrolled biometrics.':(S.biometricReason||'Native biometrics are unavailable here, or an mPIN must be set first.'))+'</p><button type="button" class="outline" id="kcBiometricEnable">'+(S.biometricEnabled?'Disable biometric unlock':'Check device biometrics')+'</button></section><section class="surface settings-card kc-settings-detail"><span class="settings-kicker">DEVICE MAINTENANCE</span><h3>App cache</h3><p>Clear temporary cached files without changing your crew account.</p><button type="button" class="outline" id="clearAppCache">Clear app cache</button></section>');
 }
 function appInfoPage(){
  const settings=S.appSettings||{},meta=window.kcAppVersionMetadata||{},version=window.KC_APP_VERSION||meta.version||'1.4.5',releases=Array.isArray(window.kcReleaseFeed)?window.kcReleaseFeed:[];
@@ -1827,23 +1827,35 @@ document.addEventListener('animationend',event=>{
  try{localStorage.setItem('kc_profile_flip_intro_v1','1');}catch{}
 });
 document.addEventListener('click',event=>{const edit=event.target.closest('[data-edit-event]');if(!edit)return;event.preventDefault();if(!admin()){notice('Admin access required to edit events.');return;}S.editingEventId=edit.dataset.editEvent;go('event-edit');});
+function kcBiometricPreferenceKey(){return 'kc_biometric_enabled_'+String(S.user?.auth_id||S.user?.id||'guest');}
 async function kcRunBiometric(reason){
  const module=await import('./kc-biometric.js');
  return module.authenticateKCBiometric(reason);
 }
-function kcBiometricPreferenceKey(){return 'kc_biometric_enabled_'+String(S.user?.auth_id||S.user?.id||'guest');}
-async function kcSetBiometricPreference(enabled){
+async function kcAutoDetectNativeBiometric(force=false){
+ S.biometricAvailable=false;S.biometricReason='';S.biometricEnabled=false;
+ if(!S.user||!S.pinConfigured)return false;
+ const saved=localStorage.getItem(kcBiometricPreferenceKey());
+ if(saved==='0'&&!force)return false;
  const module=await import('./kc-biometric.js');
+ const result=await module.checkKCBiometric();
+ S.biometricAvailable=!!result.availability?.isAvailable;
+ S.biometricReason=result.availability?.reason||'';
+ S.biometricEnabled=S.biometricAvailable;
+ if(S.biometricEnabled)localStorage.setItem(kcBiometricPreferenceKey(),'1');
+ else if(force)localStorage.setItem(kcBiometricPreferenceKey(),'0');
+ return S.biometricEnabled;
+}
+async function kcSetBiometricPreference(enabled){
  if(enabled){
-  if(!S.pinConfigured)throw Error('Set up your four-digit mPIN first. It is the recovery fallback for biometric unlock.');
-  await module.registerKCBiometric();
+  if(!S.pinConfigured)throw Error('Set up your four-digit mPIN first. It is the recovery fallback.');
+  const available=await kcAutoDetectNativeBiometric(true);
+  if(!available)throw Error(S.biometricReason||'No enrolled Android fingerprint or face authenticator is available to apps on this device.');
  }else{
-  await module.removeKCBiometric();
+  S.biometricEnabled=false;localStorage.setItem(kcBiometricPreferenceKey(),'0');
  }
- S.biometricEnabled=!!enabled;
- try{if(enabled)localStorage.setItem(kcBiometricPreferenceKey(),'1');else localStorage.removeItem(kcBiometricPreferenceKey());}catch{}
  paint();
- notice(enabled?'Fingerprint or face unlock registered successfully.':'Biometric unlock disabled on this device.');
+ notice(enabled?'Device biometrics connected automatically. Android will show its system prompt when Kinetic Crew needs authentication.':'Biometric unlock disabled for Kinetic Crew.');
 }
 document.addEventListener('click',async event=>{
  const toggle=event.target.closest('#kcBiometricEnable');
@@ -2306,7 +2318,7 @@ document.addEventListener('submit',async e=>{
   e.preventDefault();const d=new FormData(f),pin=String(d.get('pin')||''),confirmPin=String(d.get('confirmPin')||''),currentPin=String(d.get('currentPin')||'');
   if(!/^\d{4}$/.test(pin)){notice('Choose a four-digit mPIN.');return;}if(pin!==confirmPin){notice('The new mPIN entries do not match.');return;}
   const button=f.querySelector('button[type="submit"]');button.disabled=true;button.textContent='Saving securely…';
-  try{if(S.pinConfigured){const checked=await rpc('crew_profile_history_verify_pin',{p_pin:currentPin});if(checked.error)throw checked.error;if(checked.data?.ok===false)throw Error(checked.data.message||'Current mPIN is incorrect.');}const saved=await rpc('crew_profile_history_set_pin',{p_pin:pin});if(saved.error)throw saved.error;if(saved.data?.ok===false)throw Error(saved.data.message||'Could not save mPIN.');S.pinConfigured=true;S.profileHistoryPinStatus={...(S.profileHistoryPinStatus||{}),pin_configured:true};S.profileHistoryPinSession='';notice('mPIN saved securely.');paint();}
+  try{if(S.pinConfigured){const checked=await rpc('crew_profile_history_verify_pin',{p_pin:currentPin});if(checked.error)throw checked.error;if(checked.data?.ok===false)throw Error(checked.data.message||'Current mPIN is incorrect.');}const saved=await rpc('crew_profile_history_set_pin',{p_pin:pin});if(saved.error)throw saved.error;if(saved.data?.ok===false)throw Error(saved.data.message||'Could not save mPIN.');S.pinConfigured=true;S.profileHistoryPinStatus={...(S.profileHistoryPinStatus||{}),pin_configured:true};S.profileHistoryPinSession='';try{await kcAutoDetectNativeBiometric();}catch{}notice('mPIN saved securely.');paint();}
   catch(error){notice(error.message||'Could not update mPIN.');}
   finally{if(button.isConnected){button.disabled=false;button.textContent='Save mPIN';}}
   return;
