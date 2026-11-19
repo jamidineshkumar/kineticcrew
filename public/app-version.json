@@ -1,6 +1,6 @@
 {
-  "version": "1.6.53",
+  "version": "1.6.54",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-19T12:30:00+05:30",
-  "release_notes": "Native Android biometric integration now uses the installed Capacitor BiometricAuth plugin and Android system prompt. Fingerprint/face availability is detected automatically; no browser passkeys or separate in-app enrolment. mPIN remains the fallback."
+  "updated_at": "2026-11-19T12:50:00+05:30",
+  "release_notes": "Installed PWA biometric unlock now uses server-verified WebAuthn platform credentials. Register this device's Android fingerprint or face authenticator once; mPIN remains the fallback."
 }
