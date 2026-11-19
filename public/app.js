@@ -1406,7 +1406,7 @@ function profileHistoryPage(){
  '<section class="kc-history-panel kc-history-security-panel"><header><div><span class="kc-attendance-kicker">DEVICE SECURITY</span><h2>Optional app lock</h2><p>When enabled, the app asks for your mPIN after reopening or returning from the background.</p></div></header><label class="kc-history-lock-toggle"><span><b>Lock the entire app</b><small>Profile History always remains protected by mPIN.</small></span><input id="kcAppLockToggle" type="checkbox" '+(S.appLockEnabled?'checked':'')+'></label></section></main>';
 }
 function attendancePage(){
- if(!admin())return S.attendanceSection==='history'?profileHistoryPage():memberAttendancePage();
+ if(!admin())return memberAttendancePage();
  const section=S.attendanceSection||'home';
  const selected=S.events.find(e=>String(e.id)===String(S.rosterEvent));
  const eventOptions='<option value="">Select an event</option>'+S.events.map(e=>'<option value="'+esc(e.id)+'" '+(String(S.rosterEvent)===String(e.id)?'selected':'')+'>'+esc(e.title)+'</option>').join('');
