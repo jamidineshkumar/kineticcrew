@@ -2274,7 +2274,7 @@ document.addEventListener('submit',async e=>{
  let f=e.target;
  if(f.id==='kcHistoryPinSetup'){
   e.preventDefault();const d=new FormData(f),pin=String(d.get('pin')||''),confirmPin=String(d.get('confirmPin')||'');
-  if(!/^\d{6}$/.test(pin)){notice('Choose a four-digit mPIN.');return;}
+  if(!/^\d{4}$/.test(pin)){notice('Choose a four-digit mPIN.');return;}
   if(pin!==confirmPin){notice('The mPIN entries do not match.');return;}
   const button=f.querySelector('button[type="submit"]');button.disabled=true;button.textContent='Saving securely…';
   try{const {data,error}=await rpc('crew_profile_history_set_pin',{p_pin:pin});if(error)throw error;S.profileHistoryPinStatus={...(S.profileHistoryPinStatus||{}),pin_configured:true};S.profileHistoryUnlocked=false;S.profileHistoryData=null;notice(data?.message||'mPIN saved.');paint();}
