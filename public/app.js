@@ -1825,11 +1825,7 @@ document.addEventListener('animationend',event=>{
  try{localStorage.setItem('kc_profile_flip_intro_v1','1');}catch{}
 });
 document.addEventListener('click',event=>{const edit=event.target.closest('[data-edit-event]');if(!edit)return;event.preventDefault();if(!admin()){notice('Admin access required to edit events.');return;}S.editingEventId=edit.dataset.editEvent;go('event-edit');});
-document.addEventListener('visibilitychange',()=>{
- if(!S.user||!S.appLockEnabled)return;
- if(document.hidden){S.appLocked=true;}
- else if(S.appLocked)kcRenderAppLock();
-});
+
 document.addEventListener('visibilitychange',()=>{
  if(document.hidden&&S.view==='crew-management'&&S.profileHistoryInCrew){
   S.profileHistoryUnlocked=false;S.profileHistoryData=null;
