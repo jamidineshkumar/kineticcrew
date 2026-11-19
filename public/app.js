@@ -1830,16 +1830,17 @@ async function kcRunBiometric(reason){
 }
 function kcBiometricPreferenceKey(){return 'kc_biometric_enabled_'+String(S.user?.auth_id||S.user?.id||'guest');}
 async function kcSetBiometricPreference(enabled){
+ const module=await import('./kc-biometric.js');
  if(enabled){
-  const module=await import('./kc-biometric.js');
-  const result=await module.checkKCBiometric();
-  if(!result.availability?.isAvailable)throw Error(result.availability?.reason||'Enroll a fingerprint or face unlock that apps can use, then try again.');
-  await result.auth.authenticate({reason:'Confirm biometric unlock for Kinetic Crew',cancelTitle:'Cancel',allowDeviceCredential:false,androidTitle:'Enable biometric unlock',androidSubtitle:'Confirm this device owner',androidConfirmationRequired:false,androidBiometryStrength:0});
+  if(!S.pinConfigured)throw Error('Set up your four-digit mPIN first. It is the recovery fallback for biometric unlock.');
+  await module.registerKCBiometric();
+ }else{
+  await module.removeKCBiometric();
  }
  S.biometricEnabled=!!enabled;
  try{if(enabled)localStorage.setItem(kcBiometricPreferenceKey(),'1');else localStorage.removeItem(kcBiometricPreferenceKey());}catch{}
  paint();
- notice(enabled?'Biometric unlock enabled on this device.':'Biometric unlock disabled.');
+ notice(enabled?'Fingerprint or face unlock registered successfully.':'Biometric unlock disabled on this device.');
 }
 document.addEventListener('click',async event=>{
  const toggle=event.target.closest('#kcBiometricEnable');
