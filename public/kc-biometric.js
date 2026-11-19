@@ -1,6 +1,6 @@
 // Native biometric adapter for Capacitor 7. The native plugin is installed
 // from package.json and must be synced into the Android/iOS project at build time.
-const PLUGIN_URL = 'https://esm.sh/@aparajita/capacitor-biometric-auth@9.1.2?external=@capacitor/core';
+const PLUGIN_URL = 'https://esm.sh/@aparajita/capacitor-biometric-auth@9.1.2?bundle';
 let pluginPromise;
 
 export async function getKCBiometricAuth() {
