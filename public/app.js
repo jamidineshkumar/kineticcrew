@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
-window.KC_APP_VERSION='1.6.55';
+window.KC_APP_VERSION='1.6.56';
 let kcUpdatePending=false,kcUpdateReloading=false,kcPendingVersion='';
 const KC_UPDATE_GUARD='kc_update_reload_guard_v1';
 function kcReloadAlreadyUsed(version=''){try{return sessionStorage.getItem(KC_UPDATE_GUARD)===String(version||'service-worker');}catch{return new URL(location.href).searchParams.has('kc_refresh');}}
@@ -13,7 +13,7 @@ function kcRegisterAutoUpdates(){if(!('serviceWorker'in navigator))return;const 
 window.addEventListener('focus',kcApplyPendingUpdate);window.addEventListener('pageshow',kcApplyPendingUpdate);document.addEventListener('visibilitychange',()=>{if(!document.hidden)kcApplyPendingUpdate();});document.addEventListener('focusout',()=>setTimeout(kcApplyPendingUpdate,250));
 setInterval(()=>{if(!document.hidden)kcCheckAppVersion();},5*60*1000);
 window.addEventListener('load',()=>{kcCheckAppVersion();kcRegisterAutoUpdates();},{once:true});
-const S={user:null,promotionalUpdatesEnabled:true,customAlertImageUrl:'',customAlertImagePath:'',view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],pendingMembers:[],rejectedMembers:[],pendingPoll:null,pendingPollBusy:false,pendingAlertIds:[],pendingAlertTimer:null,profileSetupRedirected:false,publicMembers:[],memberFavorites:[],blockedMemberIds:[],featureItems:{},pollScreen:'home',selectedPoll:null,pollSummary:[],pollRespondents:[],socialPosts:[],socialLikes:[],socialComments:[],onlineCrew:[],profileDashboard:null,profileAchievements:[],profileTab:'uploads',roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',attendanceSection:'home',error:'',peopleQuery:'',eventsFilter:'all',eventQuery:'',editingEventId:null,sharedDraft:null,qrStream:null,qrScanning:false,qrProcessing:false,profileHistoryPinStatus:null,profileHistoryData:null,profileHistoryUnlocked:false,pinConfigured:false,historyMembers:[],historyTargetId:'',historyLoading:false,appLockEnabled:false,appLocked:false,biometricEnabled:false,biometricAvailable:false,biometricReason:'',profileHistoryPinSession:''};
+const S={user:null,promotionalUpdatesEnabled:true,customAlertImageUrl:'',customAlertImagePath:'',view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],pendingMembers:[],rejectedMembers:[],pendingPoll:null,pendingPollBusy:false,pendingAlertIds:[],pendingAlertTimer:null,profileSetupRedirected:false,publicMembers:[],memberFavorites:[],blockedMemberIds:[],featureItems:{},pollScreen:'home',selectedPoll:null,pollSummary:[],pollRespondents:[],socialPosts:[],socialLikes:[],socialComments:[],onlineCrew:[],profileDashboard:null,profileAchievements:[],profileTab:'uploads',roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',attendanceSection:'home',error:'',peopleQuery:'',eventsFilter:'all',eventQuery:'',editingEventId:null,sharedDraft:null,qrStream:null,qrScanning:false,qrProcessing:false,profileHistoryPinStatus:null,profileHistoryData:null,profileHistoryUnlocked:false,historyMembers:[],historyTargetId:'',historyLoading:false,profileHistoryPinSession:''};
 window.KC_SEARCH_API={
  snapshot:()=>({events:S.events||[],announcements:S.announcements||[],members:S.publicMembers||[],posts:S.socialPosts||[],role:S.user?.role||'member'}),
  load:async()=>{const jobs=[];if(!S.publicMembers?.length)jobs.push(rpc('crew_profile_directory',{}).then(({data,error})=>{if(error)throw error;S.publicMembers=Array.isArray(data)?data:[];}));if(!S.socialPosts?.length)jobs.push(loadSocialFeed());await Promise.all(jobs);},
@@ -250,7 +250,7 @@ async function refresh(){
  // The authenticated bootstrap is the only data dependency required to open the app.
  // Load it first, render immediately, and hydrate optional sections in the background.
  const d=await api('bootstrap');
- S.user=d.user;kcRememberSignedInAccount(S.user);S.events=d.events||[];S.announcements=d.announcements||[];S.members=d.members||[];try{const lockStatus=await rpc('crew_profile_history_pin_status',{});if(!lockStatus.error){S.profileHistoryPinStatus=lockStatus.data||{};S.pinConfigured=!!lockStatus.data?.pin_configured;S.appLockEnabled=!!lockStatus.data?.app_lock_enabled;}S.appLocked=S.appLockEnabled;}catch(lockError){console.warn('App Lock status could not be checked:',lockError);}try{await kcAutoDetectNativeBiometric();}catch(biometricError){console.warn('Native biometric availability check failed:',biometricError);}
+ S.user=d.user;kcRememberSignedInAccount(S.user);S.events=d.events||[];S.announcements=d.announcements||[];S.members=d.members||[];try{const lockStatus=await rpc('crew_profile_history_pin_status',{});if(!lockStatus.error)S.profileHistoryPinStatus=lockStatus.data||{};}catch(lockError){console.warn('Profile History PIN status could not be checked:',lockError);}
  try{const access=await rpc('crew_access_status',{});if(!access.error&&access.data?.role)S.user.role=access.data.role;}catch(error){console.warn('Crew role could not be refreshed:',error);}
  S.offline=false;S.error='';
  paintUser();paint();if(S.appLocked)kcRenderAppLock();
@@ -1367,7 +1367,7 @@ async function loadProfileHistoryStatus(){
   const {data,error}=await rpc('crew_profile_history_pin_status',{});
   if(error)throw error;
   S.profileHistoryPinStatus=data||{};
-  S.appLockEnabled=!!data?.app_lock_enabled;
+  
   if(admin()){
    const directory=await rpc('crew_profile_directory',{});
    if(directory.error)throw directory.error;
@@ -1403,7 +1403,7 @@ function profileHistoryPage(){
  '<section class="kc-history-panel"><header><div><span class="kc-attendance-kicker">ACCOUNT OVERVIEW</span><h2>'+esc(p.name||'Crew member')+'</h2><p>Read-only account information. Password values are never accessible.</p></div></header><div class="kc-history-fields">'+field('USERNAME',p.username?'@'+p.username:'—')+field('EMAIL',p.email)+field('ROLE',role(p.role))+field('ACCOUNT STATUS',p.approval_status)+field('REGISTRATION NUMBER',p.registration_number)+field('DATE OF BIRTH',p.date_of_birth)+field('INSTAGRAM',p.instagram_username?'@'+p.instagram_username:'—')+field('CREW DESIGNATION',p.designation||p.crew_title)+field('ACCOUNT CREATED',p.auth_created_at?dt(p.auth_created_at):dt(p.created_at))+field('MEMBERSHIP APPROVED',p.approved_at?dt(p.approved_at):'Not recorded')+field('LAST SIGN-IN',p.last_sign_in_at?dt(p.last_sign_in_at):'Not recorded')+field('EMAIL CONFIRMED',p.email_confirmed_at?'Confirmed':'Not confirmed')+field('PASSWORD SECURITY',p.must_change_password?'Password change required':'Password value hidden by design')+field('PASSWORD CHANGE REQUIRED SINCE',p.password_change_required_since?dt(p.password_change_required_since):'—')+'</div></section>'+
  '<section class="kc-history-panel"><header><div><span class="kc-attendance-kicker">LOGIN ACTIVITY</span><h2>Recent account days</h2><p>Recorded sign-in days, newest first · up to 180 days.</p></div><b>'+days.length+' DAYS</b></header><div class="kc-history-login-grid">'+(loginRows||'<p class="kc-history-footnote">No login-day history is available yet.</p>')+'</div></section>'+
  '<section class="kc-history-panel"><header><div><span class="kc-attendance-kicker">EVENT-BY-EVENT HISTORY</span><h2>Participation timeline</h2><p>Eligible events with registration and finalized attendance status.</p></div><b>'+events.length+' EVENTS</b></header><div class="kc-history-event-list">'+(eventRows||'<p class="kc-history-footnote">No eligible events found for this account.</p>')+'</div></section>'+
- '<section class="kc-history-panel kc-history-security-panel"><header><div><span class="kc-attendance-kicker">DEVICE SECURITY</span><h2>Optional app lock</h2><p>When enabled, the app asks for your mPIN after reopening or returning from the background.</p></div></header><label class="kc-history-lock-toggle"><span><b>Lock the entire app</b><small>Profile History always remains protected by mPIN.</small></span><input id="kcAppLockToggle" type="checkbox" '+(S.appLockEnabled?'checked':'')+'></label></section></main>';
+ '</main>';
 }
 function attendancePage(){
  if(!admin())return memberAttendancePage();
@@ -1827,39 +1827,6 @@ document.addEventListener('animationend',event=>{
  try{localStorage.setItem('kc_profile_flip_intro_v1','1');}catch{}
 });
 document.addEventListener('click',event=>{const edit=event.target.closest('[data-edit-event]');if(!edit)return;event.preventDefault();if(!admin()){notice('Admin access required to edit events.');return;}S.editingEventId=edit.dataset.editEvent;go('event-edit');});
-function kcBiometricPreferenceKey(){return 'kc_biometric_enabled_'+String(S.user?.auth_id||S.user?.id||'guest');}
-async function kcRunBiometric(reason){
- const module=await import('./kc-biometric.js');
- return module.authenticateKCBiometric(reason);
-}
-async function kcAutoDetectNativeBiometric(force=false){
- S.biometricAvailable=false;S.biometricReason='';S.biometricEnabled=false;
- if(!S.user||!S.pinConfigured)return false;
- const saved=localStorage.getItem(kcBiometricPreferenceKey());
- if(saved==='0'&&!force)return false;
- const module=await import('./kc-biometric.js');
- const result=await module.checkKCBiometric();
- S.biometricAvailable=!!result.availability?.platformAvailable;
- S.biometricReason=result.availability?.reason||'';
- S.biometricEnabled=!!result.registered;
- if(S.biometricEnabled)localStorage.setItem(kcBiometricPreferenceKey(),'1');
- else if(force)localStorage.setItem(kcBiometricPreferenceKey(),'0');
- return S.biometricEnabled;
-}
-async function kcSetBiometricPreference(enabled){
- const module=await import('./kc-biometric.js');
- if(enabled){if(!S.pinConfigured)throw Error('Set up your four-digit mPIN first. It is your recovery fallback.');await module.registerKCBiometric();S.biometricEnabled=true;S.biometricAvailable=true;S.biometricReason='';localStorage.setItem(kcBiometricPreferenceKey(),'1');}
- else{await module.removeKCBiometric();S.biometricEnabled=false;localStorage.setItem(kcBiometricPreferenceKey(),'0');}
- paint();notice(enabled?'This device is registered. Android will request fingerprint or face verification when you unlock.':'Biometric credential removed from this device.');
-}
-document.addEventListener('click',async event=>{
- const toggle=event.target.closest('#kcBiometricEnable');
- if(toggle){toggle.disabled=true;try{await kcSetBiometricPreference(!S.biometricEnabled);}catch(error){notice(error.message||'Could not configure biometric unlock.');toggle.disabled=false;}return;}
- const appUnlock=event.target.closest('[data-kc-biometric-app-unlock]');
- if(appUnlock){appUnlock.disabled=true;try{await kcRunBiometric('Authenticate to unlock Kinetic Crew');S.appLocked=false;document.getElementById('kcAppLockOverlay')?.remove();notice('Kinetic Crew unlocked.');}catch(error){notice(error.message||'Biometric authentication was not completed. Use your mPIN.');appUnlock.disabled=false;}return;}
- const historyUnlock=event.target.closest('[data-kc-biometric-history]');
- if(historyUnlock){historyUnlock.disabled=true;try{if(!S.profileHistoryPinSession)throw Error('Unlock once with your mPIN after opening the app, then biometric unlock is available for this session.');await kcRunBiometric('Authenticate to view member profile history');const target=String(S.historyTargetId||S.user?.auth_id||''),{data,error}=await rpc('crew_profile_history_get',{p_target_auth_id:target,p_pin:S.profileHistoryPinSession});if(error)throw error;if(data?.ok===false)throw Error(data.message||'Profile history could not be unlocked.');S.profileHistoryData=data||{};S.profileHistoryUnlocked=true;paint();notice('Profile history unlocked with biometrics.');}catch(error){notice(error.message||'Biometric authentication failed. Use your mPIN.');historyUnlock.disabled=false;}return;}
-});
 function kcRenderAppLock(){
  if(!S.appLocked||!S.user)return;
  let overlay=document.getElementById('kcAppLockOverlay');
