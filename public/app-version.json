@@ -1,6 +1,6 @@
 {
-  "version": "1.6.52",
+  "version": "1.6.53",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-19T12:00:00+05:30",
-  "release_notes": "Adds secure mPIN setup and change controls in Device & Session, App Lock management, and verified WebAuthn fingerprint/face unlock for Chrome-installed PWAs."
+  "updated_at": "2026-11-19T12:30:00+05:30",
+  "release_notes": "Native Android biometric integration now uses the installed Capacitor BiometricAuth plugin and Android system prompt. Fingerprint/face availability is detected automatically; no browser passkeys or separate in-app enrolment. mPIN remains the fallback."
 }
