@@ -57,3 +57,5 @@
 
 .kc-history-biometric-button,.kc-app-lock-biometric{width:100%;min-height:50px;margin-top:12px;padding:0 16px;border:1px solid rgba(221,190,125,.35)!important;border-radius:15px;background:linear-gradient(145deg,rgba(211,170,92,.13),rgba(255,255,255,.035))!important;color:#f1d69a!important;font:inherit;font-size:13px;font-weight:850}
 .kc-history-biometric-button:disabled,.kc-app-lock-biometric:disabled{opacity:.55}
+
+.kc-device-pin-form{display:grid;gap:12px;margin:16px 0}.kc-device-pin-form .field{display:grid;gap:7px}.kc-device-pin-form .field span{font-size:12px;font-weight:750;color:var(--muted)}.kc-device-pin-form input{width:100%;min-height:48px;box-sizing:border-box;padding:0 14px;border:1px solid rgba(255,255,255,.13);border-radius:14px;background:rgba(0,0,0,.22);color:#fff;font:inherit;font-size:18px;letter-spacing:.28em;text-align:center}.kc-device-pin-form button{min-height:48px}
