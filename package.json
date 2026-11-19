@@ -17,7 +17,8 @@
     "@capacitor/core": "^7.4.3",
     "@capacitor/ios": "^7.4.3",
     "@capacitor/push-notifications": "^7.0.2",
-    "@capacitor/local-notifications": "^7.0.2"
+    "@capacitor/local-notifications": "^7.0.2",
+    "@aparajita/capacitor-biometric-auth": "^9.1.2"
   },
   "devDependencies": {
     "@capacitor/cli": "^7.4.3",
