@@ -1,6 +1,6 @@
 {
-  "version": "1.6.54",
+  "version": "1.6.55",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-19T12:50:00+05:30",
-  "release_notes": "Installed PWA biometric unlock now uses server-verified WebAuthn platform credentials. Register this device's Android fingerprint or face authenticator once; mPIN remains the fallback."
+  "updated_at": "2026-11-19T13:10:00+05:30",
+  "release_notes": "Improved Android passkey registration compatibility by requiring a discoverable passkey credential. Added clearer diagnostics and recovery guidance for Android Credential Manager errors. mPIN remains the fallback."
 }
