@@ -1,6 +1,6 @@
 {
-  "version": "1.6.58",
+  "version": "1.6.59",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-19T13:30:00+05:30",
-  "release_notes": "Removed biometric and passkey authentication from the app. Removed app-wide mPIN lock and Device & Session PIN management. Four-digit mPIN is retained only to protect Profile History."
+  "updated_at": "2026-11-19T13:45:00+05:30",
+  "release_notes": "Scoped all biometric authentication and four-digit mPIN controls exclusively to Profile History. No app-wide biometric unlock or mPIN lock. Device & Session contains cache maintenance only."
 }
