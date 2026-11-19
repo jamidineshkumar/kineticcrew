@@ -51,3 +51,5 @@
 .kc-more-ads-visibility button{min-height:42px;padding:0 14px;border:0;border-radius:12px;background:linear-gradient(110deg,#ed7690,#a66bd4);color:#fff;font-size:12px;font-weight:850}
 #kcMoreAdsSelectedFile{display:block;overflow-wrap:anywhere;color:#e6b2c7;font-size:11px;font-weight:700}
 #kcMoreAdsForm [name="media"]{display:block;width:100%;min-height:44px;padding:9px;border:1px dashed var(--border,rgba(255,255,255,.25));border-radius:12px;background:var(--background,#15171a);color:var(--text,#fff);font-size:12px}
+
+.kc-more-ads-video-action{position:absolute;z-index:6;inset:0;display:grid;place-items:center;pointer-events:none}.kc-more-ads-video-action[hidden]{display:none}.kc-more-ads-video-action button{pointer-events:auto;min-height:42px;padding:0 17px;border:1px solid #ffffff55;border-radius:999px;background:#111b;color:#fff;font:700 12px system-ui;backdrop-filter:blur(12px)}.kc-more-ads-slide.media-error .kc-more-ads-video-action button{background:#311b22;color:#ffd8df}.kc-more-ads-admin-row video{object-fit:cover}
