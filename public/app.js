@@ -9,8 +9,7 @@ function kcMarkReloadUsed(version=''){try{sessionStorage.setItem(KC_UPDATE_GUARD
 function kcSafeToReload(){const el=document.activeElement;if(el&&(/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)||el.isContentEditable))return false;return !document.querySelector('#modalRoot .modal, #modalRoot [role="dialog"], .kc-modal:not([hidden])');}
 function kcApplyPendingUpdate(){if(!kcUpdatePending||kcUpdateReloading||!kcSafeToReload())return;const url=new URL(location.href);const version=kcPendingVersion||url.searchParams.get('kc_refresh_version')||'pending';if(kcReloadAlreadyUsed(version)){kcUpdatePending=false;return;}kcUpdateReloading=true;kcMarkReloadUsed(version);try{savePageState();}catch{}url.searchParams.set('kc_refresh',String(Date.now()));url.searchParams.set('kc_refresh_version',version);location.replace(url.toString());}
 async function kcCheckAppVersion(){if(!navigator.onLine||kcUpdateReloading)return;try{const response=await fetch(window.kcPath('app-version.json')+'?check='+Date.now(),{cache:'no-store',credentials:'same-origin'});if(!response.ok)return;const data=await response.json();if(data?.version&&data.version!==window.KC_APP_VERSION){if(kcReloadAlreadyUsed(data.version))return;const nextVersion=String(data.version);if(kcPendingVersion!==nextVersion){kcPendingVersion=nextVersion;notice('Kinetic Crew v'+nextVersion+' is ready. Updating now…');}kcUpdatePending=true;kcApplyPendingUpdate();}}catch{}}
-function kcRegisterAutoUpdates(){if(!('serviceWorker'in navigator))return;const hadController=!!navigator.serviceWorker.controller;navigator.serviceWorker.register(window.kcPath('sw.js'),{scope:window.kcPath(''),updateViaCache:'none'}).then(async registration=>{const check=()=>{if(navigator.onLine)registration.update().catch(()=>{});};check();window.addEventListener('focus',check);window.addEventListener('pageshow',check);window.addEventListener('online',check);document.addEventListener('visibilitychange',()=>{if(!document.hidden)check();});setInterval(()=>{if(!document.hidden)check();},5*60*1000);if(hadController)navigator.serviceWorker.addEventListener('controllerchange',()=>{if(kcReloadAlreadyUsed('service-worker'))return;kcMarkReloadUsed('service-worker');try{savePageState();}catch{}location.reload();},{once:true});}).catch(()=>{});}
-window.addEventListener('focus',kcApplyPendingUpdate);window.addEventListener('pageshow',kcApplyPendingUpdate);document.addEventListener('visibilitychange',()=>{if(!document.hidden)kcApplyPendingUpdate();});document.addEventListener('focusout',()=>setTimeout(kcApplyPendingUpdate,250));
+function kcRegisterAutoUpdates(){if(!('serviceWorker'in navigator))return;const hadController=!!navigator.serviceWorker.controller;navigator.serviceWorker.register(window.kcPath('sw.js'),{scope:window.kcPath(''),updateViaCache:'none'}).then(async registration=>{const check=()=>{if(navigator.onLine)registration.update().catch(()=>{});};check();window.addEventListener('focus',check);window.addEventListener('pageshow',check);window.addEventListener('online',check);document.addEventListener('visibilitychange',()=>{if(!document.hidden)kcApplyPendingUpdate();});document.addEventListener('focusout',()=>setTimeout(kcApplyPendingUpdate,250));
 setInterval(()=>{if(!document.hidden)kcCheckAppVersion();},5*60*1000);
 window.addEventListener('load',()=>{kcCheckAppVersion();kcRegisterAutoUpdates();},{once:true});
 const S={user:null,promotionalUpdatesEnabled:true,customAlertImageUrl:'',customAlertImagePath:'',view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],pendingMembers:[],rejectedMembers:[],pendingPoll:null,pendingPollBusy:false,pendingAlertIds:[],pendingAlertTimer:null,profileSetupRedirected:false,publicMembers:[],memberFavorites:[],blockedMemberIds:[],featureItems:{},pollScreen:'home',selectedPoll:null,pollSummary:[],pollRespondents:[],socialPosts:[],socialLikes:[],socialComments:[],onlineCrew:[],profileDashboard:null,profileAchievements:[],profileTab:'uploads',roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',attendanceSection:'home',error:'',peopleQuery:'',eventsFilter:'all',eventQuery:'',editingEventId:null,sharedDraft:null,qrStream:null,qrScanning:false,qrProcessing:false,profileHistoryPinStatus:null,profileHistoryData:null,profileHistoryUnlocked:false,historyMembers:[],historyTargetId:'',historyLoading:false,profileHistoryPinSession:''};
@@ -1826,12 +1825,6 @@ document.addEventListener('animationend',event=>{
  try{localStorage.setItem('kc_profile_flip_intro_v1','1');}catch{}
 });
 document.addEventListener('click',event=>{const edit=event.target.closest('[data-edit-event]');if(!edit)return;event.preventDefault();if(!admin()){notice('Admin access required to edit events.');return;}S.editingEventId=edit.dataset.editEvent;go('event-edit');});
-function kcRenderAppLock(){
- if(!S.appLocked||!S.user)return;
- let overlay=document.getElementById('kcAppLockOverlay');
- if(!overlay){overlay=document.createElement('div');overlay.id='kcAppLockOverlay';document.body.appendChild(overlay);}
- overlay.innerHTML='<section class="kc-app-lock-card" role="dialog" aria-modal="true" aria-labelledby="kcAppLockTitle"><span class="kc-attendance-kicker">KINETIC CREW · PRIVATE DEVICE</span><div class="kc-app-lock-emblem">KC</div><h2 id="kcAppLockTitle">App locked</h2><p>Enter your four-digit mPIN to continue.</p><form id="kcAppLockUnlock"><input name="pin" type="text" inputmode="numeric" autocomplete="one-time-code" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" maxlength="4" pattern="[0-9]{4}" required placeholder="••••" aria-label="Four-digit mPIN" style="-webkit-text-security:disc"><button type="submit">Unlock app →</button></form>'+(S.biometricEnabled?'<button type="button" class="outline kc-app-lock-biometric" data-kc-biometric-app-unlock>♙ &nbsp; Unlock with biometrics</button>':'')+'</section>';
-}
 document.addEventListener('visibilitychange',()=>{
  if(!S.user||!S.appLockEnabled)return;
  if(document.hidden){S.appLocked=true;}
@@ -2275,15 +2268,6 @@ document.addEventListener('dragleave',e=>{if(e.target.closest('#kcAlertImageDrop
 document.addEventListener('drop',e=>{const zone=e.target.closest('#kcAlertImageDrop');if(!zone)return;e.preventDefault();zone.classList.remove('is-dragging');const file=[...(e.dataTransfer?.files||[])].find(f=>f.type.startsWith('image/'));if(file)uploadCustomAlertImage(file);});
 document.addEventListener('submit',async e=>{
  let f=e.target;
- if(f.id==='kcDevicePinForm'){
-  e.preventDefault();const d=new FormData(f),pin=String(d.get('pin')||''),confirmPin=String(d.get('confirmPin')||''),currentPin=String(d.get('currentPin')||'');
-  if(!/^\d{4}$/.test(pin)){notice('Choose a four-digit mPIN.');return;}if(pin!==confirmPin){notice('The new mPIN entries do not match.');return;}
-  const button=f.querySelector('button[type="submit"]');button.disabled=true;button.textContent='Saving securely…';
-  try{if(S.pinConfigured){const checked=await rpc('crew_profile_history_verify_pin',{p_pin:currentPin});if(checked.error)throw checked.error;if(checked.data?.ok===false)throw Error(checked.data.message||'Current mPIN is incorrect.');}const saved=await rpc('crew_profile_history_set_pin',{p_pin:pin});if(saved.error)throw saved.error;if(saved.data?.ok===false)throw Error(saved.data.message||'Could not save mPIN.');S.pinConfigured=true;S.profileHistoryPinStatus={...(S.profileHistoryPinStatus||{}),pin_configured:true};S.profileHistoryPinSession='';try{await kcAutoDetectNativeBiometric();}catch{}notice('mPIN saved securely.');paint();}
-  catch(error){notice(error.message||'Could not update mPIN.');}
-  finally{if(button.isConnected){button.disabled=false;button.textContent='Save mPIN';}}
-  return;
- }
  if(f.id==='kcHistoryPinSetup'){
   e.preventDefault();const d=new FormData(f),pin=String(d.get('pin')||''),confirmPin=String(d.get('confirmPin')||'');
   if(!/^\d{4}$/.test(pin)){notice('Choose a four-digit mPIN.');return;}
@@ -2300,13 +2284,6 @@ document.addEventListener('submit',async e=>{
   try{const {data,error}=await rpc('crew_profile_history_get',{p_target_auth_id:target,p_pin:pin});if(error)throw error;if(data?.ok===false)throw Error(data.message||'Incorrect mPIN.');S.profileHistoryPinSession=pin;S.profileHistoryData=data||{};S.profileHistoryUnlocked=true;notice('Profile history unlocked.');paint();}
   catch(error){notice(error.message||'Could not unlock Profile History.');}
   finally{if(button.isConnected){button.disabled=false;button.textContent='Unlock profile history →';}}
-  return;
- }
- if(f.id==='kcAppLockUnlock'){
-  e.preventDefault();const pin=String(new FormData(f).get('pin')||''),button=f.querySelector('button[type="submit"]');button.disabled=true;
-  try{const {data,error}=await rpc('crew_profile_history_verify_pin',{p_pin:pin});if(error)throw error;if(data?.ok===false)throw Error(data.message||'Incorrect mPIN.');S.appLocked=false;document.getElementById('kcAppLockOverlay')?.remove();notice('Kinetic Crew unlocked.');}
-  catch(error){notice(error.message||'Incorrect mPIN.');}
-  finally{if(button.isConnected)button.disabled=false;}
   return;
  }
  if(f.id==='appSuggestionForm'){
@@ -2420,13 +2397,6 @@ if(f.id==='attendanceReportForm'){e.preventDefault();const d=new FormData(f),but
 document.addEventListener('change',async e=>{
  if(e.target.id==='profileHistoryMemberSelect'){
   S.historyTargetId=String(e.target.value||'');S.profileHistoryData=null;S.profileHistoryUnlocked=false;paint();return;
- }
- if(e.target.id==='kcAppLockToggle'){
-  const enabled=!!e.target.checked;e.target.disabled=true;
-  try{const {data,error}=await rpc('crew_profile_history_set_app_lock',{p_enabled:enabled});if(error)throw error;S.appLockEnabled=!!data?.app_lock_enabled;S.profileHistoryPinStatus={...(S.profileHistoryPinStatus||{}),app_lock_enabled:S.appLockEnabled};notice(S.appLockEnabled?'App Lock enabled.':'App Lock disabled.');if(S.appLockEnabled&&document.hidden)S.appLocked=true;}
-  catch(error){e.target.checked=!enabled;notice(error.message||'Could not update App Lock.');}
-  finally{if(e.target.isConnected)e.target.disabled=false;}
-  return;
  }
  if(e.target.matches('select[name="eventId"]')){S.rosterEvent=e.target.value;if(!S.rosterEvent){S.roster=null;paint();return;}await action(async()=>{S.roster=await api('attendance?eventId='+encodeURIComponent(S.rosterEvent));S.attendanceAudit=await rpc('crew_attendance_audit',{p_event_id:S.rosterEvent}).then(x=>{if(x.error)throw x.error;return x.data||[];});});}else if(e.target.id==='attendanceReportEventSelect'){S.attendanceReportEvent=e.target.value;paint();}else if(e.target.id==='rosterSelect'){S.rosterEvent=e.target.value;if(!S.rosterEvent){S.roster=null;paint();return;}await action(async()=>{S.roster=await api('attendance?eventId='+encodeURIComponent(S.rosterEvent));S.attendanceAudit=await rpc('crew_attendance_audit',{p_event_id:S.rosterEvent}).then(x=>{if(x.error)throw x.error;return x.data||[];});paint();});}else if(e.target.matches('.profile-admin-save')){const row=e.target.closest('[data-profile-row]');await action(async()=>{const {data,error}=await rpc('crew_manage_profile',{p_auth_id:row.dataset.profileRow,p_name:row.querySelector('[name="member_name"]').value,p_bio:row.querySelector('[name="member_bio"]').value});if(error)throw Error(error.message||'Could not update member profile.');notice('Member profile updated.');await refresh();});}else if(e.target.matches('.role-select')){await action(async()=>{let d=await api('role','PATCH',{authId:e.target.dataset.id,role:e.target.value});notice(d.message);await refresh();});}});
 $('#app').addEventListener('change',e=>{if(e.target.id==='profilePhotoInput'&&e.target.files?.[0]){const img=$('#profilePhotoPreview');if(img)img.src=URL.createObjectURL(e.target.files[0]);}});$('#logoutProfile')?.addEventListener('click',()=>$('#logout').click());
