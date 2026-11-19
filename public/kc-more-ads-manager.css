@@ -40,3 +40,14 @@
 .kc-more-ads-slide{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;}
 .kc-more-ads-media{display:block!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:cover!important;object-position:50% 50%!important;}
 .kc-more-ads-shade{position:absolute!important;inset:0!important;pointer-events:none!important;}
+
+.kc-more-ads-admin-help{margin:0 0 12px;color:var(--muted,#aaa);font-size:11px;line-height:1.5}
+.kc-more-ads-visibility{display:grid;gap:10px}
+.kc-more-ads-visibility label{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1px solid var(--border,rgba(255,255,255,.12));border-radius:12px;background:var(--background,#17191d);color:var(--text,#fff);font-size:12px}
+.kc-more-ads-visibility label input{width:19px;height:19px;accent-color:#e87983;flex:0 0 auto}
+.kc-more-ads-visibility label span{display:grid;gap:3px}
+.kc-more-ads-visibility label b{font-size:12px}
+.kc-more-ads-visibility label small{font-size:10px;color:var(--muted,#aaa);font-weight:500}
+.kc-more-ads-visibility button{min-height:42px;padding:0 14px;border:0;border-radius:12px;background:linear-gradient(110deg,#ed7690,#a66bd4);color:#fff;font-size:12px;font-weight:850}
+#kcMoreAdsSelectedFile{display:block;overflow-wrap:anywhere;color:#e6b2c7;font-size:11px;font-weight:700}
+#kcMoreAdsForm [name="media"]{display:block;width:100%;min-height:44px;padding:9px;border:1px dashed var(--border,rgba(255,255,255,.25));border-radius:12px;background:var(--background,#15171a);color:var(--text,#fff);font-size:12px}
