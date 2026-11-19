@@ -1,6 +1,6 @@
 {
-  "version": "1.6.51",
+  "version": "1.6.52",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-18T02:30:00+05:30",
-  "release_notes": "Adds optional native fingerprint and face unlock for Profile History and App Lock, with four-digit mPIN fallback."
+  "updated_at": "2026-11-19T12:00:00+05:30",
+  "release_notes": "Adds secure mPIN setup and change controls in Device & Session, App Lock management, and verified WebAuthn fingerprint/face unlock for Chrome-installed PWAs."
 }
