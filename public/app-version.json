@@ -1,6 +1,6 @@
 {
-  "version": "1.6.61",
+  "version": "1.6.62",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-22T23:15:00+05:30",
-  "release_notes": "KC Meet now has dedicated camera, microphone and screen-share controls, host admission requests, and scheduled meeting events with optional email invitations and no event registration."
+  "updated_at": "2026-11-22T23:22:00+05:30",
+  "release_notes": "KC Meet now includes dedicated meeting controls, host-controlled waiting room admission, scheduled meeting events, shareable invitation links, and optional email invitations without event registration."
 }
