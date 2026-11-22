@@ -22,6 +22,63 @@ window.KC_SEARCH_API={
  openProfile:id=>{S.selectedProfileId=id;go('public-profile');},
  openPost:id=>{go('feed').then(()=>requestAnimationFrame(()=>document.querySelector('[data-social-post="'+CSS.escape(String(id))+'"]')?.scrollIntoView({behavior:'smooth',block:'center'})));},
  openView:view=>go(view),
+ voice:{
+  canManage:()=>admin(),
+  getSnapshot:()=>({events:S.events||[],announcements:S.announcements||[],role:S.user?.role||'member',name:S.user?.name||'Crew Member',email:S.user?.email||''}),
+  async createEvent(input){
+   if(!admin())throw Error('Admin access required to create events.');
+   const title=String(input?.title||'').trim(),startsAt=new Date(input?.starts_at||'');
+   if(!title)throw Error('Please provide an event name.');
+   if(Number.isNaN(startsAt.getTime()))throw Error('Please provide a valid event date and time.');
+   const category=['Auditions','Performances','Workshops','Community','Rehearsals','Other'].includes(input?.category)?input.category:'Community';
+   const payload={p_event_id:null,p_title:title,p_description:String(input?.description||''),p_location:String(input?.location||''),p_starts_at:startsAt.toISOString(),p_capacity:Math.max(1,Math.min(10000,Number(input?.capacity)||40)),p_category:category,p_cover_url:null,p_featured:false,p_ticket_email_enabled:false,p_redirect_url:null};
+   const {data,error}=await rpc('crew_event_save',payload);if(error)throw error;
+   const id=String(data.id),status=await rpc('crew_event_set_status',{p_event_id:id,p_status:'scheduled'});if(status.error)throw status.error;
+   await refresh();return {id,title,message:data.message||'Event published.'};
+  },
+  async updateEvent(id,changes){
+   if(!admin())throw Error('Admin access required to edit events.');
+   const event=(S.events||[]).find(item=>String(item.id)===String(id));if(!event)throw Error('Event not found.');
+   const merged={...event,...changes},startsAt=new Date(merged.starts_at||event.starts_at);
+   if(Number.isNaN(startsAt.getTime()))throw Error('Please provide a valid event date and time.');
+   const payload={p_event_id:event.id,p_title:String(merged.title||event.title),p_description:String(merged.description||''),p_location:String(merged.location||''),p_starts_at:startsAt.toISOString(),p_capacity:Math.max(1,Math.min(10000,Number(merged.capacity)||40)),p_category:['Auditions','Performances','Workshops','Community','Rehearsals','Other'].includes(merged.category)?merged.category:'Community',p_cover_url:merged.cover_url||null,p_featured:!!merged.featured,p_ticket_email_enabled:!!merged.ticket_email_enabled,p_redirect_url:merged.redirect_url||null};
+   const {data,error}=await rpc('crew_event_save',payload);if(error)throw error;
+   if(merged.event_status&&merged.event_status!==event.event_status){const status=await rpc('crew_event_set_status',{p_event_id:event.id,p_status:merged.event_status});if(status.error)throw status.error;}
+   await refresh();return {id:String(event.id),title:payload.p_title,message:data.message||'Event updated.'};
+  },
+  async deleteEvent(id){
+   if(!admin())throw Error('Admin access required to delete events.');
+   const result=await api('delete-event','DELETE',{eventId:id});await refresh();return result;
+  },
+  async setEventStatus(id,status){
+   if(!admin())throw Error('Admin access required to change event status.');
+   const {data,error}=await rpc('crew_event_set_status',{p_event_id:id,p_status:status});if(error)throw error;
+   await refresh();return data;
+  },
+  async publishAnnouncement(input){
+   if(!admin())throw Error('Admin access required to publish crew announcements.');
+   const title=String(input?.title||'').trim(),body=String(input?.body||'').trim(),audience=String(input?.audience||'all');
+   if(!title||!body)throw Error('An announcement headline and message are required.');
+   if(!['all','member','admin','super_admin'].includes(audience))throw Error('Choose a valid announcement audience.');
+   const result=await api('announcements','POST',{title,body,audience});
+   try{await window.kcPush?.send?.(title,body,audience);}catch(error){console.warn('Voice announcement saved; push delivery failed:',error);}
+   await refresh();return result;
+  },
+  async getAttendance(eventId){
+   if(!admin())throw Error('Admin access required to view the attendance roster.');
+   return await api('attendance?eventId='+encodeURIComponent(eventId));
+  },
+  async setAttendance(eventId,memberId,status){
+   if(!admin())throw Error('Admin access required to update attendance.');
+   if(!['present','absent','not_attending'].includes(status))throw Error('Invalid attendance status.');
+   const {data,error}=await rpc('crew_set_attendance_status',{p_event_id:eventId,p_member_id:memberId,p_status:status});if(error)throw error;
+   const roster=await api('attendance?eventId='+encodeURIComponent(eventId));return {result:data,roster};
+  },
+  async finalizeAttendance(eventId){
+   if(!admin())throw Error('Admin access required to finalize attendance.');
+   const {data,error}=await rpc('crew_finalize_attendance',{p_event_id:eventId});if(error)throw error;return data;
+  }
+ },
  scanQr:async raw=>{const value=String(raw||'').trim();if(value.startsWith('KC_EVENT_ATTENDANCE:')){const parts=value.split(':'),eventId=parts[1],memberEmail=parts.slice(2).join(':');if(!eventId||!memberEmail)throw Error('This event QR code is incomplete.');if(admin()){const result=await api('qr-attendance','POST',{eventId,memberEmail});if(String(S.rosterEvent)===String(eventId))S.roster=await api('attendance?eventId='+encodeURIComponent(eventId));notice(result.message||'Attendance marked from QR code.');return;}const found=S.events.find(x=>String(x.id)===String(eventId));if(found){S.selectedEvent=eventId;go('event-detail');return;}throw Error('This QR code belongs to an event that is not in your list.');}let url;try{url=new URL(value);}catch{throw Error('QR detected, but it is not a supported Kinetic Crew link.');}if(!['http:','https:'].includes(url.protocol))throw Error('This QR code is not a secure web link.');location.assign(url.href);}
 };
 if('scrollRestoration'in history)history.scrollRestoration='manual';try{history.replaceState({...history.state,kcApp:true,kcView:S.view,kcRoot:true},'',location.href);}catch{}
