@@ -111,7 +111,7 @@
   }
   function meetingCard(item){
     const when=new Date(item.starts_at).toLocaleString([],{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
-    return '<article class="kcml-scheduled-card"><div class="kcml-scheduled-top"><span>◉ KC MEET EVENT</span><span class="kcml-scheduled-status '+esc(item.status)+'">'+(item.status==="active"?"LIVE":"SCHEDULED")+'</span></div><h3>'+esc(item.title)+'</h3><p>'+esc(item.description||"A live meeting with your Kinetic Crew.")+'</p><div class="kcml-scheduled-meta"><span>◷ '+esc(when)+'</span><span>NO REGISTRATION</span></div><div class="kcml-scheduled-actions">'+(item.isHost&&item.status==="scheduled"?'<button type="button" data-kcml-start="'+esc(item.code)+'" data-title="'+esc(item.title)+'">Start meeting</button>':'')+'<button type="button" data-kcml-open-code="'+esc(item.code)+'">'+(item.status==="active"?"Join meeting":"Open invite")+'</button><button type="button" class="secondary" data-kcml-copy-code="'+esc(item.code)+'">Copy invite link</button></div></article>';
+    return '<article class="kcml-scheduled-card"><div class="kcml-scheduled-top"><span>◉ KC MEET EVENT</span><span class="kcml-scheduled-status '+esc(item.status)+'">'+(item.status==="active"?"LIVE":"SCHEDULED")+'</span></div><h3>'+esc(item.title)+'</h3><p>'+esc(item.description||"A live meeting with your Kinetic Crew.")+'</p><div class="kcml-scheduled-meta"><span>◷ '+esc(when)+'</span><span>NO REGISTRATION</span></div><div class="kcml-scheduled-actions">'+(item.isHost?'<button type="button" data-kcml-start="'+esc(item.code)+'" data-title="'+esc(item.title)+'">'+(item.status==="active"?"Resume meeting":"Start meeting")+'</button>':'')+'<button type="button" data-kcml-open-code="'+esc(item.code)+'">'+(item.status==="active"?"Join meeting":"Open invite")+'</button><button type="button" class="secondary" data-kcml-copy-code="'+esc(item.code)+'">Copy invite link</button></div></article>';
   }
   async function loadScheduledMeetings(){
     try{const result=await meetAction("list"),html=(result.meetings||[]).map(meetingCard).join('');const a=$("#kcMeetScheduledEvents"),b=$("#kcMeetEventsScheduled");if(a)a.innerHTML=html||'<p class="kcml-scheduled-empty">No upcoming meeting events. Admins can schedule one for the crew.</p>';if(b)b.innerHTML=html||'<p class="kcml-scheduled-empty">No KC Meet events are scheduled yet.</p>';}catch(error){console.warn("Could not load scheduled KC Meet events:",error);}
@@ -260,7 +260,12 @@
         if(!setup)return;
         const request=await meetAction("request",{code});
         if(request.status!=="approved"){const admitted=await showWaitingRoom(code);if(!admitted)return;}
-        await connect("join", { code, ...setup });
+        if(request.isHost&&request.scheduledMeeting){
+          const hostSession=await meetAction("start",{code});
+          await connect("start",{code,...setup,preissued:hostSession});
+        }else{
+          await connect("join", { code, ...setup });
+        }
       }
     } catch (error) {
       await showAppError(error?.message || "KC Meet could not start. Please try again.");
