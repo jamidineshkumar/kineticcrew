@@ -28,12 +28,18 @@ body{margin:0;min-height:100vh;padding:clamp(12px,3vw,22px);background:radial-gr
 .request button:disabled{opacity:.6}
 .request .status{display:block;min-height:18px;margin:0;color:#ffb094;font-size:12px;line-height:1.45}
 @media(max-width:480px){body{padding:10px}.request{margin:8px auto 18px;padding:19px 17px;border-radius:19px}.request>p{margin-bottom:17px}.request form{gap:14px}}
+.request-brand{display:flex;align-items:center;gap:15px;margin:0 0 15px}.request-brand>img{display:block;flex:0 0 68px;width:68px;height:68px;object-fit:contain;border:1px solid rgba(255,255,255,.12);border-radius:19px;background:#08090d;box-shadow:5px 6px 16px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.06)}.request-brand-copy{min-width:0}.request-brand-copy>small{display:block;margin:0 0 6px;color:#ff9877;font-size:9px;font-weight:750;letter-spacing:.13em;text-transform:uppercase}.request-brand-copy h1{margin:0;font-size:clamp(23px,5vw,31px);line-height:1.08;letter-spacing:-.045em}.request-brand-copy h1 em{font-style:normal;color:#ff9877}.request>p{margin:0 0 20px}.request label{font-size:13px;font-weight:600}.request input:not([type=file]),.request textarea{font-size:14px;line-height:1.45}@media(max-width:390px){.request-brand{gap:11px}.request-brand>img{flex-basis:58px;width:58px;height:58px;border-radius:16px}.request-brand-copy h1{font-size:23px}.request-brand-copy>small{font-size:8px;letter-spacing:.1em}}
 </style>
 </head>
 <body>
 <main class="request">
-<small>KINETIC CREW · ADVERTISER REQUEST</small>
-<h1>Advertise with <em>Kinetic Crew</em></h1>
+<header class="request-brand">
+  <img src="kinetic-crew-logo.svg?v=20261122-brandmark1" alt="Kinetic Crew logo" width="76" height="76">
+  <div class="request-brand-copy">
+    <small>KINETIC CREW · ADVERTISER REQUEST</small>
+    <h1>Advertise with <em>Kinetic Crew</em></h1>
+  </div>
+</header>
 <p>Submit your business or brand campaign for review. All ads are free during the initial launch and require Admin approval.</p>
 <form id="requestForm">
 <label>Business / brand name<input name="brand" required maxlength="120" autocomplete="organization"></label>
