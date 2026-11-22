@@ -1,6 +1,6 @@
 {
-  "version": "1.6.68",
+  "version": "1.6.69",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T01:00:00+05:30",
-  "release_notes": "KC Meet event management: edit/delete meetings, clear waiting-room records and live rooms, and target invitations to everyone, admins, members, or selected crew."
+  "updated_at": "2026-11-23T01:30:00+05:30",
+  "release_notes": "Restore square-artwork homepage carousel, remove extra overlay blocks, and show a flame animation only on updated events."
 }
