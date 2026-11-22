@@ -225,3 +225,35 @@
   text-shadow:0 0 18px rgba(242,79,156,.22);
  }
 }
+
+/* Active live promotion renderer (the JS uses the kc-more-ads-* namespace). */
+.kc-more-event-ads-host{position:relative;isolation:isolate;display:block!important;width:100%;min-width:0}
+.kc-more-ads-banner{position:relative;isolation:isolate;width:100%;height:clamp(190px,34vw,300px);min-height:190px;overflow:hidden;border:1px solid rgba(255,255,255,.16);border-radius:25px;background:#08090d;box-shadow:0 16px 38px rgba(0,0,0,.28)}
+.kc-more-ads-glow{position:absolute;inset:-25%;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 85% 10%,rgba(221,72,143,.2),transparent 45%),radial-gradient(ellipse at 12% 88%,rgba(40,190,198,.17),transparent 48%)}
+.kc-more-ads-track{position:absolute!important;inset:0!important;min-height:0!important}
+.kc-more-ads-slide{position:absolute;inset:0;display:block;overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;background:#08090d;transition:opacity .35s ease,visibility .35s}
+.kc-more-ads-slide.is-active{z-index:2;opacity:1;visibility:visible;pointer-events:auto}
+.kc-more-ads-media{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:center;background:#08090d}
+.kc-more-ads-shade{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.08) 12%,rgba(0,0,0,.12) 40%,rgba(0,0,0,.78) 100%)}
+.kc-more-ads-copy{position:absolute;z-index:2;left:18px;right:18px;bottom:26px;display:grid;gap:7px;max-width:90%;pointer-events:none}
+.kc-more-ads-copy small{width:max-content;max-width:100%;padding:6px 10px;border:1px solid rgba(255,255,255,.35);border-radius:99px;background:rgba(10,10,15,.42);color:#fff;font-size:9px;font-weight:850;letter-spacing:.14em;backdrop-filter:blur(10px)}
+.kc-more-ads-copy h2{margin:0;color:#fff;font-size:clamp(24px,6vw,36px);font-weight:850;line-height:1.03;letter-spacing:-.045em;text-shadow:0 3px 18px rgba(0,0,0,.5)}
+.kc-more-ads-copy p{margin:0;color:rgba(255,255,255,.88);font-size:11px;line-height:1.4}
+.kc-more-ads-video-action{position:absolute;z-index:4;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.22)}
+.kc-more-ads-video-action[hidden]{display:none!important}
+.kc-more-ads-video-action button{min-height:40px;padding:0 16px;border:1px solid rgba(255,255,255,.42);border-radius:99px;background:rgba(12,12,16,.72);color:#fff;font-size:12px;font-weight:800;backdrop-filter:blur(12px)}
+.kc-more-ads-slide.media-error .kc-more-ads-media{opacity:0}
+.kc-more-ads-slide.media-error{background:radial-gradient(ellipse at 80% 10%,rgba(221,72,143,.25),transparent 45%),linear-gradient(135deg,#20212a,#090a0e)}
+.kc-more-ads-controls{position:absolute;z-index:5;left:16px;right:16px;bottom:9px;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#fff;pointer-events:none}
+.kc-more-ads-count,.kc-more-ads-brand{font-size:8px;font-weight:850;letter-spacing:.14em;text-shadow:0 2px 8px #000}
+.kc-more-ads-dots{display:flex;align-items:center;gap:6px;pointer-events:auto}
+.kc-more-ads-dots button{width:7px;height:7px;min-width:7px;padding:0;border:0;border-radius:99px;background:rgba(255,255,255,.5)}
+.kc-more-ads-dots button.active{width:20px;background:#fff}
+.kc-more-ads-progress{position:absolute;z-index:5;left:0;right:0;bottom:0;height:2px;background:rgba(255,255,255,.2);pointer-events:none}
+.kc-more-ads-progress i{display:block;width:100%;height:100%;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,#ed4e9d,#ffb36c,#3ec9cf)}
+.kc-more-ads-empty{position:relative;display:flex;min-height:190px;flex-direction:column;justify-content:center;gap:10px;padding:25px;border:1px solid rgba(255,255,255,.12);border-radius:24px;background:radial-gradient(ellipse at 85% 10%,rgba(221,72,143,.18),transparent 45%),radial-gradient(ellipse at 12% 88%,rgba(40,190,198,.16),transparent 48%),linear-gradient(135deg,#171820,#111318);color:#fff}
+.kc-more-ads-empty>span{font-size:9px;font-weight:900;letter-spacing:.2em;color:#e8a9c9}
+.kc-more-ads-empty>b{font-size:clamp(24px,6vw,34px);line-height:1.05;letter-spacing:-.04em}
+.kc-more-ads-empty>p{margin:0;color:#d4d0d9;font-size:12px}
+@media(max-width:560px){.kc-more-ads-banner{height:clamp(190px,48vw,245px);min-height:190px;border-radius:22px}.kc-more-ads-copy{left:14px;right:14px;bottom:24px}.kc-more-ads-copy h2{font-size:clamp(22px,6.5vw,30px)}.kc-more-ads-controls{left:13px;right:13px;bottom:8px}}
+@media(prefers-reduced-motion:reduce){.kc-more-ads-slide{transition:none!important}}
