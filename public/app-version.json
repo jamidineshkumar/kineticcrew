@@ -1,6 +1,6 @@
 {
-  "version": "1.6.67",
+  "version": "1.6.68",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T00:40:00+05:30",
-  "release_notes": "KC Meet host recovery: active scheduled meetings can be resumed if the LiveKit room was not created, and hosts bypass participant approval on their own invite."
+  "updated_at": "2026-11-23T01:00:00+05:30",
+  "release_notes": "KC Meet event management: edit/delete meetings, clear waiting-room records and live rooms, and target invitations to everyone, admins, members, or selected crew."
 }
