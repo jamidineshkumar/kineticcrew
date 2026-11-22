@@ -107,3 +107,11 @@
 .kc-rewards-admin-panel .kc-admin-reward-list,.kc-rewards-admin-panel .kc-admin-redemption-list{display:grid;gap:10px}
 @media(max-width:600px){.kc-rewards-admin-tabs{gap:4px;padding:5px;margin:10px 0}.kc-rewards-admin-tabs button{font-size:11px;min-height:44px;padding:6px 3px}.kc-rewards-admin-panel{padding:14px!important}.kc-rewards-admin-panel .kc-reward-admin-form{gap:10px}.kc-rewards-admin-panel .kc-reward-admin-form>.kc-reward-admin-fields{gap:8px}.kc-rewards-admin-panel .kc-reward-admin-form input:not([type=checkbox]),.kc-rewards-admin-panel .kc-reward-admin-form select{min-height:44px;font-size:14px}.kc-rewards-admin-panel .kc-reward-admin-form textarea{min-height:66px}}
 @media(prefers-reduced-motion:reduce){.kc-rewards-admin-tabs{backdrop-filter:none}}
+
+/* Rewards catalogue: a single published reward uses the full row; failed image URLs get a clean fallback. */
+.kc-reward-grid>.kc-reward-card:only-child{grid-column:1/-1;display:grid;grid-template-columns:minmax(120px,38%) minmax(0,1fr);align-items:stretch}
+.kc-reward-grid>.kc-reward-card:only-child .kc-reward-image{height:100%;min-height:180px}
+.kc-reward-image.image-unavailable{background:radial-gradient(circle at 50% 35%,rgba(226,143,158,.2),transparent 65%),linear-gradient(145deg,#29232d,#191b22)}
+.kc-reward-image.image-unavailable span{font-size:48px}
+.kc-reward-image img{display:block;max-width:100%}
+@media(max-width:480px){.kc-reward-grid>.kc-reward-card:only-child{grid-template-columns:minmax(0,36%) minmax(0,1fr)}.kc-reward-grid>.kc-reward-card:only-child .kc-reward-image{min-height:210px}.kc-reward-grid>.kc-reward-card:only-child .kc-reward-info{padding:12px;min-width:0}.kc-reward-grid>.kc-reward-card:only-child .kc-reward-delivery{width:100%;min-width:0}}
