@@ -1,0 +1,38 @@
+/* KC Memories: display uploaded photos reliably inside the memory card. */
+.feature-card .feature-media-link{
+  position:relative!important;
+  display:block!important;
+  width:100%!important;
+  margin:14px 0!important;
+  overflow:hidden!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  border-radius:18px!important;
+  background:#111518!important;
+  text-decoration:none!important;
+}
+.feature-card .feature-media-preview{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:420px!important;
+  min-height:150px!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  background:#0c1012!important;
+}
+.feature-card .feature-media-link>span{
+  display:flex!important;
+  justify-content:flex-end!important;
+  padding:9px 12px!important;
+  color:#ff9a78!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  background:rgba(255,255,255,.035)!important;
+}
+.feature-card .feature-media-link.media-unavailable{
+  min-height:72px!important;
+  display:grid!important;
+  place-items:center!important;
+  color:#b8bbc0!important;
+  font-size:12px!important;
+}
