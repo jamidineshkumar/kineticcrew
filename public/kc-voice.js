@@ -136,7 +136,7 @@
     }
     api.openView(view);
     finish("Opening " + ({
-      overview: "home", events: "events", calendar: "calendar", attendance: "attendance",
+      overview: "home", events: "events", calendar: "calendar", attendance: "attendance", "new-event": "the event creation form",
       profile: "your profile", settings: "app settings", notifications: "notifications",
       meet: "KC Meet", feed: "the crew feed", leave: "leave requests",
       memories: "KC Memories", auditions: "auditions", "member-requests": "member requests"
@@ -171,7 +171,8 @@
       return;
     }
     if (deniedEdit && isAdmin) {
-      openView("events");
+      window.KC_SEARCH_API?.openView?.("events");
+      finish("You have permission to edit events. Voice editing is not enabled yet, so I have opened the event list for you.");
       return;
     }
 
