@@ -1,0 +1,249 @@
+/* Compact glass-overlay featured carousel — mobile home only.
+   Keeps the existing slide data, links, swipe/auto-rotation and desktop presentation. */
+@media (max-width: 900px) {
+  body.kc-home-screen .kc-home-featured {
+    position: relative !important;
+    isolation: isolate !important;
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 0 !important;
+    margin: 14px 0 18px !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(224, 190, 255, .28) !important;
+    border-radius: 25px !important;
+    background:
+      radial-gradient(ellipse at 8% 12%, rgba(255, 76, 175, .17), transparent 42%),
+      radial-gradient(ellipse at 92% 88%, rgba(27, 218, 231, .15), transparent 46%),
+      rgba(24, 22, 31, .58) !important;
+    box-shadow: 0 14px 38px rgba(0,0,0,.28), 0 0 24px rgba(186,93,255,.10),
+      inset 0 1px 0 rgba(255,255,255,.13) !important;
+    backdrop-filter: blur(24px) saturate(145%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(145%) !important;
+  }
+
+  body.kc-home-screen .kc-home-featured-track {
+    display: grid !important;
+    min-height: 0 !important;
+    border-radius: inherit !important;
+    overflow: hidden !important;
+  }
+
+  body.kc-home-screen .kc-home-feature-slide {
+    display: grid !important;
+    grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr) !important;
+    grid-template-rows: minmax(174px, auto) !important;
+    align-items: center !important;
+    gap: 0 !important;
+    min-width: 0 !important;
+    min-height: 174px !important;
+    padding: 12px 13px 25px !important;
+    border-radius: inherit !important;
+    overflow: hidden !important;
+    background:
+      radial-gradient(ellipse at 92% 18%, rgba(255, 49, 169, .16), transparent 48%),
+      radial-gradient(ellipse at 72% 90%, rgba(18, 210, 221, .13), transparent 48%),
+      linear-gradient(135deg, rgba(30,27,37,.90), rgba(13,16,22,.86)) !important;
+  }
+
+  /* Keep the slide background decorative; render the actual artwork as a contained square. */
+  body.kc-home-screen .kc-home-feature-slide::before {
+    inset: 0 !important;
+    z-index: 0 !important;
+    background:
+      linear-gradient(110deg, rgba(255,255,255,.035), transparent 48%),
+      radial-gradient(ellipse at 50% 50%, rgba(255,255,255,.025), transparent 70%) !important;
+    opacity: 1 !important;
+  }
+
+  body.kc-home-screen .kc-home-feature-slide::after {
+    content: "" !important;
+    position: absolute !important;
+    z-index: 1 !important;
+    left: 13px !important;
+    top: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: min(40%, 164px) !important;
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
+    transform: translateY(-50%) !important;
+    border: 1px solid rgba(255,255,255,.22) !important;
+    border-radius: 15px !important;
+    background-color: rgba(5,7,12,.28) !important;
+    background-image: var(--kc-home-feature-image) !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: contain !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,.30), 0 0 16px rgba(255,65,180,.12) !important;
+    pointer-events: none !important;
+  }
+
+  body.kc-home-screen .kc-home-feature-slide:not([style*="--kc-home-feature-image"])::after {
+    display: none !important;
+  }
+
+  body.kc-home-screen .kc-home-featured-art {
+    position: absolute !important;
+    z-index: 4 !important;
+    top: 12px !important;
+    right: 12px !important;
+    left: auto !important;
+    width: 55% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: flex-end !important;
+    gap: 0 !important;
+    pointer-events: none !important;
+  }
+
+  body.kc-home-screen .kc-home-featured-art::before {
+    content: "🔥" !important;
+    position: absolute !important;
+    left: calc(-100% - 23px) !important;
+    top: 8px !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    border: 1px solid rgba(255,151,105,.72) !important;
+    border-radius: 50% !important;
+    background: linear-gradient(145deg, rgba(255,126,82,.28), rgba(30,18,28,.62)) !important;
+    box-shadow: 0 0 16px rgba(255,103,63,.28), inset 0 1px 0 rgba(255,255,255,.20) !important;
+    font-size: 20px !important;
+    line-height: 1 !important;
+    animation: kcFeaturedFlamePulse 1.9s ease-in-out infinite !important;
+  }
+
+  body.kc-home-screen .kc-home-featured-kicker {
+    display: inline-flex !important;
+    max-width: 100% !important;
+    padding: 7px 9px !important;
+    border: 1px solid rgba(255,255,255,.27) !important;
+    border-radius: 999px !important;
+    background: rgba(8,9,14,.30) !important;
+    color: rgba(255,255,255,.92) !important;
+    font-size: 8px !important;
+    line-height: 1.15 !important;
+    letter-spacing: .12em !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+
+  body.kc-home-screen .kc-home-featured-count,
+  body.kc-home-screen .kc-event-updated-chip {
+    display: none !important;
+  }
+
+  body.kc-home-screen .kc-home-featured-glass {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    min-width: 0 !important;
+    margin: 28px 0 0 7px !important;
+    padding: 8px 2px 2px 0 !important;
+    display: grid !important;
+    gap: 6px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  body.kc-home-screen .kc-home-featured-label {
+    color: #ffad91 !important;
+    font-size: 8px !important;
+    line-height: 1.2 !important;
+    letter-spacing: .11em !important;
+  }
+
+  body.kc-home-screen .kc-home-featured-glass > b {
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    overflow: hidden !important;
+    font-size: clamp(17px, 4.8vw, 22px) !important;
+    line-height: 1.12 !important;
+    letter-spacing: -.035em !important;
+  }
+
+  body.kc-home-screen .kc-home-featured-glass > small {
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    overflow: hidden !important;
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+  }
+
+  body.kc-home-screen .kc-home-featured-glass > button {
+    justify-self: start !important;
+    min-height: 34px !important;
+    max-width: 100% !important;
+    margin-top: 2px !important;
+    padding: 7px 11px !important;
+    gap: 7px !important;
+    font-size: 10px !important;
+    white-space: nowrap !important;
+    border-radius: 999px !important;
+    background: linear-gradient(145deg, rgba(255,255,255,.17), rgba(255,255,255,.07)) !important;
+    border-color: rgba(255,255,255,.24) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+  }
+
+  body.kc-home-screen .kc-home-featured-dots {
+    z-index: 6 !important;
+    right: 14px !important;
+    bottom: 9px !important;
+    gap: 6px !important;
+  }
+
+  body.kc-home-screen .kc-home-featured-dots button {
+    width: 6px !important;
+    height: 6px !important;
+    min-width: 6px !important;
+    min-height: 6px !important;
+  }
+
+  body.kc-home-screen .kc-home-featured-dots button.active {
+    width: 18px !important;
+  }
+
+  body.kc-home-screen .kc-home-feature-slide:not([style*="--kc-home-feature-image"]) .kc-home-featured-glass {
+    grid-column: 1 / -1 !important;
+    margin: 12px 4px 0 !important;
+    padding: 8px 4px !important;
+  }
+
+  @keyframes kcFeaturedFlamePulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,125,53,.55)); }
+    50% { transform: scale(1.09); filter: drop-shadow(0 0 7px rgba(255,125,53,.82)); }
+  }
+}
+
+@media (max-width: 360px) {
+  body.kc-home-screen .kc-home-feature-slide {
+    grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr) !important;
+    min-height: 164px !important;
+    grid-template-rows: minmax(164px, auto) !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  body.kc-home-screen .kc-home-feature-slide::after { left: 10px !important; width: min(39%, 136px) !important; }
+  body.kc-home-screen .kc-home-featured-art { width: 58% !important; right: 9px !important; }
+  body.kc-home-screen .kc-home-featured-art::before { left: calc(-100% - 18px) !important; }
+  body.kc-home-screen .kc-home-featured-glass { margin-left: 5px !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.kc-home-screen .kc-home-featured-art::before { animation: none !important; }
+}
