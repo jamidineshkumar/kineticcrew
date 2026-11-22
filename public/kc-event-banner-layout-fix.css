@@ -1,0 +1,57 @@
+/* Event artwork layout: keep the uploaded 3:1 banner as a crisp rectangle at the top of the detail card. */
+.kce-nightpulse .kce-detail-hero {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  background: linear-gradient(145deg,#172b28,#0d1413) !important;
+}
+.kce-nightpulse .kce-detail-banner {
+  position: relative !important;
+  inset: auto !important;
+  display: block !important;
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 3 / 1 !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-sizing: border-box !important;
+  background: #101514 !important;
+}
+.kce-nightpulse .kce-detail-overlay {
+  display: none !important;
+}
+.kce-nightpulse .kce-detail-content {
+  position: relative !important;
+  inset: auto !important;
+  z-index: 2 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 20px clamp(18px,4vw,30px) 23px !important;
+  background: linear-gradient(180deg,rgba(10,17,16,.96),#0b1110 100%) !important;
+}
+.kce-nightpulse .kce-detail-content .kce-detail-status {
+  margin-top: 10px !important;
+}
+@media (max-width: 700px) {
+  .kce-nightpulse .kce-detail-hero {
+    min-height: 0 !important;
+    border-radius: 20px !important;
+  }
+  .kce-nightpulse .kce-detail-banner {
+    aspect-ratio: 3 / 1 !important;
+    padding: 0 !important;
+  }
+  .kce-nightpulse .kce-detail-content {
+    padding: 16px 18px 20px !important;
+  }
+}
