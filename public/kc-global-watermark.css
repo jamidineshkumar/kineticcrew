@@ -1,0 +1,61 @@
+/* Global Kinetic Crew identity watermark — visible on every app page.
+   Decorative only: never intercepts taps or changes page layout. */
+body::before {
+  content: "KC";
+  position: fixed;
+  z-index: 9997;
+  right: -0.08em;
+  bottom: calc(-.02em + env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
+  user-select: none;
+  font: 900 clamp(190px, 39vw, 390px)/.78 system-ui, sans-serif;
+  letter-spacing: -.14em;
+  color: rgba(220, 220, 238, .035);
+  text-shadow: 2px 2px 0 rgba(255,255,255,.018), -3px -3px 8px rgba(0,0,0,.14);
+  transform: rotate(-12deg);
+  transform-origin: bottom right;
+}
+
+body::after {
+  content: "Made with 🤟 For Students";
+  position: fixed;
+  z-index: 9997;
+  left: 50%;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  max-width: calc(100vw - 32px);
+  overflow: hidden;
+  color: rgba(226, 225, 235, .38);
+  font: 600 9px/1.4 system-ui, sans-serif;
+  letter-spacing: .12em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 900px) {
+  body::before {
+    right: -.06em;
+    bottom: calc(-.015em + env(safe-area-inset-bottom, 0px));
+    font-size: clamp(190px, 48vw, 310px);
+    color: rgba(220, 220, 238, .032);
+  }
+  body::after {
+    bottom: calc(104px + env(safe-area-inset-bottom, 0px));
+    font-size: 8px;
+    letter-spacing: .1em;
+  }
+}
+
+html[data-theme="light"] body::before {
+  color: rgba(42, 45, 58, .045);
+  text-shadow: 2px 2px 0 rgba(255,255,255,.10), -3px -3px 8px rgba(0,0,0,.035);
+}
+html[data-theme="light"] body::after {
+  color: rgba(48, 51, 61, .42);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before, body::after { animation: none !important; transition: none !important; }
+}
