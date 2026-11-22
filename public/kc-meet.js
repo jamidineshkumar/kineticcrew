@@ -39,6 +39,40 @@
       requestAnimationFrame(()=>{if(input){input.focus();input.select();}else root.querySelector(".kc-meet-app-dialog")?.focus();});
     });
   }
+  function prejoinDialog({create=false, code=""}={}) {
+    return new Promise(resolve => {
+      const root=$("#modalRoot");
+      if(!root){resolve(null);return;}
+      let settled=false;
+      const finish=value=>{if(settled)return;settled=true;root.innerHTML="";resolve(value);};
+      root.innerHTML='<div class="modalback kc-confirm-backdrop"><section class="modal kc-confirm-modal kc-meet-app-dialog kc-meet-prejoin" role="dialog" aria-modal="true" aria-labelledby="kcMeetSetupTitle"><span class="kc-confirm-kicker">KINETIC CREW · KC MEET</span><h2 id="kcMeetSetupTitle">'+(create?'Set up your meeting':'Ready to join?')+'</h2><p>'+(create?'Choose your meeting name and decide how you want to join.':'Check your camera and microphone before entering the room.')+'</p>'+
+        (create?'<label class="kc-meet-dialog-label" for="kcMeetDialogInput">Meeting name</label><input id="kcMeetDialogInput" class="kc-confirm-input" type="text" maxlength="80" autocomplete="off" value="Kinetic Crew Meeting" placeholder="Enter meeting title">':'<div class="kc-meet-prejoin-code">MEETING CODE <b>'+esc(code)+'</b></div>')+
+        '<div class="kc-meet-prejoin-options"><label class="kc-meet-prejoin-option"><span class="kc-meet-prejoin-icon">▣</span><span><b>Camera</b><small>Join with video</small></span><input id="kcMeetPrejoinVideo" type="checkbox"><i></i></label><label class="kc-meet-prejoin-option"><span class="kc-meet-prejoin-icon">♬</span><span><b>Microphone</b><small>Join with audio</small></span><input id="kcMeetPrejoinAudio" type="checkbox"><i></i></label></div>'+
+        '<small class="kc-meet-prejoin-privacy">Both are off by default. You can turn them on anytime during the meeting.</small><div class="kc-confirm-actions"><button type="button" class="secondary" data-kc-setup-cancel>Cancel</button><button type="button" class="primary" data-kc-setup-continue>'+(create?'Create meeting':'Join meeting')+'</button></div></section></div>';
+      root.querySelector('[data-kc-setup-cancel]')?.addEventListener('click',()=>finish(null));
+      root.querySelector('[data-kc-setup-continue]')?.addEventListener('click',()=>{
+        const title=String(root.querySelector('#kcMeetDialogInput')?.value||'Kinetic Crew Meeting').trim();
+        if(create&&!title){root.querySelector('#kcMeetDialogInput')?.focus();return;}
+        finish({title,videoEnabled:!!root.querySelector('#kcMeetPrejoinVideo')?.checked,audioEnabled:!!root.querySelector('#kcMeetPrejoinAudio')?.checked});
+      });
+      root.querySelector('.kc-confirm-backdrop')?.addEventListener('click',e=>{if(e.target===e.currentTarget)finish(null);});
+      requestAnimationFrame(()=>root.querySelector('#kcMeetDialogInput')?.focus());
+    });
+  }
+  function inviteUrl(){
+    const url=new URL(window.location.href);
+    url.searchParams.set('kc_meet',activeCode);
+    return url.toString();
+  }
+  async function shareInvite(){
+    const url=inviteUrl();
+    const text='Join my KC Meet: '+activeTitle+'. Sign in to Kinetic Crew with your approved crew account, then open KC Meet. '+url;
+    try{
+      if(navigator.share){await navigator.share({title:'KC Meet · '+activeTitle,text,url});}
+      else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text);showError('Meeting invite link copied. Share it with your crew.');}
+      else {const input=document.createElement('textarea');input.value=text;document.body.append(input);input.select();document.execCommand('copy');input.remove();showError('Meeting invite link copied. Share it with your crew.');}
+    }catch(error){if(error?.name!=='AbortError'){try{await navigator.clipboard.writeText(text);showError('Meeting invite link copied. Share it with your crew.');}catch{showError('Could not share the invite. Please copy the meeting code: '+activeCode);}}}
+  }
   function showAppError(message) {
     return appDialog({title:"Something went wrong",message:String(message||"KC Meet could not start. Please try again."),confirmText:"Got it",showCancel:false});
   }
@@ -106,7 +140,7 @@
     isHost = !!data.isHost; activeCode = data.code || payload.code || ""; activeTitle = data.title || "Kinetic Crew Meeting";
     const { Room, RoomEvent, Track } = await sdk();
     room = new Room({ adaptiveStream: true, dynacast: true, videoCaptureDefaults: { resolution: { width: 1280, height: 720 }, facingMode: "user" } });
-    showDialog('<header class="kcml-head"><div class="kcml-brand"><span class="kcml-brand-mark">K</span><div><span>KINETIC CREW · MEET</span><h2>' + esc(activeTitle) + '</h2><small><i class="kcml-live-dot"></i> Live meeting · Code <b>' + esc(activeCode) + '</b></small></div></div><button data-kcml-close aria-label="Leave meeting">×</button></header><div id="kcml-status" class="kcml-status" hidden></div><div class="kcml-main"><section class="kcml-stage"><div class="kcml-stage-top"><span><i class="kcml-live-dot"></i> LIVE</span><span id="kcml-participant-count">1 participant</span><button type="button" data-kcml-copy>Copy joining info</button></div><div id="kcml-grid" class="kcml-grid"><div class="kcml-connecting">Connecting to your crew…</div></div><div class="kcml-stage-bottom"><span>Meeting details</span><span>Camera and microphone permissions are controlled by your device</span></div></section><aside class="kcml-sidepanel"><div class="kcml-panel-tabs"><button type="button" class="active" data-kcml-panel="people">People <span id="kcml-people-count">1</span></button><button type="button" data-kcml-panel="chat">In-call messages</button></div><section id="kcml-people-panel" class="kcml-panel-content"><b>In this meeting</b><div id="kcml-people-list"><p class="kcml-panel-empty">You are joining the room…</p></div></section><section id="kcml-chat-panel" class="kcml-panel-content" hidden><b>Meeting chat</b><div id="kcml-chat-log" aria-live="polite"><p>Messages are visible to everyone in this meeting.</p></div><form id="kcml-chat-form"><input id="kcml-chat-input" maxlength="1000" placeholder="Send a message to everyone" autocomplete="off"><button type="submit" aria-label="Send message">➤</button></form></section></aside></div><footer class="kcml-controls"><div class="kcml-control-group"><button data-kcml-mic aria-label="Mute microphone"><span>🎙</span><small>Mute</small></button><button data-kcml-camera aria-label="Turn camera off"><span>▣</span><small>Camera</small></button><button data-kcml-screen aria-label="Share screen"><span>▧</span><small>Present</small></button></div><div class="kcml-control-group"><button type="button" data-kcml-panel="people"><span>♙</span><small>People</small></button><button type="button" data-kcml-panel="chat"><span>▤</span><small>Chat</small></button><button type="button" data-kcml-copy><span>↗</span><small>Invite</small></button></div><button data-kcml-leave class="kcml-leave"><span>☎</span><small>' + (isHost ? 'End meeting' : 'Leave call') + '</small></button></footer>');
+    showDialog('<header class="kcml-head"><div class="kcml-brand"><span class="kcml-brand-mark">K</span><div><span>KINETIC CREW · MEET</span><h2>' + esc(activeTitle) + '</h2><small><i class="kcml-live-dot"></i> Live meeting · Code <b>' + esc(activeCode) + '</b></small></div></div><button data-kcml-close aria-label="Leave meeting">×</button></header><div id="kcml-status" class="kcml-status" hidden></div><div class="kcml-main"><section class="kcml-stage"><div class="kcml-stage-top"><span><i class="kcml-live-dot"></i> LIVE</span><span id="kcml-participant-count">1 participant</span><button type="button" data-kcml-copy>Share invite link</button></div><div id="kcml-grid" class="kcml-grid"><div class="kcml-connecting">Connecting to your crew…</div></div><div class="kcml-stage-bottom"><span>Meeting details</span><span>Camera and microphone start off. Turn them on whenever you are ready.</span></div></section><aside class="kcml-sidepanel"><div class="kcml-panel-tabs"><button type="button" class="active" data-kcml-panel="people">People <span id="kcml-people-count">1</span></button><button type="button" data-kcml-panel="chat">In-call messages</button></div><section id="kcml-people-panel" class="kcml-panel-content"><b>In this meeting</b><div id="kcml-people-list"><p class="kcml-panel-empty">You are joining the room…</p></div></section><section id="kcml-chat-panel" class="kcml-panel-content" hidden><b>Meeting chat</b><div id="kcml-chat-log" aria-live="polite"><p>Messages are visible to everyone in this meeting.</p></div><form id="kcml-chat-form"><input id="kcml-chat-input" maxlength="1000" placeholder="Send a message to everyone" autocomplete="off"><button type="submit" aria-label="Send message">➤</button></form></section></aside></div><footer class="kcml-controls"><div class="kcml-control-group"><button data-kcml-mic class="'+(!audioEnabled?'is-off':'')+'" aria-label="'+(audioEnabled?'Mute microphone':'Turn microphone on')+'"><span>🎙</span><small>'+(audioEnabled?'Mute':'Mic off')+'</small></button><button data-kcml-camera class="'+(!videoEnabled?'is-off':'')+'" aria-label="'+(videoEnabled?'Turn camera off':'Turn camera on')+'"><span>▣</span><small>'+(videoEnabled?'Camera':'Video off')+'</small></button><button data-kcml-screen aria-label="Share screen"><span>▧</span><small>Present</small></button></div><div class="kcml-control-group"><button type="button" data-kcml-panel="people"><span>♙</span><small>People</small></button><button type="button" data-kcml-panel="chat"><span>▤</span><small>Chat</small></button><button type="button" data-kcml-copy><span>↗</span><small>Invite</small></button></div><button data-kcml-leave class="kcml-leave"><span>☎</span><small>' + (isHost ? 'End meeting' : 'Leave call') + '</small></button></footer>');
     const grid = $("#kcml-grid");
     room.on(RoomEvent.TrackSubscribed, (track, publication, participant) => tile(participant, track, false, publication));
     room.on(RoomEvent.TrackUnsubscribed, track => removeTrack(track));
@@ -139,10 +173,10 @@
         appendChat("You", text, true); input.value = "";
       } catch { showError("Message could not be sent. Check your connection."); }
     };
-    $("#kcMeetLiveRoot").querySelector("[data-kcml-mic]").onclick = async e => { const enabled = room.localParticipant.isMicrophoneEnabled; await room.localParticipant.setMicrophoneEnabled(!enabled); e.currentTarget.querySelector("small").textContent = enabled ? "Unmute" : "Mute";e.currentTarget.classList.toggle("is-off",enabled); };
-    $("#kcMeetLiveRoot").querySelector("[data-kcml-camera]").onclick = async e => { const enabled = room.localParticipant.isCameraEnabled; await room.localParticipant.setCameraEnabled(!enabled); e.currentTarget.querySelector("small").textContent = enabled ? "Camera on" : "Camera off";e.currentTarget.classList.toggle("is-off",enabled); };
+    $("#kcMeetLiveRoot").querySelector("[data-kcml-mic]").onclick = async e => { const enabled = room.localParticipant.isMicrophoneEnabled; await room.localParticipant.setMicrophoneEnabled(!enabled); e.currentTarget.querySelector("small").textContent = enabled ? "Mic off" : "Mute";e.currentTarget.setAttribute("aria-label",enabled?"Turn microphone on":"Mute microphone");e.currentTarget.classList.toggle("is-off",enabled); };
+    $("#kcMeetLiveRoot").querySelector("[data-kcml-camera]").onclick = async e => { const enabled = room.localParticipant.isCameraEnabled; await room.localParticipant.setCameraEnabled(!enabled); e.currentTarget.querySelector("small").textContent = enabled ? "Video off" : "Camera";e.currentTarget.setAttribute("aria-label",enabled?"Turn camera on":"Turn camera off");e.currentTarget.classList.toggle("is-off",enabled); };
     $("#kcMeetLiveRoot").querySelector("[data-kcml-screen]").onclick = async e => { try { const enabled = room.localParticipant.isScreenShareEnabled; await room.localParticipant.setScreenShareEnabled(!enabled); e.currentTarget.textContent = enabled ? "Share screen" : "Stop sharing"; } catch { showError("Screen sharing is not supported in this browser or device."); } };
-    $("#kcMeetLiveRoot").querySelector("[data-kcml-copy]").onclick = async () => { await navigator.clipboard.writeText(activeCode); showError("Meeting code copied. Share it with approved crew members."); };
+    $("#kcMeetLiveRoot").querySelectorAll("[data-kcml-copy]").forEach(button=>button.onclick=shareInvite);
     $("#kcMeetLiveRoot").querySelector("[data-kcml-leave]").onclick = async () => {
       const leaveButton = $("#kcMeetLiveRoot").querySelector("[data-kcml-leave]");
       leaveButton.disabled = true;
@@ -167,13 +201,15 @@
     button.dataset.busy = "1"; button.disabled = true;
     try {
       if (create) {
-        const title = await appDialog({title:"Create a meeting",message:"Choose a name for your crew meeting.",inputValue:"Kinetic Crew Meeting",confirmText:"Create meeting"});
-        if (title === null) return;
-        await connect("create", { title });
+        const setup=await prejoinDialog({create:true});
+        if(!setup)return;
+        await connect("create",setup);
       } else {
         const code = String($("#kcMeetCode")?.value || "").trim().toUpperCase();
         if (!code) throw new Error("Enter a meeting code to continue.");
-        await connect("join", { code });
+        const setup=await prejoinDialog({code});
+        if(!setup)return;
+        await connect("join", { code, ...setup });
       }
     } catch (error) {
       await showAppError(error?.message || "KC Meet could not start. Please try again.");
@@ -181,4 +217,18 @@
   }, true);
   document.addEventListener("keydown", event => { if (event.key === "Escape" && $("#kcMeetLiveRoot .kcml-dialog")) closeRoom(); });
   window.addEventListener("beforeunload", () => { if (room) room.disconnect(); });
+  const inviteCode=new URLSearchParams(window.location.search).get("kc_meet");
+  if(inviteCode&&/^KC-[A-HJ-NP-Z2-9]{6}$/i.test(inviteCode)){
+    const prefill=()=>{
+      const input=$("#kcMeetCode");
+      if(!input)return false;
+      input.value=inviteCode.toUpperCase();
+      input.dataset.invitePrefilled="1";
+      return true;
+    };
+    const inviteObserver=new MutationObserver(()=>{if(prefill())inviteObserver.disconnect();});
+    inviteObserver.observe(document.body,{childList:true,subtree:true});
+    document.addEventListener("kc:navigate",()=>{if(prefill())inviteObserver.disconnect();},{once:true});
+    prefill();
+  }
 })();
