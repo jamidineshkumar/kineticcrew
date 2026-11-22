@@ -16,6 +16,7 @@
   let commandTimer = null;
   let hideTimer = null;
   let line = null;
+  let previousSettingsMarkup = "";
   let speaking = false;
   let recognitionBlocked = false;
   let lastStart = 0;
@@ -344,7 +345,7 @@
 
   function settingsPage() {
     const prefs = preferences();
-    return '<div class="welcome"><div><div class="eyebrow">APP PREFERENCES <span class="muted">/ VOICE</span></div><h1>KC Voice</h1><p>Hands-free commands for Kinetic Crew. Say “Hey KC” to activate.</p></div></div>' +
+    return '<div class="welcome"><div><div class="eyebrow">APP PREFERENCES <span class="muted">/ VOICE</span></div><h1>KC Voice</h1><p>Hands-free commands for Kinetic Crew. Say “Hey KC” to activate.</p></div><button type="button" class="outline" data-kc-voice-back>← Back to settings</button></div>' +
       '<section class="surface settings-card kc-voice-settings-card">' +
       '<span class="settings-kicker">VOICE ASSISTANT</span><h3>Wake-word activation</h3>' +
       '<label class="settings-toggle"><span><b>Enable Hey KC</b><small>Keep voice activation available while Kinetic Crew is open and active.</small></span><input id="kcVoiceEnabled" type="checkbox" ' + (prefs.enabled ? "checked" : "") + '></label>' +
@@ -370,8 +371,16 @@
   function showSettings() {
     const app = document.getElementById("app");
     if (!app) return;
+    previousSettingsMarkup = app.innerHTML;
     app.innerHTML = settingsPage();
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function restoreSettings() {
+    const app = document.getElementById("app");
+    if (!app || !previousSettingsMarkup) return;
+    app.innerHTML = previousSettingsMarkup;
+    previousSettingsMarkup = "";
   }
 
   function bindSettings() {
@@ -379,6 +388,11 @@
       if (event.target.closest("[data-kc-voice-settings]")) {
         event.preventDefault();
         showSettings();
+        return;
+      }
+      if (event.target.closest("[data-kc-voice-back]")) {
+        event.preventDefault();
+        restoreSettings();
       }
     });
     document.addEventListener("change", event => {
