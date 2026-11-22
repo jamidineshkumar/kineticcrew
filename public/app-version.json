@@ -1,6 +1,6 @@
 {
-  "version": "1.6.64",
+  "version": "1.6.65",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T00:20:00+05:30",
-  "release_notes": "Carousel now has resilient autoplay, swipe and visibility handling plus image fallbacks. Logo upload supports mobile decoder fallback and an External Forms & Shared Links destination with a copyable public logo URL."
+  "updated_at": "2026-11-23T00:08:00+05:30",
+  "release_notes": "Fix scheduled KC Meet start retries and meeting token handoff. Hosts can resume an event already marked active after an interrupted start."
 }
