@@ -1,6 +1,6 @@
 {
-  "version": "1.6.63",
+  "version": "1.6.64",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T00:10:00+05:30",
-  "release_notes": "Improved home carousel rotation, swipe and accessibility handling; added External Forms & Shared Links as a logo destination with a copyable public image URL; polished mobile logo upload."
+  "updated_at": "2026-11-23T00:20:00+05:30",
+  "release_notes": "Carousel now has resilient autoplay, swipe and visibility handling plus image fallbacks. Logo upload supports mobile decoder fallback and an External Forms & Shared Links destination with a copyable public logo URL."
 }
