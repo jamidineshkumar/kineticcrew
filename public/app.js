@@ -1786,7 +1786,7 @@ function settingsIcon(name){
   brand:'<path d="m12 2 9 10-9 10L3 12z"/>',
   developer:'<circle cx="12" cy="8" r="3.5"/><path d="M4 21c.8-4 3.4-6 8-6s7.2 2 8 6"/>',
   suggestions:'<path d="m4 20 4.5-1 10.8-10.8a2.1 2.1 0 0 0-3-3L5.5 16z"/><path d="m14.5 6.5 3 3M4 20l-1 1"/>',
-  voice:'<path d="M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v3m-4 0h8"/>''
+  voice:'<path d="M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v3m-4 0h8"/>'
  };
  return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+(paths[name]||paths.about)+'</svg>';
 }
