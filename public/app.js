@@ -1621,14 +1621,33 @@ if(S.view==='overview'){
  const homeCarousel=document.querySelector('.kc-home-featured');
  const homeSlides=[...(homeCarousel?.querySelectorAll('[data-home-slide]')||[])];
  const homeDots=[...(homeCarousel?.querySelectorAll('[data-home-slide-to]')||[])];
- if(homeSlides.length>1){
-  let current=0;
-  const show=next=>{current=(next+homeSlides.length)%homeSlides.length;homeSlides.forEach((slide,i)=>{slide.classList.toggle('is-active',i===current);slide.classList.toggle('is-prev',i===(current-1+homeSlides.length)%homeSlides.length);slide.classList.toggle('is-next',i===(current+1)%homeSlides.length);slide.classList.toggle('is-hidden-side',i!==current&&i!==(current-1+homeSlides.length)%homeSlides.length&&i!==(current+1)%homeSlides.length);});homeDots.forEach((dot,i)=>dot.classList.toggle('active',i===current));};
-  homeDots.forEach(dot=>dot.addEventListener('click',()=>{show(Number(dot.dataset.homeSlideTo));clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=setInterval(()=>show(current+1),5200);}));
-  S.homeCarouselTimer=setInterval(()=>show(current+1),5200);
-  let swipeStartX=0,swipeStartY=0;
-  homeCarousel.addEventListener('touchstart',event=>{clearInterval(S.homeCarouselTimer);const touch=event.changedTouches?.[0];swipeStartX=touch?.clientX||0;swipeStartY=touch?.clientY||0;},{passive:true});
-  homeCarousel.addEventListener('touchend',event=>{const touch=event.changedTouches?.[0],dx=(touch?.clientX||0)-swipeStartX,dy=(touch?.clientY||0)-swipeStartY;if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy))show(current+(dx<0?1:-1));clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=setInterval(()=>show(current+1),5200);},{passive:true});
+ if(homeCarousel&&homeSlides.length){
+  let current=Math.max(0,homeSlides.findIndex(slide=>slide.classList.contains('is-active')));
+  const reducedMotion=()=>!!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const stopCarousel=()=>{if(S.homeCarouselTimer){clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=null;}};
+  const startCarousel=()=>{stopCarousel();if(homeSlides.length>1&&!document.hidden&&!reducedMotion()&&homeCarousel.isConnected)S.homeCarouselTimer=setInterval(()=>show(current+1),5200);};
+  const show=next=>{
+   current=((Number(next)||0)%homeSlides.length+homeSlides.length)%homeSlides.length;
+   homeSlides.forEach((slide,i)=>{
+    const active=i===current,previous=i===(current-1+homeSlides.length)%homeSlides.length,nextSlide=i===(current+1)%homeSlides.length;
+    slide.classList.toggle('is-active',active);slide.classList.toggle('is-prev',previous);slide.classList.toggle('is-next',nextSlide);slide.classList.toggle('is-hidden-side',!active&&!previous&&!nextSlide);
+    slide.setAttribute('aria-hidden',active?'false':'true');slide.inert=!active;
+   });
+   homeDots.forEach((dot,i)=>{const active=i===current;dot.classList.toggle('active',active);dot.setAttribute('aria-current',active?'true':'false');dot.setAttribute('aria-label','Show slide '+(i+1)+' of '+homeSlides.length);});
+  };
+  show(current);
+  homeDots.forEach(dot=>dot.addEventListener('click',()=>{show(Number(dot.dataset.homeSlideTo));startCarousel();}));
+  let swipeStartX=0,swipeStartY=0,swiping=false;
+  homeCarousel.addEventListener('pointerdown',event=>{if(event.pointerType==='touch'||event.pointerType==='pen'){stopCarousel();swipeStartX=event.clientX;swipeStartY=event.clientY;swiping=true;}});
+  homeCarousel.addEventListener('pointerup',event=>{if(!swiping)return;const dx=event.clientX-swipeStartX,dy=event.clientY-swipeStartY;swiping=false;if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy))show(current+(dx<0?1:-1));startCarousel();});
+  homeCarousel.addEventListener('pointercancel',()=>{swiping=false;startCarousel();});
+  homeCarousel.addEventListener('mouseenter',stopCarousel);
+  homeCarousel.addEventListener('mouseleave',startCarousel);
+  homeCarousel.addEventListener('focusin',stopCarousel);
+  homeCarousel.addEventListener('focusout',event=>{if(!homeCarousel.contains(event.relatedTarget))startCarousel();});
+  homeSlides.forEach(slide=>{const img=slide.querySelector('.kc-home-feature-image');if(img&&!img.dataset.kcCarouselErrorBound){img.dataset.kcCarouselErrorBound='true';img.addEventListener('error',()=>{img.hidden=true;slide.style.removeProperty('--kc-home-feature-image');slide.classList.add('has-image-error');});img.addEventListener('load',()=>{img.hidden=false;slide.classList.remove('has-image-error');});}});
+  document.addEventListener('visibilitychange',()=>{if(!homeCarousel.isConnected)return;if(document.hidden)stopCarousel();else startCarousel();});
+  startCarousel();
  }
  const rail=document.querySelector('.kc-home-updates'),track=rail?.querySelector('.kc-home-updates-track'),dots=[...(rail?.querySelectorAll('.kc-home-update-dots span')||[])],count=dots.length;
  if(track&&count>1){
@@ -1646,8 +1665,8 @@ function brandSettingsPage(){
  if(!superadmin())return empty('Super Admin access required','Only the Super Admin can change the official Kinetic Crew logo.');
  const brandAssets=S.appSettings?.brand_logo_assets||{};
  const current=brandAssets.app||S.appSettings?.brand_logo_url||window.KC_BRAND_LOGO_URL||window.kcPath('kinetic-crew-logo.svg');
- const brandTargets={app:true,browser:true,pwa:true,signin:true,email:false,notifications:true,...(S.appSettings?.brand_logo_targets||{})};
- const allBrandTargets=['app','browser','pwa','signin','email','notifications'].every(key=>brandTargets[key]);
+ const brandTargets={app:true,browser:true,pwa:true,signin:true,email:false,notifications:true,external_forms:false,...(S.appSettings?.brand_logo_targets||{})};
+ const allBrandTargets=['app','browser','pwa','signin','email','notifications','external_forms'].every(key=>brandTargets[key]);
  setTimeout(()=>{kcBrandDraw();kcBrandSetControls(!!kcBrandEditor.image);},0);
  return welcome('Brand identity','Choose exactly where the new official logo should appear across Kinetic Crew.')+
  '<section class="surface settings-card kc-brand-settings-card">'+
@@ -1668,9 +1687,9 @@ function brandSettingsPage(){
  '<div class="kc-brand-editor-actions"><button type="button" id="brandLogoRotate" disabled>↻ Rotate 90°</button><button type="button" id="brandLogoCenter" disabled>Center image</button></div>'+
  '</div>'+
  '<small class="kc-brand-file-help">PNG, JPG or WebP · maximum 5 MB · transparent areas are preserved. The final icon is exported at 512 × 512.</small><div class="kc-brand-targets"><div class="kc-brand-targets-head"><b>WHERE SHOULD THIS LOGO UPDATE?</b><span>Select destinations</span></div><label class="kc-brand-select-all"><input type="checkbox" data-brand-select-all '+(allBrandTargets?'checked':'')+'><span><b>Select all destinations</b><small>Update every brand location with this image</small></span></label><label><input type="checkbox" data-brand-target="app" '+(brandTargets.app?'checked':'')+'><span><b>App interface</b><small>Headers, menus, profile and in-app logo placements</small></span></label><label><input type="checkbox" data-brand-target="browser" '+(brandTargets.browser?'checked':'')+'><span><b>Browser icon</b><small>Favicon and browser tab branding</small></span></label><label><input type="checkbox" data-brand-target="pwa" '+(brandTargets.pwa?'checked':'')+'><span><b>Installed app icon</b><small>Android / iOS home-screen and PWA icon</small></span></label><label><input type="checkbox" data-brand-target="signin" '+(brandTargets.signin?'checked':'')+'><span><b>Sign-in & welcome screens</b><small>Login, signup and entry branding</small></span></label>'+
- '<label><input type="checkbox" data-brand-target="email" '+(brandTargets.email?'checked':'')+'><span><b>Authentication emails</b><small>Verification and one-time login email header</small></span></label><label><input type="checkbox" data-brand-target="notifications" '+(brandTargets.notifications?'checked':'')+'><span><b>Notifications</b><small>Push notification icon and notification branding</small></span></label></div>'+
+ '<label><input type="checkbox" data-brand-target="email" '+(brandTargets.email?'checked':'')+'><span><b>Authentication emails</b><small>Verification and one-time login email header</small></span></label><label><input type="checkbox" data-brand-target="notifications" '+(brandTargets.notifications?'checked':'')+'><span><b>Notifications</b><small>Push notification icon and notification branding</small></span></label><label><input type="checkbox" data-brand-target="external_forms" '+(brandTargets.external_forms?'checked':'')+'><span><b>External forms & shared links</b><small>Publish a public logo image URL for the separate forms website</small></span></label></div>'+
  '<button type="button" class="primary" id="uploadBrandLogo" disabled>Publish logo everywhere →</button>'+
- '<p class="kc-brand-security-note">Your Super Admin account can publish the official logo. PNG, JPG or WebP images up to 5 MB are supported.</p>'+
+ (brandAssets.external_forms?'<div class="kc-brand-external-url"><label for="externalFormsLogoUrl">External forms logo URL</label><div><input id="externalFormsLogoUrl" type="url" readonly value="'+esc(brandAssets.external_forms)+'"><button type="button" data-copy-external-brand-url>Copy URL</button></div><small>Copy this public image URL into the logo/image setting of the external forms website. This makes the uploaded logo available there; it does not change that separate website automatically.</small></div>':'')+'<p class="kc-brand-security-note">Your Super Admin account can publish the official logo. PNG, JPG or WebP images up to 5 MB are supported.</p>'+
  '</section>';
 }
 async function loadAppSuggestions(){
@@ -2183,13 +2202,15 @@ document.addEventListener('pointerup',kcBrandEndPointer);
 document.addEventListener('pointercancel',kcBrandEndPointer);
 document.addEventListener('lostpointercapture',kcBrandEndPointer);
 document.addEventListener('click',async event=>{
+ const copyExternal=event.target.closest('[data-copy-external-brand-url]');
+ if(copyExternal){const field=$('#externalFormsLogoUrl');if(!field?.value)return;try{await navigator.clipboard.writeText(field.value);notice('External forms logo URL copied.');}catch(error){field.focus();field.select();notice('Select and copy the external logo URL.');}return;}
  const button=event.target.closest('#uploadBrandLogo');if(!button)return;
  event.preventDefault();
  if(!superadmin()){notice('Only the Super Admin can change the official logo.');return;}
  if(!kcBrandEditor.image){notice('Choose a logo image first.');return;}
  const oldLabel=button.textContent;button.disabled=true;button.textContent='Preparing logo…';
  try{
-  const keys=['app','browser','pwa','signin','email','notifications'];
+  const keys=['app','browser','pwa','signin','email','notifications','external_forms'];
   const targets=Object.fromEntries(keys.map(key=>[key,!!document.querySelector('[data-brand-target="'+key+'"]')?.checked]));
   const selected=keys.filter(key=>targets[key]);
   if(!selected.length)throw Error('Select at least one destination for the new logo.');
