@@ -1097,7 +1097,8 @@ function home(){
  if(!rehearsals.length)slides.push({kind:'rehearsal',view:'rehearsals',kicker:'KINETIC CREW · PRACTICE SESSIONS',label:'MAKE THE NEXT MOVE',title:'Plan your next practice session',subtitle:'Create a rehearsal, choose a time and share the venue with your crew.',cta:'Open rehearsals',image:''});
  const crewPromo={kind:'promo',view:'more',kicker:'KINETIC CREW · ONE CREW, ONE RHYTHM',label:'ONE CREW · ONE RHYTHM',title:'Kinetic Crew',subtitle:'Events, rehearsals, auditions and every moment that brings the crew together.',cta:'Explore the crew',image:''};
  const contentSlides=slides.splice(0);
- contentSlides.forEach(slide=>{slides.push(slide,{...crewPromo});});
+ if(!contentSlides.length)slides.push({...crewPromo});
+ else contentSlides.forEach(slide=>{slides.push(slide,{...crewPromo});});
  const pollItems=[...(S.featureItems?.polls||[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
  const updateItems=[...announcements.slice(0,2).map(a=>({kind:'announcement',created_at:a.created_at,item:a})),...(pollItems.length?[{kind:'poll',created_at:pollItems[0].created_at,item:pollItems[0]}]:[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
  const updates=updateItems.map((entry,i)=>{
@@ -1646,7 +1647,9 @@ if(S.view==='overview'){
   homeCarousel.addEventListener('focusin',stopCarousel);
   homeCarousel.addEventListener('focusout',event=>{if(!homeCarousel.contains(event.relatedTarget))startCarousel();});
   homeSlides.forEach(slide=>{const img=slide.querySelector('.kc-home-feature-image');if(img&&!img.dataset.kcCarouselErrorBound){img.dataset.kcCarouselErrorBound='true';img.addEventListener('error',()=>{img.hidden=true;slide.style.removeProperty('--kc-home-feature-image');slide.classList.add('has-image-error');});img.addEventListener('load',()=>{img.hidden=false;slide.classList.remove('has-image-error');});}});
-  document.addEventListener('visibilitychange',()=>{if(!homeCarousel.isConnected)return;if(document.hidden)stopCarousel();else startCarousel();});
+  if(S.homeCarouselVisibilityHandler)document.removeEventListener('visibilitychange',S.homeCarouselVisibilityHandler);
+  S.homeCarouselVisibilityHandler=()=>{if(!homeCarousel.isConnected)return;if(document.hidden)stopCarousel();else startCarousel();};
+  document.addEventListener('visibilitychange',S.homeCarouselVisibilityHandler);
   startCarousel();
  }
  const rail=document.querySelector('.kc-home-updates'),track=rail?.querySelector('.kc-home-updates-track'),dots=[...(rail?.querySelectorAll('.kc-home-update-dots span')||[])],count=dots.length;
