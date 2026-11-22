@@ -1,0 +1,113 @@
+/* Event artwork reliability and mobile home carousel composition. */
+@media (max-width: 900px) {
+  body.kc-home-screen .kc-home-feature-slide {
+    position: relative !important;
+    isolation: isolate !important;
+    background: linear-gradient(135deg,#211b27,#10191b) !important;
+  }
+  body.kc-home-screen .kc-home-feature-slide::before {
+    z-index: 0 !important;
+    filter: blur(0) saturate(.9) !important;
+    opacity: .95 !important;
+  }
+  body.kc-home-screen .kc-home-feature-image {
+    position: absolute !important;
+    z-index: 1 !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    box-sizing: border-box !important;
+    padding: 10px 9px 52px !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,.25)) !important;
+    pointer-events: none !important;
+  }
+  body.kc-home-screen .kc-home-featured-art {
+    z-index: 4 !important;
+  }
+  body.kc-home-screen .kc-home-featured-glass {
+    width: min(60%, 350px) !important;
+    max-width: calc(100% - 104px) !important;
+    padding: 10px 12px !important;
+    gap: 5px !important;
+    border-radius: 17px !important;
+    background: linear-gradient(145deg,rgba(22,24,30,.78),rgba(10,14,18,.91)) !important;
+    backdrop-filter: blur(22px) saturate(145%) !important;
+    -webkit-backdrop-filter: blur(22px) saturate(145%) !important;
+  }
+  body.kc-home-screen .kc-home-featured-glass > b {
+    font-size: clamp(16px,4.4vw,20px) !important;
+  }
+  body.kc-home-screen .kc-home-featured-glass > small {
+    font-size: 9px !important;
+  }
+  body.kc-home-screen .kc-home-featured-glass > button {
+    min-height: 30px !important;
+    padding: 6px 10px !important;
+    font-size: 9px !important;
+  }
+  body.kc-home-screen .kc-home-featured-dots {
+    z-index: 8 !important;
+  }
+}
+
+@media (max-width: 380px) {
+  body.kc-home-screen .kc-home-featured-glass {
+    width: min(62%, 310px) !important;
+    max-width: calc(100% - 94px) !important;
+    padding: 8px 9px !important;
+  }
+  body.kc-home-screen .kc-home-feature-image {
+    padding-bottom: 48px !important;
+  }
+}
+
+/* Event detail: render the saved event banner as a real image element.
+   The background remains a fallback and a soft colour field. */
+.kce-nightpulse .kce-detail-hero {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: hidden !important;
+  background-color: #111a18 !important;
+  background-image:
+    radial-gradient(ellipse at 80% 10%,rgba(53,193,174,.18),transparent 48%),
+    linear-gradient(135deg,#172b28,#0d1413) !important;
+}
+.kce-nightpulse .kce-detail-banner {
+  position: absolute !important;
+  z-index: 0 !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  padding: 12px !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+  pointer-events: none !important;
+}
+.kce-nightpulse .kce-detail-overlay {
+  z-index: 1 !important;
+  background: linear-gradient(180deg,rgba(5,10,9,.12) 0%,rgba(5,10,9,.32) 45%,rgba(5,10,9,.88) 100%) !important;
+}
+.kce-nightpulse .kce-detail-content {
+  z-index: 2 !important;
+}
+@media (max-width: 700px) {
+  .kce-nightpulse .kce-detail-hero {
+    min-height: 350px !important;
+  }
+  .kce-nightpulse .kce-detail-banner {
+    padding: 10px !important;
+  }
+}
