@@ -44,3 +44,31 @@
 @media(prefers-reduced-motion:reduce){
   .kc-profile-flip-inner{will-change:auto}
 }
+/* Remove the animated cyan ambient layer from the flipping identity card.
+   The moving cyan pseudo-element was being composited as a full face during Y rotation. */
+.kc-profile-flip-shell .kc-liquid-profile-card{
+  background:linear-gradient(145deg,#25272b 0%,#17191d 58%,#202226 100%)!important;
+  animation:none!important;
+}
+.kc-profile-flip-shell .kc-liquid-profile-card:before{
+  content:none!important;
+  display:none!important;
+  animation:none!important;
+  background:none!important;
+  filter:none!important;
+}
+.kc-profile-flip-shell .kc-liquid-profile-card:after{
+  background:linear-gradient(180deg,rgba(10,11,14,.24),rgba(10,11,14,.42) 48%,rgba(10,11,14,.82))!important;
+}
+.kc-profile-flip-shell .kc-liquid-orb-cyan{
+  display:none!important;
+  animation:none!important;
+  opacity:0!important;
+}
+.kc-profile-flip-shell .kc-liquid-orb-pink{
+  opacity:.08!important;
+  animation:none!important;
+}
+.kc-profile-flip-shell .kc-profile-card-back{
+  background:linear-gradient(145deg,#282a2b 0%,#17191b 52%,#242528 100%)!important;
+}
