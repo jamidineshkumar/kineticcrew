@@ -56,7 +56,7 @@ function scanHomeAds(){
   const latest=home.querySelector('.kc-home-latest-section');if(!latest)return;
   let slot=home.querySelector('.kc-app-ad-slot');
   if(!slot){slot=document.createElement('section');slot.className='kc-app-ad-slot';slot.setAttribute('aria-label','Sponsored crew promotion');latest.insertAdjacentElement('afterend',slot);}
-  if(slot.dataset.loaded!=='yes')loadHomeAd(slot);
+  if(slot.dataset.loaded!=='yes'&&slot.dataset.loaded!=='loading'){slot.dataset.loaded='loading';loadHomeAd(slot);}
  });
 }
 
