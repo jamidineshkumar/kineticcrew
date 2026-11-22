@@ -31,7 +31,37 @@ function render(root){
 }
 async function loadPromotions(root){const client=window.kcSupabase;if(!client||!client.rpc){root._kcMoreAds=[];render(root);return;}try{const {data,error}=await client.rpc('crew_more_ads_public_get');if(error)throw error;if(data?.ok!==true)throw Error(data?.message||'Promotional slides could not be loaded.');root._kcMoreAds=Array.isArray(data.items)?data.items:[];root._kcMoreAdsSettings={show_upcoming_events:data.show_upcoming_events!==false,show_promotions:data.show_promotions!==false};}catch(error){console.warn('More-page promotions unavailable:',error);root._kcMoreAds=[];root._kcMoreAdsSettings={show_promotions:false};}render(root);}
 function scan(){document.querySelectorAll('.kc-more-intro').forEach(root=>{if(!root.parentElement)return;if(root.dataset.kcAdsBound!=='yes'){root.dataset.kcAdsBound='yes';root.classList.add('kc-more-event-ads-host');loadPromotions(root);}else render(root);});}
-function start(){scan();const target=document.getElementById('app')||document.body;new MutationObserver(scan).observe(target,{childList:true,subtree:true});}
+
+async function loadHomeAd(slot){
+ const client=window.kcSupabase;
+ if(!client?.rpc){slot.hidden=true;slot.dataset.loaded='yes';return;}
+ try{
+  const {data,error}=await client.rpc('crew_app_ads_public_get');
+  if(error)throw error;
+  const items=Array.isArray(data?.items)?data.items:[];
+  if(data?.enabled!==true||data?.show_on_home!==true||!items.length){slot.hidden=true;slot.dataset.loaded='yes';return;}
+  const ad=items[0],url=validUrl(ad.media_url);
+  if(!url){slot.hidden=true;slot.dataset.loaded='yes';return;}
+  const media=ad.media_type==='video'
+   ?'<video class="kc-app-ad-media" src="'+safe(url)+'" muted autoplay loop playsinline webkit-playsinline preload="metadata"></video>'
+   :'<img class="kc-app-ad-media" src="'+safe(url)+'" alt="" loading="lazy">';
+  slot.innerHTML='<article class="kc-app-ad-card"><span class="kc-app-ad-sponsored">SPONSORED</span>'+media+'<div class="kc-app-ad-shade"></div><div class="kc-app-ad-copy"><small>CREW PROMOTION</small><b>'+safe(ad.title||'A Kinetic Crew update')+'</b>'+(ad.caption?'<p>'+safe(ad.caption)+'</p>':'')+'</div></article>';
+  slot.hidden=false;slot.dataset.loaded='yes';
+  const video=slot.querySelector('video');if(video){video.muted=true;video.defaultMuted=true;video.play().catch(()=>{});}
+  const image=slot.querySelector('img');if(image)image.addEventListener('error',()=>{slot.hidden=true;});
+ }catch(error){console.warn('Home ads unavailable:',error);slot.hidden=true;slot.dataset.loaded='yes';}
+}
+function scanHomeAds(){
+ document.querySelectorAll('.kc-exact-home').forEach(home=>{
+  const latest=home.querySelector('.kc-home-latest-section');if(!latest)return;
+  let slot=home.querySelector('.kc-app-ad-slot');
+  if(!slot){slot=document.createElement('section');slot.className='kc-app-ad-slot';slot.setAttribute('aria-label','Sponsored crew promotion');latest.insertAdjacentElement('afterend',slot);}
+  if(slot.dataset.loaded!=='yes')loadHomeAd(slot);
+ });
+}
+
+function start(){scan();scanHomeAds();const target=document.getElementById('app')||document.body;new MutationObserver(()=>{scan();scanHomeAds();}).observe(target,{childList:true,subtree:true});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 window.addEventListener('kc:more-ads-refresh',()=>document.querySelectorAll('.kc-more-intro').forEach(root=>{root.dataset.kcAdsReady='no';loadPromotions(root);}));
+window.addEventListener('kc:app-ads-refresh',()=>document.querySelectorAll('.kc-app-ad-slot').forEach(slot=>{slot.dataset.loaded='';slot.hidden=false;loadHomeAd(slot);}));
 })();
