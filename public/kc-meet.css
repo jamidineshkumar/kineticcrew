@@ -10,3 +10,27 @@
 .kcml-controls{align-items:center;justify-content:center;gap:clamp(8px,2vw,24px);padding:4px 0 max(4px,env(safe-area-inset-bottom));border:0}.kcml-control-group{display:flex;align-items:center;gap:8px}.kcml-controls button{display:flex;align-items:center;justify-content:center;gap:8px;min-width:48px;min-height:48px;padding:0 15px;border:0;border-radius:999px;background:#30363d;color:#f4f6f7;font-size:17px}.kcml-controls button small{font-size:11px;font-weight:650}.kcml-controls button.is-off{background:#4a3032;color:#ffb7b7}.kcml-controls .kcml-leave{min-width:100px;background:#d94b4b;color:#fff}.kcml-controls button:disabled{opacity:.5}
 @media(max-width:760px){.kcml-dialog{padding:calc(10px + env(safe-area-inset-top)) 10px calc(9px + env(safe-area-inset-bottom));gap:9px}.kcml-head h2{font-size:15px}.kcml-main{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) minmax(0,38%);gap:8px}.kcml-stage{padding:8px;border-radius:16px}.kcml-stage-bottom{display:none}.kcml-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,155px),1fr));gap:7px}.kcml-participant{border-radius:12px}.kcml-video{min-height:100px}.kcml-person{padding:7px;font-size:11px}.kcml-sidepanel{border-radius:15px}.kcml-panel-tabs{padding:5px}.kcml-panel-tabs button{padding:8px 5px}.kcml-panel-content{padding:9px;gap:7px}.kcml-controls{gap:7px;justify-content:space-between}.kcml-control-group{gap:5px}.kcml-controls button{min-width:43px;min-height:45px;padding:0 10px;gap:4px;flex-direction:column;font-size:15px}.kcml-controls button small{font-size:9px}.kcml-controls .kcml-leave{min-width:62px}.kcml-stage-top{font-size:9px}.kcml-stage-top button{padding:6px 8px;font-size:9px}}
 @media(max-height:650px) and (max-width:760px){.kcml-main{grid-template-rows:minmax(0,1fr) 125px}.kcml-video{min-height:80px}}
+
+
+/* KC Meet pre-join setup */
+.kc-meet-prejoin{width:min(100%,460px)!important}
+.kc-meet-prejoin .kc-meet-dialog-label{display:block;margin:18px 0 7px;color:#e7e4df;font-size:12px;font-weight:750}
+.kc-meet-prejoin .kc-confirm-input{width:100%;min-height:47px;padding:12px 14px;border:1px solid rgba(255,255,255,.14);border-radius:13px;background:#15191c;color:#f4f1ed;font:500 14px system-ui,sans-serif}
+.kc-meet-prejoin-code{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:17px;padding:12px 14px;border:1px solid rgba(255,255,255,.1);border-radius:13px;background:rgba(255,255,255,.045);color:#aaaeb0;font-size:9px;font-weight:800;letter-spacing:.14em}
+.kc-meet-prejoin-code b{color:#ffad8d;font-size:13px;letter-spacing:.12em}
+.kc-meet-prejoin-options{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:17px}
+.kc-meet-prejoin-option{position:relative;display:flex;align-items:center;gap:9px;min-width:0;min-height:68px;padding:11px;border:1px solid rgba(255,255,255,.11);border-radius:14px;background:rgba(255,255,255,.045);cursor:pointer}
+.kc-meet-prejoin-icon{display:grid;place-items:center;flex:0 0 33px;width:33px;height:33px;border-radius:10px;background:rgba(255,152,119,.1);color:#ff9877;font-size:17px}
+.kc-meet-prejoin-option>span:nth-child(2){display:grid;gap:3px;min-width:0}
+.kc-meet-prejoin-option b{color:#f3f0eb;font-size:11px}
+.kc-meet-prejoin-option small{color:#9fa5a6;font-size:9px;line-height:1.3}
+.kc-meet-prejoin-option input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.kc-meet-prejoin-option>i{position:relative;flex:0 0 30px;width:30px;height:18px;margin-left:auto;border:1px solid rgba(255,255,255,.2);border-radius:99px;background:#353a3d;transition:background .18s,border-color .18s}
+.kc-meet-prejoin-option>i:after{content:"";position:absolute;left:2px;top:2px;width:12px;height:12px;border-radius:50%;background:#d6d9d8;transition:transform .18s}
+.kc-meet-prejoin-option input:checked+i{background:#df795b;border-color:#f09a7d}
+.kc-meet-prejoin-option input:checked+i:after{transform:translateX(12px);background:#fff}
+.kc-meet-prejoin-option input:focus-visible+i{outline:2px solid #ff9877;outline-offset:3px}
+.kc-meet-prejoin-privacy{display:block;margin-top:11px;color:#9fa5a6;font-size:10px;line-height:1.5}
+.kcml-controls button.is-off{background:#463336!important;color:#ffb8a8!important;border:1px solid rgba(255,152,119,.25)!important}
+.kcml-stage-top button[data-kcml-copy]{border-color:rgba(255,152,119,.25);background:rgba(255,152,119,.09);color:#ffb092}
+@media(max-width:480px){.kc-meet-prejoin-options{grid-template-columns:1fr}.kc-meet-prejoin-option{min-height:61px}.kc-meet-prejoin .kc-confirm-actions{margin-top:20px}}
