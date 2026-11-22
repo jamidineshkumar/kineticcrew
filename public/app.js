@@ -64,6 +64,12 @@ window.KC_SEARCH_API={
    try{await window.kcPush?.send?.(title,body,audience);}catch(error){console.warn('Voice announcement saved; push delivery failed:',error);}
    await refresh();return result;
   },
+  async registerForEvent(eventId){
+   const event=(S.events||[]).find(item=>String(item.id)===String(eventId));if(!event)throw Error('Event not found.');
+   if(event.registered)throw Error('You are already registered for this event.');
+   const result=await api('register','POST',{eventId});
+   await refresh();return result;
+  },
   async getAttendance(eventId){
    if(!admin())throw Error('Admin access required to view the attendance roster.');
    return await api('attendance?eventId='+encodeURIComponent(eventId));
