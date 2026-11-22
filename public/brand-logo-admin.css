@@ -116,3 +116,16 @@
 .kc-brand-targets label span{display:grid;gap:3px}
 .kc-brand-targets label b{font-size:12px;color:var(--text)}
 .kc-brand-targets label small{font-size:10px;line-height:1.4;color:var(--muted)}
+
+
+/* Reliable mobile logo upload and external forms destination */
+.kc-brand-file-label{display:flex!important;align-items:center!important;min-height:48px;padding:11px 16px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.035));color:var(--text);font-weight:750;cursor:pointer;box-sizing:border-box}
+.kc-brand-file-label>span{display:grid;place-items:center;width:25px;height:25px;border-radius:8px;background:rgba(242,161,93,.17);color:#f2a15d;font-size:18px}
+#brandLogoFile{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.kc-brand-external-url{display:grid;gap:8px;margin:16px 0;padding:14px;border:1px solid rgba(242,161,93,.3);border-radius:15px;background:linear-gradient(145deg,rgba(242,161,93,.09),rgba(255,255,255,.025))}
+.kc-brand-external-url>label{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--text)}
+.kc-brand-external-url>div{display:flex;gap:8px;min-width:0}
+.kc-brand-external-url input{flex:1;min-width:0;width:100%;box-sizing:border-box;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--text);font:11px/1.4 ui-monospace,monospace}
+.kc-brand-external-url button{flex:0 0 auto;padding:9px 12px;border:1px solid rgba(242,161,93,.35);border-radius:10px;background:rgba(242,161,93,.14);color:var(--text);font-size:11px;font-weight:800}
+.kc-brand-external-url small{font-size:10px;line-height:1.5;color:var(--muted)}
+@media(max-width:420px){.kc-brand-external-url>div{flex-direction:column}.kc-brand-external-url button{min-height:40px}}
