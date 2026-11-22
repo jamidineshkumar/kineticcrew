@@ -1158,7 +1158,7 @@ pill('memories','bookmark','Memories')+
 pill('crew-management','people','Crew Members & Roles')+
 pill('member-requests','notifications','Pending Requests')+
 '<button type="button" class="kc-more-pill" data-audition-admin><span class="kc-more-pill-icon">'+icon('gigs')+'</span><b>Audition Management</b><em>ADMIN</em></button>'+
-(admin()?pill('kc-more-ads-admin','announcements','Promotional Banner & Ads'):'')+
+(admin()?pill('kc-more-ads-admin','announcements','Promotions'):'')+
 '</div></section>':'')+
 '<section class="kc-more-reference-group kc-more-reference-others"><h2>More</h2><div class="kc-more-reference-others-grid">'+
 other('updates','announcements','Announcements')+other('notifications','notifications','Notifications')+
