@@ -1,9 +1,9 @@
 /* Kinetic Crew destination-specific brand identity loader. */
 (function(){
  'use strict';
- const CACHE_KEY='kc-global-brand-logo-v6';
- const KEYS=['app','browser','pwa','signin','email','notifications'];
- let activeAssets={},activeTargets={app:true,browser:true,pwa:true,signin:true,email:false,notifications:true},legacyUrl='',manifestObjectUrl='';
+ const CACHE_KEY='kc-global-brand-logo-v7';
+ const KEYS=['app','browser','pwa','signin','email','notifications','external_forms'];
+ let activeAssets={},activeTargets={app:true,browser:true,pwa:true,signin:true,email:false,notifications:true,external_forms:false},legacyUrl='',manifestObjectUrl='';
  const validUrl=(value,key)=>{try{const u=new URL(String(value||''));if(u.protocol!=='https:'||u.hostname!=='lkdfjiweqxshbbcadfna.supabase.co')return false;return u.pathname==='/storage/v1/object/public/crew-brand-assets/brand/kinetic-crew-logo.png'||(u.pathname.startsWith('/storage/v1/object/public/crew-brand-assets/brand/destinations/')&&u.pathname.endsWith('.png')&&(!key||u.pathname.endsWith('/'+key+'.png')));}catch{return false;}};
  const urlFor=key=>(activeAssets[key]&&validUrl(activeAssets[key],key)?activeAssets[key]:'')|| (legacyUrl&&validUrl(legacyUrl)?legacyUrl:'');
  const isBrandImage=img=>{const src=img.getAttribute('src')||'',cls=String(img.className?.baseVal||img.className||'');return /kinetic-crew-logo\.(?:svg|jpe?g|png|webp)(?:[?#]|$)/i.test(src)||/(^|[-_])logo($|[-_])|brandmark/i.test(cls)||/kinetic\s*crew\s*logo|crew\s*logo|brand\s*logo/i.test(img.alt||'')||img.hasAttribute('data-kc-brand')||img.dataset.kcBrandManaged==='true';};
@@ -17,10 +17,10 @@
   if(!assets||typeof assets!=='object')assets={};
   activeAssets=Object.fromEntries(KEYS.filter(key=>validUrl(assets[key],key)).map(key=>[key,assets[key]]));
   legacyUrl=validUrl(legacy)?legacy:'';
-  activeTargets={app:true,browser:true,pwa:true,signin:true,email:false,notifications:true,...(targets||{})};
+  activeTargets={app:true,browser:true,pwa:true,signin:true,email:false,notifications:true,external_forms:false,...(targets||{})};
   window.KC_BRAND_LOGO_URL=urlFor('app')||legacyUrl;
   window.KC_BRAND_LOGO_ASSETS={...activeAssets};
-  window.KC_NOTIFICATION_ICON_URL=urlFor('notifications');
+  window.KC_NOTIFICATION_ICON_URL=urlFor('notifications');\n  window.KC_EXTERNAL_FORMS_LOGO_URL=activeTargets.external_forms?urlFor('external_forms'):'';
   try{localStorage.setItem(CACHE_KEY,JSON.stringify({assets:activeAssets,targets:activeTargets,legacy:legacyUrl}));}catch{}
   const original=window.kcPath;
   if(typeof original==='function'&&!original.__kcBrandWrapped){const wrapped=function(path){const signin=!!document.querySelector('#kcAuthScreen'),selected=signin?activeTargets.signin:activeTargets.app,url=urlFor(signin?'signin':'app');if(selected&&url&&/(?:^|\/)kinetic-crew-logo\.(?:svg|jpe?g|png|webp)(?:[?#]|$)/i.test(String(path||'')))return url;return original.call(this,path);};wrapped.__kcBrandWrapped=true;window.kcPath=wrapped;}
