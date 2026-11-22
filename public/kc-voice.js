@@ -1,443 +1,63 @@
 (() => {
-  "use strict";
-
-  const PREF_KEY = "kc_voice_preferences_v1";
-  const WAKE_RE = /\bhey\s+(?:k\s*c|kc|kay\s*see|kinetic\s*crew)\b/i;
-  const LANGUAGES = {
-    "en-IN": "English (India)",
-    "hi-IN": "Hindi",
-    "te-IN": "Telugu"
-  };
-  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let enabled = false;
-  let armed = false;
-  let recognition = null;
-  let restartTimer = null;
-  let commandTimer = null;
-  let hideTimer = null;
-  let line = null;
-  let previousSettingsMarkup = "";
-  let speaking = false;
-  let recognitionBlocked = false;
-  let lastStart = 0;
-
-  function preferences() {
-    try {
-      const value = JSON.parse(localStorage.getItem(PREF_KEY) || "{}");
-      return {
-        enabled: value.enabled === true,
-        language: LANGUAGES[value.language] ? value.language : "en-IN",
-        voice: value.voice !== false
-      };
-    } catch {
-      return { enabled: false, language: "en-IN", voice: true };
-    }
-  }
-
-  function savePreferences(next) {
-    const current = preferences();
-    const value = { ...current, ...next };
-    localStorage.setItem(PREF_KEY, JSON.stringify(value));
-    return value;
-  }
-
-  function ensureLine() {
-    if (line && line.isConnected) return line;
-    line = document.createElement("div");
-    line.id = "kcVoiceAmbientLine";
-    line.setAttribute("aria-hidden", "true");
-    line.innerHTML = '<span></span>';
-    document.body.appendChild(line);
-    return line;
-  }
-
-  function setLine(state) {
-    const node = ensureLine();
-    node.className = state ? "kc-voice-line is-" + state : "kc-voice-line";
-    node.hidden = !state;
-    if (state) node.removeAttribute("hidden");
-    else node.setAttribute("hidden", "");
-  }
-
-  function injectStyles() {
-    if (document.getElementById("kcVoiceStyles")) return;
-    const style = document.createElement("style");
-    style.id = "kcVoiceStyles";
-    style.textContent = [
-      "#kcVoiceAmbientLine{position:fixed;left:0;right:0;bottom:0;height:3px;z-index:99999;pointer-events:none;opacity:0;overflow:hidden;background:transparent;transition:opacity .18s ease}",
-      "#kcVoiceAmbientLine.is-listening,#kcVoiceAmbientLine.is-processing{opacity:1}",
-      "#kcVoiceAmbientLine span{display:block;width:34%;height:100%;margin-left:-36%;border-radius:999px;background:linear-gradient(90deg,transparent,#43d8ff 35%,#d8fbff 50%,#43d8ff 70%,transparent);box-shadow:0 0 10px #36cfff,0 0 22px #36cfff;animation:kcVoiceSweep 1.35s ease-in-out infinite}",
-      "#kcVoiceAmbientLine.is-processing span{width:48%;animation:kcVoiceProcess .72s ease-in-out infinite alternate;background:linear-gradient(90deg,transparent,#8b8cff,#f4eaff,#8b8cff,transparent)}",
-      "@keyframes kcVoiceSweep{0%{transform:translateX(0)}100%{transform:translateX(410%)}}",
-      "@keyframes kcVoiceProcess{from{transform:translateX(0);opacity:.55}to{transform:translateX(205%);opacity:1}}",
-      "@media(prefers-reduced-motion:reduce){#kcVoiceAmbientLine span{animation:none;width:100%;margin:0;opacity:.8}}",
-      ".kc-voice-settings-note{font-size:12px;color:var(--muted,#9297a8);line-height:1.65;margin:8px 0 0}",
-      ".kc-voice-settings-card{margin-top:14px}",
-      ".kc-voice-settings-card select{min-width:150px;padding:9px 12px;border:1px solid var(--line,#303444);border-radius:9px;background:var(--surface-2,#0d1017);color:inherit}"
-    ].join("");
-    document.head.appendChild(style);
-  }
-
-  function appSnapshot() {
-    try { return window.KC_SEARCH_API?.snapshot?.() || {}; }
-    catch { return {}; }
-  }
-
-  function speak(message, done) {
-    const prefs = preferences();
-    if (!prefs.voice || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
-      if (done) done();
-      return;
-    }
-    try {
-      speaking = true;
-      stopRecognition();
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(message);
-      utterance.lang = prefs.language;
-      utterance.rate = 1;
-      utterance.pitch = 1;
-      utterance.onend = utterance.onerror = () => {
-        speaking = false;
-        if (done) done();
-        scheduleRecognition();
-      };
-      window.speechSynthesis.speak(utterance);
-    } catch {
-      speaking = false;
-      if (done) done();
-      scheduleRecognition();
-    }
-  }
-
-  function finish(message) {
-    clearTimeout(commandTimer);
-    armed = false;
-    setLine("processing");
-    if (message) {
-      speak(message, () => {
-        clearTimeout(hideTimer);
-        hideTimer = setTimeout(() => setLine(""), 350);
-      });
-    } else {
-      clearTimeout(hideTimer);
-      hideTimer = setTimeout(() => setLine(""), 650);
-    }
-  }
-
-  function deny(message) {
-    finish(message || "Sorry, you don't have permission to perform that action. Please contact an administrator.");
-  }
-
-  function openView(view) {
-    const api = window.KC_SEARCH_API;
-    if (!api || typeof api.openView !== "function") {
-      finish("That section is not available right now.");
-      return;
-    }
-    api.openView(view);
-    finish("Opening " + ({
-      overview: "home", events: "events", calendar: "calendar", attendance: "attendance", "new-event": "the event creation form",
-      profile: "your profile", settings: "app settings", notifications: "notifications",
-      meet: "KC Meet", feed: "the crew feed", leave: "leave requests",
-      memories: "KC Memories", auditions: "auditions", "member-requests": "member requests"
-    }[view] || view) + ".");
-  }
-
-  function normalize(text) {
-    return String(text || "").toLowerCase().replace(/[.,!?;:]/g, " ").replace(/\s+/g, " ").trim();
-  }
-
-  function includesAny(text, values) {
-    return values.some(value => text.includes(value));
-  }
-
-  function runCommand(raw) {
-    const text = normalize(raw);
-    const data = appSnapshot();
-    const role = String(data.role || "member").toLowerCase();
-    const isAdmin = role === "admin" || role === "super_admin";
-
-    if (!text) {
-      finish("I didn't catch that. Please try again.");
-      return;
-    }
-
-    const deniedEdit = includesAny(text, [
-      "edit event", "change event", "update event",
-      "कार्यक्रम बदल", "इवेंट बदल", "ఈవెంట్ మార్చ", "ఈవెంట్ ఎడిట్"
-    ]);
-    if (deniedEdit && !isAdmin) {
-      deny("Sorry, you don't have permission to edit events. Please contact an administrator for assistance.");
-      return;
-    }
-    if (deniedEdit && isAdmin) {
-      window.KC_SEARCH_API?.openView?.("events");
-      finish("You have permission to edit events. Voice editing is not enabled yet, so I have opened the event list for you.");
-      return;
-    }
-
-    const deniedDelete = includesAny(text, [
-      "delete event", "remove event", "कार्यक्रम हट", "ఈవెంట్ తొలగ"
-    ]);
-    if (deniedDelete && !isAdmin) {
-      deny("Sorry, you don't have permission to delete events. Please contact an administrator.");
-      return;
-    }
-    if (deniedDelete && isAdmin) {
-      finish("Event deletion is not enabled through voice yet. Please use the event controls.");
-      return;
-    }
-
-    if (includesAny(text, ["create event", "add event", "new event", "नया इवेंट", "कार्यक्रम बन", "కొత్త ఈవెంట్", "ఈవెంట్ సృష్ట"])) {
-      if (!isAdmin) {
-        deny("Sorry, you don't have permission to create events. Please contact an administrator.");
-        return;
-      }
-      openView("new-event");
-      return;
-    }
-
-    if (includesAny(text, ["upcoming events", "show events", "list events", "आने वाले कार्यक्रम", "आगामी इवेंट", "రాబోయే ఈవెంట్లు", "ఈవెంట్లు చూప"])) {
-      const events = Array.isArray(data.events) ? data.events : [];
-      const upcoming = events
-        .filter(event => event && event.starts_at && new Date(event.starts_at).getTime() >= Date.now())
-        .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at))
-        .slice(0, 3);
-      if (!upcoming.length) {
-        finish("There are no upcoming events listed right now.");
-        return;
-      }
-      const summary = upcoming.map(event => {
-        const date = new Date(event.starts_at).toLocaleDateString([], { day: "numeric", month: "short" });
-        return String(event.title || "Untitled event") + " on " + date;
-      }).join(". ");
-      finish("Your upcoming events are: " + summary + ".");
-      return;
-    }
-
-    if (includesAny(text, ["my role", "what is my role", "मेरा रोल", "मेरी भूमिका", "నా రోల్", "నా పాత్ర"])) {
-      const roleNames = { super_admin: "Super Admin", admin: "Admin", member: "Member", audition_participant: "Audition Participant" };
-      finish("Your Kinetic Crew role is " + (roleNames[role] || "Member") + ".");
-      return;
-    }
-
-    if (includesAny(text, ["open home", "go home", "homepage", "होम खोल", "होम पेज", "హోమ్ ఓపెన్", "హోమ్ కి"])) { openView("overview"); return; }
-    if (includesAny(text, ["open events", "go to events", "इवेंट खोल", "कार्यक्रम खोल", "ఈవెంట్స్ ఓపెన్", "ఈవెంట్లు తెర"])) { openView("events"); return; }
-    if (includesAny(text, ["open attendance", "attendance page", "उपस्थिति खोल", "హాజరు తెర", "అటెండెన్స్ ఓపెన్"])) { openView("attendance"); return; }
-    if (includesAny(text, ["open calendar", "calendar खोल", "कैलेंडर खोल", "క్యాలెండర్ ఓపెన్"])) { openView("calendar"); return; }
-    if (includesAny(text, ["open profile", "my profile", "प्रोफाइल खोल", "నా ప్రొఫైల్"])) { openView("profile"); return; }
-    if (includesAny(text, ["open settings", "app settings", "सेटिंग खोल", "సెట్టింగ్స్ ఓపెన్"])) { openView("settings"); return; }
-    if (includesAny(text, ["open notifications", "notifications", "सूचनाएं खोल", "నోటిఫికేషన్స్"])) { openView("notifications"); return; }
-    if (includesAny(text, ["open meet", "kc meet", "मीटिंग खोल", "మీట్ ఓపెన్"])) { openView("meet"); return; }
-    if (includesAny(text, ["open crew feed", "open feed", "फीड खोल", "ఫీడ్ ఓపెన్"])) { openView("feed"); return; }
-    if (includesAny(text, ["open leave", "leave requests", "छुट्टी अनुरोध", "లీవ్ రిక్వెస్ట్"])) { openView("leave"); return; }
-    if (includesAny(text, ["open memories", "kc memories", "यादें खोल", "మెమరీస్ ఓపెన్"])) { openView("memories"); return; }
-    if (includesAny(text, ["member requests", "open member requests", "सदस्य अनुरोध", "మెంబర్ రిక్వెస్ట్స్"])) {
-      if (!isAdmin) { deny("Sorry, you don't have permission to view member requests."); return; }
-      openView("member-requests");
-      return;
-    }
-
-    if (includesAny(text, ["help", "what can you do", "मदद", "क्या कर सकते", "సహాయం", "ఏం చేయగలవు"])) {
-      finish("I can open app sections, list upcoming events, tell you your crew role, and open the event creation form for authorized administrators.");
-      return;
-    }
-
-    finish("I understood the request, but that voice command is not available yet. You can say open events, open attendance, show upcoming events, or ask for your role.");
-  }
-
-  function armForCommand() {
-    armed = true;
-    setLine("listening");
-    clearTimeout(commandTimer);
-    commandTimer = setTimeout(() => finish("I didn't hear a command. Say Hey KC whenever you need me."), 9000);
-  }
-
-  function handleTranscript(transcript) {
-    const clean = normalize(transcript);
-    if (!armed) {
-      const match = WAKE_RE.exec(clean);
-      if (!match) return;
-      const remainder = clean.slice(match.index + match[0].length).trim();
-      armForCommand();
-      if (remainder.length > 1) runCommand(remainder);
-      return;
-    }
-    if (clean) runCommand(clean);
-  }
-
-  function stopRecognition() {
-    if (recognition) {
-      const current = recognition;
-      recognition = null;
-      try { current.onend = null; current.stop(); } catch {}
-    }
-  }
-
-  function scheduleRecognition() {
-    clearTimeout(restartTimer);
-    if (!enabled || document.hidden || speaking || recognitionBlocked) return;
-    restartTimer = setTimeout(startRecognition, 500);
-  }
-
-  function startRecognition() {
-    if (!enabled || document.hidden || speaking || recognitionBlocked || recognition || !Recognition) return;
-    const prefs = preferences();
-    const instance = new Recognition();
-    recognition = instance;
-    instance.lang = prefs.language;
-    instance.continuous = true;
-    instance.interimResults = false;
-    instance.maxAlternatives = 1;
-    instance.onresult = event => {
-      for (let index = event.resultIndex; index < event.results.length; index++) {
-        const result = event.results[index];
-        if (result.isFinal && result[0]?.transcript) handleTranscript(result[0].transcript);
-      }
-    };
-    instance.onerror = event => {
-      if (event.error === "not-allowed" || event.error === "service-not-allowed") {
-        recognitionBlocked = true;
-        enabled = false;
-        savePreferences({ enabled: false });
-        stopRecognition();
-        setLine("");
-      }
-    };
-    instance.onend = () => {
-      if (recognition === instance) recognition = null;
-      scheduleRecognition();
-    };
-    try {
-      lastStart = Date.now();
-      instance.start();
-    } catch {
-      recognition = null;
-      scheduleRecognition();
-    }
-  }
-
-  function setEnabled(value) {
-    enabled = !!value;
-    recognitionBlocked = false;
-    savePreferences({ enabled });
-    if (!enabled) {
-      armed = false;
-      clearTimeout(commandTimer);
-      clearTimeout(restartTimer);
-      stopRecognition();
-      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-      speaking = false;
-      setLine("");
-      return;
-    }
-    if (!Recognition) {
-      enabled = false;
-      savePreferences({ enabled: false });
-      const toggle = document.getElementById("kcVoiceEnabled");
-      if (toggle) toggle.checked = false;
-      window.alert("Wake-word voice recognition is not supported by this browser. Please use an updated Chrome browser.");
-      return;
-    }
-    startRecognition();
-  }
-
-  function settingsPage() {
-    const prefs = preferences();
-    return '<div class="welcome"><div><div class="eyebrow">APP PREFERENCES <span class="muted">/ VOICE</span></div><h1>KC Voice</h1><p>Hands-free commands for Kinetic Crew. Say “Hey KC” to activate.</p></div><button type="button" class="outline" data-kc-voice-back>← Back to settings</button></div>' +
-      '<section class="surface settings-card kc-voice-settings-card">' +
-      '<span class="settings-kicker">VOICE ASSISTANT</span><h3>Wake-word activation</h3>' +
-      '<label class="settings-toggle"><span><b>Enable Hey KC</b><small>Keep voice activation available while Kinetic Crew is open and active.</small></span><input id="kcVoiceEnabled" type="checkbox" ' + (prefs.enabled ? "checked" : "") + '></label>' +
-      '<label class="settings-toggle"><span><b>Command language</b><small>Select the language you will speak after the wake phrase.</small></span><select id="kcVoiceLanguage">' +
-      Object.keys(LANGUAGES).map(code => '<option value="' + code + '" ' + (prefs.language === code ? "selected" : "") + '>' + LANGUAGES[code] + '</option>').join("") + '</select></label>' +
-      '<label class="settings-toggle"><span><b>Spoken responses</b><small>KC speaks a short response after carrying out a command.</small></span><input id="kcVoiceResponses" type="checkbox" ' + (prefs.voice ? "checked" : "") + '></label>' +
-      '<p class="kc-voice-settings-note">Wake-word detection runs only while the app is open and active. Your browser may use its speech-recognition service to transcribe audio; Kinetic Crew does not save microphone recordings. You can disable voice activation here at any time.</p>' +
-      '<p class="kc-voice-settings-note">Available commands currently include app navigation, upcoming-event summaries, role lookup and opening the event form for authorized administrators. Editing, deleting and broadcasting by voice are not enabled yet.</p>' +
-      '</section>';
-  }
-
-  function addSettingsTile() {
-    const hub = document.querySelector("#app .kc-settings-hub");
-    if (!hub || hub.querySelector("[data-kc-voice-settings]")) return;
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "kc-settings-tile";
-    button.setAttribute("data-kc-voice-settings", "");
-    button.innerHTML = '<span class="kc-settings-tile-icon" aria-hidden="true">⌁</span><span class="kc-settings-tile-copy"><b>KC Voice</b><small>Hands-free voice assistant</small></span><span class="kc-settings-tile-arrow" aria-hidden="true">↗</span>';
-    hub.appendChild(button);
-  }
-
-  function showSettings() {
-    const app = document.getElementById("app");
-    if (!app) return;
-    previousSettingsMarkup = app.innerHTML;
-    app.innerHTML = settingsPage();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  function restoreSettings() {
-    const app = document.getElementById("app");
-    if (!app || !previousSettingsMarkup) return;
-    app.innerHTML = previousSettingsMarkup;
-    previousSettingsMarkup = "";
-  }
-
-  function bindSettings() {
-    document.addEventListener("click", event => {
-      if (event.target.closest("[data-kc-voice-settings]")) {
-        event.preventDefault();
-        showSettings();
-        return;
-      }
-      if (event.target.closest("[data-kc-voice-back]")) {
-        event.preventDefault();
-        restoreSettings();
-      }
-    });
-    document.addEventListener("change", event => {
-      if (event.target.id === "kcVoiceEnabled") setEnabled(event.target.checked);
-      if (event.target.id === "kcVoiceLanguage") {
-        savePreferences({ language: event.target.value });
-        if (enabled) {
-          stopRecognition();
-          scheduleRecognition();
-        }
-      }
-      if (event.target.id === "kcVoiceResponses") savePreferences({ voice: event.target.checked });
-    });
-  }
-
-  function init() {
-    injectStyles();
-    ensureLine();
-    const observer = new MutationObserver(addSettingsTile);
-    const app = document.getElementById("app");
-    if (app) observer.observe(app, { childList: true, subtree: true });
-    addSettingsTile();
-    bindSettings();
-    const prefs = preferences();
-    if (prefs.enabled && !document.hidden) {
-      enabled = true;
-      startRecognition();
-    }
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) {
-        clearTimeout(restartTimer);
-        stopRecognition();
-        armed = false;
-        setLine("");
-      } else if (enabled) {
-        scheduleRecognition();
-      }
-    });
-    window.addEventListener("pagehide", () => {
-      clearTimeout(restartTimer);
-      stopRecognition();
-      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-    });
-  }
-
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
-  else init();
+"use strict";
+const KEY="kc_voice_preferences_v3", LOCALES=["en-IN","hi-IN","te-IN"];
+const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+const S={enabled:false,voice:true,language:"en-IN",recognitions:[],blocked:false,armed:false,speaking:false,line:null,batch:[],batchTimer:0,restartTimer:0,commandTimer:0,flow:null,confirm:null,settingsMarkup:"",mode:"multi"};
+const H={
+ en:{yes:["yes","yeah","confirm","proceed","do it"],no:["no","cancel","stop","don't","dont"],denied:"Sorry, you do not have permission to perform that action. Please contact an administrator.",help:"I can navigate the app, find and register for events, manage events and announcements for authorized admins, and update attendance."},
+ hi:{yes:["हाँ","हां","जी हाँ","ठीक है","कर दो","पुष्टि"],no:["नहीं","मत करो","रद्द","रुको"],denied:"क्षमा करें, आपको यह काम करने की अनुमति नहीं है। कृपया एडमिन से संपर्क करें।",help:"मैं ऐप के पेज खोल सकता हूँ, इवेंट खोज सकता हूँ, रजिस्ट्रेशन कर सकता हूँ और अनुमति होने पर इवेंट, घोषणा और उपस्थिति मैनेज कर सकता हूँ।"},
+ te:{yes:["అవును","సరే","చేయి","నిర్ధారించు"],no:["వద్దు","కాదు","రద్దు","ఆపు"],denied:"క్షమించండి, ఈ చర్య చేయడానికి మీకు అనుమతి లేదు. దయచేసి అడ్మిన్‌ను సంప్రదించండి.",help:"నేను యాప్ పేజీలు తెరవగలను, ఈవెంట్లు వెతకగలను, రిజిస్టర్ చేయగలను. అనుమతి ఉన్న అడ్మిన్లకు ఈవెంట్లు, ప్రకటనలు, హాజరు నిర్వహించగలను."}
+};
+const api=()=>window.KC_SEARCH_API||{}, bridge=()=>api().voice||{}, snap=()=>bridge().getSnapshot?.()||api().snapshot?.()||{};
+const admin=()=>["admin","super_admin"].includes(String(snap().role||"member"));
+const lang=()=>S.language==="hi-IN"?"hi":S.language==="te-IN"?"te":"en";
+const sayText=(key)=>H[lang()][key]||H.en[key]||"";
+const norm=x=>String(x||"").toLowerCase().replace(/[.,!?;:()[\]{}"]/g," ").replace(/\s+/g," ").trim();
+const has=(s,a)=>a.some(x=>s.includes(x));
+const roleName=r=>({super_admin:"Super Admin",admin:"Admin",member:"Member",audition_participant:"Audition Participant"}[r]||"Member");
+function detect(text,locale){if(/[\u0C00-\u0C7F]/.test(text))return"te-IN";if(/[\u0900-\u097F]/.test(text))return"hi-IN";return LOCALES.includes(locale)?locale:"en-IN";}
+function prefs(){try{const p=JSON.parse(localStorage.getItem(KEY)||"{}");return{enabled:p.enabled===true,voice:p.voice!==false};}catch{return{enabled:false,voice:true};}}
+function save(){localStorage.setItem(KEY,JSON.stringify({enabled:S.enabled,voice:S.voice}));}
+function line(mode){if(!S.line||!S.line.isConnected){S.line=document.createElement("div");S.line.id="kcVoiceAmbientLine";S.line.setAttribute("aria-hidden","true");S.line.innerHTML="<span></span>";document.body.appendChild(S.line);}S.line.className=mode?"kc-voice-line is-"+mode:"kc-voice-line";S.line.hidden=!mode;}
+function styles(){if(document.getElementById("kcVoiceStyles"))return;const s=document.createElement("style");s.id="kcVoiceStyles";s.textContent="#kcVoiceAmbientLine{position:fixed;left:0;right:0;bottom:0;height:3px;z-index:99999;pointer-events:none;opacity:0;overflow:hidden;transition:opacity .18s}#kcVoiceAmbientLine.is-listening,#kcVoiceAmbientLine.is-processing{opacity:1}#kcVoiceAmbientLine span{display:block;width:34%;height:100%;margin-left:-36%;border-radius:999px;background:linear-gradient(90deg,transparent,#43d8ff,#e4fbff,#43d8ff,transparent);box-shadow:0 0 10px #36cfff,0 0 22px #36cfff;animation:kcVoiceSweep 1.35s ease-in-out infinite}#kcVoiceAmbientLine.is-processing span{width:48%;animation:kcVoiceProcess .72s ease-in-out infinite alternate;background:linear-gradient(90deg,transparent,#8b8cff,#f4eaff,#8b8cff,transparent)}@keyframes kcVoiceSweep{to{transform:translateX(410%)}}@keyframes kcVoiceProcess{to{transform:translateX(205%);opacity:1}}@media(prefers-reduced-motion:reduce){#kcVoiceAmbientLine span{animation:none;width:100%;margin:0}}.kc-voice-settings-note{font-size:12px;color:var(--muted,#9297a8);line-height:1.65;margin:8px 0 0}.kc-voice-settings-card{margin-top:14px}";document.head.appendChild(s);}
+function stop(){const list=S.recognitions.splice(0);list.forEach(r=>{try{r.onend=r.onerror=r.onresult=null;r.stop();}catch{}});}
+function schedule(ms){clearTimeout(S.restartTimer);if(S.enabled&&!document.hidden&&!S.speaking&&!S.blocked)S.restartTimer=setTimeout(start,ms||500);}
+function processBatch(){if(!S.batch.length)return;const list=S.batch.splice(0);list.sort((a,b)=>{const score=x=>(detect(x.text,x.locale)===x.locale?3:0)+(x.confidence||.1)+Math.min(x.text.length,80)/500;return score(b)-score(a);});S.language=detect(list[0].text,list[0].locale);transcript(list[0].text);}
+function recognizer(locale){const r=new Recognition();r.lang=locale;r.continuous=true;r.interimResults=false;r.maxAlternatives=3;r.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){const v=e.results[i];if(v.isFinal&&v[0]?.transcript){S.batch.push({text:v[0].transcript.trim(),locale,confidence:Number(v[0].confidence||0)});clearTimeout(S.batchTimer);S.batchTimer=setTimeout(processBatch,420);}}};r.onerror=e=>{if(e.error==="not-allowed"||e.error==="service-not-allowed"){S.blocked=true;S.enabled=false;save();stop();line("");}};r.onend=()=>{S.recognitions=S.recognitions.filter(x=>x!==r);schedule(S.mode==="multi"?350:650);};return r;}
+function start(){if(!S.enabled||document.hidden||S.speaking||S.blocked||!Recognition||S.recognitions.length)return;if(S.mode==="multi"){const list=LOCALES.map(recognizer);let count=0;list.forEach(r=>{try{r.start();S.recognitions.push(r);count++;}catch{}});if(count>=2)return;stop();S.mode="rotate";}const r=recognizer(LOCALES[(S.rotateIndex=(S.rotateIndex||0)+1)%3]);try{r.start();S.recognitions.push(r);}catch{schedule(1500);}}
+function speak(msg,done){if(!msg){done?.();return;}if(!S.voice||!window.speechSynthesis||!window.SpeechSynthesisUtterance){done?.();return;}S.speaking=true;stop();try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(msg);u.lang=S.language;u.rate=1;u.pitch=1;u.onend=u.onerror=()=>{S.speaking=false;done?.();if(S.flow||S.confirm)arm();else schedule();};speechSynthesis.speak(u);}catch{S.speaking=false;done?.();schedule();}}
+function respond(msg){clearTimeout(S.commandTimer);S.armed=false;line("processing");speak(msg,()=>line(""));}
+function ask(msg){clearTimeout(S.commandTimer);S.armed=false;line("processing");speak(msg,()=>arm());}
+function arm(){if(!S.enabled)return;S.armed=true;line("listening");clearTimeout(S.commandTimer);S.commandTimer=setTimeout(()=>{S.flow=null;S.confirm=null;respond("I did not hear a command. Say Hey KC again.");},14000);}
+function eventMatch(text){const q=norm(text),events=snap().events||[];const scored=events.map(e=>{const title=norm(e.title),words=title.split(" ").filter(x=>x.length>2);return{e,score:title&&q.includes(title)?100:words.filter(w=>q.includes(w)).length};}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);return !scored.length||scored.length>1&&scored[0].score===scored[1].score?null:scored[0].e;}
+function extract(text,patterns){for(const p of patterns){const m=text.match(p);if(m&&m[1])return m[1].trim().replace(/[.?!]+$/,"");}return"";}
+function parseDate(text){const s=norm(text),now=new Date();let d=new Date(now),found=false;let m=s.match(/\b(20\d{2})[-/](\d{1,2})[-/](\d{1,2})\b/),n=s.match(/\b(\d{1,2})[-/](\d{1,2})[-/](20\d{2})\b/);if(m){d=new Date(+m[1],+m[2]-1,+m[3]);found=true;}else if(n){d=new Date(+n[3],+n[2]-1,+n[1]);found=true;}else if(has(s,["tomorrow","कल","రేపు"])){d.setDate(d.getDate()+1);found=true;}else if(has(s,["today","आज","ఈరోజు","ఈ రోజు"])){found=true;}else if(has(s,["day after tomorrow","परसों","ఎల్లుండి"])){d.setDate(d.getDate()+2);found=true;}const t=s.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/);if(t){let h=+t[1];if(t[3]==="pm"&&h<12)h+=12;if(t[3]==="am"&&h===12)h=0;d.setHours(h,+(t[2]||0),0,0);found=true;}else if(found)d.setHours(18,0,0,0);if(found&&d<now&&!m&&!n&&!has(s,["today","आज","ఈరోజు"]))d.setDate(d.getDate()+1);return found&&!isNaN(+d)?d.toISOString():"";}
+function yesNo(text){const s=norm(text),yes=[...H.en.yes,...H.hi.yes,...H.te.yes],no=[...H.en.no,...H.hi.no,...H.te.no];return yes.some(x=>s.includes(norm(x)))?"yes":no.some(x=>s.includes(norm(x)))?"no":"";}
+function route(view){api().openView?.(view);respond("Opening "+view.replace(/-/g," ")+".");}
+function startCreate(text){if(!admin()){respond(H[lang()].denied);return;}const title=extract(text,[/(?:create|add|schedule)\s+(?:a\s+)?(?:new\s+)?event\s+(?:called\s+|named\s+)?(.+?)(?=\s+(?:on|tomorrow|today|at)\b|$)/i,/ఈవెంట్\s+(?:సృష్టించు|పెట్టాలి)\s+(.+?)(?=\s+(?:రేపు|ఈరోజు)\b|$)/i,/इवेंट\s+(?:बनाओ|बनाएं)\s+(.+?)(?=\s+(?:कल|आज)\b|$)/i]);S.flow={type:"create",step:"title",data:{title,starts_at:parseDate(text),location:""}};continueCreate();}
+function continueCreate(){const f=S.flow;if(!f)return;if(!f.data.title){f.step="title";ask("What should I name the event?");return;}if(!f.data.starts_at){f.step="date";ask("What date and time? For example, tomorrow at 6 pm.");return;}if(!f.data.location){f.step="location";ask("Where will it take place? Say skip if undecided.");return;}S.flow=null;S.confirm={type:"create",data:f.data};ask("Create "+f.data.title+" on "+new Date(f.data.starts_at).toLocaleString()+" at "+f.data.location+"? Say yes or no.");}
+function startAnnouncement(){if(!admin()){respond(H[lang()].denied);return;}S.flow={type:"announce",step:"title",data:{audience:"all"}};ask("What is the announcement headline?");}
+function startAttendance(text){if(!admin()){respond(H[lang()].denied);return;}const e=eventMatch(text);if(!e){S.flow={type:"attendance",step:"event",data:{}};ask("For which event should I update attendance?");return;}S.flow={type:"attendance",step:"member",data:{eventId:e.id,eventTitle:e.title}};ask("Which registered member should I mark? Say their full name.");}
+function continueFlow(raw){const f=S.flow;if(!f)return false;const text=String(raw||"").trim(),s=norm(text);if(f.type==="create"){if(f.step==="title")f.data.title=text;else if(f.step==="date"){const d=parseDate(text);if(!d){ask("I could not identify that date. Say a date and time such as tomorrow at 6 pm.");return true;}f.data.starts_at=d;}else if(f.step==="location")f.data.location=has(s,["skip","unknown","छोड़ो","తెలియదు","వద్దు"])?"To be announced":text;continueCreate();return true;}if(f.type==="update"){if(f.step==="event"){const e=eventMatch(text);if(!e){ask("I could not find that event. Say its exact name.");return true;}f.data.id=e.id;f.data.title=e.title;f.step="change";ask("What should I change: title, date, location, description or capacity?");return true;}const change={};let v=extract(s,[/(?:location|venue|place|స్థలం|जगह)\s+(?:to|గా|में)?\s*(.+)$/i]);const c=s.match(/(?:capacity|seats|సామర్థ్యం|क्षमता)\s*(?:to|గా)?\s*(\d+)/i),t=extract(s,[/(?:title|name|పేరు|नाम)\s+(?:to|గా)?\s*(.+)$/i]),d=extract(s,[/(?:description|details|వివరణ|विवरण)\s+(?:to|గా)?\s*(.+)$/i]),date=parseDate(s);if(v)change.location=v;else if(c)change.capacity=+c[1];else if(t)change.title=t;else if(d)change.description=d;else if(date)change.starts_at=date;else{ask("Say the field and its new value, such as location to Auditorium.");return true;}S.flow=null;S.confirm={type:"update",data:{id:f.data.id,title:f.data.title,changes:change}};ask("Apply that change to "+f.data.title+"? Say yes or no.");return true;}if(f.type==="delete"){const e=eventMatch(text);if(!e){ask("I could not find that event. Say its exact name.");return true;}S.flow=null;S.confirm={type:"delete",data:{id:e.id,title:e.title}};ask("Permanently delete "+e.title+"? This cannot be undone. Say yes or no.");return true;}if(f.type==="announce"){if(f.step==="title"){f.data.title=text;f.step="body";ask("What message should I publish?");}else{f.data.body=text;S.flow=null;S.confirm={type:"announce",data:f.data};ask("Publish "+f.data.title+" to everyone? Say yes or no.");}return true;}if(f.type==="attendance"){if(f.step==="event"){const e=eventMatch(text);if(!e){ask("I could not find that event. Say its exact name.");return true;}f.data.eventId=e.id;f.data.eventTitle=e.title;f.step="member";ask("Which registered member should I mark?");}else if(f.step==="member"){f.data.memberQuery=text;f.step="status";ask("Should I mark them present or absent?");}else{const status=has(s,["present","ఉన్నాడు","హాజరు","उपस्थित"])?"present":has(s,["absent","లేడు","గైర్హాజరు","अनुपस्थित"])?"absent":"";if(!status){ask("Please say present or absent.");return true;}S.flow=null;S.confirm={type:"attendance",data:{...f.data,status}};ask("Mark "+f.data.memberQuery+" as "+status+" for "+f.data.eventTitle+"? Say yes or no.");}return true;}if(f.type==="eventStatus"){const e=eventMatch(text);if(!e){ask("I could not find that event. Say its exact name.");return true;}S.flow=null;S.confirm={type:"status",data:{id:e.id,status:f.data.status,title:e.title}};ask("Change "+e.title+" to "+f.data.status+"? Say yes or no.");return true;}return false;}
+async function execute(){const c=S.confirm;if(!c)return;S.confirm=null;try{let r;if(c.type==="create"){r=await bridge().createEvent(c.data);respond(r.message||"Event published.");}else if(c.type==="update"){r=await bridge().updateEvent(c.data.id,c.data.changes);respond(r.message||"Event updated.");}else if(c.type==="delete"){await bridge().deleteEvent(c.data.id);respond(c.data.title+" has been deleted.");}else if(c.type==="announce"){r=await bridge().publishAnnouncement(c.data);respond(r.message||"Announcement published.");}else if(c.type==="status"){await bridge().setEventStatus(c.data.id,c.data.status);respond("Event status updated.");}else if(c.type==="register"){await bridge().registerForEvent(c.data.id);respond("You are registered for "+c.data.title+".");}else if(c.type==="attendance"){const r=await bridge().getAttendance(c.data.eventId),rows=r?.roster||r?.data?.roster||[],q=norm(c.data.memberQuery),matches=rows.filter(m=>norm(m.name).includes(q)||norm(m.email).includes(q));if(matches.length!==1)throw Error(matches.length?"More than one member matched. Please say the full name.":"That member is not registered for this event.");await bridge().setAttendance(c.data.eventId,matches[0].member_id||matches[0].auth_id||matches[0].id,c.data.status);respond("Attendance updated for "+matches[0].name+".");}else if(c.type==="finalize"){r=await bridge().finalizeAttendance(c.data.id);respond(r.message||"Attendance finalized.");}}catch(e){respond(e.message||"That action could not be completed.");}}
+function process(raw){const text=norm(raw);if(!text)return;if(S.confirm){const v=yesNo(text);if(v==="yes")execute();else if(v==="no"){S.confirm=null;respond("Okay, cancelled.");}else ask("Please say yes to confirm or no to cancel.");return;}if(continueFlow(raw))return;const data=snap(),events=data.events||[];if(has(text,["help","what can you do","मदद","సహాయం","ఏం చేయగలవు"])){respond(H[lang()].help);return;}if(has(text,["my role","what is my role","मेरा रोल","मेरी भूमिका","నా రోల్","నా పాత్ర"])){respond("Your Kinetic Crew role is "+roleName(data.role)+".");return;}if(has(text,["my name","who am i","मेरा नाम","నేను ఎవరు","నా పేరు"])){respond("Your name is "+(data.name||"Crew Member")+".");return;}if(has(text,["upcoming events","show events","list events","आने वाले कार्यक्रम","రాబోయే ఈవెంట్లు","ఈవెంట్లు చూప"])){const rows=events.filter(e=>e.starts_at&&new Date(e.starts_at)>=new Date()&&e.event_status!=="cancelled").sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at)).slice(0,4);respond(rows.length?"Upcoming events: "+rows.map(e=>e.title+" on "+new Date(e.starts_at).toLocaleDateString()).join(". "):"There are no upcoming events.");return;}if(has(text,["my registrations","my tickets","నా రిజిస్ట్రేషన్లు","मेरे रजिस्ट्रेशन"])){const rows=events.filter(e=>e.registered);respond(rows.length?"You are registered for "+rows.map(e=>e.title).join(", "):"You have no event registrations yet.");return;}if(has(text,["my attendance","నా హాజరు","मेरी उपस्थिति"])){const rows=events.filter(e=>e.attended);respond(rows.length?"Attendance confirmed for "+rows.map(e=>e.title).join(", "):"No confirmed attendance is shown in your account.");return;}
+const routes=[[["open home","go home","హోమ్ ఓపెన్","होम खोल"],"overview"],[["open events","go to events","ఈవెంట్స్ ఓపెన్","इवेंट खोल"],"events"],[["open attendance","హాజరు తెర","उपस्थिति खोल"],"attendance"],[["open calendar","క్యాలెండర్ ఓపెన్","कैलेंडर खोल"],"calendar"],[["open profile","నా ప్రొఫైల్","प्रोफाइल खोल"],"profile"],[["open settings","app settings","సెట్టింగ్స్ ఓపెన్","सेटिंग खोल"],"settings"],[["open notifications","నోటిఫికేషన్స్","सूचनाएं खोल"],"notifications"],[["open meet","kc meet","మీట్ ఓపెన్"],"meet"],[["open feed","crew feed","ఫీడ్ ఓపెన్"],"feed"],[["open leave","leave requests","లీవ్ రిక్వెస్ట్"],"leave"],[["open memories","kc memories","మెమరీస్ ఓపెన్"],"memories"],[["open auditions","ఆడిషన్స్ ఓపెన్"],"auditions"],[["open polls","పోల్స్ ఓపెన్"],"polls"],[["open rehearsals","రిహార్సల్స్"],"rehearsals"],[["open updates","crew updates","announcements","అప్‌డేట్స్"],"updates"]];for(const x of routes)if(has(text,x[0])){api().openView?.(x[1]);respond("Opening "+x[1]+".");return;}
+if(has(text,["member requests","మెంబర్ రిక్వెస్ట్స్","सदस्य अनुरोध"])){if(!admin()){respond(H[lang()].denied);return;}api().openView("member-requests");respond("Opening member requests.");return;}
+if(has(text,["create event","add event","schedule event","ఇవెంట్ సృష్ట","ఈవెంట్ పెట్ట","इवेंट बन","कार्यक्रम बन"])){startCreate(text);return;}
+if(has(text,["edit event","update event","change event","ఈవెంట్ మార్చ","इवेंट बदल"])){if(!admin()){respond(H[lang()].denied);return;}const e=eventMatch(text);if(!e){S.flow={type:"update",step:"event",data:{}};ask("Which event should I update?");}else{S.flow={type:"update",step:"change",data:{id:e.id,title:e.title}};ask("What should I change for "+e.title+": title, date, location, description or capacity?");}return;}
+if(has(text,["delete event","remove event","ఈవెంట్ తొలగ","इवेंट हट"])){if(!admin()){respond(H[lang()].denied);return;}const e=eventMatch(text);if(!e){S.flow={type:"delete",step:"event",data:{}};ask("Which event should I delete?");}else{S.confirm={type:"delete",data:{id:e.id,title:e.title}};ask("Permanently delete "+e.title+"? This cannot be undone. Say yes or no.");}return;}
+if(has(text,["cancel event","postpone event","reschedule event","ఈవెంట్ రద్దు","ఈవెంట్ వాయిదా","इवेंट रद्द"])){if(!admin()){respond(H[lang()].denied);return;}const status=has(text,["postpone","reschedule","వాయిదా"])?"postponed":"cancelled",e=eventMatch(text);if(!e){S.flow={type:"eventStatus",step:"event",data:{status}};ask("Which event should I change?");}else{S.confirm={type:"status",data:{id:e.id,status,title:e.title}};ask("Change "+e.title+" to "+status+"? Say yes or no.");}return;}
+if(has(text,["publish announcement","make announcement","broadcast message","ಘೋಷಣೆ","ప్రకటన పంప","घोषणा भेज"])){startAnnouncement();return;}
+if(has(text,["mark attendance","set attendance","హాజరు నమోదు","उपस्थिति दर्ज"])){startAttendance(text);return;}
+if(has(text,["finalize attendance","close attendance","హాజరు ఫైనలైజ్","हाजिरी फाइनल"])){if(!admin()){respond(H[lang()].denied);return;}const e=eventMatch(text);if(!e){respond("Please say the event name.");return;}S.confirm={type:"finalize",data:{id:e.id,title:e.title}};ask("Finalize attendance for "+e.title+"? Remaining registered members will be marked absent. Say yes or no.");return;}
+if(has(text,["register me","book my place","join event","reserve my place","రిజిస్టర్ చేయి","నమోదు చేయి","रजिस्टर करो"])){const e=eventMatch(text);if(!e){respond("Please say the event name you want to register for.");return;}S.confirm={type:"register",data:{id:e.id,title:e.title}};ask("Register you for "+e.title+"? Say yes or no.");return;}
+respond(lang()==="te"?"ఆ అభ్యర్థనను అర్థం చేసుకోలేకపోయాను. సహాయం కోసం అడగండి.":lang()==="hi"?"मैं इस अनुरोध को समझ नहीं पाया। मदद के लिए पूछें।":"I couldn't match that request to an available Kinetic Crew action. Say help.");}
+function transcript(raw){if(!S.armed){const wake=/hey\s*(?:k\s*c|kc|kay\s*see|kinetic\s*crew)|హే\s*కే\s*సి|हे\s*के\s*सी/i.exec(raw);if(!wake)return;const rest=raw.slice(wake.index+wake[0].length).trim();S.armed=true;line("listening");clearTimeout(S.commandTimer);S.commandTimer=setTimeout(()=>{S.flow=null;S.confirm=null;respond("I did not hear a command. Say Hey KC again.");},14000);if(rest)process(rest);return;}process(raw);}
+function tile(){const hub=document.querySelector("#app .kc-settings-hub");if(!hub||hub.querySelector("[data-kc-voice-settings]"))return;const b=document.createElement("button");b.type="button";b.className="kc-settings-tile";b.dataset.kcVoiceSettings="";b.innerHTML='<span class="kc-settings-tile-icon" aria-hidden="true">⌁</span><span class="kc-settings-tile-copy"><b>KC Voice</b><small>Automatic multilingual voice assistant</small></span><span class="kc-settings-tile-arrow" aria-hidden="true">↗</span>';hub.appendChild(b);}
+function settings(){return '<div class="welcome"><div><div class="eyebrow">APP PREFERENCES <span class="muted">/ VOICE</span></div><h1>KC Voice</h1><p>Hands-free commands for Kinetic Crew. Say “Hey KC” to activate.</p></div><button type="button" class="outline" data-kc-voice-back>← Back to settings</button></div><section class="surface settings-card kc-voice-settings-card"><span class="settings-kicker">VOICE ASSISTANT</span><h3>Automatic language detection</h3><label class="settings-toggle"><span><b>Enable Hey KC</b><small>Listen while Kinetic Crew is open and active.</small></span><input id="kcVoiceEnabled" type="checkbox" '+(S.enabled?"checked":"")+'></label><label class="settings-toggle"><span><b>Spoken responses</b><small>Reply in the detected language when your device supports it.</small></span><input id="kcVoiceResponses" type="checkbox" '+(S.voice?"checked":"")+'></label><p class="kc-voice-settings-note">Automatic language matching for English, Hindi and Telugu. Browser speech recognition may send audio to the browser vendor’s speech service; Kinetic Crew does not store microphone recordings.</p><p class="kc-voice-settings-note">Wake-word listening works only while the app is open and active. It stops when the app is hidden or closed. Destructive actions require spoken confirmation and use existing authenticated app APIs.</p></section>';}
+function showSettings(){const app=document.getElementById("app");if(!app)return;S.settingsMarkup=app.innerHTML;app.innerHTML=settings();window.scrollTo({top:0,behavior:"smooth"});}
+function restoreSettings(){const app=document.getElementById("app");if(app&&S.settingsMarkup){app.innerHTML=S.settingsMarkup;S.settingsMarkup="";}}
+function enable(v){S.enabled=!!v;S.blocked=false;save();if(!S.enabled){S.armed=false;S.flow=null;S.confirm=null;clearTimeout(S.commandTimer);clearTimeout(S.restartTimer);clearTimeout(S.batchTimer);stop();if(window.speechSynthesis)speechSynthesis.cancel();S.speaking=false;line("");return;}if(!Recognition){S.enabled=false;save();const el=document.getElementById("kcVoiceEnabled");if(el)el.checked=false;alert("This browser does not support speech recognition. Please use updated Chrome.");return;}S.mode="multi";start();}
+function init(){styles();line("");const obs=new MutationObserver(tile),app=document.getElementById("app");if(app)obs.observe(app,{childList:true,subtree:true});tile();document.addEventListener("click",e=>{if(e.target.closest("[data-kc-voice-settings]")){e.preventDefault();showSettings();}else if(e.target.closest("[data-kc-voice-back]")){e.preventDefault();restoreSettings();}});document.addEventListener("change",e=>{if(e.target.id==="kcVoiceEnabled")enable(e.target.checked);if(e.target.id==="kcVoiceResponses"){S.voice=e.target.checked;save();}});const p=prefs();S.enabled=p.enabled;S.voice=p.voice;if(S.enabled&&!document.hidden)start();document.addEventListener("visibilitychange",()=>{if(document.hidden){clearTimeout(S.restartTimer);clearTimeout(S.commandTimer);stop();S.armed=false;line("");}else if(S.enabled)schedule(250);});window.addEventListener("pagehide",()=>{clearTimeout(S.restartTimer);stop();if(window.speechSynthesis)speechSynthesis.cancel();});}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 })();
