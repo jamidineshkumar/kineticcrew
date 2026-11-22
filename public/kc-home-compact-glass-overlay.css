@@ -324,3 +324,38 @@
     transform: none !important;
   }
 }
+
+
+/* Use the actual uploaded artwork element as the square preview. This avoids
+   pseudo-element URL parsing and preserves the complete logo/artwork aspect ratio. */
+@media (max-width: 900px) {
+  body.kc-home-screen .kc-home-feature-slide::after {
+    content: none !important;
+    display: none !important;
+  }
+  body.kc-home-screen .kc-home-feature-slide .kc-home-feature-image {
+    display: block !important;
+    position: absolute !important;
+    z-index: 2 !important;
+    left: 12px !important;
+    top: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: min(40%,164px) !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    margin: 0 !important;
+    padding: 7px !important;
+    box-sizing: border-box !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    border: 1px solid rgba(255,255,255,.17) !important;
+    border-radius: 15px !important;
+    background: rgba(5,7,12,.30) !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,.24) !important;
+    transform: translateY(-50%) !important;
+  }
+  body.kc-home-screen .kc-home-feature-slide:not([style*="--kc-home-feature-image"]) .kc-home-feature-image {
+    display: none !important;
+  }
+}
