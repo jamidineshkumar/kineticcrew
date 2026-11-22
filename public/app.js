@@ -14,7 +14,7 @@ setInterval(()=>{if(!document.hidden)kcCheckAppVersion();},5*60*1000);
 }).catch(error=>console.warn('Kinetic Crew service worker registration failed:',error));
 }
 window.addEventListener('load',()=>{kcCheckAppVersion();kcRegisterAutoUpdates();},{once:true});
-const S={user:null,promotionalUpdatesEnabled:true,customAlertImageUrl:'',customAlertImagePath:'',view:'overview',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],pendingMembers:[],rejectedMembers:[],pendingPoll:null,pendingPollBusy:false,pendingAlertIds:[],pendingAlertTimer:null,profileSetupRedirected:false,publicMembers:[],memberFavorites:[],blockedMemberIds:[],featureItems:{},pollScreen:'home',selectedPoll:null,pollSummary:[],pollRespondents:[],socialPosts:[],socialLikes:[],socialComments:[],onlineCrew:[],profileDashboard:null,profileAchievements:[],profileTab:'uploads',roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',attendanceSection:'home',error:'',peopleQuery:'',eventsFilter:'all',eventQuery:'',editingEventId:null,sharedDraft:null,qrStream:null,qrScanning:false,qrProcessing:false,profileHistoryPinStatus:null,profileHistoryData:null,profileHistoryUnlocked:false,historyMembers:[],historyTargetId:'',historyLoading:false,profileHistoryPinSession:'',historyBiometricRegistered:false,historyBiometricReason:'',profileReminders:[]};
+const S={user:null,promotionalUpdatesEnabled:true,customAlertImageUrl:'',customAlertImagePath:'',view:'overview',aboutData:null,aboutDataLoading:false,aboutDataLoaded:false,aboutDataError:'',navOpen:'overview',selectedEvent:null,events:[],announcements:[],members:[],pendingMembers:[],rejectedMembers:[],pendingPoll:null,pendingPollBusy:false,pendingAlertIds:[],pendingAlertTimer:null,profileSetupRedirected:false,publicMembers:[],memberFavorites:[],blockedMemberIds:[],featureItems:{},pollScreen:'home',selectedPoll:null,pollSummary:[],pollRespondents:[],socialPosts:[],socialLikes:[],socialComments:[],onlineCrew:[],profileDashboard:null,profileAchievements:[],profileTab:'uploads',roster:null,rosterEvent:'',attendanceAudit:[],attendanceQuery:'',attendanceSection:'home',error:'',peopleQuery:'',eventsFilter:'all',eventQuery:'',editingEventId:null,sharedDraft:null,qrStream:null,qrScanning:false,qrProcessing:false,profileHistoryPinStatus:null,profileHistoryData:null,profileHistoryUnlocked:false,historyMembers:[],historyTargetId:'',historyLoading:false,profileHistoryPinSession:'',historyBiometricRegistered:false,historyBiometricReason:'',profileReminders:[]};
 window.KC_SEARCH_API={
  snapshot:()=>({events:S.events||[],announcements:S.announcements||[],members:S.publicMembers||[],posts:S.socialPosts||[],role:S.user?.role||'member'}),
  load:async()=>{const jobs=[];if(!S.publicMembers?.length)jobs.push(rpc('crew_profile_directory',{}).then(({data,error})=>{if(error)throw error;S.publicMembers=Array.isArray(data)?data:[];}));if(!S.socialPosts?.length)jobs.push(loadSocialFeed());await Promise.all(jobs);},
@@ -50,7 +50,7 @@ async function rpc(name,args){
 const role=r=>({super_admin:'Super Admin',admin:'Admin',member:'Member',audition_participant:'Audition Participant'}[r]||'Member');
 const memberDescriptor=m=>String(m?.crew_title||m?.occupation||role(m?.role)||'Member').trim();
 const admin=()=>['admin','super_admin'].includes(String(S.user?.role||'')), superadmin=()=>S.user&&S.user.role==='super_admin';
-window.KC_MORE_ADS_ADMIN={isSuperAdmin:()=>!!superadmin()};
+window.KC_MORE_ADS_ADMIN={isSuperAdmin:()=>!!admin(),isAdmin:()=>!!admin()};
 const profileIsComplete=u=>Boolean(u&&u.name&&u.username&&u.date_of_birth&&u.registration_number&&u.instagram_username&&u.bio&&u.avatar_url);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const initials=s=>String(s||'KC').trim().split(/\s+/).map(p=>p[0]||'').join('').slice(0,2).toUpperCase()||'KC';
@@ -1158,7 +1158,7 @@ pill('memories','bookmark','Memories')+
 pill('crew-management','people','Crew Members & Roles')+
 pill('member-requests','notifications','Pending Requests')+
 '<button type="button" class="kc-more-pill" data-audition-admin><span class="kc-more-pill-icon">'+icon('gigs')+'</span><b>Audition Management</b><em>ADMIN</em></button>'+
-(superadmin()?pill('kc-more-ads-admin','announcements','Promotional Banner'):'')+
+(admin()?pill('kc-more-ads-admin','announcements','Promotional Banner & Ads'):'')+
 '</div></section>':'')+
 '<section class="kc-more-reference-group kc-more-reference-others"><h2>More</h2><div class="kc-more-reference-others-grid">'+
 other('updates','announcements','Announcements')+other('notifications','notifications','Notifications')+
@@ -1586,6 +1586,7 @@ return '<section class="nav-group '+(expanded?'expanded':'')+'" data-nav-group-p
 const crumb=$('#crumb');if(crumb)crumb.textContent=({overview:'Overview',more:'More','kc-more-ads-admin':'Promotional Banner',events:'Events',meet:'KC Meet','new-event':'Create event','event-edit':'Edit event',chat:'Crew chat','gram-chat':'Kinetic Gram Chats','kc-connect':'KC Connect','kc-rewards-admin':'Rewards Management',feed:'Crew Feed',memes:'Meme Zone','fun-zone-games':'Mini Games',notifications:'Notifications',people:'Discover crew','fun-zone':'Fun Zone',credits:'Credits','public-profile':'Crew profile','crew-management':'Crew Management','member-requests':'Member Requests','custom-alerts':'Custom App Alerts',attendance:'Attendance','brand-settings':'Brand identity',profile:'My profile',settings:'App settings',developer:'Meet the developer','appearance-settings':'Appearance','notification-settings':'Notification settings','device-settings':'Device & session','app-info':'About Kinetic Crew','app-suggestions':'App suggestions',calendar:'Calendar',rehearsals:'Rehearsals',auditions:'Auditions',leaderboard:'Leaderboard'}[S.view]||'Crew management');
 const fn={overview:home,more:morePage,events:eventsPage,meet:meetPage,'event-detail':eventDetailPage,'event-edit':()=>eventForm(S.events.find(x=>String(x.id)===String(S.editingEventId))||null),'new-event':()=>eventForm(),chat:chatPage,'gram-chat':()=>window.kcGramChatPage?window.kcGramChatPage():empty('Kinetic Gram chats','Messaging is loading. Please reopen this page.'),'kc-connect':kcConnectPage,'kc-rewards-admin':kcRewardsAdminPage,'kc-more-ads-admin':()=>window.kcMoreAdsAdminPage?window.kcMoreAdsAdminPage():empty('Promotional Banner','Banner manager is loading.'),feed:socialFeedPage,memes:memeZonePage,'fun-zone-games':miniGamesPage,notifications:notificationsPage,updates:updatesPage,profile:profilePage,'app-settings':settingsPage,people:peoplePage,'public-profile':publicProfilePage,'crew-management':crewManagementPage,'member-requests':memberRequestsPage,'custom-alerts':customAlertsPage,attendance:attendancePage,'brand-settings':brandSettingsPage,settings:settingsPage,developer:developerPage,'appearance-settings':appearanceSettingsPage,'notification-settings':notificationSettingsPage,'device-settings':deviceSettingsPage,'app-info':appInfoPage,'app-suggestions':appSuggestionsPage,rehearsals:()=>featurePage('rehearsals'),calendar:calendarPage,polls:()=>featurePage('polls'),memories:()=>featurePage('memories'),achievements:()=>featurePage('achievements'),leave:()=>featurePage('leave'),'fun-zone':funZonePage,credits:creditsPage}[S.view]||home;
 $('#app').innerHTML=(S.error?'<div class="alert"><span>'+esc(S.error)+'</span><button data-clear>×</button></div>':'')+(S.offline?'<div class="offline-strip">OFFLINE · LAST SAVED DATA</div>':'')+fn();savePageState();
+if(S.view==='app-info'&&!S.aboutDataLoaded&&!S.aboutDataLoading)loadAppInfoData();
 if(S.view==='kc-connect')loadKCConnectDashboard();
 if(S.view==='kc-rewards-admin')loadKCRewardsAdmin();
 if(S.view==='kc-more-ads-admin'&&window.loadKcMoreAdsAdmin)window.loadKcMoreAdsAdmin();
@@ -1729,14 +1730,29 @@ function deviceSettingsPage(){
  return settingsSubpage('Device & session','Manage temporary app files on this device.',
  '<section class="surface settings-card kc-settings-detail"><span class="settings-kicker">DEVICE MAINTENANCE</span><h3>App cache</h3><p>Clear temporary cached files without changing your crew account.</p><button type="button" class="outline" id="clearAppCache">Clear app cache</button></section>');
 }
+async function loadAppInfoData(){
+ if(S.aboutDataLoading||S.aboutDataLoaded)return;
+ S.aboutDataLoading=true;
+ try{
+  const result=await rpc('crew_app_info_get',{});
+  if(result.error)throw result.error;
+  S.aboutData=result.data||{releases:[],update_details:{}};
+  S.aboutDataError='';
+ }catch(error){S.aboutDataError=error.message||'App information could not be loaded.';S.aboutData=S.aboutData||{releases:[],update_details:{}};}
+ S.aboutDataLoading=false;S.aboutDataLoaded=true;
+ if(S.view==='app-info')paint();
+}
 function appInfoPage(){
- const settings=S.appSettings||{},meta=window.kcAppVersionMetadata||{},version=window.KC_APP_VERSION||meta.version||'1.4.5',releases=Array.isArray(window.kcReleaseFeed)?window.kcReleaseFeed:[];
- const notes=String(meta.release_notes||'Latest Kinetic Crew improvements and fixes.');
- const releaseRows=releases.map(item=>'<article class="kc-about-release"><div><span class="kc-release-version">v'+esc(item.version)+'</span><span class="kc-release-state '+(item.read_at?'read':'unread')+'">'+(item.read_at?'READ':'NEW')+'</span><h4>'+esc(item.title)+'</h4><p>'+esc(item.summary||'')+'</p><small>'+esc(item.published_at?new Date(item.published_at).toLocaleDateString():'')+'</small>'+(Array.isArray(item.features)&&item.features.length?'<ul>'+item.features.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'')+(Array.isArray(item.fixes)&&item.fixes.length?'<p class="kc-about-fixes">Fixes: '+item.fixes.map(esc).join(' · ')+'</p>':'')+'</div></article>').join('');
- return settingsSubpage('About Kinetic Crew','App information and release history.',
- '<section class="surface settings-card kc-settings-detail"><span class="settings-kicker">APP VERSION</span><h3>Kinetic Crew · v'+esc(version)+'</h3><p>Developer: '+esc(settings.developer||'Kinetic Crew Development Team')+'</p><p class="settings-update-state">App updates are checked automatically when the app opens and returns to the foreground.</p></section>'+
- '<section class="surface settings-card kc-settings-detail kc-about-whats-new"><span class="settings-kicker">WHAT’S NEW IN THIS VERSION</span><p>'+esc(notes)+'</p></section>'+
- '<section class="surface settings-card kc-settings-detail kc-about-release-history"><span class="settings-kicker">RELEASE HISTORY</span><h3>Updates shipped to Kinetic Crew</h3>'+(releaseRows||'<p class="settings-update-state">No release announcements are available yet. Published updates will appear here.</p>')+'</section>');
+ const meta=window.kcAppVersionMetadata||{},version=window.KC_APP_VERSION||meta.version||'1.6.59';
+ const data=S.aboutData||{},details=data.update_details||{},releases=Array.isArray(data.releases)?data.releases:[];
+ const title=String(details.title||'Latest improvements');
+ const summary=String(details.summary||meta.release_notes||'The latest Kinetic Crew improvements and fixes.');
+ const features=Array.isArray(details.features)?details.features:[];
+ const fixes=Array.isArray(details.fixes)?details.fixes:[];
+ const history=releases.map(item=>'<details class="kc-about-history-item"><summary><span><b>v'+esc(item.version)+'</b><strong>'+esc(item.title)+'</strong></span><small>'+esc(item.published_at?new Date(item.published_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'')+'</small></summary><p>'+esc(item.summary||'')+'</p>'+(Array.isArray(item.features)&&item.features.length?'<ul>'+item.features.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'')+(Array.isArray(item.fixes)&&item.fixes.length?'<p class="kc-about-history-fixes">Fixes: '+item.fixes.map(esc).join(' · ')+'</p>':'')+'</details>').join('');
+ const editForm=admin()?'<div class="kc-about-admin-actions"><button type="button" class="outline" data-kc-about-edit>✎ Edit update details</button></div><form id="kcAboutEditForm" class="kc-about-edit-form" hidden><label>Update heading<input name="title" maxlength="140" required value="'+esc(title)+'"></label><label>What’s new<textarea name="summary" rows="3" maxlength="2000" required>'+esc(summary)+'</textarea></label><label>New features <small>One item per line</small><textarea name="features" rows="3">'+esc(features.join('\n'))+'</textarea></label><label>Fixes <small>One item per line</small><textarea name="fixes" rows="2">'+esc(fixes.join('\n'))+'</textarea></label><div class="kc-about-edit-actions"><button type="submit" class="primary">Save update</button><button type="button" class="outline" data-kc-about-cancel>Cancel</button></div><small class="kc-about-edit-status" aria-live="polite"></small></form>':'';
+ return settingsSubpage('About Kinetic Crew','Software information and update history.',
+ '<section class="surface settings-card kc-settings-detail kc-about-software"><div class="kc-about-version-head"><span class="settings-kicker">KINETIC CREW · SOFTWARE</span><span class="kc-about-current-pill">CURRENT VERSION</span></div><h3>Kinetic Crew</h3><div class="kc-about-version-number">v'+esc(version)+'</div><p class="kc-about-developer">Developer · '+esc((S.appSettings||{}).developer||'Kinetic Crew Development Team')+'</p><div class="kc-about-update-state"><span class="kc-about-update-dot"></span><span>App updates are checked automatically when the app opens and returns to the foreground.</span></div><div class="kc-about-whats-new"><span class="settings-kicker">WHAT’S NEW</span><h4>'+esc(title)+'</h4><p>'+esc(summary)+'</p>'+(features.length?'<ul>'+features.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'')+(fixes.length?'<p class="kc-about-history-fixes">Fixes: '+fixes.map(esc).join(' · ')+'</p>':'')+'</div>'+editForm+'<details class="kc-about-version-history"><summary><span>Version history</span><small>'+releases.length+' release'+(releases.length===1?'':'s')+'</small></summary><div class="kc-about-history-list">'+(history||'<p class="kc-about-history-empty">'+(S.aboutDataLoading?'Loading release history…':'No previous release notes have been published yet.')+'</p>')+'</div></details>'+(S.aboutDataError?'<p class="kc-about-history-empty">'+esc(S.aboutDataError)+'</p>':'')+'</section>');
 }
 function developerPage(){
  const links=[['GitHub','https://github.com/jamidineshkumar','GH'],['LinkedIn','https://in.linkedin.com/in/jami-dinesh-kumar-696478358','in'],['Instagram','https://www.instagram.com/dinuvox/','◎'],['YouTube','https://www.youtube.com/@Dinuvoxx','▶']];
@@ -2884,6 +2900,29 @@ document.addEventListener('change',event=>{
 document.addEventListener('submit',async event=>{
  if(event.target.id==='kcRewardForm'){event.preventDefault();const button=event.target.querySelector('[type="submit"]');button.disabled=true;try{const vouchers=document.getElementById('kcRewardVouchers').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);const selectedImage=document.getElementById('kcRewardImageFile').files?.[0];let imageUrl=document.getElementById('kcRewardImage').value.trim();if(selectedImage){button.textContent='Uploading image…';imageUrl=await uploadKCRewardImage(selectedImage);document.getElementById('kcRewardImage').value=imageUrl;}await validateKCRewardImage(imageUrl);button.textContent='Saving reward…';const result=await rpc('crew_rewards_admin_upsert',{p_reward_id:document.getElementById('kcRewardEditId').value||null,p_title:document.getElementById('kcRewardTitle').value.trim(),p_description:document.getElementById('kcRewardDescription').value.trim(),p_reward_type:String(document.getElementById('kcRewardType').value||'').trim().toLowerCase(),p_points_cost:Number(document.getElementById('kcRewardPoints').value),p_image_url:imageUrl,p_quantity:Number(document.getElementById('kcRewardQuantity').value||0),p_is_active:document.getElementById('kcRewardActive').checked,p_voucher_codes:vouchers});if(result.error)throw result.error;if(!result.data?.ok||!result.data?.reward_id)throw Error(result.data?.message||'The database did not confirm that the reward was saved.');notice('Reward saved and published settings updated.');event.target.reset();document.getElementById('kcRewardEditId').value='';setKCRewardImagePreview('');syncKCRewardInventoryFields();await loadKCRewardsAdmin();setKCRewardsAdminTab('inventory');}catch(error){console.error('KC reward save failed:',error);notice(error.message||'Could not save reward. Check the voucher codes and try again.');}finally{button.disabled=false;button.textContent='Save reward';}return;}
  if(event.target.id==='kcPointsForm'){event.preventDefault();const button=event.target.querySelector('[type="submit"]');button.disabled=true;try{const result=await rpc('crew_reward_points_adjust',{p_user_id:document.getElementById('kcPointsMember').value,p_points_delta:Number(document.getElementById('kcPointsDelta').value),p_reason:document.getElementById('kcPointsReason').value.trim()});if(result.error)throw result.error;notice('Points adjusted. New balance: '+result.data.points_balance);event.target.reset();}catch(error){notice(error.message||'Could not adjust points.');}finally{button.disabled=false;}return;}
+});
+
+
+document.addEventListener('click',event=>{
+ const edit=event.target.closest('[data-kc-about-edit]');
+ if(edit){const form=document.getElementById('kcAboutEditForm');if(form){form.hidden=!form.hidden;edit.hidden=!form.hidden;}return;}
+ const cancel=event.target.closest('[data-kc-about-cancel]');
+ if(cancel){const form=cancel.closest('#kcAboutEditForm');if(form){form.hidden=true;const trigger=document.querySelector('[data-kc-about-edit]');if(trigger)trigger.hidden=false;}return;}
+});
+document.addEventListener('submit',async event=>{
+ const form=event.target.closest('#kcAboutEditForm');if(!form)return;
+ event.preventDefault();
+ if(!admin()){notice('Admin access required.');return;}
+ const fd=new FormData(form),lines=name=>String(fd.get(name)||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+ const details={title:String(fd.get('title')||'').trim(),summary:String(fd.get('summary')||'').trim(),features:lines('features'),fixes:lines('fixes')};
+ const button=form.querySelector('[type="submit"]'),status=form.querySelector('.kc-about-edit-status');
+ button.disabled=true;button.textContent='Saving…';if(status)status.textContent='Saving update details…';
+ try{
+  const result=await rpc('crew_app_info_save',{p_details:details});if(result.error)throw result.error;
+  S.aboutData=S.aboutData||{releases:[]};S.aboutData.update_details=details;S.aboutDataLoaded=true;
+  notice('About page update details saved.');paint();
+ }catch(error){if(status)status.textContent=error.message||'Could not save update details.';notice(error.message||'Could not save update details.');}
+ finally{button.disabled=false;button.textContent='Save update';}
 });
 
 boot().finally(()=>{});
