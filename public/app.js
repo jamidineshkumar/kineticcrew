@@ -81,7 +81,18 @@ async function loadMemories(){
  const {data,error}=await rpc('crew_memories_list',{});
  if(error)throw error;
  const rows=Array.isArray(data)?data:(Array.isArray(data?.items)?data.items:[]);
- S.featureItems.memories=rows.map(item=>({...item,data:item?.data&&typeof item.data==='object'?item.data:{}}));
+ const paths=[...new Set(rows.map(item=>item?.data?.storage_path).filter(Boolean))];
+ const signedByPath=new Map();
+ if(paths.length){
+  const {data:signedRows,error:signedError}=await client.storage.from('crew-memories').createSignedUrls(paths,3600);
+  if(signedError)console.warn('KC Memories image signing failed:',signedError);
+  else (signedRows||[]).forEach(item=>{if(item?.path&&item?.signedUrl)signedByPath.set(item.path,item.signedUrl);});
+ }
+ S.featureItems.memories=rows.map(item=>{
+  const itemData=item?.data&&typeof item.data==='object'?item.data:{};
+  const signedUrl=itemData.storage_path?signedByPath.get(itemData.storage_path)||'':'';
+  return {...item,data:{...itemData,signed_media_url:signedUrl||itemData.media_url||''}};
+ });
  return S.featureItems.memories;
 }
 async function featureApi(action,feature,payload){
