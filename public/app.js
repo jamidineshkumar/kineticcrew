@@ -2807,9 +2807,9 @@ function openEventBannerCrop(file){
  if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024){notice('Choose a JPG, PNG or WebP image up to 5 MB.');const input=document.querySelector('#kcEventBannerFile');if(input)input.value='';return;}
  const url=URL.createObjectURL(file),img=new Image();
  img.onload=()=>{
-  closeEventBannerCrop();kcEventBannerCrop={img,url,zoom:1,x:0,y:0,drag:null};
+  closeEventBannerCrop();kcEventBannerCrop={img,url,zoom:1,x:0,y:0,drag:null,ratio:3};
   const root=document.createElement('div');root.id='kcEventBannerCropModal';root.className='kc-event-crop-backdrop';
-  root.innerHTML='<section class="kc-event-crop-modal" role="dialog" aria-modal="true" aria-labelledby="kcEventCropTitle"><button type="button" class="kc-event-crop-close" data-event-crop-cancel aria-label="Close">×</button><span class="eyebrow">EVENT BANNER STUDIO</span><h2 id="kcEventCropTitle">Adjust your banner</h2><p>Drag the image to reposition it and use the zoom slider. Your banner will be cropped to a wide 3:1 frame.</p><canvas id="kcEventBannerCropCanvas" width="900" height="300"></canvas><label class="kc-event-crop-zoom">ZOOM <input id="kcEventBannerCropZoom" type="range" min="1" max="3" step=".01" value="1"></label><div class="kc-event-crop-actions"><button type="button" class="outline" data-event-crop-cancel>Cancel</button><button type="button" class="primary" id="kcEventBannerCropApply">Apply crop</button></div></section>';
+  root.innerHTML='<section class="kc-event-crop-modal" role="dialog" aria-modal="true" aria-labelledby="kcEventCropTitle"><button type="button" class="kc-event-crop-close" data-event-crop-cancel aria-label="Close">×</button><span class="eyebrow">EVENT BANNER STUDIO</span><h2 id="kcEventCropTitle">Adjust your banner</h2><p>Choose a shape, then drag the image and adjust zoom to frame your artwork.</p><div class="kc-event-crop-ratios" role="group" aria-label="Choose image shape"><button type="button" class="active" data-event-crop-ratio="1" aria-pressed="false"><span class="kc-crop-shape kc-crop-square"></span><b>Square</b><small>1:1</small></button><button type="button" data-event-crop-ratio="1.7777777778" aria-pressed="false"><span class="kc-crop-shape kc-crop-landscape"></span><b>Landscape</b><small>16:9</small></button><button type="button" data-event-crop-ratio="3" aria-pressed="true"><span class="kc-crop-shape kc-crop-wide"></span><b>Wide</b><small>3:1</small></button></div><canvas id="kcEventBannerCropCanvas" width="900" height="300"></canvas><label class="kc-event-crop-zoom">ZOOM <input id="kcEventBannerCropZoom" type="range" min="1" max="3" step=".01" value="1"></label><div class="kc-event-crop-actions"><button type="button" class="outline" data-event-crop-cancel>Cancel</button><button type="button" class="primary" id="kcEventBannerCropApply">Apply crop</button></div></section>';
   document.querySelector('#modalRoot')?.append(root);
   const canvas=root.querySelector('#kcEventBannerCropCanvas');
   canvas.addEventListener('pointerdown',ev=>{const s=kcEventBannerCrop;if(!s)return;s.drag={x:ev.clientX,y:ev.clientY,ox:s.x,oy:s.y};canvas.setPointerCapture(ev.pointerId);});
@@ -2821,17 +2821,30 @@ function openEventBannerCrop(file){
 }
 async function applyEventBannerCrop(){
  const state=kcEventBannerCrop,input=document.querySelector('#kcEventBannerFile'),preview=document.querySelector('#kcEventBannerPreview'),canvas=document.querySelector('#kcEventBannerCropCanvas');if(!state||!input||!preview||!canvas)return;
- const output=document.createElement('canvas');output.width=1200;output.height=400;output.getContext('2d').drawImage(canvas,0,0,1200,400);
- const blob=await new Promise(resolve=>output.toBlob(resolve,'image/jpeg',.86));if(!blob){notice('Could not process this banner. Please try another image.');return;}
- const cropped=new File([blob],'event-banner.jpg',{type:'image/jpeg',lastModified:Date.now()});
+ const output=document.createElement('canvas');output.width=1200;output.height=Math.round(output.width/(state.ratio||3));output.getContext('2d').drawImage(canvas,0,0,output.width,output.height);
+ const blob=await new Promise(resolve=>output.toBlob(resolve,'image/jpeg',.9));if(!blob){notice('Could not process this image. Please try another image.');return;}
+ const shape=(state.ratio||3)===1?'square':(state.ratio||3)>2?'wide':'landscape';
+ const cropped=new File([blob],'event-image-'+shape+'.jpg',{type:'image/jpeg',lastModified:Date.now()});
  try{const transfer=new DataTransfer();transfer.items.add(cropped);input.files=transfer.files;}catch{notice('Your browser cannot prepare the cropped image. Please update Chrome and try again.');return;}
  if(S.eventBannerPreviewUrl)URL.revokeObjectURL(S.eventBannerPreviewUrl);S.eventBannerPreviewUrl=URL.createObjectURL(blob);
  preview.innerHTML='<img src="'+S.eventBannerPreviewUrl+'" alt="Cropped event banner preview"><button type="button" data-event-banner-remove aria-label="Remove banner">Remove</button>';
  closeEventBannerCrop();notice('Banner crop applied. Publish or save the event to upload it.');
 }
 document.addEventListener('click',event=>{
+ const ratioButton=event.target.closest('[data-event-crop-ratio]');
+ if(ratioButton){
+  const state=kcEventBannerCrop,canvas=document.querySelector('#kcEventBannerCropCanvas');
+  if(state&&canvas){
+   state.ratio=Number(ratioButton.dataset.eventCropRatio)||3;state.x=0;state.y=0;state.zoom=1;state.drag=null;
+   canvas.width=900;canvas.height=Math.round(900/state.ratio);
+   document.querySelectorAll('[data-event-crop-ratio]').forEach(button=>{const active=button===ratioButton;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
+   const zoom=document.querySelector('#kcEventBannerCropZoom');if(zoom)zoom.value='1';
+   drawEventBannerCrop();
+  }
+  return;
+ }
  if(event.target.closest('[data-event-crop-cancel]')){closeEventBannerCrop(true);return;}
- if(event.target.closest('#kcEventBannerCropApply')){applyEventBannerCrop().catch(error=>notice(error.message||'Could not crop this banner.'));return;}
+ if(event.target.closest('#kcEventBannerCropApply')){applyEventBannerCrop().catch(error=>notice(error.message||'Could not crop this image.'));return;}
 });
 document.addEventListener('change',event=>{const input=event.target.closest('#kcEventBannerFile');if(input&&input.files?.[0])openEventBannerCrop(input.files[0]);});
 document.addEventListener('click',event=>{
