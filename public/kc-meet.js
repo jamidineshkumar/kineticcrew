@@ -174,8 +174,8 @@
         appendChat("You", text, true); input.value = "";
       } catch { showError("Message could not be sent. Check your connection."); }
     };
-    $("#kcMeetLiveRoot").querySelector("[data-kcml-mic]").onclick = async e => { const enabled = room.localParticipant.isMicrophoneEnabled; await room.localParticipant.setMicrophoneEnabled(!enabled); e.currentTarget.querySelector("small").textContent = enabled ? "Mic off" : "Mute";e.currentTarget.setAttribute("aria-label",enabled?"Turn microphone on":"Mute microphone");e.currentTarget.classList.toggle("is-off",enabled); };
-    $("#kcMeetLiveRoot").querySelector("[data-kcml-camera]").onclick = async e => { const enabled = room.localParticipant.isCameraEnabled; await room.localParticipant.setCameraEnabled(!enabled); e.currentTarget.querySelector("small").textContent = enabled ? "Video off" : "Camera";e.currentTarget.setAttribute("aria-label",enabled?"Turn camera on":"Turn camera off");e.currentTarget.classList.toggle("is-off",enabled); };
+    $("#kcMeetLiveRoot").querySelector("[data-kcml-mic]").onclick = async e => { const enabled = room.localParticipant.isMicrophoneEnabled; await room.localParticipant.setMicrophoneEnabled(!enabled); e.currentTarget.querySelector("small").textContent = enabled ? "Mic on" : "Mic off";e.currentTarget.setAttribute("aria-label",enabled?"Turn microphone on":"Mute microphone");e.currentTarget.classList.toggle("is-off",enabled); };
+    $("#kcMeetLiveRoot").querySelector("[data-kcml-camera]").onclick = async e => { const enabled = room.localParticipant.isCameraEnabled; await room.localParticipant.setCameraEnabled(!enabled); e.currentTarget.querySelector("small").textContent = enabled ? "Video on" : "Video off";e.currentTarget.setAttribute("aria-label",enabled?"Turn camera on":"Turn camera off");e.currentTarget.classList.toggle("is-off",enabled); };
     $("#kcMeetLiveRoot").querySelector("[data-kcml-screen]").onclick = async e => { try { const enabled = room.localParticipant.isScreenShareEnabled; await room.localParticipant.setScreenShareEnabled(!enabled); e.currentTarget.textContent = enabled ? "Share screen" : "Stop sharing"; } catch { showError("Screen sharing is not supported in this browser or device."); } };
     $("#kcMeetLiveRoot").querySelectorAll("[data-kcml-copy]").forEach(button=>button.onclick=shareInvite);
     $("#kcMeetLiveRoot").querySelector("[data-kcml-leave]").onclick = async () => {
@@ -220,6 +220,7 @@
   window.addEventListener("beforeunload", () => { if (room) room.disconnect(); });
   const inviteCode=new URLSearchParams(window.location.search).get("kc_meet");
   if(inviteCode&&/^KC-[A-HJ-NP-Z2-9]{6}$/i.test(inviteCode)){
+    let inviteOpened=false;
     const prefill=()=>{
       const input=$("#kcMeetCode");
       if(!input)return false;
@@ -227,9 +228,15 @@
       input.dataset.invitePrefilled="1";
       return true;
     };
-    const inviteObserver=new MutationObserver(()=>{if(prefill())inviteObserver.disconnect();});
-    inviteObserver.observe(document.body,{childList:true,subtree:true});
-    document.addEventListener("kc:navigate",()=>{if(prefill())inviteObserver.disconnect();},{once:true});
-    prefill();
+    const openInvite=()=>{
+      if(inviteOpened)return;
+      inviteOpened=true;
+      document.dispatchEvent(new CustomEvent("kc:navigate",{detail:{view:"meet"}}));
+      if(prefill())return;
+      const inviteObserver=new MutationObserver(()=>{if(prefill())inviteObserver.disconnect();});
+      inviteObserver.observe(document.body,{childList:true,subtree:true});
+    };
+    client?.auth.getSession().then(({data})=>{if(data?.session)openInvite();}).catch(()=>{});
+    client?.auth.onAuthStateChange((_event,session)=>{if(session?.user)openInvite();});
   }
 })();
