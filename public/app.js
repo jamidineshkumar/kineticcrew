@@ -1646,7 +1646,7 @@ if(S.view==='overview'){
   homeCarousel.addEventListener('mouseleave',startCarousel);
   homeCarousel.addEventListener('focusin',stopCarousel);
   homeCarousel.addEventListener('focusout',event=>{if(!homeCarousel.contains(event.relatedTarget))startCarousel();});
-  homeSlides.forEach(slide=>{const img=slide.querySelector('.kc-home-feature-image');if(img&&!img.dataset.kcCarouselErrorBound){img.dataset.kcCarouselErrorBound='true';img.addEventListener('error',()=>{img.hidden=true;slide.style.removeProperty('--kc-home-feature-image');slide.classList.add('has-image-error');});img.addEventListener('load',()=>{img.hidden=false;slide.classList.remove('has-image-error');});}});
+  homeSlides.forEach(slide=>{const img=slide.querySelector('.kc-home-feature-image');if(img&&!img.dataset.kcCarouselErrorBound){img.dataset.kcCarouselErrorBound='true';img.addEventListener('error',()=>{img.hidden=true;img.style.setProperty('display','none','important');slide.style.removeProperty('--kc-home-feature-image');slide.classList.add('has-image-error');});img.addEventListener('load',()=>{img.hidden=false;img.style.removeProperty('display');slide.classList.remove('has-image-error');});}});
   if(S.homeCarouselVisibilityHandler)document.removeEventListener('visibilitychange',S.homeCarouselVisibilityHandler);
   S.homeCarouselVisibilityHandler=()=>{if(!homeCarousel.isConnected)return;if(document.hidden)stopCarousel();else startCarousel();};
   document.addEventListener('visibilitychange',S.homeCarouselVisibilityHandler);
@@ -2131,7 +2131,10 @@ async function kcBrandLoadFile(file){
  if(button){button.disabled=true;button.textContent='Preparing preview…';}
  const status=$('#brandLogoEditorStatus');if(status)status.textContent=kcBrandEditor.status;
  try{
-  let bitmap;if(typeof createImageBitmap==='function')bitmap=await createImageBitmap(file);else bitmap=await new Promise((resolve,reject)=>{const image=new Image(),url=URL.createObjectURL(file);image.onload=()=>{URL.revokeObjectURL(url);resolve(image);};image.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Image could not be opened.'));};image.src=url;});
+  const loadImageElement=()=>new Promise((resolve,reject)=>{const image=new Image(),url=URL.createObjectURL(file);image.onload=()=>{URL.revokeObjectURL(url);resolve(image);};image.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Image could not be opened.'));};image.src=url;});
+  let bitmap;
+  if(typeof createImageBitmap==='function'){try{bitmap=await createImageBitmap(file);}catch{bitmap=await loadImageElement();}}
+  else bitmap=await loadImageElement();
   if(bitmap.width*bitmap.height>80000000){bitmap.close?.();throw Error('This image is too large to edit. Choose an image under 80 megapixels.');}
   if(kcBrandEditor.image?.close)kcBrandEditor.image.close();
   kcBrandEditor.image=bitmap;kcBrandEditor.file=file;kcBrandReset();kcBrandSetControls(true);
