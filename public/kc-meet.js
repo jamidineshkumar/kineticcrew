@@ -162,7 +162,7 @@
         mute.textContent = "Mute participant";
         mute.onclick = async () => {
           mute.disabled = true;
-          try { await issueToken("mute", { code: activeCode, identity: participant.identity, trackSid: publication.trackSid }); mute.textContent = "Muted"; }
+          try { await meetAction("mute", { code: activeCode, identity: participant.identity, trackSid: publication.trackSid }); mute.textContent = "Muted"; }
           catch (error) { mute.disabled = false; showError(error?.message || "Could not mute participant."); }
         };
         card.querySelector(".kcml-person")?.append(mute);
@@ -229,7 +229,7 @@
       const leaveButton = $("#kcMeetLiveRoot").querySelector("[data-kcml-leave]");
       leaveButton.disabled = true;
       try {
-        if (isHost) await issueToken("end", { code: activeCode });
+        if (isHost) await meetAction("end", { code: activeCode });
         await closeRoom(true);
       } catch (error) { showError(error?.message || "Could not end the meeting."); leaveButton.disabled = false; }
     };
