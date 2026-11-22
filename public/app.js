@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
-window.KC_APP_VERSION='1.6.72';
+window.KC_APP_VERSION='1.6.73';
 let kcUpdatePending=false,kcUpdateReloading=false,kcPendingVersion='';
 const KC_UPDATE_GUARD='kc_update_reload_guard_v1';
 function kcReloadAlreadyUsed(version=''){try{return sessionStorage.getItem(KC_UPDATE_GUARD)===String(version||'service-worker');}catch{return new URL(location.href).searchParams.has('kc_refresh');}}
@@ -1785,7 +1785,8 @@ function settingsIcon(name){
   about:'<path d="m12 2 2.8 7.2L22 12l-7.2 2.8L12 22l-2.8-7.2L2 12l7.2-2.8z"/>',
   brand:'<path d="m12 2 9 10-9 10L3 12z"/>',
   developer:'<circle cx="12" cy="8" r="3.5"/><path d="M4 21c.8-4 3.4-6 8-6s7.2 2 8 6"/>',
-  suggestions:'<path d="m4 20 4.5-1 10.8-10.8a2.1 2.1 0 0 0-3-3L5.5 16z"/><path d="m14.5 6.5 3 3M4 20l-1 1"/>'
+  suggestions:'<path d="m4 20 4.5-1 10.8-10.8a2.1 2.1 0 0 0-3-3L5.5 16z"/><path d="m14.5 6.5 3 3M4 20l-1 1"/>',
+  voice:'<path d="M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v3m-4 0h8"/>''
  };
  return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+(paths[name]||paths.about)+'</svg>';
 }
@@ -1803,7 +1804,8 @@ function settingsPage(){
  ];
  if(superadmin())tiles.splice(5,0,['brand-settings','brand','App icon & logo','Update the official app identity']);
  return welcome('App settings','Choose a section. Each option opens its own focused page.')+
- '<div class="kc-settings-hub">'+tiles.map(([view,icon,title,sub])=>'<button type="button" class="kc-settings-tile" '+(view==='change-password'?'data-open-change-password':'data-view="'+view+'"')+'><span class="kc-settings-tile-icon">'+settingsIcon(icon)+'</span><span class="kc-settings-tile-copy"><b>'+title+'</b><small>'+sub+'</small></span><span class="kc-settings-tile-arrow" aria-hidden="true">↗</span></button>').join('')+'</div>'+
+ '<div class="kc-settings-hub">'+tiles.map(([view,icon,title,sub])=>'<button type="button" class="kc-settings-tile" '+(view==='change-password'?'data-open-change-password':'data-view="'+view+'"')+'><span class="kc-settings-tile-icon">'+settingsIcon(icon)+'</span><span class="kc-settings-tile-copy"><b>'+title+'</b><small>'+sub+'</small></span><span class="kc-settings-tile-arrow" aria-hidden="true">↗</span></button>').join('')+
+ '<button type="button" class="kc-settings-tile" data-kc-voice-settings><span class="kc-settings-tile-icon">'+settingsIcon('voice')+'</span><span class="kc-settings-tile-copy"><b>KC Voice</b><small>Hands-free commands · English, Hindi & Telugu</small></span><span class="kc-settings-tile-arrow" aria-hidden="true">↗</span></button></div>'+
  '<div class="kc-settings-signout"><span><b>Sign out</b><small>End your session on this device</small></span><button type="button" id="settingsSignOut" aria-label="Sign out">Sign out <span aria-hidden="true">↗</span></button></div>'+
  '<p class="kc-settings-version">KINETIC CREW · v'+esc(version)+'</p>';
 }
