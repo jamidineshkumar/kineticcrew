@@ -1,1 +1,82 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Advertise with Kinetic Crew</title><link rel="stylesheet" href="kc-ads-manager.css?v=20261122-adsmanager1"><style>body{margin:0;min-height:100vh;background:#101116;color:#f6f3f7;font:14px system-ui;padding:24px;box-sizing:border-box}.request{max-width:560px;margin:30px auto;padding:22px;border:1px solid #ffffff18;border-radius:22px;background:linear-gradient(145deg,#292632,#151a20)}h1{font-size:25px;margin:5px 0}p,small{color:#aaa;font-size:12px}.request form{display:grid;gap:12px}.request label{display:grid;gap:6px;font-size:11px}.request input,.request textarea,.request select{padding:12px;border-radius:11px;border:1px solid #ffffff20;background:#090b10;color:white;font:inherit}.request button{padding:12px;border:0;border-radius:12px;background:linear-gradient(90deg,#e9a18e,#b78bd4);font-weight:800}.status{color:#b9e2c6}</style></head><body><main class="request"><small>KINETIC CREW · ADVERTISER REQUEST</small><h1>Advertise with <em>Kinetic Crew</em></h1><p>Submit your business or brand campaign for review. All ads are free during the initial launch and require Admin approval.</p><form id="requestForm"><label>Business / brand name<input name="brand" required maxlength="120"></label><label>Contact email<input name="email" type="email" required maxlength="254"></label><label>Ad title<input name="title" required maxlength="100"></label><label>Caption<textarea name="caption" maxlength="260" rows="3"></textarea></label><label>Creative format<select name="format"><option value="native">Native sponsored card</option><option value="banner">Dedicated banner ad</option></select></label><label>Placement<select name="placement"><option value="home">Home</option><option value="more">More page banner</option></select></label><label>Media type<select name="mediaType"><option value="image">Image</option><option value="video">Video</option></select></label><label>Media URL (HTTPS image/video URL)<input name="media" type="url" required placeholder="https://..."></label><label>Website / click destination (optional)<input name="destination" type="url" placeholder="https://..."></label><button type="submit">Submit ad request</button><small id="requestStatus" class="status"></small></form></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="supabase-client.js?v=20261112-persistent-session1"></script><script>document.getElementById('requestForm').addEventListener('submit',async e=>{e.preventDefault();let f=e.currentTarget,b=f.querySelector('button'),s=document.getElementById('requestStatus');b.disabled=true;s.textContent='Submitting…';try{let v=n=>f.elements.namedItem(n).value.trim(),r=await window.kcSupabase.rpc('crew_ads_request_submit',{p_advertiser_name:v('brand'),p_advertiser_email:v('email'),p_title:v('title'),p_caption:v('caption'),p_media_type:v('mediaType'),p_media_url:v('media'),p_destination_url:v('destination')||null,p_ad_format:v('format'),p_placement:v('placement')});if(r.error)throw r.error;s.textContent='Request received. Kinetic Crew will review it before publication.';f.reset()}catch(x){s.textContent=x.message||'Could not submit request.'}finally{b.disabled=false}});</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Advertise with Kinetic Crew</title>
+<link rel="stylesheet" href="kc-ads-manager.css?v=20261122-adsmanager2">
+<style>
+body{margin:0;min-height:100vh;background:#101116;color:#f6f3f7;font:14px system-ui;padding:24px;box-sizing:border-box}
+.request{max-width:560px;margin:30px auto;padding:22px;border:1px solid #ffffff18;border-radius:22px;background:linear-gradient(145deg,#292632,#151a20)}
+h1{font-size:25px;margin:5px 0}
+p,small{color:#aaa;font-size:12px}
+.request form{display:grid;gap:12px}
+.request label{display:grid;gap:6px;font-size:13px}
+.request input,.request textarea{padding:12px;border-radius:11px;border:1px solid #ffffff20;background:#090b10;color:white;font:inherit;min-width:0}
+.request input[type=file]{padding:14px;border-style:dashed;background:#11131a}
+.request input[type=file]::file-selector-button{margin-right:12px;padding:9px 12px;border:0;border-radius:8px;background:#34303d;color:#fff;font-weight:650}
+.request button{padding:13px;border:0;border-radius:12px;background:linear-gradient(90deg,#e9a18e,#b78bd4);font-weight:800;color:#17131a}
+.request button:disabled{opacity:.6}
+.status{color:#b9e2c6;min-height:18px}
+.hint{margin-top:-6px}
+</style>
+</head>
+<body>
+<main class="request">
+<small>KINETIC CREW · ADVERTISER REQUEST</small>
+<h1>Advertise with <em>Kinetic Crew</em></h1>
+<p>Submit your business or brand campaign for review. All ads are free during the initial launch and require Admin approval.</p>
+<form id="requestForm">
+<label>Business / brand name<input name="brand" required maxlength="120" autocomplete="organization"></label>
+<label>Contact email<input name="email" type="email" required maxlength="254" autocomplete="email"></label>
+<label>Ad title<input name="title" required maxlength="100"></label>
+<label>Caption<textarea name="caption" maxlength="260" rows="3"></textarea></label>
+<label>Ad image<input name="creative" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" required></label>
+<small class="hint">Upload one image only · JPG, PNG or WebP · Maximum 8 MB. Video uploads are not supported.</small>
+<label>Website / click destination (optional)<input name="destination" type="url" placeholder="https://example.com" inputmode="url"></label>
+<button type="submit">Submit ad request</button>
+<small id="requestStatus" class="status" role="status" aria-live="polite"></small>
+</form>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="supabase-client.js?v=20261112-persistent-session1"></script>
+<script>
+document.getElementById('requestForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const f=e.currentTarget,b=f.querySelector('button'),s=document.getElementById('requestStatus');
+ const file=f.elements.namedItem('creative').files[0];
+ const value=n=>f.elements.namedItem(n).value.trim();
+ if(!file){s.textContent='Please choose an image.';return}
+ const allowed=['image/jpeg','image/png','image/webp'];
+ if(!allowed.includes(file.type)){s.textContent='Only JPG, PNG or WebP images are supported.';return}
+ if(file.size>8*1024*1024){s.textContent='Image must be 8 MB or smaller.';return}
+ b.disabled=true;
+ try{
+  s.textContent='Uploading image…';
+  const ext=file.type==='image/jpeg'?'jpg':file.type==='image/png'?'png':'webp';
+  const path='requests/'+crypto.randomUUID()+'.'+ext;
+  const upload=await window.kcSupabase.storage.from('kc-ad-requests').upload(path,file,{upsert:false,contentType:file.type});
+  if(upload.error)throw upload.error;
+  const mediaUrl=window.kcSupabase.storage.from('kc-ad-requests').getPublicUrl(path).data.publicUrl;
+  s.textContent='Image uploaded. Submitting your request…';
+  const result=await window.kcSupabase.rpc('crew_ads_request_submit',{
+   p_advertiser_name:value('brand'),
+   p_advertiser_email:value('email'),
+   p_title:value('title'),
+   p_caption:value('caption'),
+   p_media_type:'image',
+   p_media_url:mediaUrl,
+   p_destination_url:value('destination')||null,
+   p_ad_format:'native',
+   p_placement:'home'
+  });
+  if(result.error)throw result.error;
+  s.textContent='Request received. Kinetic Crew will review your image and campaign before publication.';
+  f.reset();
+ }catch(err){s.textContent=err.message||'Could not submit request. Please try again.'}
+ finally{b.disabled=false}
+});
+</script>
+</body>
+</html>
