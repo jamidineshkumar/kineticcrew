@@ -6,19 +6,28 @@
 <title>Advertise with Kinetic Crew</title>
 <link rel="stylesheet" href="kc-ads-manager.css?v=20261122-adsmanager2">
 <style>
-body{margin:0;min-height:100vh;background:#101116;color:#f6f3f7;font:14px system-ui;padding:24px;box-sizing:border-box}
-.request{max-width:560px;margin:30px auto;padding:22px;border:1px solid #ffffff18;border-radius:22px;background:linear-gradient(145deg,#292632,#151a20)}
-h1{font-size:25px;margin:5px 0}
-p,small{color:#aaa;font-size:12px}
-.request form{display:grid;gap:12px}
-.request label{display:grid;gap:6px;font-size:13px}
-.request input,.request textarea{padding:12px;border-radius:11px;border:1px solid #ffffff20;background:#090b10;color:white;font:inherit;min-width:0}
-.request input[type=file]{padding:14px;border-style:dashed;background:#11131a}
-.request input[type=file]::file-selector-button{margin-right:12px;padding:9px 12px;border:0;border-radius:8px;background:#34303d;color:#fff;font-weight:650}
-.request button{padding:13px;border:0;border-radius:12px;background:linear-gradient(90deg,#e9a18e,#b78bd4);font-weight:800;color:#17131a}
+:root{color-scheme:dark;--kc-bg:#101214;--kc-panel:#202427;--kc-edge:rgba(255,255,255,.09);--kc-text:#f2f0ed;--kc-muted:#a2a4a5;--kc-accent:#ff9877}
+*{box-sizing:border-box}
+html{min-height:100%;background:#101214}
+body{margin:0;min-height:100vh;padding:clamp(12px,3vw,22px);background:radial-gradient(ellipse at 12% 8%,rgba(110,120,132,.11),transparent 34%),radial-gradient(ellipse at 88% 18%,rgba(255,105,76,.065),transparent 31%),#101214;color:var(--kc-text);font:400 14px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.request{width:100%;max-width:560px;margin:12px auto 24px;padding:clamp(18px,4vw,26px);border:1px solid var(--kc-edge);border-radius:22px;background:linear-gradient(145deg,#252a2d,#1a1e21);box-shadow:7px 8px 22px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.035)}
+.request>small:first-child{display:block;margin:0 0 8px;color:var(--kc-accent);font-size:10px;font-weight:750;letter-spacing:.15em;text-transform:uppercase}
+.request h1{margin:0 0 10px;color:#f5f3f0;font-size:clamp(27px,5.4vw,34px);font-weight:760;line-height:1.08;letter-spacing:-.045em}
+.request h1 em{font-style:normal;color:var(--kc-accent)}
+.request>p{margin:0 0 20px;max-width:48ch;color:var(--kc-muted);font-size:13px;line-height:1.55}
+.request form{display:grid;gap:15px}
+.request label{display:grid;gap:7px;color:#e9e7e4;font-size:13px;font-weight:600;line-height:1.3}
+.request input:not([type=file]),.request textarea{display:block;width:100%;min-width:0;min-height:48px;padding:12px 14px;border:1px solid rgba(255,255,255,.085);border-radius:13px;background:linear-gradient(145deg,#191d20,#24292c);color:#f1efec;box-shadow:inset 4px 4px 9px rgba(0,0,0,.28),inset -3px -3px 8px rgba(255,255,255,.02);font:400 14px/1.45 inherit}
+.request textarea{min-height:92px;resize:vertical}
+.request input::placeholder,.request textarea::placeholder{color:#85898b}
+.request input:focus,.request textarea:focus{outline:2px solid rgba(255,152,119,.7);outline-offset:2px;border-color:rgba(255,152,119,.4)}
+.request input[type=file]{width:100%;min-height:70px;padding:12px;border:1px dashed rgba(255,255,255,.17);border-radius:14px;background:rgba(0,0,0,.18);color:#d9d7d4;font:13px system-ui,sans-serif}
+.request input[type=file]::file-selector-button{margin-right:12px;padding:10px 14px;border:1px solid rgba(255,255,255,.09);border-radius:12px;background:linear-gradient(145deg,#303538,#202427);color:#f2f0ed;font:650 13px system-ui,sans-serif;box-shadow:3px 4px 10px rgba(0,0,0,.25)}
+.request .hint{display:block;margin:-8px 0 0;color:var(--kc-muted);font-size:11px;line-height:1.45}
+.request button{width:100%;min-height:48px;padding:13px 16px;border:1px solid rgba(255,184,155,.25);border-radius:14px;background:linear-gradient(145deg,#ff9877,#e9684d);color:#211411;font-size:14px;font-weight:800;box-shadow:0 7px 18px rgba(0,0,0,.28),inset 1px 1px 0 rgba(255,255,255,.22)}
 .request button:disabled{opacity:.6}
-.status{color:#b9e2c6;min-height:18px}
-.hint{margin-top:-6px}
+.request .status{display:block;min-height:18px;margin:0;color:#ffb094;font-size:12px;line-height:1.45}
+@media(max-width:480px){body{padding:10px}.request{margin:8px auto 18px;padding:19px 17px;border-radius:19px}.request>p{margin-bottom:17px}.request form{gap:14px}}
 </style>
 </head>
 <body>
