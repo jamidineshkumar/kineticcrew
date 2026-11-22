@@ -1,6 +1,6 @@
 {
-  "version": "1.6.62",
+  "version": "1.6.63",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-22T23:22:00+05:30",
-  "release_notes": "KC Meet now includes dedicated meeting controls, host-controlled waiting room admission, scheduled meeting events, shareable invitation links, and optional email invitations without event registration."
+  "updated_at": "2026-11-23T00:10:00+05:30",
+  "release_notes": "Improved home carousel rotation, swipe and accessibility handling; added External Forms & Shared Links as a logo destination with a copyable public image URL; polished mobile logo upload."
 }
