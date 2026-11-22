@@ -50,7 +50,7 @@ async function rpc(name,args){
 const role=r=>({super_admin:'Super Admin',admin:'Admin',member:'Member',audition_participant:'Audition Participant'}[r]||'Member');
 const memberDescriptor=m=>String(m?.crew_title||m?.occupation||role(m?.role)||'Member').trim();
 const admin=()=>['admin','super_admin'].includes(String(S.user?.role||'')), superadmin=()=>S.user&&S.user.role==='super_admin';
-window.KC_MORE_ADS_ADMIN={isSuperAdmin:()=>!!admin(),isAdmin:()=>!!admin()};
+window.KC_MORE_ADS_ADMIN={isAdmin:()=>!!admin(),isSuperAdmin:()=>!!superadmin()};
 const profileIsComplete=u=>Boolean(u&&u.name&&u.username&&u.date_of_birth&&u.registration_number&&u.instagram_username&&u.bio&&u.avatar_url);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const initials=s=>String(s||'KC').trim().split(/\s+/).map(p=>p[0]||'').join('').slice(0,2).toUpperCase()||'KC';
