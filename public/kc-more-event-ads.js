@@ -63,5 +63,5 @@ function scanHomeAds(){
 function start(){scan();scanHomeAds();const target=document.getElementById('app')||document.body;new MutationObserver(()=>{scan();scanHomeAds();}).observe(target,{childList:true,subtree:true});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 window.addEventListener('kc:more-ads-refresh',()=>document.querySelectorAll('.kc-more-intro').forEach(root=>{root.dataset.kcAdsReady='no';loadPromotions(root);}));
-window.addEventListener('kc:app-ads-refresh',()=>document.querySelectorAll('.kc-app-ad-slot').forEach(slot=>{slot.dataset.loaded='';slot.hidden=false;loadHomeAd(slot);}));
+window.addEventListener('kc:app-ads-refresh',()=>document.querySelectorAll('.kc-app-ad-slot').forEach(slot=>{slot.dataset.loaded='loading';slot.hidden=false;loadHomeAd(slot);}));
 })();
