@@ -1,7 +1,7 @@
 (() => {
   "use strict";
   const client = window.kcSupabase;
-  let room = null, livekitModule = null, isHost = false, activeCode = "", activeTitle = "";
+  let room = null, livekitModule = null, isHost = false, activeCode = "", activeTitle = "", admissionTimer = null, waitingTimer = null;
   const $ = (s, root = document) => root.querySelector(s);
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
   const sdk = async () => livekitModule || (livekitModule = await import("https://esm.sh/livekit-client@2.15.6"));
@@ -66,7 +66,7 @@
   }
   async function shareInvite(){
     const url=inviteUrl();
-    const text='Join my KC Meet: '+activeTitle+'. Sign in to Kinetic Crew with your approved crew account, then open KC Meet. '+url;
+    const text='Join my KC Meet: '+activeTitle+'. No event registration is required. Sign in with your approved Kinetic Crew account, open the link and request to join. '+url;
     try{
       if(navigator.share){await navigator.share({title:'KC Meet · '+activeTitle,text,url});}
       else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text);showError('Meeting invite link copied. Share it with your crew.');}
@@ -76,21 +76,70 @@
   function showAppError(message) {
     return appDialog({title:"Something went wrong",message:String(message||"KC Meet could not start. Please try again."),confirmText:"Got it",showCancel:false});
   }
+  function stopAdmissionPolling(){if(admissionTimer){clearInterval(admissionTimer);admissionTimer=null;}if(waitingTimer){clearInterval(waitingTimer);waitingTimer=null;}}
+  async function refreshAdmissionRequests(){
+    if(!isHost||!activeCode||!room)return;
+    try{const result=await meetAction("pending",{code:activeCode}),wrap=$("#kcml-admission-list");if(!wrap)return;const requests=result.requests||[];wrap.innerHTML=requests.length?requests.map(item=>'<article class="kcml-admission-row"><span class="kcml-avatar">'+esc(String(item.participant_name||"KC").slice(0,2).toUpperCase())+'</span><span><b>'+esc(item.participant_name||"Crew member")+'</b><small>Wants to join</small></span><button type="button" data-kcml-admit="'+esc(item.id)+'">Admit</button><button type="button" data-kcml-reject="'+esc(item.id)+'" aria-label="Reject request">×</button></article>').join(''):'<p class="kcml-admission-empty">No one is waiting right now.</p>';const badge=$("#kcml-admission-count");if(badge)badge.textContent=String(requests.length);const section=$("#kcml-admission-card");if(section)section.hidden=!requests.length;}catch(error){console.warn("KC Meet waiting room refresh failed:",error);}
+  }
+  function startAdmissionPolling(){if(!isHost)return;refreshAdmissionRequests();if(admissionTimer)clearInterval(admissionTimer);admissionTimer=setInterval(refreshAdmissionRequests,3500);}
+  function showWaitingRoom(code){
+    return new Promise(resolve=>{
+      const root=$("#modalRoot");if(!root){resolve(false);return;}let finished=false;
+      const finish=value=>{if(finished)return;finished=true;if(waitingTimer)clearInterval(waitingTimer);waitingTimer=null;root.innerHTML="";resolve(value);};
+      root.innerHTML='<div class="modalback kc-confirm-backdrop"><section class="modal kc-confirm-modal kc-meet-app-dialog kc-meet-waiting" role="dialog" aria-modal="true"><span class="kc-confirm-kicker">KINETIC CREW · MEET</span><div class="kc-meet-waiting-pulse">◉</div><h2>Waiting for the host</h2><p>Your join request has been sent. Keep this screen open; the host can admit or decline you.</p><div class="kc-meet-prejoin-code">MEETING CODE <b>'+esc(code)+'</b></div><div class="kc-meet-waiting-state" id="kcMeetWaitingState">Request sent · Waiting for approval</div><div class="kc-confirm-actions"><button type="button" class="secondary" data-kc-wait-cancel>Cancel request</button></div></section></div>';
+      root.querySelector("[data-kc-wait-cancel]")?.addEventListener("click",()=>finish(false));let busy=false;
+      const check=async()=>{if(busy||finished)return;busy=true;try{const status=await meetAction("status",{code});if(status.status==="approved"){finish(true);return;}if(status.status==="rejected"){finish(false);await showAppError("The host declined your request to join this meeting.");return;}if(status.meetingStatus==="ended"){finish(false);await showAppError("This meeting has ended.");return;}const state=$("#kcMeetWaitingState");if(state)state.textContent=status.meetingStatus==="scheduled"?"Request saved · The host will review it when the meeting opens":"Request sent · Waiting for host approval";}catch(error){const state=$("#kcMeetWaitingState");if(state)state.textContent=error.message||"Reconnecting to the waiting room…";}finally{busy=false;}};
+      waitingTimer=setInterval(check,3000);check();
+    });
+  }
+  function scheduleDialog(){
+    const root=$("#modalRoot");if(!root)return;const date=new Date(Date.now()+60*60*1000);date.setMinutes(0,0,0);
+    const localValue=d=>{const x=new Date(d.getTime()-d.getTimezoneOffset()*60000);return x.toISOString().slice(0,16);};
+    root.innerHTML='<div class="modalback kc-confirm-backdrop" data-kc-schedule-backdrop><section class="modal kc-confirm-modal kc-meet-schedule" role="dialog" aria-modal="true" aria-labelledby="kcMeetScheduleTitle"><span class="kc-confirm-kicker">KINETIC CREW · EVENTS</span><h2 id="kcMeetScheduleTitle">Create a meeting event</h2><p>Schedule a live KC Meet session. No event registration or ticket is required; people join using the invite link and wait for your approval.</p><form id="kcMeetScheduleForm"><label class="kc-meet-dialog-label">Meeting title<input class="kc-confirm-input" name="title" maxlength="80" required placeholder="Crew planning meeting"></label><label class="kc-meet-dialog-label">Description <small>Optional</small><textarea class="kc-confirm-input" name="description" rows="3" maxlength="1200" placeholder="What will this meeting cover?"></textarea></label><div class="kc-meet-schedule-dates"><label class="kc-meet-dialog-label">Start date & time<input class="kc-confirm-input" type="datetime-local" name="starts_at" min="'+localValue(new Date())+'" value="'+localValue(date)+'" required></label><label class="kc-meet-dialog-label">End date & time <small>Optional</small><input class="kc-confirm-input" type="datetime-local" name="ends_at" min="'+localValue(date)+'"></label></div><label class="kc-meet-schedule-email"><input type="checkbox" name="send_email"><span><b>Send email invitation</b><small>Email the meeting link and schedule to approved crew members.</small></span></label><div class="kc-confirm-actions"><button type="button" class="secondary" data-kc-schedule-cancel>Cancel</button><button type="submit" class="primary">Schedule meeting event</button></div></form></section></div>';
+    root.querySelector("[data-kc-schedule-cancel]")?.addEventListener("click",()=>root.innerHTML="");root.querySelector("[data-kc-schedule-backdrop]")?.addEventListener("click",e=>{if(e.target===e.currentTarget)root.innerHTML="";});
+    root.querySelector("#kcMeetScheduleForm")?.addEventListener("submit",async e=>{
+      e.preventDefault();const form=e.currentTarget,button=form.querySelector('button[type="submit"]'),d=new FormData(form),title=String(d.get("title")||"").trim(),starts_at=String(d.get("starts_at")||""),ends_at=String(d.get("ends_at")||""),sendEmail=d.get("send_email")==="on";
+      if(ends_at&&new Date(ends_at)<=new Date(starts_at)){showError("Meeting end time must be after its start time.");return;}button.disabled=true;button.textContent="Scheduling…";
+      try{
+        const result=await meetAction("schedule",{title,description:String(d.get("description")||"").trim(),starts_at:new Date(starts_at).toISOString(),ends_at:ends_at?new Date(ends_at).toISOString():null,send_email:sendEmail});
+        root.innerHTML='<div class="modalback kc-confirm-backdrop"><section class="modal kc-confirm-modal kc-meet-scheduled-success"><span class="kc-confirm-kicker">KINETIC CREW · EVENTS</span><div class="kc-meet-scheduled-check">✓</div><h2>Meeting event scheduled</h2><p>'+esc(title)+' is now on the KC Meet schedule. No registration is needed.</p><div class="kc-meet-prejoin-code">MEETING CODE <b>'+esc(result.code)+'</b></div><label class="kc-meet-dialog-label">Invitation link<input class="kc-confirm-input" readonly value="'+esc(result.inviteUrl)+'"></label><div class="kc-confirm-actions"><button type="button" class="secondary" data-kc-schedule-done>Done</button><button type="button" class="primary" data-kc-schedule-share>Share invite link</button></div></section></div>';
+        root.querySelector("[data-kc-schedule-done]")?.addEventListener("click",()=>root.innerHTML="");root.querySelector("[data-kc-schedule-share]")?.addEventListener("click",async()=>{try{if(navigator.share)await navigator.share({title:"KC Meet · "+title,text:"No registration required. Request to join using this meeting link.",url:result.inviteUrl});else{await navigator.clipboard.writeText(result.inviteUrl);showAppError("Meeting invite link copied.");}}catch(err){if(err?.name!=="AbortError")showAppError("Could not share the meeting link.");}});
+        if(sendEmail&&window.kcPush?.send){try{await window.kcPush.send("KC Meet event: "+title,String(d.get("description")||"")+"
+
+Starts: "+new Date(starts_at).toLocaleString()+"
+No event registration required. Open the meeting link and wait for host approval:
+"+result.inviteUrl,"all",{sendEmail:true,emailKey:"kc-meet:"+result.code,emailType:"event"});}catch(error){console.warn("KC Meet email invitation failed:",error);showAppError("The meeting was scheduled, but the email invitation could not be sent. You can still share the link.");}}
+        loadScheduledMeetings();
+      }catch(error){showError(error.message||"Could not schedule this meeting.");button.disabled=false;button.textContent="Schedule meeting event";}
+    });
+  }
+  function meetingCard(item){
+    const when=new Date(item.starts_at).toLocaleString([],{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
+    return '<article class="kcml-scheduled-card"><div class="kcml-scheduled-top"><span>◉ KC MEET EVENT</span><span class="kcml-scheduled-status '+esc(item.status)+'">'+(item.status==="active"?"LIVE":"SCHEDULED")+'</span></div><h3>'+esc(item.title)+'</h3><p>'+esc(item.description||"A live meeting with your Kinetic Crew.")+'</p><div class="kcml-scheduled-meta"><span>◷ '+esc(when)+'</span><span>NO REGISTRATION</span></div><div class="kcml-scheduled-actions">'+(item.isHost&&item.status==="scheduled"?'<button type="button" data-kcml-start="'+esc(item.code)+'" data-title="'+esc(item.title)+'">Start meeting</button>':'')+'<button type="button" class="secondary" data-kcml-copy-code="'+esc(item.code)+'">Copy invite link</button></div></article>';
+  }
+  async function loadScheduledMeetings(){
+    try{const result=await meetAction("list"),html=(result.meetings||[]).map(meetingCard).join('');const a=$("#kcMeetScheduledEvents"),b=$("#kcMeetEventsScheduled");if(a)a.innerHTML=html||'<p class="kcml-scheduled-empty">No upcoming meeting events. Admins can schedule one for the crew.</p>';if(b)b.innerHTML=html||'<p class="kcml-scheduled-empty">No KC Meet events are scheduled yet.</p>';}catch(error){console.warn("Could not load scheduled KC Meet events:",error);}
+  }
   function showError(message) {
     const el = $("#kcml-status"); if (el) { el.textContent = message; el.hidden = false; }
     else showAppError(message);
   }
-  async function issueToken(action, payload = {}) {
+  async function meetAction(action, payload = {}) {
     if (!client) throw new Error("Kinetic Crew connection is unavailable. Reload and try again.");
     const { data: sessionData, error: sessionError } = await client.auth.getSession();
     const accessToken = sessionData?.session?.access_token;
     if (sessionError || !accessToken) throw new Error("Your session expired. Sign in again.");
     const { data, error } = await client.functions.invoke("kc-meet-token", { body: { action, ...payload } });
     if (error) {
-      let message = error.message || "Could not connect to the meeting service.";
+      let message = error.message || "KC Meet request failed.";
       try { const body = await error.context?.json?.(); if (body?.error) message = body.error; } catch {}
       throw new Error(message);
     }
+    if (data?.error) throw new Error(data.error);
+    return data || {};
+  }
+  async function issueToken(action, payload = {}) {
+    const data = await meetAction(action, payload);
     if (!data?.token || !data?.serverUrl) throw new Error(data?.error || "Meeting service returned an incomplete response.");
     return data;
   }
@@ -137,11 +186,11 @@
   }
   async function connect(action, payload) {
     const {videoEnabled=false,audioEnabled=false,...tokenPayload}=payload||{};
-    const data = await issueToken(action, tokenPayload);
+    const data = preissued || await issueToken(action, tokenPayload);
     isHost = !!data.isHost; activeCode = data.code || payload.code || ""; activeTitle = data.title || "Kinetic Crew Meeting";
     const { Room, RoomEvent, Track } = await sdk();
     room = new Room({ adaptiveStream: true, dynacast: true, videoCaptureDefaults: { resolution: { width: 1280, height: 720 }, facingMode: "user" } });
-    showDialog('<header class="kcml-head"><div class="kcml-brand"><span class="kcml-brand-mark">K</span><div><span>KINETIC CREW · MEET</span><h2>' + esc(activeTitle) + '</h2><small><i class="kcml-live-dot"></i> Live meeting · Code <b>' + esc(activeCode) + '</b></small></div></div><button data-kcml-close aria-label="Leave meeting">×</button></header><div id="kcml-status" class="kcml-status" hidden></div><div class="kcml-main"><section class="kcml-stage"><div class="kcml-stage-top"><span><i class="kcml-live-dot"></i> LIVE</span><span id="kcml-participant-count">1 participant</span><button type="button" data-kcml-copy>Share invite link</button></div><div id="kcml-grid" class="kcml-grid"><div class="kcml-connecting">Connecting to your crew…</div></div><div class="kcml-stage-bottom"><span>Meeting details</span><span>Camera and microphone start off. Turn them on whenever you are ready.</span></div></section><aside class="kcml-sidepanel"><div class="kcml-panel-tabs"><button type="button" class="active" data-kcml-panel="people">People <span id="kcml-people-count">1</span></button><button type="button" data-kcml-panel="chat">In-call messages</button></div><section id="kcml-people-panel" class="kcml-panel-content"><b>In this meeting</b><div id="kcml-people-list"><p class="kcml-panel-empty">You are joining the room…</p></div></section><section id="kcml-chat-panel" class="kcml-panel-content" hidden><b>Meeting chat</b><div id="kcml-chat-log" aria-live="polite"><p>Messages are visible to everyone in this meeting.</p></div><form id="kcml-chat-form"><input id="kcml-chat-input" maxlength="1000" placeholder="Send a message to everyone" autocomplete="off"><button type="submit" aria-label="Send message">➤</button></form></section></aside></div><footer class="kcml-controls"><div class="kcml-control-group"><button data-kcml-mic class="'+(!audioEnabled?'is-off':'')+'" aria-label="'+(audioEnabled?'Mute microphone':'Turn microphone on')+'"><span>🎙</span><small>'+(audioEnabled?'Mute':'Mic off')+'</small></button><button data-kcml-camera class="'+(!videoEnabled?'is-off':'')+'" aria-label="'+(videoEnabled?'Turn camera off':'Turn camera on')+'"><span>▣</span><small>'+(videoEnabled?'Camera':'Video off')+'</small></button><button data-kcml-screen aria-label="Share screen"><span>▧</span><small>Present</small></button></div><div class="kcml-control-group"><button type="button" data-kcml-panel="people"><span>♙</span><small>People</small></button><button type="button" data-kcml-panel="chat"><span>▤</span><small>Chat</small></button><button type="button" data-kcml-copy><span>↗</span><small>Share link</small></button></div><button data-kcml-leave class="kcml-leave"><span>☎</span><small>' + (isHost ? 'End meeting' : 'Leave call') + '</small></button></footer>');
+    showDialog('<header class="kcml-head"><div class="kcml-brand"><span class="kcml-brand-mark">K</span><div><span>KINETIC CREW · MEET</span><h2>' + esc(activeTitle) + '</h2><small><i class="kcml-live-dot"></i> Live meeting · Code <b>' + esc(activeCode) + '</b></small></div></div><button data-kcml-close aria-label="Leave meeting">×</button></header><div id="kcml-status" class="kcml-status" hidden></div><div class="kcml-main"><section class="kcml-stage"><div class="kcml-stage-top"><span><i class="kcml-live-dot"></i> LIVE</span><span id="kcml-participant-count">1 participant</span></div><div id="kcml-grid" class="kcml-grid"><div class="kcml-connecting">Connecting to your crew…</div></div><div class="kcml-stage-bottom"><span>Meeting details</span><span>Camera and microphone start off. Turn them on whenever you are ready.</span></div></section><aside class="kcml-sidepanel"><section class="kcml-admission-card" id="kcml-admission-card" hidden><div><b>Waiting room</b><span id="kcml-admission-count">0</span></div><div id="kcml-admission-list"></div></section><div class="kcml-panel-tabs"><button type="button" class="active" data-kcml-panel="people">People <span id="kcml-people-count">1</span></button><button type="button" data-kcml-panel="chat">In-call messages</button></div><section id="kcml-people-panel" class="kcml-panel-content"><b>In this meeting</b><div id="kcml-people-list"><p class="kcml-panel-empty">You are joining the room…</p></div></section><section id="kcml-chat-panel" class="kcml-panel-content" hidden><b>Meeting chat</b><div id="kcml-chat-log" aria-live="polite"><p>Messages are visible to everyone in this meeting.</p></div><form id="kcml-chat-form"><input id="kcml-chat-input" maxlength="1000" placeholder="Send a message to everyone" autocomplete="off"><button type="submit" aria-label="Send message">➤</button></form></section></aside></div><footer class="kcml-controls"><section class="kcml-control-card"><div class="kcml-control-heading"><b>Meeting controls</b><small>Manage your camera, microphone and presentation</small></div><div class="kcml-control-actions"><button data-kcml-mic class="'+(!audioEnabled?'is-off':'')+'" aria-label="'+(audioEnabled?'Mute microphone':'Turn microphone on')+'"><span>🎙</span><b>'+(audioEnabled?'Mute mic':'Mic off')+'</b><small>'+(audioEnabled?'Microphone is on':'Microphone is off')+'</small></button><button data-kcml-camera class="'+(!videoEnabled?'is-off':'')+'" aria-label="'+(videoEnabled?'Turn camera off':'Turn camera on')+'"><span>▣</span><b>'+(videoEnabled?'Turn camera off':'Video off')+'</b><small>'+(videoEnabled?'Camera is on':'Camera is off')+'</small></button><button data-kcml-screen aria-label="Share screen"><span>▧</span><b>Share screen</b><small>Present your screen</small></button><button type="button" data-kcml-copy class="kcml-share-card"><span>↗</span><b>Share invite link</b><small>Copy or send the meeting link</small></button></div></section><div class="kcml-call-actions"><button type="button" data-kcml-panel="people"><span>♙</span><small>People</small></button><button type="button" data-kcml-panel="chat"><span>▤</span><small>Chat</small></button><button data-kcml-leave class="kcml-leave"><span>☎</span><small>' + (isHost ? 'End meeting' : 'Leave call') + '</small></button></div></footer>');
     const grid = $("#kcml-grid");
     room.on(RoomEvent.TrackSubscribed, (track, publication, participant) => tile(participant, track, false, publication));
     room.on(RoomEvent.TrackUnsubscribed, track => removeTrack(track));
@@ -164,6 +213,8 @@
     if (!grid.children.length) grid.innerHTML = '<div class="kcml-connecting">You are first in the room. Share the code to invite your crew.</div>';
     $("#kcml-grid")?.classList.add("ready");
     renderPeople();
+    startAdmissionPolling();
+    $("#kcMeetLiveRoot").addEventListener("click",async event=>{const admit=event.target.closest("[data-kcml-admit]"),reject=event.target.closest("[data-kcml-reject]");if(!admit&&!reject)return;const button=admit||reject;button.disabled=true;try{await meetAction(admit?"admit":"reject",{code:activeCode,request_id:button.dataset.kcmlAdmit||button.dataset.kcmlReject});await refreshAdmissionRequests();}catch(error){showError(error.message||"Could not update the waiting-room request.");button.disabled=false;}});
     $("#kcMeetLiveRoot").querySelectorAll("[data-kcml-panel]").forEach(button=>button.addEventListener("click",()=>{const panel=button.dataset.kcmlPanel;const people=$("#kcml-people-panel"),chat=$("#kcml-chat-panel");if(people)people.hidden=panel!=="people";if(chat)chat.hidden=panel!=="chat";$("#kcMeetLiveRoot").querySelectorAll("[data-kcml-panel]").forEach(b=>b.classList.toggle("active",b.dataset.kcmlPanel===panel));}));
     $("#kcMeetLiveRoot").querySelector("#kcml-chat-form").onsubmit = async e => {
       e.preventDefault();
@@ -188,6 +239,7 @@
     };
   }
   async function closeRoom(disconnect = true) {
+    stopAdmissionPolling();
     const old = room; room = null;
     if (old && disconnect) { try { await old.disconnect(); } catch {} }
     isHost = false; activeCode = ""; activeTitle = "";
@@ -210,12 +262,23 @@
         if (!code) throw new Error("Enter a meeting code to continue.");
         const setup=await prejoinDialog({code});
         if(!setup)return;
+        const request=await meetAction("request",{code});
+        if(request.status!=="approved"){const admitted=await showWaitingRoom(code);if(!admitted)return;}
         await connect("join", { code, ...setup });
       }
     } catch (error) {
       await showAppError(error?.message || "KC Meet could not start. Please try again.");
     } finally { button.dataset.busy = "0"; button.disabled = false; }
   }, true);
+  document.addEventListener("click",async event=>{
+    const schedule=event.target.closest("[data-kc-meet-schedule]");if(schedule){event.preventDefault();scheduleDialog();return;}
+    const start=event.target.closest("[data-kcml-start]");
+    if(start){const code=start.dataset.kcmlStart;start.disabled=true;try{const setup=await prejoinDialog({code});if(!setup){start.disabled=false;return;}const data=await meetAction("start",{code});await connect("start",{code,...setup,preissued:data});}catch(error){await showAppError(error.message||"Could not start the scheduled meeting.");start.disabled=false;}return;}
+    const copy=event.target.closest("[data-kcml-copy-code]");
+    if(copy){const url=new URL(window.location.href);url.searchParams.set("kc_meet",copy.dataset.kcmlCopyCode);try{if(navigator.share)await navigator.share({title:"KC Meet invitation",url:url.toString()});else{await navigator.clipboard.writeText(url.toString());showError("Meeting invitation link copied.");}}catch(err){if(err?.name!=="AbortError")showError("Could not share the meeting link.");}return;}
+  });
+  const scheduledObserver=new MutationObserver(()=>{if(document.querySelector("#kcMeetScheduledEvents,#kcMeetEventsScheduled"))loadScheduledMeetings();});
+  if(document.body)scheduledObserver.observe(document.body,{childList:true,subtree:true});
   document.addEventListener("keydown", event => { if (event.key === "Escape" && $("#kcMeetLiveRoot .kcml-dialog")) closeRoom(); });
   window.addEventListener("beforeunload", () => { if (room) room.disconnect(); });
   const inviteCode=new URLSearchParams(window.location.search).get("kc_meet");
