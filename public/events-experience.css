@@ -260,3 +260,10 @@
 .kce-nightpulse .kce-kc-meet-tile .kce-kc-meet-copy>span,.kce-kc-meet-copy>span{font-size:11px!important;line-height:1.45;color:#aeb2b3!important;letter-spacing:0!important;font-weight:500!important}
 .kce-kc-meet-arrow{position:relative;z-index:1;display:grid!important;place-items:center;flex:0 0 40px;width:40px;height:40px;border:1px solid rgba(255,152,119,.25);border-radius:13px;background:rgba(255,152,119,.09);color:#ff9877!important;font-size:19px!important;letter-spacing:0!important}
 @media(max-width:640px){.kce-nightpulse .kce-kc-meet-tile,.kce-kc-meet-tile{min-height:104px;margin:0 0 23px;padding:14px!important;gap:12px!important;border-radius:19px!important}.kce-kc-meet-mark{flex-basis:54px;width:54px;height:54px;border-radius:16px;font-size:19px!important}.kce-nightpulse .kce-kc-meet-tile .kce-kc-meet-copy>b,.kce-kc-meet-copy>b{font-size:17px!important}.kce-kc-meet-arrow{flex-basis:36px;width:36px;height:36px}}
+
+
+/* Specificity guard for legacy event-tile span rules. */
+.kce-nightpulse .kce-kc-meet-tile>.kce-kc-meet-mark{font-size:21px!important;color:#ff9877!important;letter-spacing:-.06em!important;font-weight:900!important}
+.kce-nightpulse .kce-kc-meet-tile>.kce-kc-meet-copy{display:grid!important;gap:5px!important;flex:1;min-width:0;align-items:start}
+.kce-nightpulse .kce-kc-meet-tile>.kce-kc-meet-arrow{display:grid!important;place-items:center;flex:0 0 40px;width:40px;height:40px;font-size:19px!important;letter-spacing:0!important;color:#ff9877!important;font-weight:700!important}
+@media(max-width:640px){.kce-nightpulse .kce-kc-meet-tile>.kce-kc-meet-mark{font-size:19px!important}.kce-nightpulse .kce-kc-meet-tile>.kce-kc-meet-arrow{flex-basis:36px;width:36px;height:36px}}
