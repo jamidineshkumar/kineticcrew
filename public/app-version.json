@@ -1,6 +1,6 @@
 {
-  "version": "1.6.71",
+  "version": "1.6.72",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T01:04:00+05:30",
-  "release_notes": "Add KC Voice with a minimal Hey KC wake-word experience and App Settings controls."
+  "updated_at": "2026-11-23T02:00:00+05:30",
+  "release_notes": "Upgrade KC Voice with automatic English, Hindi and Telugu recognition, conversational action flows, and role-checked event, announcement and attendance controls."
 }
