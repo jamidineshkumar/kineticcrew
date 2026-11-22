@@ -1,6 +1,6 @@
 {
-  "version": "1.6.70",
+  "version": "1.6.73",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T01:10:00+05:30",
-  "release_notes": "Remove the Recommended for you event discovery section from the Events page."
+  "updated_at": "2026-11-23T02:45:00+05:30",
+  "release_notes": "Add a permanent KC Voice entry in App Settings and correct featured-carousel artwork sizing without changing the official crew logo."
 }
