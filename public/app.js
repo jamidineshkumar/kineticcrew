@@ -1537,6 +1537,17 @@ function kcApplyCollectionPagination(root){
   });
  });
 }
+document.addEventListener('click',event=>{
+ const button=event.target.closest('[data-kc-pagination-control]');
+ if(!button)return;
+ event.preventDefault();
+ const list=button.previousElementSibling,selector=button.dataset.kcPaginationList||'';
+ if(!list||!selector||!list.matches(selector))return;
+ const items=[...list.children].filter(node=>!node.matches('[data-kc-pagination-control]'));
+ const current=Math.max(6,Number(list.dataset.kcPageSize||6));
+ list.dataset.kcPageSize=String(Math.min(items.length,current+6));
+ kcApplyCollectionPagination(button.closest('#app')||document.getElementById('app'));
+});
 function kcOpenFeaturePage(index){
  const menu=$('#app [data-kc-feature-navigation]');const panels=[...document.querySelectorAll('#app [data-kc-feature-panel]')];
  if(!menu||!panels.length)return;
