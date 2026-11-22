@@ -103,3 +103,15 @@
  .kcml-scheduled-grid{grid-template-columns:1fr}
 }
 @media(max-width:480px){.kc-meet-schedule-dates{grid-template-columns:1fr}.kcml-control-actions button>small{display:none}.kcml-control-actions button{min-height:54px}}
+
+.kc-meet-invite-options{display:grid;gap:10px;padding:12px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.025)}
+.kc-meet-invite-options[hidden],.kc-meet-recipient-picker[hidden]{display:none!important}
+.kc-meet-recipient-picker{display:grid;gap:8px;padding:10px;border-radius:12px;background:rgba(0,0,0,.18)}
+.kc-meet-recipient-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.kc-meet-recipient-head b{font-size:11px}.kc-meet-recipient-head small{font-size:9px;color:#aeb5b9}
+.kc-meet-recipient-list{display:grid;gap:6px;max-height:210px;overflow:auto}
+.kc-meet-recipient-option{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid rgba(255,255,255,.08);border-radius:10px;background:rgba(255,255,255,.035);cursor:pointer}
+.kc-meet-recipient-option input{width:16px;height:16px;accent-color:#f18f70;flex:0 0 auto}
+.kc-meet-recipient-option span{display:grid;gap:2px}.kc-meet-recipient-option b{font-size:11px}.kc-meet-recipient-option small{font-size:9px;color:#aeb5b9}
+.kcml-scheduled-actions button.danger{background:rgba(236,85,85,.13);border-color:rgba(236,85,85,.32);color:#ff9b9b}
+.kc-meet-delete-confirm{width:min(100%,430px)!important}
+.kc-meet-delete-confirm .kc-confirm-actions button.primary{background:linear-gradient(120deg,#d94e4e,#f07867);color:#1b1010}
