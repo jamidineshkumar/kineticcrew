@@ -1,0 +1,46 @@
+/* Stabilize the 3D member-card flip on mobile browsers; prevent GPU backface bleed/flash. */
+.kc-profile-flip-shell{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  background:#17191d!important;
+  border-radius:30px!important;
+  -webkit-perspective:1500px!important;
+  perspective:1500px!important;
+  -webkit-transform:translateZ(0);
+}
+.kc-profile-flip-inner{
+  position:relative!important;
+  isolation:isolate!important;
+  background:#17191d!important;
+  -webkit-transform-style:preserve-3d!important;
+  transform-style:preserve-3d!important;
+  -webkit-backface-visibility:hidden!important;
+  backface-visibility:hidden!important;
+  will-change:transform;
+}
+.kc-profile-flip-shell .kc-liquid-profile-card,
+.kc-profile-flip-shell .kc-profile-card-back{
+  background-color:#191b1f!important;
+  -webkit-backface-visibility:hidden!important;
+  backface-visibility:hidden!important;
+  -webkit-transform-style:preserve-3d!important;
+  transform-style:preserve-3d!important;
+}
+.kc-profile-flip-shell .kc-liquid-profile-card{
+  transform:translateZ(1px);
+  -webkit-transform:translateZ(1px);
+}
+.kc-profile-flip-shell .kc-profile-card-back{
+  transform:rotateY(180deg) translateZ(1px)!important;
+  -webkit-transform:rotateY(180deg) translateZ(1px)!important;
+  isolation:isolate!important;
+}
+.kc-profile-flip-shell .kc-profile-card-back:before,
+.kc-profile-flip-shell .kc-profile-card-back:after{backface-visibility:hidden;-webkit-backface-visibility:hidden}
+@media(max-width:640px){
+  .kc-profile-flip-shell{border-radius:25px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .kc-profile-flip-inner{will-change:auto}
+}
