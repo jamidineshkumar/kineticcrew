@@ -1,6 +1,6 @@
 {
-  "version": "1.6.66",
+  "version": "1.6.67",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T00:30:00+05:30",
-  "release_notes": "Fix Super Admin brand destination validation and refresh destination-specific logo updates."
+  "updated_at": "2026-11-23T00:40:00+05:30",
+  "release_notes": "KC Meet host recovery: active scheduled meetings can be resumed if the LiveKit room was not created, and hosts bypass participant approval on their own invite."
 }
