@@ -231,10 +231,11 @@
     const openInvite=()=>{
       if(inviteOpened)return;
       inviteOpened=true;
-      document.dispatchEvent(new CustomEvent("kc:navigate",{detail:{view:"meet"}}));
-      if(prefill())return;
-      const inviteObserver=new MutationObserver(()=>{if(prefill())inviteObserver.disconnect();});
+      const inviteObserver=new MutationObserver(()=>prefill());
       inviteObserver.observe(document.body,{childList:true,subtree:true});
+      document.dispatchEvent(new CustomEvent("kc:navigate",{detail:{view:"meet"}}));
+      prefill();
+      setTimeout(()=>inviteObserver.disconnect(),8000);
     };
     client?.auth.getSession().then(({data})=>{if(data?.session)openInvite();}).catch(()=>{});
     client?.auth.onAuthStateChange((_event,session)=>{if(session?.user)openInvite();});
