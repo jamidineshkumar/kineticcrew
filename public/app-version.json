@@ -1,6 +1,6 @@
 {
-  "version": "1.6.59",
+  "version": "1.6.60",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-19T13:45:00+05:30",
-  "release_notes": "Scoped all biometric authentication and four-digit mPIN controls exclusively to Profile History. No app-wide biometric unlock or mPIN lock. Device & Session contains cache maintenance only."
+  "updated_at": "2026-11-22T22:55:00+05:30",
+  "release_notes": "Event image uploader now supports square (1:1), landscape (16:9) and wide (3:1) crop formats."
 }
