@@ -1,85 +1,109 @@
-/* Compact glass-overlay featured carousel — mobile home only.
-   Keeps the existing slide data, links, swipe/auto-rotation and desktop presentation. */
+/* Kinetic Crew — compact horizontal image banner with a bottom-right glass overlay.
+   Keep slide data, click targets, swipe gestures and automatic rotation in app.js. */
 @media (max-width: 900px) {
   body.kc-home-screen .kc-home-featured {
     position: relative !important;
     isolation: isolate !important;
-    min-height: 0 !important;
-    height: auto !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    height: 232px !important;
+    min-height: 232px !important;
+    max-height: 232px !important;
+    margin: 14px 0 20px !important;
     padding: 0 !important;
-    margin: 14px 0 18px !important;
     overflow: hidden !important;
-    border: 1px solid rgba(224, 190, 255, .28) !important;
+    border: 1px solid rgba(224,190,255,.28) !important;
     border-radius: 25px !important;
-    background:
-      radial-gradient(ellipse at 8% 12%, rgba(255, 76, 175, .17), transparent 42%),
-      radial-gradient(ellipse at 92% 88%, rgba(27, 218, 231, .15), transparent 46%),
-      rgba(24, 22, 31, .58) !important;
+    background: linear-gradient(135deg,#28232d,#11171b) !important;
     box-shadow: 0 14px 38px rgba(0,0,0,.28), 0 0 24px rgba(186,93,255,.10),
       inset 0 1px 0 rgba(255,255,255,.13) !important;
-    backdrop-filter: blur(24px) saturate(145%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(145%) !important;
+    backdrop-filter: blur(20px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
+  }
+
+  body.kc-home-screen .kc-home-featured::before,
+  body.kc-home-screen .kc-home-featured::after {
+    content: none !important;
+    display: none !important;
   }
 
   body.kc-home-screen .kc-home-featured-track {
+    position: relative !important;
     display: grid !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    width: 100% !important;
+    height: 100% !important;
     min-height: 0 !important;
-    border-radius: inherit !important;
     overflow: hidden !important;
+    perspective: none !important;
+    transform: none !important;
   }
 
-  body.kc-home-screen .kc-home-feature-slide {
-    display: grid !important;
-    grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr) !important;
-    grid-template-rows: minmax(174px, auto) !important;
-    align-items: center !important;
-    gap: 0 !important;
-    min-width: 0 !important;
-    min-height: 174px !important;
-    padding: 12px 13px 25px !important;
+  body.kc-home-screen .kc-home-feature-slide,
+  body.kc-home-screen .kc-home-feature-slide.is-active,
+  body.kc-home-screen .kc-home-feature-slide.is-prev,
+  body.kc-home-screen .kc-home-feature-slide.is-next,
+  body.kc-home-screen .kc-home-feature-slide.is-hidden-side {
+    grid-area: 1 / 1 !important;
+    position: relative !important;
+    inset: auto !important;
+    left: auto !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    align-items: stretch !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    height: 232px !important;
+    min-height: 232px !important;
+    max-height: 232px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
     border-radius: inherit !important;
     overflow: hidden !important;
-    background:
-      radial-gradient(ellipse at 92% 18%, rgba(255, 49, 169, .16), transparent 48%),
-      radial-gradient(ellipse at 72% 90%, rgba(18, 210, 221, .13), transparent 48%),
-      linear-gradient(135deg, rgba(30,27,37,.90), rgba(13,16,22,.86)) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: none !important;
+    transition: opacity .35s ease, visibility .35s ease !important;
+    background: linear-gradient(135deg,#29232e,#11191d) !important;
   }
 
-  /* Keep the slide background decorative; render the actual artwork as a contained square. */
   body.kc-home-screen .kc-home-feature-slide::before {
-    inset: 0 !important;
+    content: "" !important;
+    position: absolute !important;
     z-index: 0 !important;
-    background:
-      linear-gradient(110deg, rgba(255,255,255,.035), transparent 48%),
-      radial-gradient(ellipse at 50% 50%, rgba(255,255,255,.025), transparent 70%) !important;
+    inset: 0 !important;
+    display: block !important;
+    background-image:
+      linear-gradient(180deg,rgba(7,8,12,.10) 0%,rgba(7,8,12,.16) 38%,rgba(7,8,12,.88) 100%),
+      var(--kc-home-feature-image,
+        radial-gradient(ellipse at 20% 15%,rgba(255,83,176,.25),transparent 45%),
+        radial-gradient(ellipse at 85% 80%,rgba(24,210,220,.18),transparent 48%),
+        linear-gradient(135deg,#29232e,#11191d)) !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
     opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
   }
 
   body.kc-home-screen .kc-home-feature-slide::after {
-    content: "" !important;
-    position: absolute !important;
-    z-index: 1 !important;
-    left: 13px !important;
-    top: 50% !important;
-    right: auto !important;
-    bottom: auto !important;
-    width: min(40%, 164px) !important;
-    aspect-ratio: 1 / 1 !important;
-    height: auto !important;
-    transform: translateY(-50%) !important;
-    border: 1px solid rgba(255,255,255,.22) !important;
-    border-radius: 15px !important;
-    background-color: rgba(5,7,12,.28) !important;
-    background-image: var(--kc-home-feature-image) !important;
-    background-repeat: no-repeat !important;
-    background-position: center !important;
-    background-size: contain !important;
-    box-shadow: 0 8px 22px rgba(0,0,0,.30), 0 0 16px rgba(255,65,180,.12) !important;
-    pointer-events: none !important;
+    content: none !important;
+    display: none !important;
   }
 
-  body.kc-home-screen .kc-home-feature-slide:not([style*="--kc-home-feature-image"])::after {
-    display: none !important;
+  body.kc-home-screen .kc-home-feature-slide.is-active {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    z-index: 2 !important;
   }
 
   body.kc-home-screen .kc-home-featured-art {
@@ -87,45 +111,52 @@
     z-index: 4 !important;
     top: 12px !important;
     right: 12px !important;
-    left: auto !important;
-    width: 55% !important;
-    height: auto !important;
-    min-height: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    left: 12px !important;
     display: flex !important;
     align-items: flex-start !important;
-    justify-content: flex-end !important;
-    gap: 0 !important;
+    justify-content: space-between !important;
+    box-sizing: border-box !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 8px !important;
+    overflow: visible !important;
     pointer-events: none !important;
   }
 
   body.kc-home-screen .kc-home-featured-art::before {
     content: "🔥" !important;
     position: absolute !important;
-    left: calc(-100% - 23px) !important;
-    top: 8px !important;
+    top: 0 !important;
+    right: 0 !important;
+    left: auto !important;
     display: grid !important;
     place-items: center !important;
-    width: 36px !important;
-    height: 36px !important;
+    box-sizing: border-box !important;
+    width: 34px !important;
+    height: 34px !important;
     border: 1px solid rgba(255,151,105,.72) !important;
     border-radius: 50% !important;
-    background: linear-gradient(145deg, rgba(255,126,82,.28), rgba(30,18,28,.62)) !important;
-    box-shadow: 0 0 16px rgba(255,103,63,.28), inset 0 1px 0 rgba(255,255,255,.20) !important;
-    font-size: 20px !important;
+    background: linear-gradient(145deg,rgba(255,126,82,.30),rgba(30,18,28,.70)) !important;
+    box-shadow: 0 0 16px rgba(255,103,63,.25),inset 0 1px 0 rgba(255,255,255,.20) !important;
+    font-size: 19px !important;
     line-height: 1 !important;
     animation: kcFeaturedFlamePulse 1.9s ease-in-out infinite !important;
   }
 
   body.kc-home-screen .kc-home-featured-kicker {
     display: inline-flex !important;
-    max-width: 100% !important;
-    padding: 7px 9px !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+    max-width: calc(100% - 46px) !important;
+    min-height: 29px !important;
+    padding: 7px 10px !important;
     border: 1px solid rgba(255,255,255,.27) !important;
     border-radius: 999px !important;
-    background: rgba(8,9,14,.30) !important;
-    color: rgba(255,255,255,.92) !important;
+    background: rgba(8,9,14,.42) !important;
+    color: rgba(255,255,255,.94) !important;
     font-size: 8px !important;
     line-height: 1.15 !important;
     letter-spacing: .12em !important;
@@ -142,108 +173,171 @@
   }
 
   body.kc-home-screen .kc-home-featured-glass {
-    grid-column: 2 !important;
-    grid-row: 1 !important;
-    align-self: center !important;
-    min-width: 0 !important;
-    margin: 28px 0 0 7px !important;
-    padding: 8px 2px 2px 0 !important;
+    position: absolute !important;
+    z-index: 5 !important;
+    right: 12px !important;
+    bottom: 12px !important;
+    left: auto !important;
     display: grid !important;
-    gap: 6px !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    gap: 5px !important;
+    box-sizing: border-box !important;
+    width: min(68%,420px) !important;
+    max-width: calc(100% - 112px) !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 11px 13px !important;
+    border: 1px solid rgba(255,255,255,.23) !important;
+    border-radius: 17px !important;
+    background: linear-gradient(145deg,rgba(25,26,32,.76),rgba(13,16,22,.88)) !important;
+    box-shadow: 0 10px 26px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.12) !important;
+    color: #fff !important;
+    text-align: left !important;
+    backdrop-filter: blur(22px) saturate(145%) !important;
+    -webkit-backdrop-filter: blur(22px) saturate(145%) !important;
   }
 
   body.kc-home-screen .kc-home-featured-label {
-    color: #ffad91 !important;
-    font-size: 8px !important;
+    display: block !important;
+    min-width: 0 !important;
+    color: #ffb39a !important;
+    font-size: 7px !important;
     line-height: 1.2 !important;
-    letter-spacing: .11em !important;
+    letter-spacing: .12em !important;
   }
 
   body.kc-home-screen .kc-home-featured-glass > b {
     display: -webkit-box !important;
     -webkit-box-orient: vertical !important;
-    -webkit-line-clamp: 2 !important;
+    -webkit-line-clamp: 1 !important;
+    min-width: 0 !important;
     overflow: hidden !important;
-    font-size: clamp(17px, 4.8vw, 22px) !important;
+    color: #fff !important;
+    font-size: clamp(17px,4.7vw,21px) !important;
     line-height: 1.12 !important;
     letter-spacing: -.035em !important;
+    overflow-wrap: anywhere !important;
   }
 
   body.kc-home-screen .kc-home-featured-glass > small {
     display: -webkit-box !important;
     -webkit-box-orient: vertical !important;
     -webkit-line-clamp: 2 !important;
+    min-width: 0 !important;
     overflow: hidden !important;
-    font-size: 10px !important;
-    line-height: 1.35 !important;
+    color: rgba(239,240,245,.84) !important;
+    font-size: 9px !important;
+    line-height: 1.3 !important;
+    overflow-wrap: anywhere !important;
   }
 
   body.kc-home-screen .kc-home-featured-glass > button {
     justify-self: start !important;
-    min-height: 34px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    min-height: 31px !important;
     max-width: 100% !important;
     margin-top: 2px !important;
-    padding: 7px 11px !important;
-    gap: 7px !important;
-    font-size: 10px !important;
-    white-space: nowrap !important;
+    padding: 6px 10px !important;
+    border: 1px solid rgba(255,255,255,.25) !important;
     border-radius: 999px !important;
-    background: linear-gradient(145deg, rgba(255,255,255,.17), rgba(255,255,255,.07)) !important;
-    border-color: rgba(255,255,255,.24) !important;
-    backdrop-filter: blur(14px) !important;
-    -webkit-backdrop-filter: blur(14px) !important;
+    background: linear-gradient(145deg,rgba(255,255,255,.17),rgba(255,255,255,.07)) !important;
+    color: #fff !important;
+    font-size: 9px !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+
+  body.kc-home-screen .kc-home-featured-glass > button i {
+    color: #ff9a70 !important;
+    font-style: normal !important;
   }
 
   body.kc-home-screen .kc-home-featured-dots {
-    z-index: 6 !important;
-    right: 14px !important;
-    bottom: 9px !important;
+    position: absolute !important;
+    z-index: 7 !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: 19px !important;
+    left: 15px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
     gap: 6px !important;
+    width: auto !important;
+    height: 8px !important;
+    min-height: 8px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    pointer-events: auto !important;
   }
 
   body.kc-home-screen .kc-home-featured-dots button {
+    display: block !important;
+    flex: 0 0 6px !important;
     width: 6px !important;
     height: 6px !important;
     min-width: 6px !important;
     min-height: 6px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: rgba(255,255,255,.48) !important;
+    box-shadow: none !important;
+    transform: none !important;
   }
 
   body.kc-home-screen .kc-home-featured-dots button.active {
+    flex-basis: 18px !important;
     width: 18px !important;
+    height: 6px !important;
+    background: #ff956f !important;
   }
 
   body.kc-home-screen .kc-home-feature-slide:not([style*="--kc-home-feature-image"]) .kc-home-featured-glass {
-    grid-column: 1 / -1 !important;
-    margin: 12px 4px 0 !important;
-    padding: 8px 4px !important;
+    right: 12px !important;
+    left: 12px !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+
+  body.kc-home-screen .kc-home-feature-slide:not([style*="--kc-home-feature-image"]) .kc-home-featured-dots {
+    bottom: 19px !important;
   }
 
   @keyframes kcFeaturedFlamePulse {
-    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,125,53,.55)); }
-    50% { transform: scale(1.09); filter: drop-shadow(0 0 7px rgba(255,125,53,.82)); }
+    0%,100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,125,53,.55)); }
+    50% { transform: scale(1.08); filter: drop-shadow(0 0 7px rgba(255,125,53,.82)); }
   }
 }
 
-@media (max-width: 360px) {
-  body.kc-home-screen .kc-home-feature-slide {
-    grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr) !important;
-    min-height: 164px !important;
-    grid-template-rows: minmax(164px, auto) !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
+@media (max-width: 380px) {
+  body.kc-home-screen .kc-home-featured,
+  body.kc-home-screen .kc-home-featured-track,
+  body.kc-home-screen .kc-home-feature-slide,
+  body.kc-home-screen .kc-home-feature-slide.is-active,
+  body.kc-home-screen .kc-home-feature-slide.is-prev,
+  body.kc-home-screen .kc-home-feature-slide.is-next,
+  body.kc-home-screen .kc-home-feature-slide.is-hidden-side {
+    height: 220px !important;
+    min-height: 220px !important;
+    max-height: 220px !important;
   }
-  body.kc-home-screen .kc-home-feature-slide::after { left: 10px !important; width: min(39%, 136px) !important; }
-  body.kc-home-screen .kc-home-featured-art { width: 58% !important; right: 9px !important; }
-  body.kc-home-screen .kc-home-featured-art::before { left: calc(-100% - 18px) !important; }
-  body.kc-home-screen .kc-home-featured-glass { margin-left: 5px !important; }
+  body.kc-home-screen .kc-home-featured-glass {
+    max-width: calc(100% - 102px) !important;
+    padding: 9px 10px !important;
+  }
+  body.kc-home-screen .kc-home-featured-dots {
+    left: 12px !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   body.kc-home-screen .kc-home-featured-art::before { animation: none !important; }
+  body.kc-home-screen .kc-home-feature-slide { transition: none !important; }
 }
