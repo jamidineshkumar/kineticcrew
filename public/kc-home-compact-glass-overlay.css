@@ -1,11 +1,9 @@
-/* Kinetic Crew — compact horizontal image banner with a bottom-right glass overlay.
-   Keep slide data, click targets, swipe gestures and automatic rotation in app.js. */
+/* KC homepage carousel — restore the square-artwork composition on mobile.
+   Only an event with an updated timestamp renders the UPDATED flame in app.js. */
 @media (max-width: 900px) {
   body.kc-home-screen .kc-home-featured {
     position: relative !important;
-    isolation: isolate !important;
     display: block !important;
-    box-sizing: border-box !important;
     width: 100% !important;
     height: 232px !important;
     min-height: 232px !important;
@@ -13,21 +11,12 @@
     margin: 14px 0 20px !important;
     padding: 0 !important;
     overflow: hidden !important;
-    border: 1px solid rgba(224,190,255,.28) !important;
-    border-radius: 25px !important;
-    background: linear-gradient(135deg,#28232d,#11171b) !important;
-    box-shadow: 0 14px 38px rgba(0,0,0,.28), 0 0 24px rgba(186,93,255,.10),
-      inset 0 1px 0 rgba(255,255,255,.13) !important;
-    backdrop-filter: blur(20px) saturate(140%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
+    isolation: isolate !important;
+    border: 1px solid rgba(224,190,255,.22) !important;
+    border-radius: 24px !important;
+    background: linear-gradient(135deg,#211e29,#101719) !important;
+    box-shadow: 0 12px 30px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.10) !important;
   }
-
-  body.kc-home-screen .kc-home-featured::before,
-  body.kc-home-screen .kc-home-featured::after {
-    content: none !important;
-    display: none !important;
-  }
-
   body.kc-home-screen .kc-home-featured-track {
     position: relative !important;
     display: grid !important;
@@ -36,246 +25,251 @@
     height: 100% !important;
     min-height: 0 !important;
     overflow: hidden !important;
-    perspective: none !important;
-    transform: none !important;
   }
-
-  body.kc-home-screen .kc-home-feature-slide,
-  body.kc-home-screen .kc-home-feature-slide.is-active,
-  body.kc-home-screen .kc-home-feature-slide.is-prev,
-  body.kc-home-screen .kc-home-feature-slide.is-next,
-  body.kc-home-screen .kc-home-feature-slide.is-hidden-side {
+  body.kc-home-screen .kc-home-feature-slide {
     grid-area: 1 / 1 !important;
     position: relative !important;
-    inset: auto !important;
-    left: auto !important;
-    top: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-end !important;
-    align-items: stretch !important;
-    box-sizing: border-box !important;
+    display: grid !important;
+    grid-template-columns: minmax(0,.88fr) minmax(0,1.12fr) !important;
+    grid-template-rows: minmax(232px,1fr) !important;
+    align-items: center !important;
+    gap: 0 !important;
     width: 100% !important;
     height: 232px !important;
+    min-width: 0 !important;
     min-height: 232px !important;
     max-height: 232px !important;
     margin: 0 !important;
-    padding: 0 !important;
-    border: 0 !important;
-    border-radius: inherit !important;
+    padding: 10px 13px 25px !important;
+    box-sizing: border-box !important;
     overflow: hidden !important;
+    border-radius: inherit !important;
+    background: linear-gradient(135deg,rgba(33,29,40,.96),rgba(13,18,23,.96)) !important;
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
-    transform: none !important;
-    transition: opacity .35s ease, visibility .35s ease !important;
-    background: linear-gradient(135deg,#29232e,#11191d) !important;
+    transform: translate3d(12px,0,0) !important;
+    transition: opacity .38s ease,transform .42s ease,visibility .38s ease !important;
   }
-
-  body.kc-home-screen .kc-home-feature-slide::before {
-    content: "" !important;
-    position: absolute !important;
-    z-index: 0 !important;
-    inset: 0 !important;
-    display: block !important;
-    background-image:
-      linear-gradient(180deg,rgba(7,8,12,.10) 0%,rgba(7,8,12,.16) 38%,rgba(7,8,12,.88) 100%),
-      var(--kc-home-feature-image,
-        radial-gradient(ellipse at 20% 15%,rgba(255,83,176,.25),transparent 45%),
-        radial-gradient(ellipse at 85% 80%,rgba(24,210,220,.18),transparent 48%),
-        linear-gradient(135deg,#29232e,#11191d)) !important;
-    background-size: cover !important;
-    background-position: center center !important;
-    background-repeat: no-repeat !important;
-    opacity: 1 !important;
-    filter: none !important;
-    transform: none !important;
-  }
-
-  body.kc-home-screen .kc-home-feature-slide::after {
-    content: none !important;
-    display: none !important;
-  }
-
   body.kc-home-screen .kc-home-feature-slide.is-active {
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: auto !important;
+    transform: translate3d(0,0,0) !important;
     z-index: 2 !important;
   }
-
+  /* Soft ambient fill behind the square, not another sharp image layer. */
+  body.kc-home-screen .kc-home-feature-slide::before {
+    content: "" !important;
+    position: absolute !important;
+    z-index: 0 !important;
+    inset: -12px !important;
+    display: block !important;
+    background-image:
+      linear-gradient(110deg,rgba(8,10,14,.46),rgba(8,10,14,.72)),
+      var(--kc-home-feature-image,radial-gradient(ellipse at 22% 20%,rgba(255,105,160,.18),transparent 50%),radial-gradient(ellipse at 82% 80%,rgba(55,194,205,.15),transparent 52%)) !important;
+    background-size: cover !important;
+    background-position: center !important;
+    filter: blur(14px) saturate(.8) !important;
+    opacity: .72 !important;
+    transform: scale(1.06) !important;
+    pointer-events: none !important;
+  }
+  /* One crisp square artwork. Keep the complete uploaded image visible. */
+  body.kc-home-screen .kc-home-feature-slide::after {
+    content: "" !important;
+    position: absolute !important;
+    z-index: 1 !important;
+    left: 12px !important;
+    top: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    display: block !important;
+    width: min(40%,164px) !important;
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
+    transform: translateY(-50%) !important;
+    border: 1px solid rgba(255,255,255,.17) !important;
+    border-radius: 15px !important;
+    background-color: rgba(5,7,12,.30) !important;
+    background-image: var(--kc-home-feature-image) !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+    background-size: contain !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,.24) !important;
+    pointer-events: none !important;
+  }
+  body.kc-home-screen .kc-home-feature-slide:not([style*="--kc-home-feature-image"])::after {
+    display: none !important;
+    content: none !important;
+  }
+  /* The original <img> is not used here; the square pseudo-element owns the artwork. */
+  body.kc-home-screen .kc-home-feature-image {
+    display: none !important;
+  }
+  /* No generic fire pseudo-element: only the conditional UPDATED chip may contain fire. */
   body.kc-home-screen .kc-home-featured-art {
     position: absolute !important;
     z-index: 4 !important;
     top: 12px !important;
-    right: 12px !important;
     left: 12px !important;
+    right: 12px !important;
     display: flex !important;
     align-items: flex-start !important;
     justify-content: space-between !important;
-    box-sizing: border-box !important;
+    gap: 8px !important;
     width: auto !important;
     height: auto !important;
     min-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
-    gap: 8px !important;
     overflow: visible !important;
     pointer-events: none !important;
   }
-
-  body.kc-home-screen .kc-home-featured-art::before {
-    content: "🔥" !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    left: auto !important;
-    display: grid !important;
-    place-items: center !important;
-    box-sizing: border-box !important;
-    width: 34px !important;
-    height: 34px !important;
-    border: 1px solid rgba(255,151,105,.72) !important;
-    border-radius: 50% !important;
-    background: linear-gradient(145deg,rgba(255,126,82,.30),rgba(30,18,28,.70)) !important;
-    box-shadow: 0 0 16px rgba(255,103,63,.25),inset 0 1px 0 rgba(255,255,255,.20) !important;
-    font-size: 19px !important;
-    line-height: 1 !important;
-    animation: kcFeaturedFlamePulse 1.9s ease-in-out infinite !important;
+  body.kc-home-screen .kc-home-featured-art::before,
+  body.kc-home-screen .kc-home-featured-art::after {
+    content: none !important;
+    display: none !important;
+    animation: none !important;
   }
-
   body.kc-home-screen .kc-home-featured-kicker {
-    display: inline-flex !important;
-    align-items: center !important;
-    box-sizing: border-box !important;
-    max-width: calc(100% - 46px) !important;
-    min-height: 29px !important;
-    padding: 7px 10px !important;
-    border: 1px solid rgba(255,255,255,.27) !important;
-    border-radius: 999px !important;
-    background: rgba(8,9,14,.42) !important;
-    color: rgba(255,255,255,.94) !important;
+    display: block !important;
+    max-width: calc(100% - 88px) !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: rgba(255,255,255,.82) !important;
     font-size: 8px !important;
-    line-height: 1.15 !important;
-    letter-spacing: .12em !important;
-    white-space: nowrap !important;
+    line-height: 1.3 !important;
+    letter-spacing: .13em !important;
+    white-space: normal !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
-
-  body.kc-home-screen .kc-home-featured-count,
   body.kc-home-screen .kc-event-updated-chip {
-    display: none !important;
-  }
-
-  body.kc-home-screen .kc-home-featured-glass {
-    position: absolute !important;
-    z-index: 5 !important;
-    right: 12px !important;
-    bottom: 12px !important;
-    left: auto !important;
-    display: grid !important;
-    grid-template-columns: minmax(0,1fr) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    flex: 0 0 auto !important;
     gap: 5px !important;
-    box-sizing: border-box !important;
-    width: min(68%,420px) !important;
-    max-width: calc(100% - 112px) !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-    padding: 11px 13px !important;
-    border: 1px solid rgba(255,255,255,.23) !important;
-    border-radius: 17px !important;
-    background: linear-gradient(145deg,rgba(25,26,32,.76),rgba(13,16,22,.88)) !important;
-    box-shadow: 0 10px 26px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.12) !important;
-    color: #fff !important;
-    text-align: left !important;
-    backdrop-filter: blur(22px) saturate(145%) !important;
-    -webkit-backdrop-filter: blur(22px) saturate(145%) !important;
-  }
-
-  body.kc-home-screen .kc-home-featured-label {
-    display: block !important;
-    min-width: 0 !important;
-    color: #ffb39a !important;
-    font-size: 7px !important;
-    line-height: 1.2 !important;
+    margin: -2px 0 0 auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #ffb18f !important;
+    font: 700 8px/1.2 system-ui,sans-serif !important;
     letter-spacing: .12em !important;
   }
-
+  body.kc-home-screen .kc-event-updated-fire {
+    display: inline-block !important;
+    font-size: 19px !important;
+    line-height: 1 !important;
+    transform-origin: 50% 90% !important;
+    animation: kcUpdatedFlameBlaze 780ms ease-in-out infinite alternate !important;
+    filter: drop-shadow(0 0 3px rgba(255,116,50,.68)) !important;
+  }
+  @keyframes kcUpdatedFlameBlaze {
+    0% { transform: translateY(1px) rotate(-4deg) scale(.94); filter: brightness(.95) drop-shadow(0 0 2px rgba(255,110,45,.55)); }
+    45% { transform: translateY(-1px) rotate(3deg) scale(1.08); filter: brightness(1.18) drop-shadow(0 0 7px rgba(255,110,45,.92)); }
+    100% { transform: translateY(-2px) rotate(-2deg) scale(1.02); filter: brightness(1.08) drop-shadow(0 0 5px rgba(255,110,45,.78)); }
+  }
+  body.kc-home-screen .kc-home-featured-count {
+    display: none !important;
+  }
+  /* Keep event copy clean and unboxed beside the square artwork. */
+  body.kc-home-screen .kc-home-featured-glass {
+    position: relative !important;
+    z-index: 3 !important;
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    display: grid !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 22px 0 0 7px !important;
+    padding: 5px 2px 2px 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    color: #fff !important;
+  }
+  body.kc-home-screen .kc-home-featured-label {
+    color: #ffad91 !important;
+    font-size: 7px !important;
+    line-height: 1.2 !important;
+    letter-spacing: .10em !important;
+  }
   body.kc-home-screen .kc-home-featured-glass > b {
     display: -webkit-box !important;
     -webkit-box-orient: vertical !important;
-    -webkit-line-clamp: 1 !important;
+    -webkit-line-clamp: 2 !important;
     min-width: 0 !important;
     overflow: hidden !important;
     color: #fff !important;
-    font-size: clamp(17px,4.7vw,21px) !important;
+    font-size: clamp(16px,4.8vw,21px) !important;
     line-height: 1.12 !important;
     letter-spacing: -.035em !important;
     overflow-wrap: anywhere !important;
   }
-
   body.kc-home-screen .kc-home-featured-glass > small {
     display: -webkit-box !important;
     -webkit-box-orient: vertical !important;
     -webkit-line-clamp: 2 !important;
     min-width: 0 !important;
     overflow: hidden !important;
-    color: rgba(239,240,245,.84) !important;
+    color: rgba(239,240,245,.82) !important;
     font-size: 9px !important;
-    line-height: 1.3 !important;
+    line-height: 1.32 !important;
     overflow-wrap: anywhere !important;
   }
-
   body.kc-home-screen .kc-home-featured-glass > button {
     justify-self: start !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 7px !important;
-    min-height: 31px !important;
-    max-width: 100% !important;
+    gap: 6px !important;
+    min-height: 26px !important;
     margin-top: 2px !important;
-    padding: 6px 10px !important;
-    border: 1px solid rgba(255,255,255,.25) !important;
-    border-radius: 999px !important;
-    background: linear-gradient(145deg,rgba(255,255,255,.17),rgba(255,255,255,.07)) !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
     color: #fff !important;
     font-size: 9px !important;
-    line-height: 1.1 !important;
+    font-weight: 650 !important;
     white-space: nowrap !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
-
   body.kc-home-screen .kc-home-featured-glass > button i {
     color: #ff9a70 !important;
     font-style: normal !important;
   }
-
   body.kc-home-screen .kc-home-featured-dots {
     position: absolute !important;
     z-index: 7 !important;
     top: auto !important;
-    right: auto !important;
-    bottom: 19px !important;
-    left: 15px !important;
+    right: 13px !important;
+    bottom: 10px !important;
+    left: auto !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: flex-start !important;
+    justify-content: flex-end !important;
     gap: 6px !important;
-    width: auto !important;
-    height: 8px !important;
-    min-height: 8px !important;
     margin: 0 !important;
     padding: 0 !important;
     background: transparent !important;
-    pointer-events: auto !important;
   }
-
   body.kc-home-screen .kc-home-featured-dots button {
     display: block !important;
     flex: 0 0 6px !important;
@@ -287,57 +281,46 @@
     padding: 0 !important;
     border: 0 !important;
     border-radius: 999px !important;
-    background: rgba(255,255,255,.48) !important;
+    background: rgba(255,255,255,.42) !important;
     box-shadow: none !important;
+    transition: width .22s ease,background .22s ease !important;
+  }
+  body.kc-home-screen .kc-home-featured-dots button.active {
+    flex-basis: 17px !important;
+    width: 17px !important;
+    background: #ff946e !important;
+  }
+  /* Slides without artwork use the full text width without a fake square or card. */
+  body.kc-home-screen .kc-home-feature-slide:not([style*="--kc-home-feature-image"]) .kc-home-featured-glass {
+    grid-column: 1 / -1 !important;
+    margin: 24px 12px 0 !important;
+    padding: 5px 2px !important;
+  }
+  @media (max-width: 380px) {
+    body.kc-home-screen .kc-home-feature-slide {
+      grid-template-columns: minmax(0,.82fr) minmax(0,1.18fr) !important;
+      padding-left: 10px !important;
+      padding-right: 10px !important;
+    }
+    body.kc-home-screen .kc-home-feature-slide::after {
+      left: 10px !important;
+      width: min(39%,136px) !important;
+    }
+    body.kc-home-screen .kc-home-featured-art {
+      left: 10px !important;
+      right: 10px !important;
+    }
+    body.kc-home-screen .kc-home-featured-glass {
+      margin-left: 5px !important;
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.kc-home-screen .kc-event-updated-fire {
+    animation: none !important;
+  }
+  body.kc-home-screen .kc-home-feature-slide {
+    transition: none !important;
     transform: none !important;
   }
-
-  body.kc-home-screen .kc-home-featured-dots button.active {
-    flex-basis: 18px !important;
-    width: 18px !important;
-    height: 6px !important;
-    background: #ff956f !important;
-  }
-
-  body.kc-home-screen .kc-home-feature-slide:not([style*="--kc-home-feature-image"]) .kc-home-featured-glass {
-    right: 12px !important;
-    left: 12px !important;
-    width: auto !important;
-    max-width: none !important;
-  }
-
-  body.kc-home-screen .kc-home-feature-slide:not([style*="--kc-home-feature-image"]) .kc-home-featured-dots {
-    bottom: 19px !important;
-  }
-
-  @keyframes kcFeaturedFlamePulse {
-    0%,100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,125,53,.55)); }
-    50% { transform: scale(1.08); filter: drop-shadow(0 0 7px rgba(255,125,53,.82)); }
-  }
-}
-
-@media (max-width: 380px) {
-  body.kc-home-screen .kc-home-featured,
-  body.kc-home-screen .kc-home-featured-track,
-  body.kc-home-screen .kc-home-feature-slide,
-  body.kc-home-screen .kc-home-feature-slide.is-active,
-  body.kc-home-screen .kc-home-feature-slide.is-prev,
-  body.kc-home-screen .kc-home-feature-slide.is-next,
-  body.kc-home-screen .kc-home-feature-slide.is-hidden-side {
-    height: 220px !important;
-    min-height: 220px !important;
-    max-height: 220px !important;
-  }
-  body.kc-home-screen .kc-home-featured-glass {
-    max-width: calc(100% - 102px) !important;
-    padding: 9px 10px !important;
-  }
-  body.kc-home-screen .kc-home-featured-dots {
-    left: 12px !important;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  body.kc-home-screen .kc-home-featured-art::before { animation: none !important; }
-  body.kc-home-screen .kc-home-feature-slide { transition: none !important; }
 }
