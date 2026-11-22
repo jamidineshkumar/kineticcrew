@@ -111,3 +111,128 @@
     padding: 10px !important;
   }
 }
+
+
+/* Final mobile banner composition: one crisp artwork layer, with a soft blurred
+   ambient fill behind it. The pseudo-element must never repeat the sharp artwork. */
+@media (max-width: 900px) {
+  body.kc-home-screen .kc-home-feature-slide {
+    overflow: hidden !important;
+    isolation: isolate !important;
+    background: #101316 !important;
+  }
+  body.kc-home-screen .kc-home-feature-slide::before {
+    z-index: 0 !important;
+    inset: -10px !important;
+    background-image:
+      linear-gradient(180deg,rgba(7,8,12,.16),rgba(7,8,12,.68)),
+      var(--kc-home-feature-image),
+      radial-gradient(ellipse at 18% 18%,rgba(255,89,171,.18),transparent 48%),
+      radial-gradient(ellipse at 86% 86%,rgba(49,203,215,.14),transparent 50%) !important;
+    background-size: cover, cover, cover, cover !important;
+    background-position: center !important;
+    filter: blur(13px) brightness(.48) saturate(.78) !important;
+    opacity: .9 !important;
+    transform: scale(1.06) !important;
+  }
+  body.kc-home-screen .kc-home-feature-image {
+    z-index: 1 !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 8px 8px 44px !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    border: 0 !important;
+    outline: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    filter: none !important;
+  }
+  body.kc-home-screen .kc-home-featured-art,
+  body.kc-home-screen .kc-home-featured-glass {
+    z-index: 4 !important;
+  }
+  body.kc-home-screen .kc-home-featured-glass {
+    width: min(58%, 330px) !important;
+    max-width: calc(100% - 104px) !important;
+    right: 12px !important;
+    bottom: 12px !important;
+    padding: 10px 12px !important;
+    gap: 5px !important;
+    border: 1px solid rgba(255,255,255,.18) !important;
+    border-radius: 16px !important;
+    background: linear-gradient(145deg,rgba(23,24,31,.80),rgba(11,15,19,.91)) !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.10) !important;
+    backdrop-filter: blur(20px) saturate(135%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(135%) !important;
+  }
+  body.kc-home-screen .kc-home-featured-kicker {
+    background: rgba(12,13,18,.56) !important;
+    border-color: rgba(255,255,255,.20) !important;
+  }
+  body.kc-home-screen .kc-home-featured-dots {
+    z-index: 6 !important;
+    left: 14px !important;
+    right: auto !important;
+    bottom: 17px !important;
+  }
+}
+
+/* KC identity watermark: refined, translucent and colour-matched to the UI. */
+body::before {
+  content: "KC" !important;
+  position: fixed !important;
+  z-index: 0 !important;
+  right: -18px !important;
+  bottom: calc(118px + env(safe-area-inset-bottom, 0px)) !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  font: 950 clamp(170px, 47vw, 250px)/.78 system-ui,sans-serif !important;
+  letter-spacing: -.14em !important;
+  background: linear-gradient(135deg,rgba(255,125,170,.12),rgba(172,116,255,.15) 52%,rgba(75,211,218,.10)) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  opacity: .78 !important;
+  text-shadow: none !important;
+  filter: drop-shadow(0 0 20px rgba(168,103,225,.055)) !important;
+  transform: rotate(-12deg) !important;
+  transform-origin: bottom right !important;
+}
+body::after {
+  content: "" !important;
+  display: block !important;
+  position: fixed !important;
+  z-index: 0 !important;
+  width: clamp(190px, 54vw, 260px) !important;
+  height: 76px !important;
+  right: -18px !important;
+  bottom: calc(145px + env(safe-area-inset-bottom, 0px)) !important;
+  border: 2px solid rgba(178,130,235,.075) !important;
+  border-left-color: rgba(255,126,177,.10) !important;
+  border-right-color: rgba(90,210,220,.07) !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow: 0 0 24px rgba(165,106,220,.035) !important;
+  transform: rotate(-17deg) !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+@media (max-width: 380px) {
+  body::before {
+    right: -22px !important;
+    bottom: calc(116px + env(safe-area-inset-bottom, 0px)) !important;
+    font-size: 48vw !important;
+  }
+  body::after {
+    right: -24px !important;
+    bottom: calc(143px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+html[data-theme="light"] body::before {
+  background: linear-gradient(135deg,rgba(188,88,150,.08),rgba(128,87,185,.10),rgba(51,155,165,.07)) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
