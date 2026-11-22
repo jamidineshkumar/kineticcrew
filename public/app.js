@@ -1615,7 +1615,7 @@ if(S.homeCarouselTimer){clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=n
 if(S.view==='overview'){
  // Remove the stray legacy placeholder text seen on the home screen.
  const homeRoot=document.getElementById('app');
- if(homeRoot){const cleanStrayText=()=>{const walker=document.createTreeWalker(homeRoot,NodeFilter.SHOW_TEXT);const stray=[];while(walker.nextNode()){const value=(walker.currentNode.nodeValue||'').trim();if(value==='ONaN'||value==='NaN')stray.push(walker.currentNode);}stray.forEach(node=>node.remove());};cleanStrayText();requestAnimationFrame(cleanStrayText);}
+ if(homeRoot){const cleanStrayText=()=>{const walker=document.createTreeWalker(homeRoot,NodeFilter.SHOW_TEXT);const stray=[];while(walker.nextNode()){const value=(walker.currentNode.nodeValue||'').trim();if(value==='ONaN'||value==='NaN'||value==='0')stray.push(walker.currentNode);}stray.forEach(node=>node.remove());};cleanStrayText();requestAnimationFrame(cleanStrayText);}
  const homeCarousel=document.querySelector('.kc-home-featured');
  const homeSlides=[...(homeCarousel?.querySelectorAll('[data-home-slide]')||[])];
  const homeDots=[...(homeCarousel?.querySelectorAll('[data-home-slide-to]')||[])];
@@ -2772,8 +2772,19 @@ function closeEventBannerCrop(resetInput=false){
 }
 function drawEventBannerCrop(){
  const state=kcEventBannerCrop,canvas=document.querySelector('#kcEventBannerCropCanvas');if(!state||!canvas)return;
- const ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height,scale=Math.max(w/state.img.naturalWidth,h/state.img.naturalHeight)*state.zoom,iw=state.img.naturalWidth*scale,ih=state.img.naturalHeight*scale;
- ctx.clearRect(0,0,w,h);ctx.fillStyle='#111';ctx.fillRect(0,0,w,h);ctx.drawImage(state.img,(w-iw)/2+state.x,(h-ih)/2+state.y,iw,ih);ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=3;ctx.strokeRect(2,2,w-4,h-4);
+ const ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height,img=state.img,iw0=img.naturalWidth,ih0=img.naturalHeight;
+ if(!iw0||!ih0)return;
+ const coverScale=Math.max(w/iw0,h/ih0),fitScale=Math.min(w/iw0,h/ih0);
+ ctx.clearRect(0,0,w,h);ctx.fillStyle='#111';ctx.fillRect(0,0,w,h);
+ // A blurred, darkened cover fills the banner without losing the complete foreground image.
+ const bgScale=coverScale*1.16,bgW=iw0*bgScale,bgH=ih0*bgScale;
+ ctx.save();ctx.filter='blur(22px)';ctx.globalAlpha=.78;
+ ctx.drawImage(img,(w-bgW)/2,(h-bgH)/2,bgW,bgH);ctx.restore();
+ ctx.save();ctx.fillStyle='rgba(5,7,12,.28)';ctx.fillRect(0,0,w,h);ctx.restore();
+ // Fit the entire uploaded artwork first; zoom and drag remain available for fine positioning.
+ const scale=fitScale*(state.zoom||1),iw=iw0*scale,ih=ih0*scale;
+ ctx.save();ctx.drawImage(img,(w-iw)/2+(state.x||0),(h-ih)/2+(state.y||0),iw,ih);ctx.restore();
+ ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=3;ctx.strokeRect(2,2,w-4,h-4);
 }
 function openEventBannerCrop(file){
  if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024){notice('Choose a JPG, PNG or WebP image up to 5 MB.');const input=document.querySelector('#kcEventBannerFile');if(input)input.value='';return;}
