@@ -168,7 +168,7 @@ async function enable() {
   localStorage.setItem("kc-push-enabled", "yes");
   return result;
 }
-async function invokeEmail(title, body, audience, emailKey, emailType) {
+async function invokeEmail(title, body, audience, emailKey, emailType, recipientIds = []) {
   const client = window.kcSupabase;
   const { data: sessionData } = await client.auth.getSession();
   const token = sessionData?.session?.access_token;
@@ -176,7 +176,7 @@ async function invokeEmail(title, body, audience, emailKey, emailType) {
   const response = await fetch(window.KC_CONFIG.supabaseUrl + "/functions/v1/send-crew-email", {
     method: "POST",
     headers: { "Content-Type": "application/json", apikey: window.KC_CONFIG.supabaseAnonKey, Authorization: "Bearer " + token },
-    body: JSON.stringify({ title, body, audience, emailKey, emailType })
+    body: JSON.stringify({ title, body, audience, emailKey, emailType, recipientIds })
   });
   const result = await response.json();
   if (!response.ok) throw new Error(result.error || "Crew email delivery failed.");
@@ -184,11 +184,12 @@ async function invokeEmail(title, body, audience, emailKey, emailType) {
 }
 async function send(title, body, audience = "all", options = {}) {
   const imageUrl = String(options?.imageUrl || '').trim();
-  const pushResult = await invoke("send", { title, body, audience, imageUrl, url: options?.url || "/?kc_notification_view=notifications" });
+  const recipientIds = Array.isArray(options?.recipientIds) ? options.recipientIds : [];
+  const pushResult = await invoke("send", { title, body, audience, recipientIds, imageUrl, url: options?.url || "/?kc_notification_view=notifications" });
   if (options?.sendEmail === true) {
     const emailKey = String(options.emailKey || "").trim();
     if (!emailKey) throw new Error("Email could not be sent because the release key is missing.");
-    const emailResult = await invokeEmail(title, body, audience, emailKey, options.emailType || "crew-update");
+    const emailResult = await invokeEmail(title, body, audience, emailKey, options.emailType || "crew-update", recipientIds);
     return { ...pushResult, email: emailResult };
   }
   return pushResult;
