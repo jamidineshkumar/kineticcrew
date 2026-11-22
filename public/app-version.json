@@ -1,6 +1,6 @@
 {
-  "version": "1.6.69",
+  "version": "1.6.70",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T01:30:00+05:30",
-  "release_notes": "Restore square-artwork homepage carousel, remove extra overlay blocks, and show a flame animation only on updated events."
+  "updated_at": "2026-11-23T01:10:00+05:30",
+  "release_notes": "Remove the Recommended for you event discovery section from the Events page."
 }
