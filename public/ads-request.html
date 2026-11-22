@@ -29,12 +29,43 @@ body{margin:0;min-height:100vh;padding:clamp(12px,3vw,22px);background:radial-gr
 .request .status{display:block;min-height:18px;margin:0;color:#ffb094;font-size:12px;line-height:1.45}
 @media(max-width:480px){body{padding:10px}.request{margin:8px auto 18px;padding:19px 17px;border-radius:19px}.request>p{margin-bottom:17px}.request form{gap:14px}}
 .request-brand{display:flex;align-items:center;gap:15px;margin:0 0 15px}.request-brand>img{display:block;flex:0 0 68px;width:68px;height:68px;object-fit:contain;border:1px solid rgba(255,255,255,.12);border-radius:19px;background:#08090d;box-shadow:5px 6px 16px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.06)}.request-brand-copy{min-width:0}.request-brand-copy>small{display:block;margin:0 0 6px;color:#ff9877;font-size:9px;font-weight:750;letter-spacing:.13em;text-transform:uppercase}.request-brand-copy h1{margin:0;font-size:clamp(23px,5vw,31px);line-height:1.08;letter-spacing:-.045em}.request-brand-copy h1 em{font-style:normal;color:#ff9877}.request>p{margin:0 0 20px}.request label{font-size:13px;font-weight:600}.request input:not([type=file]),.request textarea{font-size:14px;line-height:1.45}@media(max-width:390px){.request-brand{gap:11px}.request-brand>img{flex-basis:58px;width:58px;height:58px;border-radius:16px}.request-brand-copy h1{font-size:23px}.request-brand-copy>small{font-size:8px;letter-spacing:.1em}}
+
+.request{max-width:520px;padding:clamp(20px,4vw,28px);border-radius:24px}
+.request-brand{gap:14px;margin-bottom:18px;align-items:center}
+.request-brand>img{flex:0 0 64px;width:64px;height:64px;border-radius:17px;object-fit:contain}
+.request-brand-copy{flex:1;min-width:0}
+.request-brand-copy>small{font-size:9px;line-height:1.4;letter-spacing:.12em}
+.request-brand-copy h1{font-size:clamp(22px,5vw,30px);line-height:1.08;overflow-wrap:anywhere}
+.request>p{max-width:46ch;margin-bottom:24px;font-size:13.5px}
+.request form{gap:16px}
+.request label{gap:8px;font-size:13px}
+.request input:not([type=file]),.request textarea{min-height:50px;border-radius:14px;padding:13px 15px}
+.request textarea{min-height:104px}
+.request input[type=file]{min-height:64px;padding:10px;border-radius:14px}
+.brand-logo-option{padding:14px;border:1px solid rgba(255,255,255,.09);border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(0,0,0,.12));}
+.request .logo-toggle{display:flex;align-items:center;gap:12px;cursor:pointer;min-height:42px}
+.logo-toggle input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.logo-checkmark{width:21px;height:21px;flex:0 0 21px;border:1.5px solid rgba(255,255,255,.32);border-radius:6px;background:#171b1e;display:grid;place-items:center;transition:background .18s,border-color .18s}
+.logo-toggle input:checked+.logo-checkmark{background:var(--kc-accent);border-color:var(--kc-accent)}
+.logo-toggle input:checked+.logo-checkmark:after{content:"✓";color:#24140f;font-size:14px;font-weight:900;line-height:1}
+.logo-toggle input:focus-visible+.logo-checkmark{outline:2px solid var(--kc-accent);outline-offset:3px}
+.logo-toggle span:last-child{display:grid;gap:3px;min-width:0}
+.logo-toggle strong{font-size:13px;color:#f1efec}
+.logo-toggle small{font-size:11px;line-height:1.4;color:var(--kc-muted);font-weight:400}
+.brand-logo-field{display:grid;gap:9px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
+.brand-logo-field[hidden]{display:none}
+.brand-logo-field>label{font-size:12px}
+.brand-logo-preview{display:flex;align-items:center;gap:11px;color:var(--kc-muted);font-size:11px}
+.brand-logo-preview[hidden]{display:none}
+.brand-logo-preview img{width:54px;height:54px;object-fit:contain;padding:5px;border-radius:12px;background:#090b0d;border:1px solid rgba(255,255,255,.1)}
+.request button{margin-top:2px;min-height:50px;border-radius:15px}
+@media(max-width:390px){.request{padding:18px 15px}.request-brand{gap:10px}.request-brand>img{flex-basis:56px;width:56px;height:56px}.request-brand-copy h1{font-size:22px}.request-brand-copy>small{font-size:8px}}
 </style>
 </head>
 <body>
 <main class="request">
 <header class="request-brand">
-  <img src="kinetic-crew-logo.svg?v=20261122-brandmark1" alt="Kinetic Crew logo" width="76" height="76">
+  <img src="kinetic-crew-logo.svg?v=20261122-official-mark2" alt="Kinetic Crew logo" width="76" height="76">
   <div class="request-brand-copy">
     <small>KINETIC CREW · ADVERTISER REQUEST</small>
     <h1>Advertise with <em>Kinetic Crew</em></h1>
@@ -47,7 +78,20 @@ body{margin:0;min-height:100vh;padding:clamp(12px,3vw,22px);background:radial-gr
 <label>Ad title<input name="title" required maxlength="100"></label>
 <label>Caption<textarea name="caption" maxlength="260" rows="3"></textarea></label>
 <label>Ad image<input name="creative" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" required></label>
-<small class="hint">Upload one image only · JPG, PNG or WebP · Maximum 8 MB. Video uploads are not supported.</small>
+<small class="hint">Main campaign image · JPG, PNG or WebP · Maximum 8 MB. Video uploads are not supported.</small>
+<section class="brand-logo-option" aria-label="Brand logo upload">
+  <label class="logo-toggle" for="includeBrandLogo">
+    <input id="includeBrandLogo" name="includeBrandLogo" type="checkbox">
+    <span class="logo-checkmark" aria-hidden="true"></span>
+    <span><strong>Upload your brand logo</strong><small>Optional · Add your business logo to your campaign request</small></span>
+  </label>
+  <div id="brandLogoField" class="brand-logo-field" hidden>
+    <label for="brandLogoFile">Brand logo image</label>
+    <input id="brandLogoFile" name="brandLogo" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp">
+    <small class="hint">JPG, PNG or WebP · Maximum 8 MB. Your logo is sent separately from the ad image.</small>
+    <div id="brandLogoPreview" class="brand-logo-preview" hidden><img alt="Brand logo preview"><span>Logo preview</span></div>
+  </div>
+</section>
 <label>Website / click destination (optional)<input name="destination" type="url" placeholder="https://example.com" inputmode="url"></label>
 <button type="submit">Submit ad request</button>
 <small id="requestStatus" class="status" role="status" aria-live="polite"></small>
@@ -57,24 +101,49 @@ body{margin:0;min-height:100vh;padding:clamp(12px,3vw,22px);background:radial-gr
 <script src="config.js"></script>
 <script src="supabase-client.js?v=20261112-persistent-session1"></script>
 <script>
+const logoToggle=document.getElementById('includeBrandLogo');
+const logoField=document.getElementById('brandLogoField');
+const logoInput=document.getElementById('brandLogoFile');
+const logoPreview=document.getElementById('brandLogoPreview');
+logoToggle.addEventListener('change',()=>{
+ logoField.hidden=!logoToggle.checked;
+ logoInput.required=logoToggle.checked;
+ if(!logoToggle.checked){logoInput.value='';logoPreview.hidden=true}
+});
+logoInput.addEventListener('change',()=>{
+ const file=logoInput.files[0];
+ if(!file){logoPreview.hidden=true;return}
+ const allowed=['image/jpeg','image/png','image/webp'];
+ if(!allowed.includes(file.type)||file.size>8*1024*1024){logoInput.value='';logoPreview.hidden=true;return}
+ logoPreview.querySelector('img').src=URL.createObjectURL(file);
+ logoPreview.hidden=false;
+});
 document.getElementById('requestForm').addEventListener('submit',async e=>{
  e.preventDefault();
  const f=e.currentTarget,b=f.querySelector('button'),s=document.getElementById('requestStatus');
  const file=f.elements.namedItem('creative').files[0];
+ const logoFile=logoToggle.checked?logoInput.files[0]:null;
  const value=n=>f.elements.namedItem(n).value.trim();
- if(!file){s.textContent='Please choose an image.';return}
  const allowed=['image/jpeg','image/png','image/webp'];
+ if(!file){s.textContent='Please choose an ad image.';return}
  if(!allowed.includes(file.type)){s.textContent='Only JPG, PNG or WebP images are supported.';return}
- if(file.size>8*1024*1024){s.textContent='Image must be 8 MB or smaller.';return}
+ if(file.size>8*1024*1024){s.textContent='Ad image must be 8 MB or smaller.';return}
+ if(logoToggle.checked&&!logoFile){s.textContent='Choose your brand logo or untick the logo upload option.';return}
+ if(logoFile&&(!allowed.includes(logoFile.type)||logoFile.size>8*1024*1024)){s.textContent='Brand logo must be JPG, PNG or WebP and 8 MB or smaller.';return}
  b.disabled=true;
  try{
-  s.textContent='Uploading image…';
-  const ext=file.type==='image/jpeg'?'jpg':file.type==='image/png'?'png':'webp';
-  const path='requests/'+crypto.randomUUID()+'.'+ext;
-  const upload=await window.kcSupabase.storage.from('kc-ad-requests').upload(path,file,{upsert:false,contentType:file.type});
-  if(upload.error)throw upload.error;
-  const mediaUrl=window.kcSupabase.storage.from('kc-ad-requests').getPublicUrl(path).data.publicUrl;
-  s.textContent='Image uploaded. Submitting your request…';
+  const uploadImage=async(image,folder)=>{
+   const ext=image.type==='image/jpeg'?'jpg':image.type==='image/png'?'png':'webp';
+   const path=folder+'/'+crypto.randomUUID()+'.'+ext;
+   const uploaded=await window.kcSupabase.storage.from('kc-ad-requests').upload(path,image,{upsert:false,contentType:image.type});
+   if(uploaded.error)throw uploaded.error;
+   return window.kcSupabase.storage.from('kc-ad-requests').getPublicUrl(path).data.publicUrl;
+  };
+  s.textContent='Uploading ad image…';
+  const mediaUrl=await uploadImage(file,'requests');
+  let logoUrl=null;
+  if(logoFile){s.textContent='Uploading brand logo…';logoUrl=await uploadImage(logoFile,'logos')}
+  s.textContent='Submitting your request…';
   const result=await window.kcSupabase.rpc('crew_ads_request_submit',{
    p_advertiser_name:value('brand'),
    p_advertiser_email:value('email'),
@@ -84,11 +153,13 @@ document.getElementById('requestForm').addEventListener('submit',async e=>{
    p_media_url:mediaUrl,
    p_destination_url:value('destination')||null,
    p_ad_format:'native',
-   p_placement:'home'
+   p_placement:'home',
+   p_advertiser_logo_url:logoUrl
   });
   if(result.error)throw result.error;
   s.textContent='Request received. Kinetic Crew will review your image and campaign before publication.';
   f.reset();
+  logoField.hidden=true;logoPreview.hidden=true;logoInput.required=false;
  }catch(err){s.textContent=err.message||'Could not submit request. Please try again.'}
  finally{b.disabled=false}
 });
