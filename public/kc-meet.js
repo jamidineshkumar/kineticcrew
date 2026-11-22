@@ -181,7 +181,7 @@
     track.detach().forEach(element => element.remove());
   }
   async function connect(action, payload) {
-    const {videoEnabled=false,audioEnabled=false,...tokenPayload}=payload||{};
+    const {videoEnabled=false,audioEnabled=false,preissued=null,...tokenPayload}=payload||{};
     const data = preissued || await issueToken(action, tokenPayload);
     isHost = !!data.isHost; activeCode = data.code || payload.code || ""; activeTitle = data.title || "Kinetic Crew Meeting";
     const { Room, RoomEvent, Track } = await sdk();
