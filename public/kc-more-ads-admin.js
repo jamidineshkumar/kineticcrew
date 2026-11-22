@@ -8,7 +8,7 @@ const iso=v=>v?new Date(v).toISOString() : null;
 const localValue=v=>{if(!v)return '';const d=new Date(v);if(Number.isNaN(+d))return '';const p=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes());};
 let currentItems=[];let currentSettings={show_upcoming_events:true,show_promotions:true};
 function page(){if(!isAdmin())return '<section class="kc-more-ads-admin"><h2>Access restricted</h2><p>Only the Super Admin can manage this banner.</p></section>';
- return '<section class="kc-more-ads-admin"><header class="kc-more-ads-admin-hero"><small>SUPER ADMIN · MORE PAGE</small><h1>Promotional <em>Banner</em></h1><p>Upload event-independent Kinetic Crew promotions. Upcoming events are added automatically. Slides never open links.</p></header><section class="kc-more-ads-admin-panel"><h2 style="margin:0 0 10px">Content visibility</h2><p class="kc-more-ads-admin-help">Choose which types of slides appear in the More-page banner. You can also hide individual promotions below.</p><div class="kc-more-ads-visibility"><label><input id="kcMoreAdsShowEvents" type="checkbox" checked> <span><b>Upcoming events</b><small>Show future event posters automatically</small></span></label><label><input id="kcMoreAdsShowPromotions" type="checkbox" checked> <span><b>Promotional slides</b><small>Show active promotions within their schedule</small></span></label><button type="button" id="kcMoreAdsSaveVisibility">Save visibility settings</button></div></section><section class="kc-more-ads-admin-panel"><form id="kcMoreAdsForm" class="kc-more-ads-admin-form"><input type="hidden" name="id"><input type="hidden" name="mediaUrl"><input type="hidden" name="storagePath"><input type="hidden" name="mediaType"><div class="kc-more-ads-admin-grid"><label>Slide title<input name="title" maxlength="100" required placeholder="Kinetic Crew · New season"></label><label>Display order<input name="displayOrder" type="number" value="0" min="0" step="1"></label></div><label>Caption / short description<textarea name="caption" rows="2" maxlength="260" placeholder="A short line shown over the media"></textarea></label><label>Upload image or video<input name="media" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,video/mp4,video/webm" required><small>Images: JPG, PNG, WebP, GIF, AVIF · Videos: MP4 (H.264) or WebM · Max 100 MB. Convert MOV files to MP4 before uploading. Select a file, check the preview, then press Save promotion.</small><small id="kcMoreAdsSelectedFile" aria-live="polite">No file selected.</small></label><div id="kcMoreAdsPreviewWrap" hidden><img id="kcMoreAdsPreview" class="kc-more-ads-admin-preview" alt="Media preview"></div><div class="kc-more-ads-admin-grid"><label>Show from (optional)<input name="startsAt" type="datetime-local"></label><label>Show until (optional)<input name="endsAt" type="datetime-local"></label></div><label style="display:flex;align-items:center;gap:8px"><input name="active" type="checkbox" checked> Active and visible in the More banner</label><div class="kc-more-ads-admin-actions"><button type="submit">Save promotion</button><button type="button" class="secondary" data-kc-more-ad-reset>Clear form</button></div><small id="kcMoreAdsFormStatus" aria-live="polite"></small></form></section><section class="kc-more-ads-admin-panel"><h2 style="margin:0 0 12px">Manage slides</h2><div id="kcMoreAdsAdminList" class="kc-more-ads-admin-list"><p>Loading slides…</p></div></section></section>';
+ return '<section class="kc-more-ads-admin"><header class="kc-more-ads-admin-hero"><small>SUPER ADMIN · MORE PAGE</small><h1>Promotional <em>Banner</em></h1><p>Upload event-independent Kinetic Crew promotions. Upcoming events are added automatically. Slides never open links.</p></header><section class="kc-more-ads-admin-panel"><h2 style="margin:0 0 10px">Content visibility</h2><p class="kc-more-ads-admin-help">Choose which types of slides appear in the More-page banner. You can also hide individual promotions below.</p><div class="kc-more-ads-visibility"><label><input id="kcMoreAdsShowEvents" type="checkbox" checked> <span><b>Upcoming events</b><small>Show future event posters automatically</small></span></label><label><input id="kcMoreAdsShowPromotions" type="checkbox" checked> <span><b>Promotional slides</b><small>Show active promotions within their schedule</small></span></label><button type="button" id="kcMoreAdsSaveVisibility">Save visibility settings</button></div></section><section class="kc-more-ads-admin-panel"><form id="kcMoreAdsForm" class="kc-more-ads-admin-form"><input type="hidden" name="id"><input type="hidden" name="mediaUrl"><input type="hidden" name="storagePath"><input type="hidden" name="mediaType"><div class="kc-more-ads-admin-grid"><label>Slide title<input name="title" maxlength="100" required placeholder="Kinetic Crew · New season"></label><label>Display order<input name="displayOrder" type="number" value="0" min="0" step="1"></label></div><label>Caption / short description<textarea name="caption" rows="2" maxlength="260" placeholder="A short line shown over the media"></textarea></label><label>Upload image or video<input name="media" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,video/mp4,video/webm" required><small>Images: JPG, PNG, WebP, GIF, AVIF · Videos: MP4 (H.264) or WebM · Max 100 MB. Convert MOV files to MP4 before uploading. Select a file, check the preview, then press Save promotion.</small><small id="kcMoreAdsSelectedFile" aria-live="polite">No file selected.</small></label><div id="kcMoreAdsPreviewWrap" hidden><img id="kcMoreAdsPreview" class="kc-more-ads-admin-preview" alt="Media preview"></div><div class="kc-more-ads-admin-grid"><label>Show from (optional)<input name="startsAt" type="datetime-local"></label><label>Show until (optional)<input name="endsAt" type="datetime-local"></label></div><label style="display:flex;align-items:center;gap:8px"><input name="active" type="checkbox" checked> Active and visible in the More banner</label><div class="kc-more-ads-admin-actions"><button type="button" id="kcMoreAdsSaveButton">Save promotion</button><button type="button" class="secondary" data-kc-more-ad-reset>Clear form</button></div><small id="kcMoreAdsFormStatus" aria-live="polite"></small></form></section><section class="kc-more-ads-admin-panel"><h2 style="margin:0 0 12px">Manage slides</h2><div id="kcMoreAdsAdminList" class="kc-more-ads-admin-list"><p>Loading slides…</p></div></section></section>';
 }
 window.kcMoreAdsAdminPage=page;
 async function load(){const root=$('#kcMoreAdsAdminList');if(!root||!isAdmin())return false;try{const {data,error}=await client().rpc('crew_more_ads_admin_get');if(error)throw error;if(!data||data.ok!==true||!Array.isArray(data.items))throw Error(data?.message||'The server returned an invalid promotional slide list.');currentItems=data.items;currentSettings={show_upcoming_events:data?.settings?.show_upcoming_events!==false,show_promotions:data?.settings?.show_promotions!==false};const ev=$('#kcMoreAdsShowEvents'),pr=$('#kcMoreAdsShowPromotions');if(ev)ev.checked=currentSettings.show_upcoming_events;if(pr)pr.checked=currentSettings.show_promotions;renderList(root);return true;}catch(e){root.innerHTML='<p>Could not load promotions: '+esc(e.message||'Please retry.')+'</p>';return false;}}
@@ -23,30 +23,24 @@ function byId(id){return currentItems.find(x=>String(x.id)===String(id));}
 async function saveRow(item){const {data,error}=await client().rpc('crew_more_ads_save',item);if(error)throw error;return data;}
 async function upload(file){const c=client();if(!c)throw Error('Storage connection is unavailable.');const ext=(file.name.split('.').pop()||'').toLowerCase(),mime=file.type||'',isVideo=mime.startsWith('video/')||['mp4','webm','mov'].includes(ext),allowedVideo=mime==='video/mp4'||mime==='video/webm'||(!mime&&['mp4','webm'].includes(ext)),allowedImage=['image/jpeg','image/png','image/webp','image/gif','image/avif'].includes(mime);if(isVideo&&!allowedVideo)throw Error('For reliable Android playback, upload MP4 (H.264) or WebM. MOV files must be converted to MP4 first.');if(!isVideo&&!allowedImage)throw Error('Choose JPG, PNG, WebP, GIF, AVIF, MP4 or WebM media.');if(file.size>100*1024*1024)throw Error('Media must be 100 MB or smaller.');const clean=file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,'-').slice(-90);const path=Date.now()+'-'+(crypto.randomUUID?crypto.randomUUID():'kc-'+Math.random().toString(36).slice(2))+'-'+clean;const {data,error}=await c.storage.from('kc-more-ads').upload(path,file,{cacheControl:'31536000',upsert:false,contentType:file.type||(ext==='mp4'?'video/mp4':ext==='webm'?'video/webm':undefined)});if(error)throw Error('Media upload failed: '+(error.message||'Storage rejected the file.'));if(!data?.path)throw Error('Storage did not return an uploaded file path.');const {data:pub}=c.storage.from('kc-more-ads').getPublicUrl(data.path);if(!pub?.publicUrl)throw Error('Could not create a public media URL.');return {url:pub.publicUrl,path:data.path,type:isVideo?'video':'image'};}
 document.addEventListener('change',e=>{if(e.target.matches('#kcMoreAdsForm [name="media"]')){const f=e.target.files?.[0];const label=$('#kcMoreAdsSelectedFile');if(label)label.textContent=f?f.name+' · '+(f.size/1024/1024).toFixed(2)+' MB':'No file selected.';if(!f)return;if(previewObjectUrl)URL.revokeObjectURL(previewObjectUrl);previewObjectUrl=URL.createObjectURL(f);preview(previewObjectUrl,f.type.startsWith('video/')?'video':'image');}});
-document.addEventListener('click',e=>{
- const save=e.target.closest('#kcMoreAdsForm [type="submit"]');
- if(!save)return;
- const form=save.form||$('#kcMoreAdsForm'),status=$('#kcMoreAdsFormStatus');
- if(!form)return;
- if(!form.checkValidity()){
-  if(status)status.textContent='Complete the slide title and choose an image or video before saving.';
-  form.reportValidity();
- }else if(status)status.textContent='Starting promotion save…';
-},true);
-document.addEventListener('submit',async e=>{
- if(e.target.id!=='kcMoreAdsForm')return;
- e.preventDefault();
+async function savePromotion(f){
+ const button=$('#kcMoreAdsSaveButton'),status=$('#kcMoreAdsFormStatus');
+ if(!f||!button||!status)return;
  if(!isAdmin()){notice('Only the Super Admin can manage this banner.');return;}
- const f=e.target,button=f.querySelector('[type=submit]'),status=$('#kcMoreAdsFormStatus');
- if(!button||!status)return;
  if(button.disabled)return;
- button.disabled=true;status.textContent='Preparing your promotion…';
+ if(!f.checkValidity()){
+  status.textContent=f.elements.namedItem('media')?.required&&!f.elements.namedItem('media')?.files?.length
+   ?'Select an image or video first, then tap Save promotion.'
+   :'Complete the required slide title before saving.';
+  f.reportValidity();return;
+ }
+ button.disabled=true;button.textContent='Saving…';status.textContent='Preparing your promotion…';
  let uploaded=null,persisted=false;
  try{
   const file=f.elements.namedItem('media')?.files?.[0];
   let mediaUrl=f.elements.namedItem('mediaUrl').value,storagePath=f.elements.namedItem('storagePath').value,mediaType=f.elements.namedItem('mediaType').value;
   if(file){status.textContent='Uploading media to Kinetic Crew storage…';uploaded=await upload(file);mediaUrl=uploaded.url;storagePath=uploaded.path;mediaType=uploaded.type;}
-  if(!mediaUrl||!mediaType)throw Error('Choose an image or an MP4/WebM video before saving.');
+  if(!mediaUrl||!mediaType)throw Error('Select an image or an MP4/WebM video before saving.');
   const id=f.elements.namedItem('id').value||null;
   status.textContent='Saving slide details…';
   const result=await saveRow({p_id:id,p_title:f.elements.namedItem('title').value.trim(),p_caption:f.elements.namedItem('caption').value.trim(),p_media_type:mediaType,p_media_url:mediaUrl,p_storage_path:storagePath||null,p_display_order:Number(f.elements.namedItem('displayOrder').value||0),p_is_active:f.elements.namedItem('active').checked,p_starts_at:iso(f.elements.namedItem('startsAt').value),p_ends_at:iso(f.elements.namedItem('endsAt').value)});
@@ -60,7 +54,15 @@ document.addEventListener('submit',async e=>{
   console.error('Kinetic Crew promotional slide save failed:',err);
   if(uploaded?.path&&!persisted){try{await client().storage.from('kc-more-ads').remove([uploaded.path]);}catch(cleanupError){console.warn('Temporary upload cleanup failed:',cleanupError);}}
   status.textContent=(persisted?'Slide saved, but verification needs attention: ':'Save failed: ')+(err.message||'Please retry.');notice(status.textContent);
- }finally{if(button.isConnected)button.disabled=false;}
+ }finally{button.disabled=false;button.textContent='Save promotion';}
+}
+document.addEventListener('click',e=>{
+ const save=e.target.closest('#kcMoreAdsSaveButton');
+ if(save){savePromotion($('#kcMoreAdsForm'));return;}
+},true);
+document.addEventListener('submit',e=>{
+ if(e.target.id!=='kcMoreAdsForm')return;
+ e.preventDefault();savePromotion(e.target);
 },true);
 document.addEventListener('click',async e=>{
  if(e.target.closest('#kcMoreAdsSaveVisibility')){await saveVisibility();return;}
