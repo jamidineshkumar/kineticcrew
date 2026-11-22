@@ -111,7 +111,7 @@
   }
   function meetingCard(item){
     const when=new Date(item.starts_at).toLocaleString([],{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
-    return '<article class="kcml-scheduled-card"><div class="kcml-scheduled-top"><span>◉ KC MEET EVENT</span><span class="kcml-scheduled-status '+esc(item.status)+'">'+(item.status==="active"?"LIVE":"SCHEDULED")+'</span></div><h3>'+esc(item.title)+'</h3><p>'+esc(item.description||"A live meeting with your Kinetic Crew.")+'</p><div class="kcml-scheduled-meta"><span>◷ '+esc(when)+'</span><span>NO REGISTRATION</span></div><div class="kcml-scheduled-actions">'+(item.isHost&&item.status==="scheduled"?'<button type="button" data-kcml-start="'+esc(item.code)+'" data-title="'+esc(item.title)+'">Start meeting</button>':'')+'<button type="button" class="secondary" data-kcml-copy-code="'+esc(item.code)+'">Copy invite link</button></div></article>';
+    return '<article class="kcml-scheduled-card"><div class="kcml-scheduled-top"><span>◉ KC MEET EVENT</span><span class="kcml-scheduled-status '+esc(item.status)+'">'+(item.status==="active"?"LIVE":"SCHEDULED")+'</span></div><h3>'+esc(item.title)+'</h3><p>'+esc(item.description||"A live meeting with your Kinetic Crew.")+'</p><div class="kcml-scheduled-meta"><span>◷ '+esc(when)+'</span><span>NO REGISTRATION</span></div><div class="kcml-scheduled-actions">'+(item.isHost&&item.status==="scheduled"?'<button type="button" data-kcml-start="'+esc(item.code)+'" data-title="'+esc(item.title)+'">Start meeting</button>':'')+'<button type="button" data-kcml-open-code="'+esc(item.code)+'">'+(item.status==="active"?"Join meeting":"Open invite")+'</button><button type="button" class="secondary" data-kcml-copy-code="'+esc(item.code)+'">Copy invite link</button></div></article>';
   }
   async function loadScheduledMeetings(){
     try{const result=await meetAction("list"),html=(result.meetings||[]).map(meetingCard).join('');const a=$("#kcMeetScheduledEvents"),b=$("#kcMeetEventsScheduled");if(a)a.innerHTML=html||'<p class="kcml-scheduled-empty">No upcoming meeting events. Admins can schedule one for the crew.</p>';if(b)b.innerHTML=html||'<p class="kcml-scheduled-empty">No KC Meet events are scheduled yet.</p>';}catch(error){console.warn("Could not load scheduled KC Meet events:",error);}
@@ -221,9 +221,9 @@
         appendChat("You", text, true); input.value = "";
       } catch { showError("Message could not be sent. Check your connection."); }
     };
-    $("#kcMeetLiveRoot").querySelector("[data-kcml-mic]").onclick = async e => { const enabled = room.localParticipant.isMicrophoneEnabled; await room.localParticipant.setMicrophoneEnabled(!enabled); e.currentTarget.querySelector("small").textContent = enabled ? "Mic on" : "Mic off";e.currentTarget.setAttribute("aria-label",enabled?"Turn microphone on":"Mute microphone");e.currentTarget.classList.toggle("is-off",enabled); };
-    $("#kcMeetLiveRoot").querySelector("[data-kcml-camera]").onclick = async e => { const enabled = room.localParticipant.isCameraEnabled; await room.localParticipant.setCameraEnabled(!enabled); e.currentTarget.querySelector("small").textContent = enabled ? "Video on" : "Video off";e.currentTarget.setAttribute("aria-label",enabled?"Turn camera on":"Turn camera off");e.currentTarget.classList.toggle("is-off",enabled); };
-    $("#kcMeetLiveRoot").querySelector("[data-kcml-screen]").onclick = async e => { try { const enabled = room.localParticipant.isScreenShareEnabled; await room.localParticipant.setScreenShareEnabled(!enabled); e.currentTarget.textContent = enabled ? "Share screen" : "Stop sharing"; } catch { showError("Screen sharing is not supported in this browser or device."); } };
+    $("#kcMeetLiveRoot").querySelector("[data-kcml-mic]").onclick = async e => { const enabled = room.localParticipant.isMicrophoneEnabled; await room.localParticipant.setMicrophoneEnabled(!enabled); e.currentTarget.querySelector("b").textContent=enabled?"Mic off":"Mute mic";e.currentTarget.querySelector("small").textContent=enabled?"Microphone is off":"Microphone is on";e.currentTarget.setAttribute("aria-label",enabled?"Turn microphone on":"Mute microphone");e.currentTarget.classList.toggle("is-off",enabled); };
+    $("#kcMeetLiveRoot").querySelector("[data-kcml-camera]").onclick = async e => { const enabled = room.localParticipant.isCameraEnabled; await room.localParticipant.setCameraEnabled(!enabled); e.currentTarget.querySelector("b").textContent=enabled?"Video off":"Turn camera off";e.currentTarget.querySelector("small").textContent=enabled?"Camera is off":"Camera is on";e.currentTarget.setAttribute("aria-label",enabled?"Turn camera on":"Turn camera off");e.currentTarget.classList.toggle("is-off",enabled); };
+    $("#kcMeetLiveRoot").querySelector("[data-kcml-screen]").onclick = async e => { try { const enabled = room.localParticipant.isScreenShareEnabled; await room.localParticipant.setScreenShareEnabled(!enabled);e.currentTarget.querySelector("b").textContent=enabled?"Share screen":"Stop sharing";e.currentTarget.querySelector("small").textContent=enabled?"Present your screen":"Screen is being shared";e.currentTarget.classList.toggle("is-off",!enabled); } catch { showError("Screen sharing is not supported in this browser or device."); } };
     $("#kcMeetLiveRoot").querySelectorAll("[data-kcml-copy]").forEach(button=>button.onclick=shareInvite);
     $("#kcMeetLiveRoot").querySelector("[data-kcml-leave]").onclick = async () => {
       const leaveButton = $("#kcMeetLiveRoot").querySelector("[data-kcml-leave]");
@@ -266,14 +266,23 @@
       await showAppError(error?.message || "KC Meet could not start. Please try again.");
     } finally { button.dataset.busy = "0"; button.disabled = false; }
   }, true);
+  function openMeetingCode(code){
+    document.dispatchEvent(new CustomEvent("kc:navigate",{detail:{view:"meet"}}));
+    let attempts=0;const timer=setInterval(()=>{attempts++;const input=$("#kcMeetCode");if(input){input.value=code;clearInterval(timer);$("[data-kc-meet-join]")?.click();}else if(attempts>30)clearInterval(timer);},150);
+  }
   document.addEventListener("click",async event=>{
     const schedule=event.target.closest("[data-kc-meet-schedule]");if(schedule){event.preventDefault();scheduleDialog();return;}
     const start=event.target.closest("[data-kcml-start]");
     if(start){const code=start.dataset.kcmlStart;start.disabled=true;try{const setup=await prejoinDialog({code});if(!setup){start.disabled=false;return;}const data=await meetAction("start",{code});await connect("start",{code,...setup,preissued:data});}catch(error){await showAppError(error.message||"Could not start the scheduled meeting.");start.disabled=false;}return;}
+    const open=event.target.closest("[data-kcml-open-code]");if(open){openMeetingCode(open.dataset.kcmlOpenCode);return;}
     const copy=event.target.closest("[data-kcml-copy-code]");
     if(copy){const url=new URL(window.location.href);url.searchParams.set("kc_meet",copy.dataset.kcmlCopyCode);try{if(navigator.share)await navigator.share({title:"KC Meet invitation",url:url.toString()});else{await navigator.clipboard.writeText(url.toString());showError("Meeting invitation link copied.");}}catch(err){if(err?.name!=="AbortError")showError("Could not share the meeting link.");}return;}
   });
-  const scheduledObserver=new MutationObserver(()=>{if(document.querySelector("#kcMeetScheduledEvents,#kcMeetEventsScheduled"))loadScheduledMeetings();});
+  let lastMeetScheduleRoot=null,lastEventsScheduleRoot=null;
+  const scheduledObserver=new MutationObserver(()=>{
+    const meetRoot=$("#kcMeetScheduledEvents"),eventsRoot=$("#kcMeetEventsScheduled");
+    if(meetRoot!==lastMeetScheduleRoot||eventsRoot!==lastEventsScheduleRoot){lastMeetScheduleRoot=meetRoot;lastEventsScheduleRoot=eventsRoot;if(meetRoot||eventsRoot)loadScheduledMeetings();}
+  });
   if(document.body)scheduledObserver.observe(document.body,{childList:true,subtree:true});
   document.addEventListener("keydown", event => { if (event.key === "Escape" && $("#kcMeetLiveRoot .kcml-dialog")) closeRoom(); });
   window.addEventListener("beforeunload", () => { if (room) room.disconnect(); });
