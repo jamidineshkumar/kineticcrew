@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
-window.KC_APP_VERSION='1.6.80';
+window.KC_APP_VERSION='1.6.81';
 let kcUpdatePending=false,kcUpdateReloading=false,kcPendingVersion='';
 const KC_UPDATE_GUARD='kc_update_reload_guard_v1';
 function kcReloadAlreadyUsed(version=''){try{return sessionStorage.getItem(KC_UPDATE_GUARD)===String(version||'service-worker');}catch{return new URL(location.href).searchParams.has('kc_refresh');}}
@@ -9,7 +9,7 @@ function kcMarkReloadUsed(version=''){try{sessionStorage.setItem(KC_UPDATE_GUARD
 function kcSafeToReload(){const el=document.activeElement;if(el&&(/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)||el.isContentEditable))return false;return !document.querySelector('#modalRoot .modal, #modalRoot [role="dialog"], .kc-modal:not([hidden])');}
 function kcApplyPendingUpdate(){if(!kcUpdatePending||kcUpdateReloading||!kcSafeToReload())return;const url=new URL(location.href);const version=kcPendingVersion||url.searchParams.get('kc_refresh_version')||'pending';if(kcReloadAlreadyUsed(version)){kcUpdatePending=false;return;}kcUpdateReloading=true;kcMarkReloadUsed(version);try{savePageState();}catch{}url.searchParams.set('kc_refresh',String(Date.now()));url.searchParams.set('kc_refresh_version',version);location.replace(url.toString());}
 async function kcCheckAppVersion(){if(!navigator.onLine||kcUpdateReloading)return;try{const response=await fetch(window.kcPath('app-version.json')+'?check='+Date.now(),{cache:'no-store',credentials:'same-origin'});if(!response.ok)return;const data=await response.json();if(data?.version&&data.version!==window.KC_APP_VERSION){if(kcReloadAlreadyUsed(data.version))return;const nextVersion=String(data.version);if(kcPendingVersion!==nextVersion){kcPendingVersion=nextVersion;notice('Kinetic Crew v'+nextVersion+' is ready. Updating now…');}kcUpdatePending=true;kcApplyPendingUpdate();}}catch{}}
-function kcRegisterAutoUpdates(){if(!('serviceWorker'in navigator))return;const hadController=!!navigator.serviceWorker.controller;navigator.serviceWorker.register(window.kcPath('sw.js')+'?v=20261123-events-discover-cleanup1',{scope:window.kcPath(''),updateViaCache:'none'}).then(async registration=>{const check=()=>{if(navigator.onLine)registration.update().catch(()=>{});};check();window.addEventListener('focus',check);window.addEventListener('pageshow',check);window.addEventListener('online',check);document.addEventListener('visibilitychange',()=>{if(!document.hidden)kcApplyPendingUpdate();});document.addEventListener('focusout',()=>setTimeout(kcApplyPendingUpdate,250));
+function kcRegisterAutoUpdates(){if(!('serviceWorker'in navigator))return;const hadController=!!navigator.serviceWorker.controller;navigator.serviceWorker.register(window.kcPath('sw.js')+'?v=20261123-desktop-window-drawer1',{scope:window.kcPath(''),updateViaCache:'none'}).then(async registration=>{const check=()=>{if(navigator.onLine)registration.update().catch(()=>{});};check();window.addEventListener('focus',check);window.addEventListener('pageshow',check);window.addEventListener('online',check);document.addEventListener('visibilitychange',()=>{if(!document.hidden)kcApplyPendingUpdate();});document.addEventListener('focusout',()=>setTimeout(kcApplyPendingUpdate,250));
 setInterval(()=>{if(!document.hidden)kcCheckAppVersion();},5*60*1000);
 }).catch(error=>console.warn('Kinetic Crew service worker registration failed:',error));
 }
