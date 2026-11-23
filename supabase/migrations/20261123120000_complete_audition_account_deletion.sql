@@ -9,6 +9,7 @@ declare
   v_profile_status text;
   v_target_auth_id text;
   v_email_hash text;
+  v_storage_cleanup jsonb:='[]'::jsonb;
 begin
   perform public.crew_assert_not_blocked();
   if auth.uid() is null then raise exception 'Sign in required.'; end if;
@@ -44,6 +45,10 @@ begin
     delete from public.crew_push_tokens where auth_id=v_target_auth_id;
     delete from public.crew_pending_push_alerts where auth_id=v_target_auth_id;
     delete from public.crew_intro_seen where auth_id=v_target_auth_id;
+    select coalesce(jsonb_agg(jsonb_build_object('bucket','crew-profile-documents','path',storage_path)),'[]'::jsonb) into v_storage_cleanup
+      from public.crew_profile_documents where auth_id=v_target_auth_id::uuid and nullif(storage_path,'') is not null;
+    v_storage_cleanup:=v_storage_cleanup || coalesce((select jsonb_agg(jsonb_build_object('bucket','crew-gram-media','path',storage_path)) from public.crew_social_posts where author_id=v_target_auth_id and nullif(storage_path,'') is not null),'[]'::jsonb);
+    v_storage_cleanup:=v_storage_cleanup || coalesce((select jsonb_agg(jsonb_build_object('bucket','crew-gram-media','path',storage_path)) from public.crew_social_stories where author_id=v_target_auth_id and nullif(storage_path,'') is not null),'[]'::jsonb);
     delete from public.crew_profile_documents where auth_id=v_target_auth_id::uuid;
     delete from public.crew_profile_reminders where recipient_auth_id=v_target_auth_id or created_by=v_target_auth_id;
     delete from public.crew_profile_follows where follower_id=v_target_auth_id or followed_id=v_target_auth_id;
@@ -79,7 +84,7 @@ begin
   delete from public.crew_audition_applications where id=p_application_id;
 
   return jsonb_build_object('ok',true,'application_id',v_app.id,'auth_id',v_target_auth_id,
-    'video_storage_path',v_app.video_storage_path,'account_deleted',v_target_auth_id is not null,
+    'video_storage_path',v_app.video_storage_path,'storage_cleanup',v_storage_cleanup,'account_deleted',v_target_auth_id is not null,
     'message','Application, account-owned records, audition email history, and review history deleted.');
 end;
 $function$;
