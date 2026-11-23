@@ -1171,8 +1171,10 @@ function home(){
  if(!rehearsals.length)slides.push({kind:'rehearsal',view:'rehearsals',kicker:'KINETIC CREW · PRACTICE SESSIONS',label:'MAKE THE NEXT MOVE',title:'Plan your next practice session',subtitle:'Create a rehearsal, choose a time and share the venue with your crew.',cta:'Open rehearsals',image:''});
  const crewPromo={kind:'promo',view:'more',kicker:'KINETIC CREW · ONE CREW, ONE RHYTHM',label:'ONE CREW · ONE RHYTHM',title:'Kinetic Crew',subtitle:'Events, rehearsals, auditions and every moment that brings the crew together.',cta:'Explore the crew',image:''};
  const contentSlides=slides.splice(0);
- if(!contentSlides.length)slides.push({...crewPromo});
- else contentSlides.forEach(slide=>{slides.push(slide,{...crewPromo});});
+ // Keep real crew content consecutive. Do not insert a generic promo between every
+ // event/rehearsal/announcement; that made the carousel appear to skip real events.
+ if(contentSlides.length)slides.push(...contentSlides);
+ else slides.push({...crewPromo});
  const pollItems=[...(S.featureItems?.polls||[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
  const updateItems=[...announcements.slice(0,2).map(a=>({kind:'announcement',created_at:a.created_at,item:a})),...(pollItems.length?[{kind:'poll',created_at:pollItems[0].created_at,item:pollItems[0]}]:[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
  const updates=updateItems.map((entry,i)=>{
@@ -1695,22 +1697,22 @@ if(S.view==='overview'){
  const homeDots=[...(homeCarousel?.querySelectorAll('[data-home-slide-to]')||[])];
  if(homeCarousel&&homeSlides.length){
   let current=Math.max(0,homeSlides.findIndex(slide=>slide.classList.contains('is-active')));
-  let timer=null,swipeX=0,swipeY=0,swipePointer=null;
+  let timer=null,swipeX=0,swipeY=0,swipePointer=null,mouseDown=false;
   const stopCarousel=()=>{if(timer){clearInterval(timer);timer=null;}S.homeCarouselTimer=null;};
   const show=next=>{
-   current=((Number(next)||0)%homeSlides.length+homeSlides.length)%homeSlides.length;
+   current=((Math.trunc(Number(next)||0)%homeSlides.length)+homeSlides.length)%homeSlides.length;
    homeSlides.forEach((slide,i)=>{
     const active=i===current;
     slide.classList.toggle('is-active',active);
     slide.setAttribute('aria-hidden',active?'false':'true');
-    slide.inert=!active;
+    if('inert' in slide)slide.inert=!active;
     slide.style.setProperty('position','absolute','important');
     slide.style.setProperty('inset','0','important');
     slide.style.setProperty('display','block','important');
     slide.style.setProperty('opacity',active?'1':'0','important');
     slide.style.setProperty('visibility',active?'visible':'hidden','important');
     slide.style.setProperty('pointer-events',active?'auto':'none','important');
-    slide.style.setProperty('transform',active?'translate3d(0,0,0)':'translate3d(0,0,0)','important');
+    slide.style.setProperty('transform','translate3d(0,0,0)','important');
     slide.style.setProperty('z-index',active?'3':'0','important');
     slide.style.setProperty('transition','opacity .42s ease,visibility .42s ease','important');
    });
@@ -1723,10 +1725,16 @@ if(S.view==='overview'){
   };
   const startCarousel=()=>{
    stopCarousel();
-   if(homeSlides.length>1&&!document.hidden&&homeCarousel.isConnected){
+   if(homeSlides.length>1&&!document.hidden&&homeCarousel.isConnected&&!homeCarousel.matches(':hover')&&!homeCarousel.contains(document.activeElement)){
     timer=setInterval(()=>show(current+1),5200);
     S.homeCarouselTimer=timer;
    }
+  };
+  const finishSwipe=(x,y,id)=>{
+   if(swipePointer!==null&&id!==undefined&&swipePointer!==id)return;
+   const dx=x-swipeX,dy=y-swipeY;swipePointer=null;
+   if(Math.abs(dx)>34&&Math.abs(dx)>Math.abs(dy)*1.15)show(current+(dx<0?1:-1));
+   startCarousel();
   };
   show(current);
   homeDots.forEach(dot=>dot.addEventListener('click',event=>{
@@ -1737,18 +1745,31 @@ if(S.view==='overview'){
   homeCarousel.addEventListener('pointerdown',event=>{
    if(event.pointerType==='touch'||event.pointerType==='pen'){
     stopCarousel();swipeX=event.clientX;swipeY=event.clientY;swipePointer=event.pointerId;
-   }else if(event.pointerType==='mouse')stopCarousel();
+   }else if(event.pointerType==='mouse'){
+    stopCarousel();mouseDown=true;swipeX=event.clientX;swipeY=event.clientY;
+   }
   },{passive:true});
-  homeCarousel.addEventListener('pointerup',event=>{
-   if(swipePointer!==event.pointerId)return;
-   const dx=event.clientX-swipeX,dy=event.clientY-swipeY;swipePointer=null;
-   if(Math.abs(dx)>36&&Math.abs(dx)>Math.abs(dy)*1.15)show(current+(dx<0?1:-1));
-   startCarousel();
+  document.addEventListener('pointerup',event=>{
+   if(swipePointer===event.pointerId)finishSwipe(event.clientX,event.clientY,event.pointerId);
+   else if(mouseDown){mouseDown=false;const dx=event.clientX-swipeX,dy=event.clientY-swipeY;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.2)show(current+(dx<0?1:-1));startCarousel();}
   },{passive:true});
-  homeCarousel.addEventListener('pointercancel',event=>{if(swipePointer===event.pointerId)swipePointer=null;startCarousel();},{passive:true});
-  homeCarousel.addEventListener('pointerleave',event=>{if(event.pointerType==='mouse')startCarousel();},{passive:true});
+  document.addEventListener('pointercancel',event=>{
+   if(swipePointer===event.pointerId){swipePointer=null;startCarousel();}
+  },{passive:true});
+  homeCarousel.addEventListener('touchstart',event=>{
+   if(swipePointer!==null)return;
+   const t=event.changedTouches[0];if(!t)return;
+   stopCarousel();swipeX=t.clientX;swipeY=t.clientY;swipePointer='touch';
+  },{passive:true});
+  homeCarousel.addEventListener('touchend',event=>{
+   if(swipePointer!=='touch')return;
+   const t=event.changedTouches[0];if(t)finishSwipe(t.clientX,t.clientY,'touch');else{swipePointer=null;startCarousel();}
+  },{passive:true});
+  homeCarousel.addEventListener('touchcancel',()=>{if(swipePointer==='touch'){swipePointer=null;startCarousel();}},{passive:true});
+  homeCarousel.addEventListener('mouseenter',stopCarousel);
+  homeCarousel.addEventListener('mouseleave',startCarousel);
   homeCarousel.addEventListener('focusin',stopCarousel);
-  homeCarousel.addEventListener('focusout',event=>{if(!homeCarousel.contains(event.relatedTarget))startCarousel();});
+  homeCarousel.addEventListener('focusout',()=>{requestAnimationFrame(()=>{if(!homeCarousel.contains(document.activeElement))startCarousel();});});
   homeSlides.forEach(slide=>{
    const img=slide.querySelector('.kc-home-feature-image');
    if(img&&!img.dataset.kcCarouselErrorBound){
