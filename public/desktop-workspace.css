@@ -1,0 +1,45 @@
+/* Kinetic Crew desktop workspace.
+   Layout-only adaptation: reuse the existing mobile app components and visual
+   language. No desktop-specific colour, typography, card, or control redesign.
+   All rules are desktop-only; the mobile app is untouched. */
+@media (min-width:901px){
+  .shell{min-height:100vh!important}
+  .side{
+    position:fixed!important;inset:0 auto 0 0!important;
+    display:flex!important;width:292px!important;max-width:292px!important;height:100dvh!important;
+    padding:20px 14px 14px!important;overflow-x:hidden!important;overflow-y:auto!important;
+    transform:none!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+    transition:width .22s ease,transform .22s ease!important;
+  }
+  .side.open{transform:none!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+  .side .sidebottom{margin-top:auto!important;flex:0 0 auto!important}
+  .navshade{display:none!important}
+  main{
+    display:block!important;width:calc(100% - 292px)!important;min-width:0!important;
+    margin:0 0 0 292px!important;padding:0 0 36px!important;
+  }
+  .kc-mobile-topbar{
+    position:sticky!important;top:0!important;z-index:180!important;
+    display:flex!important;width:100%!important;max-width:none!important;height:68px!important;min-height:68px!important;
+    margin:0!important;padding:7px 22px!important;border-radius:0 0 20px 20px!important;
+  }
+  .content{
+    width:100%!important;max-width:1680px!important;
+    margin:0 auto!important;padding:28px clamp(22px,3vw,52px) 48px!important;
+  }
+  #kcMobileDock{display:none!important}
+  .kc-sidebar-collapsed .side{
+    width:0!important;max-width:0!important;min-width:0!important;
+    padding-left:0!important;padding-right:0!important;border:0!important;
+    overflow:hidden!important;transform:translate3d(-100%,0,0)!important;
+    visibility:hidden!important;opacity:0!important;pointer-events:none!important;
+  }
+  .kc-sidebar-collapsed main{width:100%!important;margin-left:0!important}
+  .kc-sidebar-collapsed .kc-mobile-topbar{width:100%!important}
+}
+@media (min-width:901px) and (max-width:1100px){
+  .side{width:264px!important;max-width:264px!important}
+  main{width:calc(100% - 264px)!important;margin-left:264px!important}
+  .content{padding-left:22px!important;padding-right:22px!important}
+  .kc-sidebar-collapsed main{width:100%!important;margin-left:0!important}
+}

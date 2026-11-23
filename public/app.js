@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
-window.KC_APP_VERSION='1.6.82';
+window.KC_APP_VERSION='1.6.84';
 let kcUpdatePending=false,kcUpdateReloading=false,kcPendingVersion='';
 const KC_UPDATE_GUARD='kc_update_reload_guard_v1';
 function kcReloadAlreadyUsed(version=''){try{return sessionStorage.getItem(KC_UPDATE_GUARD)===String(version||'service-worker');}catch{return new URL(location.href).searchParams.has('kc_refresh');}}
@@ -2572,6 +2572,17 @@ function setMobileMenu(open){
  const sidebar=$('#sidebar'),shade=$('#navShade'),toggle=$('#menuToggle');
  if(!sidebar||!shade)return;
  if(open&&$('#nav')&&!$('#nav').children.length&&typeof paint==='function')paint();
+ const desktop=window.matchMedia('(min-width: 901px)').matches;
+ if(desktop){
+  sidebar.classList.toggle('open',!!open);
+  document.body.classList.toggle('kc-sidebar-collapsed',!open);
+  sidebar.setAttribute('aria-hidden',open?'false':'true');
+  sidebar.style.transform='';sidebar.style.visibility='';sidebar.style.opacity='';sidebar.style.pointerEvents='';
+  shade.classList.remove('open');shade.style.display='none';
+  if(toggle){toggle.setAttribute('aria-expanded',open?'true':'false');toggle.setAttribute('aria-label',open?'Collapse navigation':'Expand navigation');}
+  document.body.classList.remove('kc-menu-open');
+  return;
+ }
  sidebar.classList.toggle('open',!!open);shade.classList.toggle('open',!!open);
  sidebar.setAttribute('aria-hidden',open?'false':'true');
  sidebar.style.transform=open?'translate3d(0,0,0)':'translate3d(-110%,0,0)';
@@ -2601,7 +2612,7 @@ document.addEventListener('keydown',event=>{
  }
 });
 let kcBackExitAt=0;window.addEventListener('popstate',event=>{if($('#sidebar')?.classList.contains('open'))setMobileMenu(false);const state=event.state;if(state?.kcApp&&typeof state.kcView==='string'){kcBackExitAt=0;go(state.kcView,{fromPop:true});return;}const now=Date.now();if(kcBackExitAt&&now-kcBackExitAt<=1800){const nativeApp=window.Capacitor?.Plugins?.App;if(nativeApp?.exitApp){nativeApp.exitApp();return;}kcBackExitAt=0;return;}kcBackExitAt=now;try{history.pushState({kcApp:true,kcView:S.view,kcRoot:true},'',location.href);}catch{}notice('Press back again to exit Kinetic Crew.');});
-$('#nav')?.addEventListener('click',event=>{if(event.target.closest('[data-view]'))setMobileMenu(false);});
+$('#nav')?.addEventListener('click',event=>{if(event.target.closest('[data-view]')&&!window.matchMedia('(min-width: 901px)').matches)setMobileMenu(false);});
 
 document.addEventListener('kc:navigate',event=>{const view=event.detail?.view;if(view)go(view);});
 document.addEventListener('click',event=>{const headerAction=event.target.closest('.kc-header-actions [data-view],.kc-header-brand[data-view]');if(!headerAction)return;event.preventDefault();go(headerAction.dataset.view);});
