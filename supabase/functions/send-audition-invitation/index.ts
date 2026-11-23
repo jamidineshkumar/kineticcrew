@@ -129,10 +129,14 @@ Deno.serve(async(req:Request)=>{
       if(existingProfileError) throw existingProfileError;
 
       if(existingProfile) {
-        const reusableRole=existingProfile.role==="audition_participant"&&existingProfile.approval_status==="approved";
-        if(!app.username||String(existingProfile.username||"").toLowerCase()!==String(app.username).toLowerCase()||!reusableRole) {
+        const alreadyAudition=existingProfile.role==="audition_participant"&&existingProfile.approval_status==="approved";
+        const safelyRecoverableRejectedAccount=existingProfile.role==="member"&&existingProfile.approval_status==="rejected";
+        const existingUsername=String(existingProfile.username||"").trim().toLowerCase();
+        if((!alreadyAudition&&!safelyRecoverableRejectedAccount)||
+          (app.username&&existingUsername!==String(app.username).toLowerCase())||
+          !/^[a-z0-9_]{3,24}$/.test(existingUsername)) {
           await releaseClaim();
-          return json({error:"This email already belongs to a different Kinetic Crew account. An existing member account will not be overwritten; ask an Admin to review the application."},409);
+          return json({error:"This email belongs to an existing account that cannot be safely reused for audition access. Ask an Admin to review the account link."},409);
         }
         const {data:otherApplication,error:otherApplicationError}=await db.from("crew_audition_applications")
           .select("id").eq("auth_id",existingProfile.auth_id).neq("id",id).maybeSingle();
@@ -141,7 +145,15 @@ Deno.serve(async(req:Request)=>{
           await releaseClaim();
           return json({error:"This sign-in account is already linked to another audition application."},409);
         }
-        username=String(existingProfile.username).toLowerCase();
+        username=existingUsername;
+        if(safelyRecoverableRejectedAccount) {
+          const {error:passwordError}=await db.auth.admin.updateUserById(existingProfile.auth_id,{
+            password,
+            email_confirm:true,
+            user_metadata:{full_name:String(app.name||"Audition applicant"),username}
+          });
+          if(passwordError) throw new Error("Could not safely reactivate the previously rejected audition account: "+passwordError.message);
+        }
         const {data:linked,error:linkError}=await userClient.rpc("crew_audition_attach_account",{
           p_application_id:id,p_auth_id:existingProfile.auth_id,p_username:username
         });
