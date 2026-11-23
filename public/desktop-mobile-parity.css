@@ -142,3 +142,56 @@
 @media (prefers-reduced-motion:reduce){
  @media (min-width:901px){.content{animation:none!important}*{scroll-behavior:auto!important;transition-duration:.01ms!important}}
 }
+
+
+/* Desktop-only navigation parity with the approved mobile drawer.
+   All rules are scoped to >=901px; the mobile layout is intentionally untouched. */
+@media (min-width:901px){
+ .side{
+  width:min(82vw,310px)!important;
+  max-width:310px!important;
+  padding:20px 14px 14px!important;
+  gap:0!important;
+ }
+ .side .brand{padding:0 8px 20px!important}
+ .side .brand-logo{width:44px!important;height:44px!important;flex-basis:44px!important}
+ .side .workspace{margin-bottom:20px!important;padding:11px!important}
+ .side .navtitle{padding:0 12px 9px!important}
+ #nav{
+  display:flex!important;flex-direction:column!important;
+  align-items:stretch!important;gap:10px!important;
+  width:100%!important;min-width:0!important;
+  padding:4px 0 18px!important;
+ }
+ #nav .nav-group{width:100%!important;min-width:0!important;margin:0 0 2px!important}
+ #nav .nav-group-toggle{
+  display:flex!important;width:100%!important;min-width:0!important;
+  min-height:54px!important;padding:9px 11px!important;
+ }
+ #nav .nav-group-label{flex:1 1 auto!important;min-width:0!important}
+ #nav .nav-group-label b{font-size:11px!important;letter-spacing:.10em!important}
+ #nav .nav-group-label small{font-size:10px!important;white-space:normal!important}
+ #nav .nav-group-items:not([hidden]){
+  display:flex!important;flex-direction:column!important;
+  align-items:stretch!important;gap:5px!important;
+  width:auto!important;min-width:0!important;
+  margin:4px 2px 2px 8px!important;padding:7px 6px 7px 11px!important;
+ }
+ #nav .nav-group-items>.navitem{
+  display:flex!important;flex-direction:row!important;
+  align-items:center!important;justify-content:flex-start!important;
+  width:100%!important;min-width:0!important;max-width:none!important;
+  min-height:42px!important;margin:0!important;padding:8px 10px!important;
+  white-space:normal!important;text-align:left!important;
+ }
+ #nav .nav-group-items>.navitem>span:not(.nicon){flex:1 1 auto!important;min-width:0!important}
+ #nav .nav-group-items>.navitem .nicon{flex:0 0 25px!important}
+ .side .sidebottom{margin-top:auto!important;flex:0 0 auto!important}
+ .side .motto{padding:13px!important;margin-bottom:10px!important}
+ .side .profile{padding:11px 4px 2px!important}
+ .navshade.open{
+  background:rgba(7,8,12,.48)!important;
+  backdrop-filter:blur(3px)!important;
+  -webkit-backdrop-filter:blur(3px)!important;
+ }
+}
