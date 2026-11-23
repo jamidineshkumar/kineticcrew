@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080910">
+<meta name="robots" content="noindex,nofollow">
+<title>Kinetic Crew · Audition Video</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="theme-overrides.css">
+<link rel="stylesheet" href="kc-audition-portal.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="supabase-client.js"></script>
+<style>
+.av-shell{width:min(920px,100%);margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) 16px calc(30px + env(safe-area-inset-bottom))}
+.av-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}
+.av-brand{font-weight:900;letter-spacing:.16em;font-size:12px}.av-brand small{display:block;letter-spacing:.12em;color:var(--ka-muted);margin-top:5px}
+.av-player{width:100%;aspect-ratio:16/9;min-height:240px;max-height:72vh;background:#000;border:1px solid var(--ka-line);border-radius:20px;overflow:hidden;display:grid;place-items:center}
+.av-player iframe,.av-player video{width:100%;height:100%;border:0;object-fit:contain;background:#000}
+.av-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.av-actions a{flex:1;min-width:180px;text-align:center;text-decoration:none}
+.av-note{font-size:13px;line-height:1.55;color:var(--ka-muted);margin-top:14px}
+@media(max-width:520px){.av-shell{padding-left:12px;padding-right:12px}.av-player{min-height:220px;aspect-ratio:4/3;border-radius:16px}.av-actions a{min-width:100%}}
+</style>
+</head>
+<body class="ka-body">
+<main class="av-shell">
+<header class="av-top">
+<div class="av-brand">KINETIC CREW<small>AUDITION VIDEO PLAYER</small></div>
+<a class="ka-icon-btn" href="audition-admin.html" aria-label="Back to audition management" style="text-decoration:none">← Back</a>
+</header>
+<section class="ka-panel" id="videoRoot" aria-live="polite"><div class="ka-empty">Loading audition video…</div></section>
+</main>
+<script>
+(()=>{'use strict';
+const client=window.kcSupabase,root=document.getElementById('videoRoot');
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fail=m=>{root.innerHTML='<div class="ka-error">'+esc(m)+'</div><div style="margin-top:14px"><a class="ka-action secondary" href="audition-admin.html" style="display:flex;justify-content:center;text-decoration:none">Back to Audition Management</a></div>';};
+async function init(){
+ try{
+  if(!client)throw new Error(window.KC_CONFIG_ERROR||'Supabase client unavailable.');
+  const {data:session}=await client.auth.getSession();
+  if(!session?.session){location.replace('login.html');return;}
+  const {data:access,error:accessError}=await client.rpc('crew_access_status',{});
+  if(accessError)throw accessError;
+  if(access?.status!=='approved'||!['admin','super_admin'].includes(access?.role)){location.replace('index.html');return;}
+  const id=new URLSearchParams(location.search).get('id');
+  if(!id)throw new Error('Missing audition application reference.');
+  const {data,error}=await client.rpc('crew_audition_list_applications',{});
+  if(error)throw error;
+  const applicant=(Array.isArray(data)?data:[]).find(a=>String(a.id)===String(id));
+  if(!applicant)throw new Error('This application is unavailable or you no longer have permission to view it.');
+  const url=String(applicant.video_url||'').trim();
+  if(!/^https:\/\//i.test(url))throw new Error('No valid audition video link was submitted.');
+  const driveId=(url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?id=)([A-Za-z0-9_-]+)/i)||[])[1];
+  let player='';
+  if(driveId){
+   const preview='https://drive.google.com/file/d/'+encodeURIComponent(driveId)+'/preview';
+   player='<iframe src="'+esc(preview)+'" title="Audition video for '+esc(applicant.name)+'" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+  }else if(/\.(mp4|webm|ogg)(\?|$)/i.test(url)){
+   player='<video controls playsinline preload="metadata" src="'+esc(url)+'">Your browser does not support HTML video.</video>';
+  }else{
+   player='<div class="ka-empty" style="padding:24px">This video host does not support embedded playback. Use the button below to open the original submission.</div>';
+  }
+  root.innerHTML='<div class="ka-eyebrow">SUBMITTED AUDITION VIDEO</div><h1 style="margin:8px 0 4px">'+esc(applicant.name||'Applicant')+'</h1><p class="ka-muted" style="margin:0 0 18px">'+esc(applicant.email||'')+'</p><div class="av-player">'+player+'</div><div class="av-actions"><a class="ka-action secondary" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">Open original video ↗</a><a class="ka-action" href="audition-admin.html">Back to applicant review</a></div><p class="av-note">If the player does not load, check that the Google Drive video is shared as “Anyone with the link · Viewer”. Review decisions remain on the Audition Management page.</p>';
+ }catch(e){console.error(e);fail(e?.message||'Could not load audition video.');}
+}
+init();
+})(); 
+</script>
+</body>
+</html>
