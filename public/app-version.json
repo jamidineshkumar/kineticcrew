@@ -1,6 +1,6 @@
 {
-  "version": "1.6.75",
+  "version": "1.6.76",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T10:30:00+05:30",
-  "release_notes": "Use a full-width grey glass overlay on the rectangular event banner and stabilize KC Voice wake-word recognition for Android Chrome with a resume control and single active recognition session."
+  "updated_at": "2026-11-23T10:45:00+05:30",
+  "release_notes": "KC Voice now times out unanswered commands and follow-up prompts after five seconds, clears pending actions, and returns silently to Hey KC wake-word standby."
 }
