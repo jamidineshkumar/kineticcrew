@@ -62,6 +62,17 @@ Deno.serve(async(req:Request)=>{
    const {error:storageError}=await admin.storage.from("audition-videos").remove([videoPath]);
    if(storageError)throw new Error("Application record deleted, but audition video storage cleanup failed: "+storageError.message);
   }
+  const storageGroups=new Map<string,string[]>();
+  for(const item of Array.isArray(result.storage_cleanup)?result.storage_cleanup:[]){
+   const bucket=String(item?.bucket||"").trim(),path=String(item?.path||"").trim();
+   if(!bucket||!path)continue;
+   if(!storageGroups.has(bucket))storageGroups.set(bucket,[]);
+   storageGroups.get(bucket)!.push(path);
+  }
+  for(const [bucket,paths] of storageGroups){
+   const {error:storageError}=await admin.storage.from(bucket).remove([...new Set(paths)]);
+   if(storageError)throw new Error("Application data was deleted, but account media cleanup failed in "+bucket+": "+storageError.message);
+  }
   if(result.account_deleted&&result.auth_id){
    const {error:authDeleteError}=await admin.auth.admin.deleteUser(String(result.auth_id));
    if(authDeleteError)throw new Error("Application data was deleted, but the audition login account still needs removal: "+authDeleteError.message);
