@@ -1,6 +1,6 @@
 {
-  "version": "1.6.79",
+  "version": "1.6.78",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T00:00:00+05:30",
-  "release_notes": "Remove KC Meet blocks from event discovery and ticket views, replace the event header shortcut with Discover, and refresh the event interface."
+  "updated_at": "2026-11-23T12:20:00+05:30",
+  "release_notes": "Fix Android homepage carousel swipes and display full square event artwork in a wide rectangular banner with compact translucent grey glass text."
 }
