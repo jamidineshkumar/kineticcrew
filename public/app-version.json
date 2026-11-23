@@ -1,6 +1,6 @@
 {
-  "version": "1.6.77",
+  "version": "1.6.78",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T11:15:00+05:30",
-  "release_notes": "Restore the missing Events page category navigation and event cards, and include up to ten upcoming/recent events in the homepage carousel without interleaving promo slides."
+  "updated_at": "2026-11-23T11:35:00+05:30",
+  "release_notes": "Use square-only event banner uploads and a square carousel stage, with square previews and event artwork while preserving all event cards and carousel slides."
 }
