@@ -1171,8 +1171,9 @@ function home(){
  if(!rehearsals.length)slides.push({kind:'rehearsal',view:'rehearsals',kicker:'KINETIC CREW · PRACTICE SESSIONS',label:'MAKE THE NEXT MOVE',title:'Plan your next practice session',subtitle:'Create a rehearsal, choose a time and share the venue with your crew.',cta:'Open rehearsals',image:''});
  const crewPromo={kind:'promo',view:'more',kicker:'KINETIC CREW · ONE CREW, ONE RHYTHM',label:'ONE CREW · ONE RHYTHM',title:'Kinetic Crew',subtitle:'Events, rehearsals, auditions and every moment that brings the crew together.',cta:'Explore the crew',image:''};
  const contentSlides=slides.splice(0);
- if(!contentSlides.length)slides.push({...crewPromo});
- else {slides.push(...contentSlides);slides.push({...crewPromo});}
+ // Keep real events, rehearsals and announcements consecutive; one promo only at the end.
+ if(contentSlides.length)slides.push(...contentSlides);
+ else slides.push({...crewPromo});
  const pollItems=[...(S.featureItems?.polls||[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
  const updateItems=[...announcements.slice(0,2).map(a=>({kind:'announcement',created_at:a.created_at,item:a})),...(pollItems.length?[{kind:'poll',created_at:pollItems[0].created_at,item:pollItems[0]}]:[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
  const updates=updateItems.map((entry,i)=>{
@@ -1695,7 +1696,8 @@ if(S.view==='overview'){
  const homeDots=[...(homeCarousel?.querySelectorAll('[data-home-slide-to]')||[])];
  if(homeCarousel&&homeSlides.length){
   let current=Math.max(0,homeSlides.findIndex(slide=>slide.classList.contains('is-active')));
-  let swipeX=0,swipeY=0,activePointer=null,mouseDown=false;
+  let swipeStartX=0,swipeStartY=0,swipePointer=null,mouseStart=null;
+  const reducedMotion=()=>!!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   const stopCarousel=()=>{if(S.homeCarouselTimer){clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=null;}};
   const show=next=>{
    current=((Math.trunc(Number(next)||0)%homeSlides.length)+homeSlides.length)%homeSlides.length;
@@ -1712,81 +1714,26 @@ if(S.view==='overview'){
     slide.style.setProperty('pointer-events',active?'auto':'none','important');
     slide.style.setProperty('transform','translate3d(0,0,0)','important');
     slide.style.setProperty('z-index',active?'3':'0','important');
-    slide.style.setProperty('transition','opacity .42s ease,visibility .42s ease','important');
    });
-   homeDots.forEach((dot,i)=>{
-    const active=i===current;
-    dot.classList.toggle('active',active);
-    dot.setAttribute('aria-current',active?'true':'false');
-    dot.setAttribute('aria-label','Show slide '+(i+1)+' of '+homeSlides.length);
-   });
+   homeDots.forEach((dot,i)=>{const active=i===current;dot.classList.toggle('active',active);dot.setAttribute('aria-current',active?'true':'false');dot.setAttribute('aria-label','Show slide '+(i+1)+' of '+homeSlides.length);});
   };
-  const startCarousel=()=>{
-   stopCarousel();
-   if(homeSlides.length>1&&!document.hidden&&homeCarousel.isConnected){
-    S.homeCarouselTimer=setInterval(()=>show(current+1),5200);
-   }
-  };
-  const completeSwipe=(x,y)=>{
-   const dx=x-swipeX,dy=y-swipeY;
-   activePointer=null;
-   if(Math.abs(dx)>36&&Math.abs(dx)>Math.abs(dy)*1.15)show(current+(dx<0?1:-1));
-   startCarousel();
-  };
+  const startCarousel=()=>{stopCarousel();if(homeSlides.length>1&&!document.hidden&&!reducedMotion()&&homeCarousel.isConnected&&!homeCarousel.matches(':hover')&&!homeCarousel.contains(document.activeElement))S.homeCarouselTimer=setInterval(()=>show(current+1),5200);};
+  const finishSwipe=(x,y)=>{const dx=x-swipeStartX,dy=y-swipeStartY;if(Math.abs(dx)>36&&Math.abs(dx)>Math.abs(dy)*1.15)show(current+(dx<0?1:-1));swipePointer=null;mouseStart=null;startCarousel();};
   show(current);
-  homeDots.forEach(dot=>dot.addEventListener('click',event=>{
-   event.preventDefault();event.stopPropagation();
-   show(Number(dot.dataset.homeSlideTo));startCarousel();
-  }));
+  homeDots.forEach(dot=>dot.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();show(Number(dot.dataset.homeSlideTo));startCarousel();}));
   homeCarousel.style.setProperty('touch-action','pan-y pinch-zoom','important');
-  homeCarousel.addEventListener('pointerdown',event=>{
-   if(event.pointerType==='touch'||event.pointerType==='pen'){
-    stopCarousel();swipeX=event.clientX;swipeY=event.clientY;activePointer=event.pointerId;
-   }else if(event.pointerType==='mouse'){
-    stopCarousel();swipeX=event.clientX;swipeY=event.clientY;mouseDown=true;
-   }
-  },{passive:true});
-  // Listen on document so a finger released just outside the banner still completes the swipe.
-  document.addEventListener('pointerup',event=>{
-   if(activePointer===event.pointerId)completeSwipe(event.clientX,event.clientY);
-   else if(mouseDown){
-    mouseDown=false;
-    const dx=event.clientX-swipeX,dy=event.clientY-swipeY;
-    if(Math.abs(dx)>48&&Math.abs(dx)>Math.abs(dy)*1.15)show(current+(dx<0?1:-1));
-    startCarousel();
-   }
-  },{passive:true});
-  document.addEventListener('pointercancel',event=>{
-   if(activePointer===event.pointerId){activePointer=null;startCarousel();}
-  },{passive:true});
-  // Touch fallback for Android WebViews/browsers that do not complete Pointer Events consistently.
-  homeCarousel.addEventListener('touchstart',event=>{
-   if(activePointer!==null)return;
-   const touch=event.changedTouches[0];if(!touch)return;
-   stopCarousel();swipeX=touch.clientX;swipeY=touch.clientY;activePointer='touch';
-  },{passive:true});
-  homeCarousel.addEventListener('touchend',event=>{
-   if(activePointer!=='touch')return;
-   const touch=event.changedTouches[0];
-   if(touch)completeSwipe(touch.clientX,touch.clientY);else{activePointer=null;startCarousel();}
-  },{passive:true});
-  homeCarousel.addEventListener('touchcancel',()=>{if(activePointer==='touch'){activePointer=null;startCarousel();}},{passive:true});
-  homeCarousel.addEventListener('mouseenter',stopCarousel);
-  homeCarousel.addEventListener('mouseleave',startCarousel);
-  homeCarousel.addEventListener('focusin',stopCarousel);
-  homeCarousel.addEventListener('focusout',()=>{requestAnimationFrame(()=>{if(!homeCarousel.contains(document.activeElement))startCarousel();});});
-  homeSlides.forEach(slide=>{
-   const img=slide.querySelector('.kc-home-feature-image');
-   if(img&&!img.dataset.kcCarouselErrorBound){
-    img.dataset.kcCarouselErrorBound='true';
-    img.addEventListener('error',()=>{img.hidden=true;img.style.setProperty('display','none','important');slide.style.removeProperty('--kc-home-feature-image');slide.classList.add('has-image-error');});
-    img.addEventListener('load',()=>{img.hidden=false;img.style.removeProperty('display');slide.classList.remove('has-image-error');});
-   }
-  });
+  homeCarousel.addEventListener('pointerdown',event=>{if(event.target.closest('.kc-home-featured-dots'))return;if(event.pointerType==='touch'||event.pointerType==='pen'){stopCarousel();swipeStartX=event.clientX;swipeStartY=event.clientY;swipePointer=event.pointerId;}else if(event.pointerType==='mouse'){stopCarousel();mouseStart={x:event.clientX,y:event.clientY};}},{passive:true});
+  document.addEventListener('pointerup',event=>{if(swipePointer===event.pointerId)finishSwipe(event.clientX,event.clientY);else if(mouseStart){const dx=event.clientX-mouseStart.x,dy=event.clientY-mouseStart.y;mouseStart=null;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.15)show(current+(dx<0?1:-1));startCarousel();}},{passive:true});
+  document.addEventListener('pointercancel',event=>{if(swipePointer===event.pointerId){swipePointer=null;startCarousel();}},{passive:true});
+  homeCarousel.addEventListener('touchstart',event=>{if(swipePointer!==null)return;const t=event.changedTouches[0];if(!t)return;stopCarousel();swipeStartX=t.clientX;swipeStartY=t.clientY;swipePointer='touch';},{passive:true});
+  homeCarousel.addEventListener('touchend',event=>{if(swipePointer!=='touch')return;const t=event.changedTouches[0];if(t)finishSwipe(t.clientX,t.clientY);else{swipePointer=null;startCarousel();}},{passive:true});
+  homeCarousel.addEventListener('touchcancel',()=>{if(swipePointer==='touch'){swipePointer=null;startCarousel();}},{passive:true});
+  homeCarousel.addEventListener('mouseenter',stopCarousel);homeCarousel.addEventListener('mouseleave',startCarousel);
+  homeCarousel.addEventListener('focusin',stopCarousel);homeCarousel.addEventListener('focusout',()=>requestAnimationFrame(()=>{if(!homeCarousel.contains(document.activeElement))startCarousel();}));
+  homeSlides.forEach(slide=>{const img=slide.querySelector('.kc-home-feature-image');if(img&&!img.dataset.kcCarouselErrorBound){img.dataset.kcCarouselErrorBound='true';img.addEventListener('error',()=>{img.hidden=true;img.style.setProperty('display','none','important');slide.style.removeProperty('--kc-home-feature-image');slide.classList.add('has-image-error');});img.addEventListener('load',()=>{img.hidden=false;img.style.removeProperty('display');slide.classList.remove('has-image-error');});}});
   if(S.homeCarouselVisibilityHandler)document.removeEventListener('visibilitychange',S.homeCarouselVisibilityHandler);
-  S.homeCarouselVisibilityHandler=()=>{if(!homeCarousel.isConnected){stopCarousel();return;}if(document.hidden)stopCarousel();else startCarousel();};
-  document.addEventListener('visibilitychange',S.homeCarouselVisibilityHandler);
-  startCarousel();
+  S.homeCarouselVisibilityHandler=()=>{if(!homeCarousel.isConnected)return;if(document.hidden)stopCarousel();else startCarousel();};
+  document.addEventListener('visibilitychange',S.homeCarouselVisibilityHandler);startCarousel();
  }
  const rail=document.querySelector('.kc-home-updates'),track=rail?.querySelector('.kc-home-updates-track'),dots=[...(rail?.querySelectorAll('.kc-home-update-dots span')||[])],count=dots.length;
  if(track&&count>1){
