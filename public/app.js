@@ -1695,31 +1695,70 @@ if(S.view==='overview'){
  const homeDots=[...(homeCarousel?.querySelectorAll('[data-home-slide-to]')||[])];
  if(homeCarousel&&homeSlides.length){
   let current=Math.max(0,homeSlides.findIndex(slide=>slide.classList.contains('is-active')));
-  const reducedMotion=()=>!!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  const stopCarousel=()=>{if(S.homeCarouselTimer){clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=null;}};
-  const startCarousel=()=>{stopCarousel();if(homeSlides.length>1&&!document.hidden&&!reducedMotion()&&homeCarousel.isConnected)S.homeCarouselTimer=setInterval(()=>show(current+1),5200);};
+  let timer=null,swipeX=0,swipeY=0,swipePointer=null;
+  const stopCarousel=()=>{if(timer){clearInterval(timer);timer=null;}S.homeCarouselTimer=null;};
   const show=next=>{
    current=((Number(next)||0)%homeSlides.length+homeSlides.length)%homeSlides.length;
    homeSlides.forEach((slide,i)=>{
-    const active=i===current,previous=i===(current-1+homeSlides.length)%homeSlides.length,nextSlide=i===(current+1)%homeSlides.length;
-    slide.classList.toggle('is-active',active);slide.classList.toggle('is-prev',previous);slide.classList.toggle('is-next',nextSlide);slide.classList.toggle('is-hidden-side',!active&&!previous&&!nextSlide);
-    slide.setAttribute('aria-hidden',active?'false':'true');slide.inert=!active;
+    const active=i===current;
+    slide.classList.toggle('is-active',active);
+    slide.setAttribute('aria-hidden',active?'false':'true');
+    slide.inert=!active;
+    slide.style.setProperty('position','absolute','important');
+    slide.style.setProperty('inset','0','important');
+    slide.style.setProperty('display','block','important');
+    slide.style.setProperty('opacity',active?'1':'0','important');
+    slide.style.setProperty('visibility',active?'visible':'hidden','important');
+    slide.style.setProperty('pointer-events',active?'auto':'none','important');
+    slide.style.setProperty('transform',active?'translate3d(0,0,0)':'translate3d(0,0,0)','important');
+    slide.style.setProperty('z-index',active?'3':'0','important');
+    slide.style.setProperty('transition','opacity .42s ease,visibility .42s ease','important');
    });
-   homeDots.forEach((dot,i)=>{const active=i===current;dot.classList.toggle('active',active);dot.setAttribute('aria-current',active?'true':'false');dot.setAttribute('aria-label','Show slide '+(i+1)+' of '+homeSlides.length);});
+   homeDots.forEach((dot,i)=>{
+    const active=i===current;
+    dot.classList.toggle('active',active);
+    dot.setAttribute('aria-current',active?'true':'false');
+    dot.setAttribute('aria-label','Show slide '+(i+1)+' of '+homeSlides.length);
+   });
+  };
+  const startCarousel=()=>{
+   stopCarousel();
+   if(homeSlides.length>1&&!document.hidden&&homeCarousel.isConnected){
+    timer=setInterval(()=>show(current+1),5200);
+    S.homeCarouselTimer=timer;
+   }
   };
   show(current);
-  homeDots.forEach(dot=>dot.addEventListener('click',()=>{show(Number(dot.dataset.homeSlideTo));startCarousel();}));
-  let swipeStartX=0,swipeStartY=0,swiping=false;
-  homeCarousel.addEventListener('pointerdown',event=>{if(event.pointerType==='touch'||event.pointerType==='pen'){stopCarousel();swipeStartX=event.clientX;swipeStartY=event.clientY;swiping=true;}});
-  homeCarousel.addEventListener('pointerup',event=>{if(!swiping)return;const dx=event.clientX-swipeStartX,dy=event.clientY-swipeStartY;swiping=false;if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy))show(current+(dx<0?1:-1));startCarousel();});
-  homeCarousel.addEventListener('pointercancel',()=>{swiping=false;startCarousel();});
-  homeCarousel.addEventListener('mouseenter',stopCarousel);
-  homeCarousel.addEventListener('mouseleave',startCarousel);
+  homeDots.forEach(dot=>dot.addEventListener('click',event=>{
+   event.preventDefault();event.stopPropagation();
+   show(Number(dot.dataset.homeSlideTo));startCarousel();
+  }));
+  homeCarousel.style.setProperty('touch-action','pan-y pinch-zoom','important');
+  homeCarousel.addEventListener('pointerdown',event=>{
+   if(event.pointerType==='touch'||event.pointerType==='pen'){
+    stopCarousel();swipeX=event.clientX;swipeY=event.clientY;swipePointer=event.pointerId;
+   }else if(event.pointerType==='mouse')stopCarousel();
+  },{passive:true});
+  homeCarousel.addEventListener('pointerup',event=>{
+   if(swipePointer!==event.pointerId)return;
+   const dx=event.clientX-swipeX,dy=event.clientY-swipeY;swipePointer=null;
+   if(Math.abs(dx)>36&&Math.abs(dx)>Math.abs(dy)*1.15)show(current+(dx<0?1:-1));
+   startCarousel();
+  },{passive:true});
+  homeCarousel.addEventListener('pointercancel',event=>{if(swipePointer===event.pointerId)swipePointer=null;startCarousel();},{passive:true});
+  homeCarousel.addEventListener('pointerleave',event=>{if(event.pointerType==='mouse')startCarousel();},{passive:true});
   homeCarousel.addEventListener('focusin',stopCarousel);
   homeCarousel.addEventListener('focusout',event=>{if(!homeCarousel.contains(event.relatedTarget))startCarousel();});
-  homeSlides.forEach(slide=>{const img=slide.querySelector('.kc-home-feature-image');if(img&&!img.dataset.kcCarouselErrorBound){img.dataset.kcCarouselErrorBound='true';img.addEventListener('error',()=>{img.hidden=true;img.style.setProperty('display','none','important');slide.style.removeProperty('--kc-home-feature-image');slide.classList.add('has-image-error');});img.addEventListener('load',()=>{img.hidden=false;img.style.removeProperty('display');slide.classList.remove('has-image-error');});}});
+  homeSlides.forEach(slide=>{
+   const img=slide.querySelector('.kc-home-feature-image');
+   if(img&&!img.dataset.kcCarouselErrorBound){
+    img.dataset.kcCarouselErrorBound='true';
+    img.addEventListener('error',()=>{img.hidden=true;img.style.setProperty('display','none','important');slide.style.removeProperty('--kc-home-feature-image');slide.classList.add('has-image-error');});
+    img.addEventListener('load',()=>{img.hidden=false;img.style.removeProperty('display');slide.classList.remove('has-image-error');});
+   }
+  });
   if(S.homeCarouselVisibilityHandler)document.removeEventListener('visibilitychange',S.homeCarouselVisibilityHandler);
-  S.homeCarouselVisibilityHandler=()=>{if(!homeCarousel.isConnected)return;if(document.hidden)stopCarousel();else startCarousel();};
+  S.homeCarouselVisibilityHandler=()=>{if(!homeCarousel.isConnected){stopCarousel();return;}if(document.hidden)stopCarousel();else startCarousel();};
   document.addEventListener('visibilitychange',S.homeCarouselVisibilityHandler);
   startCarousel();
  }
