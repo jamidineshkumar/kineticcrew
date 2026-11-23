@@ -1,6 +1,6 @@
 {
-  "version": "1.6.73",
+  "version": "1.6.74",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T02:45:00+05:30",
-  "release_notes": "Add a permanent KC Voice entry in App Settings and correct featured-carousel artwork sizing without changing the official crew logo."
+  "updated_at": "2026-11-23T10:00:00+05:30",
+  "release_notes": "Restore full-width glass event banner artwork, prevent text overlap, refresh dynamic brand logo loader, and retain KC Voice in App Settings."
 }
