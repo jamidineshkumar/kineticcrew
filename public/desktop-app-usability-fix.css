@@ -1,0 +1,95 @@
+/* Desktop app usability pass. Scoped to desktop so the approved mobile app is unchanged. */
+@media (min-width:901px){
+ html,body,#appRoot,.shell{min-height:100%;width:100%;max-width:none}
+ body{overflow-x:hidden}
+ .kc-mobile-topbar{
+  width:calc(100% - 48px)!important;max-width:none!important;
+  margin:12px 24px 22px!important;padding:7px 14px!important;
+  justify-content:flex-start!important;gap:16px!important;
+ }
+ .kc-mobile-topbar:after{left:76px!important}
+ .kc-mobile-topbar .kc-header-actions{margin-left:auto!important}
+ .kc-menu-button{flex:0 0 46px!important}
+ main{width:100%!important;min-width:0!important;margin:0!important;padding:0 0 150px!important}
+ .content{
+  width:calc(100% - 64px)!important;max-width:1480px!important;
+  margin:0 auto!important;padding:12px 0 42px!important;
+ }
+ body.kc-home-screen .content{
+  width:calc(100% - 64px)!important;max-width:1600px!important;
+  padding:8px 0 160px!important;margin:0 auto!important;
+ }
+ body.kc-home-screen .kc-exact-home,body.kc-home-screen .kc-home-reference{
+  width:100%!important;max-width:none!important;margin:0 auto!important;
+ }
+ body.kc-home-screen .kc-home-reference-header{margin:8px 0 26px!important}
+ body.kc-home-screen .kc-home-greeting{
+  grid-template-columns:minmax(0,1.45fr) minmax(220px,.55fr)!important;
+  gap:32px!important;margin-bottom:30px!important;
+ }
+ body.kc-home-screen .kc-home-greeting h1{font-size:clamp(40px,4.1vw,64px)!important}
+ body.kc-home-screen .kc-home-greeting-mark{justify-self:end}
+ body.kc-home-screen .kc-home-featured,
+ body.kc-home-screen .kc-home-featured-track{min-height:clamp(360px,34vw,500px)!important}
+ body.kc-home-screen .kc-home-featured{margin-bottom:42px!important}
+ body.kc-home-screen .kc-home-featured-art{min-height:240px!important;padding:28px!important}
+ body.kc-home-screen .kc-home-featured-glass{
+  max-width:min(680px,62%)!important;margin:0 24px 24px!important;padding:26px 30px!important;
+ }
+ body.kc-home-screen .kc-home-reference-section{margin-bottom:36px!important}
+ body.kc-home-screen .kc-exact-update-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ body:has(.kc-single-profile) .content{max-width:1440px!important}
+ .kc-single-profile{
+  display:grid!important;grid-template-columns:minmax(390px,.88fr) minmax(0,1.12fr)!important;
+  align-items:start!important;justify-content:stretch!important;gap:22px 28px!important;
+  width:100%!important;max-width:none!important;min-height:0!important;
+  padding:16px 0 160px!important;overflow:visible!important;
+ }
+ .kc-single-profile .kc-profile-flip-shell{
+  grid-column:1!important;grid-row:1!important;width:100%!important;
+  max-width:none!important;min-height:500px!important;
+ }
+ .kc-single-profile .kc-profile-flip-inner,
+ .kc-single-profile .kc-liquid-profile-card,
+ .kc-single-profile .kc-profile-card-back{
+  width:100%!important;max-width:none!important;min-height:500px!important;height:100%!important;
+ }
+ .kc-single-profile .kc-liquid-profile-card{padding:22px 30px 34px!important}
+ .kc-single-profile .kc-liquid-profile-photo{width:clamp(150px,16vw,220px)!important;margin:28px auto 20px!important}
+ .kc-single-profile .kc-profile-flip-hint{grid-column:1!important;grid-row:2!important;width:100%!important}
+ .kc-single-profile .kc-profile-editor{
+  grid-column:1!important;grid-row:3!important;width:100%!important;max-width:none!important;
+  margin:0!important;padding:20px!important;
+ }
+ .kc-single-profile .kc-profile-activity{
+  grid-column:2!important;grid-row:1 / span 3!important;min-width:0!important;
+  width:100%!important;margin:0!important;
+ }
+ .kc-single-profile .kc-profile-metrics{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .kc-single-profile .kc-profile-activity-tabs{flex-wrap:wrap!important}
+ .kc-single-profile .kc-profile-activity-panel{min-width:0!important}
+ .side{
+  display:flex!important;position:fixed!important;inset:0 auto 0 0!important;
+  width:min(340px,86vw)!important;height:100dvh!important;
+  transform:translate3d(-110%,0,0)!important;visibility:hidden!important;
+  opacity:0!important;pointer-events:none!important;z-index:20000!important;
+ }
+ .side.open{
+  transform:translate3d(0,0,0)!important;visibility:visible!important;
+  opacity:1!important;pointer-events:auto!important;
+ }
+ .navshade{display:none!important;position:fixed!important;inset:0!important;z-index:19990!important;pointer-events:none!important}
+ .navshade.open{display:block!important;pointer-events:auto!important}
+ body.kc-menu-open{overflow:hidden!important}
+ #menuToggle{position:relative!important;z-index:20001!important;cursor:pointer!important}
+ #sidebar .nav-group-toggle,#sidebar .navitem,#sidebar [data-kc-signout]{cursor:pointer!important;pointer-events:auto!important}
+}
+@media (min-width:901px) and (max-width:1100px){
+ body.kc-home-screen .content,.content{width:calc(100% - 40px)!important}
+ .kc-single-profile{grid-template-columns:minmax(0,1fr)!important}
+ .kc-single-profile .kc-profile-flip-shell,.kc-single-profile .kc-profile-flip-hint,
+ .kc-single-profile .kc-profile-editor,.kc-single-profile .kc-profile-activity{
+  grid-column:1!important;grid-row:auto!important
+ }
+ .kc-single-profile .kc-liquid-profile-card{max-width:640px!important;margin:0 auto!important}
+}
