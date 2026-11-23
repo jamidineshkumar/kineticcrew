@@ -8,6 +8,28 @@
  const sidebar=()=>document.getElementById('sidebar');
  const shade=()=>document.getElementById('navShade');
  const toggle=()=>document.getElementById('menuToggle');
+ function ensureDesktopMoreLink(){
+  const nav=document.getElementById('nav');
+  if(!nav)return;
+  let link=nav.querySelector('[data-kc-desktop-more]');
+  if(!desktop()){
+   if(link)link.remove();
+   return;
+  }
+  if(!link){
+   link=document.createElement('button');
+   link.type='button';
+   link.className='navitem kc-desktop-more-link';
+   link.dataset.view='more';
+   link.dataset.kcDesktopMore='true';
+   link.innerHTML='<span class="nicon" aria-hidden="true">✦</span><span>Explore all features</span>';
+   const signout=nav.querySelector('[data-kc-signout],.kc-nav-signout');
+   nav.insertBefore(link,signout||null);
+  }
+  const active=document.body.classList.contains('kc-more-open');
+  link.classList.toggle('active',active);
+  if(active)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');
+ }
  function setOpen(open){
   const panel=sidebar(),overlay=shade(),button=toggle();
   if(!panel||!overlay)return;
@@ -38,5 +60,9 @@
   if(desktop()&&event.key==='Escape'&&sidebar()?.classList.contains('open'))setOpen(false);
  });
  window.addEventListener('resize',()=>{if(!desktop())setOpen(false);});
+ const navRoot=document.getElementById('nav');
+ if(navRoot)new MutationObserver(()=>ensureDesktopMoreLink()).observe(navRoot,{childList:true,subtree:true});
+ new MutationObserver(()=>ensureDesktopMoreLink()).observe(document.body,{attributes:true,attributeFilter:['class']});
+ ensureDesktopMoreLink();
  setOpen(false);
 })();
