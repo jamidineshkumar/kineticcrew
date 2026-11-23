@@ -1,6 +1,6 @@
 {
   "version": "1.6.76",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T11:15:00+05:30",
-  "release_notes": "Stabilize featured event carousel stacking, autoplay, swipe gestures and tappable slide indicators on mobile."
+  "updated_at": "2026-11-23T11:00:00+05:30",
+  "release_notes": "Fix homepage carousel ordering and Android touch navigation; show real event slides consecutively without interleaved promo slides."
 }
