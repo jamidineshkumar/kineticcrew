@@ -1,6 +1,6 @@
 {
-  "version": "1.6.74",
+  "version": "1.6.75",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T10:00:00+05:30",
-  "release_notes": "Restore full-width glass event banner artwork, prevent text overlap, refresh dynamic brand logo loader, and retain KC Voice in App Settings."
+  "updated_at": "2026-11-23T10:30:00+05:30",
+  "release_notes": "Use a full-width grey glass overlay on the rectangular event banner and stabilize KC Voice wake-word recognition for Android Chrome with a resume control and single active recognition session."
 }
