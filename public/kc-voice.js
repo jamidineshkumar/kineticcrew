@@ -66,8 +66,8 @@ if(has(text,["register me","book my place","join event","reserve my place","ర�
 respond(lang()==="te"?"ఆ అభ్యర్థనను అర్థం చేసుకోలేకపోయాను. సహాయం కోసం అడగండి.":lang()==="hi"?"मैं इस अनुरोध को समझ नहीं पाया। मदद के लिए पूछें।":"I couldn't match that request to an available Kinetic Crew action. Say help.");}
 function transcript(raw){
  if(!S.armed){
-  const cleaned=String(raw||"").replace(/[.,!?;:]/g," ").replace(/\\s+/g," ").trim();
-  const wake=/hey\\s*(?:k\\s*c|kc|kay\\s*see|k\\s*see|kinetic\\s*crew)|హే\\s*కే\\s*సి|हे\\s*के\\s*सी/i.exec(cleaned);
+  const cleaned=String(raw||"").replace(/[.,!?;:]/g," ").replace(/\s+/g," ").trim();
+  const wake=/hey\s*(?:k\s*c|kc|kay\s*see|k\s*see|kinetic\s*crew)|హే\s*కే\s*సి|हे\s*के\s*सी/i.exec(cleaned);
   if(!wake)return;
   const rest=cleaned.slice(wake.index+wake[0].length).trim();
   S.armed=true;line("listening");voiceStatus();clearTimeout(S.commandTimer);
