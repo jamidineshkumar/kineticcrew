@@ -2,7 +2,7 @@
    Desktop now uses the same authenticated app shell, graphite glass surfaces,
    compact top controls and floating navigation as the approved mobile UI.
    This file is presentation-only; it does not alter app routes or data. */
-@media (min-width:901px){
+@media (min-width:768px){
  :root{--kc-pc-bg:#090a0c;--kc-pc-glass:rgba(30,31,35,.72);--kc-pc-line:rgba(255,255,255,.12);--kc-pc-muted:#aaa7ad;--kc-pc-accent:#f19a83}
  html,body{min-height:100%;background:#090a0c!important;color:#f4f2f4!important}
  body{background:radial-gradient(ellipse at 12% 0%,rgba(235,145,126,.09),transparent 34%),radial-gradient(ellipse at 88% 28%,rgba(143,126,214,.09),transparent 36%),#090a0c!important}
@@ -135,18 +135,18 @@
  /* Avoid mobile-only breakpoints hiding desktop controls or creating a second shell. */
  .kc-mobile-topbar .kc-header-actions{display:flex!important}
 }
-@media (min-width:901px) and (max-width:1100px){
+@media (min-width:768px) and (max-width:1100px){
  .content{width:calc(100% - 44px)!important}
  .kc-mobile-topbar{width:calc(100% - 44px)!important}
 }
 @media (prefers-reduced-motion:reduce){
- @media (min-width:901px){.content{animation:none!important}*{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+ @media (min-width:768px){.content{animation:none!important}*{scroll-behavior:auto!important;transition-duration:.01ms!important}}
 }
 
 
 /* Desktop-only navigation parity with the approved mobile drawer.
    All rules are scoped to >=901px; the mobile layout is intentionally untouched. */
-@media (min-width:901px){
+@media (min-width:768px){
  .side{
   width:min(82vw,310px)!important;
   max-width:310px!important;
@@ -198,7 +198,7 @@
 
 
 /* Desktop-only shortcut to the same complete More hub available in the mobile app. */
-@media (min-width:901px){
+@media (min-width:768px){
  #nav .kc-desktop-more-link{
   display:flex!important;align-items:center!important;gap:11px!important;
   width:100%!important;min-height:46px!important;margin:8px 0 2px!important;
@@ -215,7 +215,7 @@
 
 /* FIX: scope desktop More parity to the real #app page node.
    The app never sets body.kc-more-open; #app receives .kc-more-reference. */
-@media (min-width:901px){
+@media (min-width:768px){
  body:has(#app .kc-more-reference) .kc-mobile-topbar{
   width:min(calc(100% - 48px),760px)!important;margin:14px auto 14px!important
  }
@@ -302,7 +302,7 @@
  #kcMobileDock .dock-label{font-size:14px!important;line-height:18px!important;font-weight:650!important}
  main{padding-bottom:132px!important}
 }
-@media (min-width:901px) and (max-width:1100px){
+@media (min-width:768px) and (max-width:1100px){
  #app:has(.kc-more-reference){width:min(calc(100% - 36px),760px)!important}
  body:has(#app .kc-more-reference) .kc-mobile-topbar{width:min(calc(100% - 36px),760px)!important}
 }
