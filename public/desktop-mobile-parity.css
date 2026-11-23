@@ -195,3 +195,18 @@
   -webkit-backdrop-filter:blur(3px)!important;
  }
 }
+
+
+/* Desktop-only shortcut to the same complete More hub available in the mobile app. */
+@media (min-width:901px){
+ #nav .kc-desktop-more-link{
+  display:flex!important;align-items:center!important;gap:11px!important;
+  width:100%!important;min-height:46px!important;margin:8px 0 2px!important;
+  padding:10px 12px!important;border-radius:14px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.02))!important;
+  color:#e9e6e9!important;text-align:left!important;
+ }
+ #nav .kc-desktop-more-link .nicon{display:grid!important;place-items:center!important;width:27px!important;height:27px!important;flex:0 0 27px!important;border-radius:9px!important;background:rgba(241,154,131,.12)!important;color:#f1a18a!important}
+ #nav .kc-desktop-more-link.active{border-color:rgba(241,154,131,.3)!important;background:linear-gradient(110deg,rgba(242,159,132,.16),rgba(171,139,211,.1))!important;color:#ffc0a9!important}
+}
