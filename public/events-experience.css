@@ -267,3 +267,14 @@
 .kce-nightpulse .kce-kc-meet-tile>.kce-kc-meet-copy{display:grid!important;gap:5px!important;flex:1;min-width:0;align-items:start}
 .kce-nightpulse .kce-kc-meet-tile>.kce-kc-meet-arrow{display:grid!important;place-items:center;flex:0 0 40px;width:40px;height:40px;font-size:19px!important;letter-spacing:0!important;color:#ff9877!important;font-weight:700!important}
 @media(max-width:640px){.kce-nightpulse .kce-kc-meet-tile>.kce-kc-meet-mark{font-size:19px!important}.kce-nightpulse .kce-kc-meet-tile>.kce-kc-meet-arrow{flex-basis:36px;width:36px;height:36px}}
+
+
+/* Events cleanup: KC Meet belongs on its own page, never inside event discovery or ticket views. */
+.kce-events .kc-meet-scheduled-section,
+.kce-events .kc-meet-scheduled-section-events,
+.kce-events .kce-meet-create-event-tile-events,
+.kce-events .kce-kc-meet-tile,
+.kce-events .kc-meet-event-tile,
+.kce-events .kc-meet-create-event-tile,
+.kce-events-head-actions [data-view="meet"]{display:none!important}
+.kce-events-head-actions [data-event-filter="all"]{display:inline-flex!important;align-items:center;justify-content:center}
