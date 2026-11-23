@@ -1,6 +1,6 @@
 {
-  "version": "1.6.80",
+  "version": "1.6.81",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T13:00:00+05:30",
-  "release_notes": "Consolidate Events navigation: Discover replaces the top KC Meet shortcut, add one KC Meet button below the category tiles, remove the duplicate menu shortcut, and show Live Connections only when active or upcoming scheduled meetings exist."
+  "updated_at": "2026-11-23T17:30:00+05:30",
+  "release_notes": "Desktop usability: fit Home to the desktop window, restore the left navigation drawer with Escape and outside-click close, improve Profile workspace and allow saving unchanged usernames."
 }
