@@ -17,7 +17,7 @@ begin
   select * into v_app from public.crew_audition_applications where id=p_application_id for update;
   if not found then raise exception 'Application not found.'; end if;
 
-  v_email_hash:=encode(digest(lower(trim(coalesce(v_app.email,''))),'sha256'),'hex');
+  v_email_hash:=encode(extensions.digest(lower(trim(coalesce(v_app.email,''))),'sha256'),'hex');
   v_target_auth_id:=nullif(v_app.auth_id,'');
   if v_target_auth_id is null and nullif(trim(v_app.email),'') is not null then
     select auth_id,role,approval_status into v_target_auth_id,v_profile_role,v_profile_status
