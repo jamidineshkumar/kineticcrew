@@ -1,6 +1,6 @@
 {
-  "version": "1.6.79",
+  "version": "1.6.80",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T12:05:00+05:30",
-  "release_notes": "Simplify event navigation: replace the KC Meet quick action with Discover, remove duplicate category shortcut tiles, and remove KC Meet live-connection content from the Events page. Keep KC Meet in the admin navigation only."
+  "updated_at": "2026-11-23T12:20:00+05:30",
+  "release_notes": "Stabilize homepage featured carousel autoplay, dot navigation and Android touch swipes."
 }
