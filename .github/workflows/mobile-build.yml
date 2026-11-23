@@ -10,6 +10,8 @@ on:
       - 'capacitor.config.json'
       - 'scripts/generate-brand-assets.cjs'
       - 'scripts/configure-android-notification-icon.cjs'
+      - 'scripts/configure-android-voice.cjs'
+      - 'native/android/**'
       - '.github/workflows/mobile-build.yml'
 
 permissions:
@@ -38,6 +40,8 @@ jobs:
           npx capacitor-assets generate --android
       - name: Create Android project
         run: npx cap add android
+      - name: Configure native KC Voice speech recognition
+        run: node scripts/configure-android-voice.cjs
       - name: Configure monochrome KC notification icon
         run: node scripts/configure-android-notification-icon.cjs
       - name: Add Firebase Android configuration when provided
