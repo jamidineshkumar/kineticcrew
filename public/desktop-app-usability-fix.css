@@ -1,95 +1,248 @@
-/* Desktop app usability pass. Scoped to desktop so the approved mobile app is unchanged. */
+/* KINETIC CREW — COMPLETE DESKTOP EXPERIENCE
+   Desktop-only composition layer. Mobile layout, styles and breakpoints are untouched.
+   Shared routes, controls, data and feature handlers remain the existing app. */
 @media (min-width:901px){
- html,body,#appRoot,.shell{min-height:100%;width:100%;max-width:none}
- body{overflow-x:hidden}
+ :root{
+  --kc-desk-bg:#090a0e;
+  --kc-desk-surface:rgba(29,30,37,.78);
+  --kc-desk-surface-2:rgba(38,38,47,.68);
+  --kc-desk-line:rgba(255,255,255,.105);
+  --kc-desk-text:#f7f3f5;
+  --kc-desk-muted:#aaa5b1;
+  --kc-desk-accent:#f0a087;
+  --kc-desk-purple:#b69ad7;
+ }
+ html,body{min-height:100%;background:var(--kc-desk-bg)!important;color:var(--kc-desk-text)!important}
+ body{overflow-x:hidden;background:
+  radial-gradient(ellipse at 7% 0%,rgba(231,145,128,.10),transparent 34%),
+  radial-gradient(ellipse at 92% 12%,rgba(147,128,211,.09),transparent 36%),
+  radial-gradient(ellipse at 48% 100%,rgba(88,105,145,.06),transparent 48%),#090a0e!important}
+ .shell{min-height:100vh!important;background:transparent!important}
+ main{display:block!important;width:100%!important;min-width:0!important;margin:0!important;padding:0 0 52px!important}
+ /* Desktop command bar: true full-width, hamburger remains at the upper-left corner. */
  .kc-mobile-topbar{
-  width:calc(100% - 48px)!important;max-width:none!important;
-  margin:12px 24px 22px!important;padding:7px 14px!important;
-  justify-content:flex-start!important;gap:16px!important;
+  position:sticky!important;top:0!important;z-index:180!important;
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  width:100%!important;max-width:none!important;height:76px!important;min-height:76px!important;
+  margin:0!important;padding:0 34px 0 28px!important;border:0!important;border-bottom:1px solid rgba(255,255,255,.075)!important;
+  border-radius:0!important;background:rgba(12,13,18,.82)!important;color:#f8f4f6!important;
+  box-shadow:0 8px 30px rgba(0,0,0,.16)!important;
+  backdrop-filter:blur(28px) saturate(150%)!important;-webkit-backdrop-filter:blur(28px) saturate(150%)!important
  }
- .kc-mobile-topbar:after{left:76px!important}
- .kc-mobile-topbar .kc-header-actions{margin-left:auto!important}
- .kc-menu-button{flex:0 0 46px!important}
- main{width:100%!important;min-width:0!important;margin:0!important;padding:0 0 150px!important}
- .content{
-  width:calc(100% - 64px)!important;max-width:1480px!important;
-  margin:0 auto!important;padding:12px 0 42px!important;
+ .kc-mobile-topbar:after{
+  content:"KINETIC CREW";position:absolute;left:88px;top:50%;transform:translateY(-50%);
+  font:800 13px/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:.22em;
+  background:linear-gradient(95deg,#f2a27e,#d68bca 50%,#83c8ed);
+  -webkit-background-clip:text;background-clip:text;color:transparent;pointer-events:none
  }
- body.kc-home-screen .content{
-  width:calc(100% - 64px)!important;max-width:1600px!important;
-  padding:8px 0 160px!important;margin:0 auto!important;
+ .topbar{display:none!important}
+ #menuToggle,.kc-menu-button{
+  position:relative!important;z-index:180!important;display:grid!important;place-items:center!important;
+  width:44px!important;height:44px!important;min-width:44px!important;flex:0 0 44px!important;
+  padding:10px!important;border:1px solid rgba(255,255,255,.13)!important;border-radius:14px!important;
+  background:rgba(255,255,255,.065)!important;color:#f8f4f6!important;cursor:pointer!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08)!important
  }
- body.kc-home-screen .kc-exact-home,body.kc-home-screen .kc-home-reference{
-  width:100%!important;max-width:none!important;margin:0 auto!important;
+ #menuToggle span{display:block!important;width:19px!important;height:2px!important;margin:2px 0!important;border-radius:4px!important;background:#f5edf1!important}
+ .kc-header-actions{display:flex!important;align-items:center!important;gap:11px!important;margin-left:auto!important}
+ .kc-header-actions button{
+  display:grid!important;place-items:center!important;width:42px!important;height:42px!important;
+  border:1px solid rgba(255,255,255,.12)!important;border-radius:14px!important;
+  background:rgba(255,255,255,.06)!important;color:#f5edf1!important
  }
- body.kc-home-screen .kc-home-reference-header{margin:8px 0 26px!important}
- body.kc-home-screen .kc-home-greeting{
-  grid-template-columns:minmax(0,1.45fr) minmax(220px,.55fr)!important;
-  gap:32px!important;margin-bottom:30px!important;
+ .kc-header-profile{overflow:hidden!important}
+ /* One responsive desktop canvas shared by every route. */
+ #app.content{
+  display:block!important;box-sizing:border-box!important;
+  width:min( calc(100% - 88px), 1680px )!important;max-width:1680px!important;
+  min-width:0!important;margin:0 auto!important;padding:38px 0 72px!important;
+  color:var(--kc-desk-text)!important;overflow:visible!important;
+  animation:kcDesktopEnter .28s ease both
  }
- body.kc-home-screen .kc-home-greeting h1{font-size:clamp(40px,4.1vw,64px)!important}
- body.kc-home-screen .kc-home-greeting-mark{justify-self:end}
- body.kc-home-screen .kc-home-featured,
- body.kc-home-screen .kc-home-featured-track{min-height:clamp(360px,34vw,500px)!important}
- body.kc-home-screen .kc-home-featured{margin-bottom:42px!important}
- body.kc-home-screen .kc-home-featured-art{min-height:240px!important;padding:28px!important}
- body.kc-home-screen .kc-home-featured-glass{
-  max-width:min(680px,62%)!important;margin:0 24px 24px!important;padding:26px 30px!important;
+ @keyframes kcDesktopEnter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+ footer{display:none!important}
+ /* Universal visual language: keep the app's established glass/gradient identity. */
+ #app .surface,#app .stat,#app .event,#app .announcement,#app .feature-card,
+ #app .notification-item,#app .crew-profile-tile,#app .social-post-card,
+ #app .kc-detail-panel,#app .kce-reserve-panel,#app .notice-settings,
+ #app .notice-feed,#app .formgrid,#app .publish,#app .verifyform,
+ #app .kc-profile-metrics,#app .kc-public-profile-bio,#app .kc-profile-hero,
+ #app .kc-liquid-profile-card,#app .kc-more-banner,#app .kc-more-menu-card,
+ #app .kc-more-option,#app .kc-reference-profile,#app .kc-home-updates,
+ #app .kc-exact-quick,#app .kc-exact-event-card,#app .kc-exact-friends,
+ #app .kc-exact-update,#app .kc-exact-gram-entry,#app .kc-exact-hero,
+ #app .kc-vibe-featured,#app .kc-vibe-event-card,#app .kc-feed-composer,
+ #app .kc-feed-stories,#app .kc-feed-story,#app .kc-feed-tabs,#app .kc-feed-inbox{
+  border-color:var(--kc-desk-line)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.072),rgba(255,255,255,.022))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055),0 14px 34px rgba(0,0,0,.18)!important;
+  backdrop-filter:blur(20px) saturate(135%)!important;-webkit-backdrop-filter:blur(20px) saturate(135%)!important
  }
- body.kc-home-screen .kc-home-reference-section{margin-bottom:36px!important}
- body.kc-home-screen .kc-exact-update-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}
- body:has(.kc-single-profile) .content{max-width:1440px!important}
- .kc-single-profile{
-  display:grid!important;grid-template-columns:minmax(390px,.88fr) minmax(0,1.12fr)!important;
-  align-items:start!important;justify-content:stretch!important;gap:22px 28px!important;
-  width:100%!important;max-width:none!important;min-height:0!important;
-  padding:16px 0 160px!important;overflow:visible!important;
+ #app h1,#app h2,#app h3,#app h4{color:#f7f2f5}
+ #app p,#app small,#app .hint,#app .muted{color:var(--kc-desk-muted)}
+ #app .welcome{
+  display:flex!important;align-items:flex-end!important;justify-content:space-between!important;
+  gap:28px!important;margin:0 0 30px!important;padding:0 0 22px!important;
+  border-bottom:1px solid var(--kc-desk-line)!important
  }
- .kc-single-profile .kc-profile-flip-shell{
-  grid-column:1!important;grid-row:1!important;width:100%!important;
-  max-width:none!important;min-height:500px!important;
+ #app .welcome>div{min-width:0}
+ #app .welcome h1{font-size:clamp(32px,3vw,46px)!important;line-height:1.04!important;letter-spacing:-.055em!important;margin:8px 0 9px!important}
+ #app .welcome p{font-size:14px!important;line-height:1.6!important;max-width:760px!important}
+ #app .eyebrow,#app .settings-kicker,#app .kc-eyebrow{letter-spacing:.14em!important}
+ #app .primary,#app .secondary,#app .outline,#app button{
+  transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease
  }
- .kc-single-profile .kc-profile-flip-inner,
- .kc-single-profile .kc-liquid-profile-card,
- .kc-single-profile .kc-profile-card-back{
-  width:100%!important;max-width:none!important;min-height:500px!important;height:100%!important;
+ #app .primary,#app .kc-register-button,#app .kce-register-button{
+  background:linear-gradient(120deg,#f2a184,#d98ac0 52%,#8d9fe0)!important;
+  border:1px solid rgba(255,255,255,.23)!important;color:#171319!important;
+  box-shadow:0 8px 24px rgba(179,128,181,.16)!important
  }
- .kc-single-profile .kc-liquid-profile-card{padding:22px 30px 34px!important}
- .kc-single-profile .kc-liquid-profile-photo{width:clamp(150px,16vw,220px)!important;margin:28px auto 20px!important}
- .kc-single-profile .kc-profile-flip-hint{grid-column:1!important;grid-row:2!important;width:100%!important}
- .kc-single-profile .kc-profile-editor{
-  grid-column:1!important;grid-row:3!important;width:100%!important;max-width:none!important;
-  margin:0!important;padding:20px!important;
+ #app .secondary,#app .outline,#app .iconbutton,#app .installbutton{
+  background:rgba(255,255,255,.055)!important;border:1px solid rgba(255,255,255,.14)!important;color:#f3eff4!important
  }
- .kc-single-profile .kc-profile-activity{
-  grid-column:2!important;grid-row:1 / span 3!important;min-width:0!important;
-  width:100%!important;margin:0!important;
+ #app input,#app select,#app textarea{
+  background:rgba(7,8,11,.38)!important;border:1px solid rgba(255,255,255,.14)!important;
+  color:#f7f4f7!important;border-radius:13px!important
  }
- .kc-single-profile .kc-profile-metrics{grid-template-columns:repeat(3,minmax(0,1fr))!important}
- .kc-single-profile .kc-profile-activity-tabs{flex-wrap:wrap!important}
- .kc-single-profile .kc-profile-activity-panel{min-width:0!important}
- .side{
-  display:flex!important;position:fixed!important;inset:0 auto 0 0!important;
-  width:min(340px,86vw)!important;height:100dvh!important;
-  transform:translate3d(-110%,0,0)!important;visibility:hidden!important;
-  opacity:0!important;pointer-events:none!important;z-index:20000!important;
+ #app input::placeholder,#app textarea::placeholder{color:#898491!important}
+ #app label.field{color:#e9e3ec!important}
+ /* HOME — spacious editorial dashboard, uses the whole desktop canvas. */
+ body.kc-home-screen #app.content{width:min(calc(100% - 88px),1680px)!important;max-width:1680px!important;padding-top:28px!important}
+ #app .kc-exact-home,#app .kc-home-reference,#app .kc-vibe-home{width:100%!important;max-width:none!important;margin:0!important}
+ #app .kc-home-reference-header{display:flex!important;align-items:center!important;justify-content:space-between!important;margin:0 0 28px!important}
+ #app .kc-home-greeting{
+  display:grid!important;grid-template-columns:minmax(0,1fr) minmax(180px,260px)!important;
+  align-items:center!important;gap:38px!important;min-height:190px!important;
+  margin:0 0 30px!important;padding:10px 12px!important
  }
- .side.open{
-  transform:translate3d(0,0,0)!important;visibility:visible!important;
-  opacity:1!important;pointer-events:auto!important;
+ #app .kc-home-greeting-copy{min-width:0!important}
+ #app .kc-home-greeting h1{font-size:clamp(42px,4.3vw,68px)!important;line-height:1.02!important;letter-spacing:-.06em!important}
+ #app .kc-home-greeting-lead{font-size:18px!important}
+ #app .kc-home-greeting-sub{font-size:13px!important}
+ #app .kc-home-greeting-mark{justify-self:end!important;width:clamp(150px,15vw,230px)!important;height:clamp(150px,15vw,230px)!important}
+ #app .kc-home-featured{width:100%!important;margin:0 0 36px!important;border-radius:30px!important;overflow:hidden!important}
+ #app .kc-home-featured-track{min-height:clamp(390px,35vw,570px)!important}
+ #app .kc-home-feature-slide{min-height:clamp(390px,35vw,570px)!important}
+ #app .kc-home-feature-image{object-fit:cover!important}
+ #app .kc-home-featured-art{min-height:100%!important;padding:32px!important}
+ #app .kc-home-featured-glass{max-width:min(720px,64%)!important;margin:0 32px 34px!important;padding:28px 34px!important}
+ #app .kc-home-featured-glass>b{font-size:clamp(28px,3vw,46px)!important;line-height:1.08!important}
+ #app .kc-home-reference-section{margin:0 0 38px!important}
+ #app .kc-home-reference-section-head{display:flex!important;align-items:center!important;justify-content:space-between!important;margin-bottom:16px!important}
+ #app .kc-home-reference-section-head h2{font-size:22px!important}
+ #app .kc-exact-update-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important}
+ #app .kc-exact-update{min-width:0!important;min-height:110px!important;padding:18px!important;text-align:left!important}
+ #app .kc-home-reference-section:has(.kc-exact-friends),
+ #app .kc-home-reference-section:has(.kc-exact-quick){margin-top:26px!important}
+ /* EVENT DISCOVERY — featured event plus a real multi-column catalogue. */
+ #app .kce-events{width:100%!important;max-width:none!important}
+ #app .kce-events-head{display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:28px!important;margin-bottom:22px!important}
+ #app .kce-events-head h1{font-size:clamp(38px,3.6vw,56px)!important}
+ #app .kce-events-head-actions{display:flex!important;flex-wrap:wrap!important;gap:10px!important}
+ #app .kce-event-search{display:block!important;width:min(100%,760px)!important;margin:0 0 22px!important}
+ #app .kce-featured-event{display:grid!important;grid-template-columns:minmax(0,1.45fr) minmax(300px,.75fr)!important;min-height:340px!important;width:100%!important;margin:0 0 24px!important;overflow:hidden!important;border-radius:26px!important}
+ #app .kce-featured-event .kce-art{min-height:340px!important}
+ #app .kce-category-mosaic{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:14px!important;margin:0 0 22px!important}
+ #app .kce-category{min-height:145px!important;padding:20px!important;text-align:left!important}
+ #app .kce-events-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:18px!important;align-items:stretch!important}
+ #app .kce-event-card{width:100%!important;min-width:0!important;min-height:300px!important}
+ #app .kce-event-card .kce-art{min-height:190px!important}
+ #app .kce-ticket-wallet-card{min-width:0!important}
+ #app .kce-live-connections .kcml-scheduled-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important}
+ /* PEOPLE + CREW ADMIN — card directory and clear management workspaces. */
+ #app .profile-directory{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:18px!important}
+ #app .kc-member-directory-card{min-width:0!important;min-height:210px!important;padding:20px!important}
+ #app .profile-discovery-bar{display:flex!important;align-items:center!important;gap:16px!important;max-width:900px!important;margin:0 0 22px!important}
+ #app .profile-search{flex:1 1 auto!important;min-width:0!important}
+ #app .crew-manage-list{padding:22px!important;margin:0 0 22px!important}
+ #app .crew-manage-list>.crew-manage-row{display:grid!important;grid-template-columns:minmax(200px,1fr) 150px auto!important;align-items:center!important;gap:16px!important;padding:16px 4px!important}
+ #app .crew-manage-list .kc-role-tools{grid-column:1/-1!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important}
+ #app .kc-pending-member{grid-template-columns:minmax(200px,1fr) auto!important}
+ #app .kc-pending-actions{display:flex!important;gap:10px!important}
+ /* PROFILE — profile identity and activity as a two-column workspace. */
+ #app .kc-single-profile{
+  display:grid!important;grid-template-columns:minmax(380px,.82fr) minmax(0,1.18fr)!important;
+  align-items:start!important;gap:24px!important;width:100%!important;max-width:none!important;
+  min-height:0!important;padding:8px 0 32px!important;overflow:visible!important
  }
- .navshade{display:none!important;position:fixed!important;inset:0!important;z-index:19990!important;pointer-events:none!important}
- .navshade.open{display:block!important;pointer-events:auto!important}
- body.kc-menu-open{overflow:hidden!important}
- #menuToggle{position:relative!important;z-index:20001!important;cursor:pointer!important}
- #sidebar .nav-group-toggle,#sidebar .navitem,#sidebar [data-kc-signout]{cursor:pointer!important;pointer-events:auto!important}
+ #app .kc-single-profile .kc-profile-flip-shell{grid-column:1!important;grid-row:1!important;width:100%!important;max-width:none!important;min-height:500px!important}
+ #app .kc-single-profile .kc-profile-flip-inner,#app .kc-single-profile .kc-liquid-profile-card,
+ #app .kc-single-profile .kc-profile-card-back{width:100%!important;max-width:none!important;min-height:500px!important;height:100%!important}
+ #app .kc-single-profile .kc-profile-flip-hint{grid-column:1!important;grid-row:2!important}
+ #app .kc-single-profile .kc-profile-editor{grid-column:1!important;grid-row:3!important;width:100%!important;max-width:none!important;margin:0!important}
+ #app .kc-single-profile .kc-profile-activity{grid-column:2!important;grid-row:1 / span 3!important;min-width:0!important;width:100%!important;margin:0!important}
+ #app .kc-single-profile .kc-profile-metrics{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
+ #app .kc-single-profile .kc-profile-activity-tabs{display:flex!important;flex-wrap:wrap!important;gap:8px!important}
+ #app .kc-single-profile .kc-profile-activity-panel{min-width:0!important}
+ /* NOTIFICATIONS — inbox list and controls in a readable two-pane layout. */
+ #app .notice-hero{display:flex!important;align-items:center!important;justify-content:space-between!important;min-height:190px!important;padding:28px 34px!important;margin-bottom:20px!important}
+ #app .notice-controls{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;flex-wrap:wrap!important}
+ #app .notice-actions{display:flex!important;align-items:center!important;gap:9px!important;flex-wrap:wrap!important}
+ #app .notice-actions input{min-width:240px!important}
+ #app .notice-category-tabs{display:flex!important;flex-wrap:wrap!important;gap:9px!important;margin:16px 0 20px!important}
+ #app .notice-layout{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(260px,.34fr)!important;gap:20px!important;align-items:start!important}
+ #app .notice-feed{min-width:0!important;padding:20px!important}
+ #app .notification-item{margin-bottom:12px!important;padding:18px!important}
+ /* KINETIC GRAM — central content rail, with full-width controls. */
+ #app .kg-header{display:flex!important;align-items:center!important;justify-content:space-between!important}
+ #app .kg-top-tabs{display:flex!important;align-items:center!important;gap:12px!important;flex-wrap:wrap!important}
+ #app .kg-stories{width:100%!important;overflow-x:auto!important}
+ #app .kg-story-row{display:flex!important;gap:18px!important;min-width:0!important}
+ #app .kg-inbox{width:100%!important;max-width:none!important}
+ #app .kg-inbox-row{display:grid!important;grid-template-columns:52px minmax(0,1fr) auto!important;align-items:center!important}
+ #app .kg-feed-layout,#app .kg-posts-layout{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(250px,.34fr)!important;gap:24px!important;align-items:start!important}
+ #app .kg-feed-main{min-width:0!important;max-width:none!important}
+ #app .kg-feed-sidebar{position:sticky!important;top:96px!important;min-width:0!important}
+ #app .kg-post-card,#app .kg-feed-post{width:100%!important;max-width:none!important}
+ /* SETTINGS + FEATURE HUBS — adaptive tile grids instead of narrow phone columns. */
+ #app .settings-grid,#app .kc-settings-grid,#app .kc-more-reference-pills,
+ #app .kc-more-reference-others-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important;max-width:none!important}
+ #app .settings-tile,#app .setting-card{min-width:0!important;min-height:120px!important;padding:20px!important}
+ #app .kc-feature-grid,#app .feature-grid,#app .feature-cards-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important}
+ #app .kc-feature-card,#app .feature-card{min-width:0!important}
+ /* ADMIN FORMS / REPORTS / CALENDAR — exploit horizontal room without shrinking fields. */
+ #app .formgrid,#app .form-grid,#app .kc-form-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important}
+ #app .formgrid>.full,#app .form-grid>.full,#app .kc-form-grid>.full{grid-column:1/-1!important}
+ #app .calendar-list .eventgrid,#app .eventgrid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important}
+ #app .attendancegrid{display:grid!important;grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr)!important;gap:20px!important;align-items:start!important}
+ #app .attendancegrid>.surface{min-width:0!important}
+ #app .tablewrap{width:100%!important;overflow-x:auto!important}
+ #app table{width:100%!important;min-width:720px!important}
+ #app .surface{min-width:0}
+ /* Modal dialogs remain centered and bounded on wide screens. */
+ .modalback{padding:32px!important}
+ .modal{width:min(760px,calc(100vw - 80px))!important;max-width:760px!important;max-height:calc(100dvh - 64px)!important;overflow:auto!important}
+ /* Shared left drawer — hidden until hamburger opens it. */
+ #sidebar.side{
+  position:fixed!important;inset:0 auto 0 0!important;width:min(350px,86vw)!important;height:100dvh!important;
+  display:flex!important;flex-direction:column!important;overflow-y:auto!important;overflow-x:hidden!important;
+  z-index:20000!important;transform:translate3d(-110%,0,0)!important;visibility:hidden!important;
+  opacity:0!important;pointer-events:none!important;transition:transform .28s ease,opacity .2s ease,visibility .2s ease!important
+ }
+ #sidebar.side.open{transform:translate3d(0,0,0)!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+ #navShade.navshade{display:none!important;position:fixed!important;inset:0!important;z-index:19990!important;background:rgba(5,6,10,.58)!important;backdrop-filter:blur(5px)!important}
+ #navShade.navshade.open{display:block!important}
+ #sidebar .nav-group-toggle,#sidebar .navitem,#sidebar .kc-nav-signout{cursor:pointer!important;pointer-events:auto!important}
 }
-@media (min-width:901px) and (max-width:1100px){
- body.kc-home-screen .content,.content{width:calc(100% - 40px)!important}
- .kc-single-profile{grid-template-columns:minmax(0,1fr)!important}
- .kc-single-profile .kc-profile-flip-shell,.kc-single-profile .kc-profile-flip-hint,
- .kc-single-profile .kc-profile-editor,.kc-single-profile .kc-profile-activity{
-  grid-column:1!important;grid-row:auto!important
- }
- .kc-single-profile .kc-liquid-profile-card{max-width:640px!important;margin:0 auto!important}
+@media (min-width:901px) and (max-width:1200px){
+ #app.content,body.kc-home-screen #app.content{width:calc(100% - 56px)!important}
+ #app .kce-events-grid,#app .profile-directory,#app .calendar-list .eventgrid,#app .eventgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #app .kc-home-greeting{grid-template-columns:minmax(0,1fr) 160px!important}
+ #app .kc-single-profile{grid-template-columns:minmax(0,1fr)!important}
+ #app .kc-single-profile .kc-profile-flip-shell,#app .kc-single-profile .kc-profile-flip-hint,
+ #app .kc-single-profile .kc-profile-editor,#app .kc-single-profile .kc-profile-activity{grid-column:1!important;grid-row:auto!important}
+ #app .notice-layout,#app .kg-feed-layout,#app .kg-posts-layout{grid-template-columns:minmax(0,1fr)!important}
+ #app .kg-feed-sidebar{position:static!important}
+ #app .settings-grid,#app .kc-settings-grid,#app .kc-more-reference-pills,
+ #app .kc-more-reference-others-grid,#app .kc-feature-grid,#app .feature-grid,#app .feature-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media (min-width:901px) and (max-width:980px){
+ #app.content,body.kc-home-screen #app.content{width:calc(100% - 40px)!important}
+ #app .kce-category-mosaic{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #app .kc-exact-update-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #app .formgrid,#app .form-grid,#app .kc-form-grid,#app .attendancegrid{grid-template-columns:minmax(0,1fr)!important}
+}
+@media (prefers-reduced-motion:reduce) and (min-width:901px){
+ #app.content{animation:none!important}
+ #app *{scroll-behavior:auto!important;transition-duration:.01ms!important}
 }
