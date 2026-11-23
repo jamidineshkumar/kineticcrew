@@ -1995,7 +1995,7 @@ document.addEventListener('click',event=>{
 document.addEventListener('contextmenu',event=>{if(event.target.closest('[data-member-action-card]'))event.preventDefault();});
 document.addEventListener('click',e=>{const feature=e.target.closest('[data-kc-feature-open]');if(feature){kcOpenFeaturePage(feature.dataset.kcFeatureOpen);return;}if(e.target.closest('[data-kc-feature-back]')){kcBackToFeatureMenu();return;}});
 document.addEventListener('click',event=>{
- const audition=event.target.closest('[data-audition-admin]');if(audition){location.href=window.kcPath('audition-admin.html')+'?v=20261123-auto-invitation-retry1';return;}
+ const audition=event.target.closest('[data-audition-admin]');if(audition){location.href=window.kcPath('audition-admin.html')+'?v=20261123-complete-delete-cleanup2';return;}
  const password=event.target.closest('[data-open-change-password]');if(password){location.href=window.kcPath('change-password.html');return;}
 });
 document.addEventListener('click',async e=>{
