@@ -66,7 +66,7 @@ Deno.serve(async(req:Request)=>{
    const {error:authDeleteError}=await admin.auth.admin.deleteUser(String(result.auth_id));
    if(authDeleteError)throw new Error("Application data was deleted, but the audition login account still needs removal: "+authDeleteError.message);
   }
-  return json({ok:true,message:(incorrectDetails?"Applicant emailed with the incorrect-details rejection and reapplication link. ":"")+"Application, review history"+(videoPath?", audition video":"")+(result.account_deleted?", and audition login account":"")+" permanently deleted."});
+  return json({ok:true,message:(incorrectDetails?"Applicant emailed with the incorrect-details rejection and reapplication link. ":"")+"Application, review history"+(videoPath?", audition video":"")+(result.account_deleted?", and audition login account":"")+" and audition email history permanently deleted."});
  }catch(error){
   console.error("delete-audition-application:",error);
   return json({error:error instanceof Error?error.message:"Could not delete this application."},500);
