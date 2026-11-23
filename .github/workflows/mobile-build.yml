@@ -30,6 +30,8 @@ jobs:
           java-version: '21'
       - name: Install dependencies
         run: npm install
+      - name: Validate KC Voice JavaScript
+        run: node --check public/kc-voice.js
       - name: Generate official branded Android assets
         run: |
           npm run brand:assets
