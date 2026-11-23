@@ -1,6 +1,6 @@
 {
-  "version": "1.6.78",
+  "version": "1.6.80",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T12:20:00+05:30",
-  "release_notes": "Fix Android homepage carousel swipes and display full square event artwork in a wide rectangular banner with compact translucent grey glass text."
+  "updated_at": "2026-11-23T13:00:00+05:30",
+  "release_notes": "Consolidate Events navigation: Discover replaces the top KC Meet shortcut, add one KC Meet button below the category tiles, remove the duplicate menu shortcut, and show Live Connections only when active or upcoming scheduled meetings exist."
 }
