@@ -24,8 +24,19 @@ function styles(){if(document.getElementById("kcVoiceStyles"))return;const s=doc
 function stop(){clearTimeout(S.rotateTimer);const list=S.recognitions.splice(0);list.forEach(r=>{try{r.onend=r.onerror=r.onresult=null;r.stop();}catch{}});}
 function schedule(ms){clearTimeout(S.restartTimer);if(S.enabled&&!document.hidden&&!S.speaking&&!S.blocked)S.restartTimer=setTimeout(start,ms||500);}
 function processBatch(){if(!S.batch.length)return;const list=S.batch.splice(0);list.sort((a,b)=>{const score=x=>(detect(x.text,x.locale)===x.locale?3:0)+(x.confidence||.1)+Math.min(x.text.length,80)/500;return score(b)-score(a);});S.language=detect(list[0].text,list[0].locale);transcript(list[0].text);}
-function recognizer(locale){const r=new Recognition();r.lang=locale;r.continuous=true;r.interimResults=false;r.maxAlternatives=3;r.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){const v=e.results[i];if(v.isFinal&&v[0]?.transcript){S.batch.push({text:v[0].transcript.trim(),locale,confidence:Number(v[0].confidence||0)});clearTimeout(S.batchTimer);S.batchTimer=setTimeout(processBatch,420);}}};r.onerror=e=>{if(e.error==="not-allowed"||e.error==="service-not-allowed"){S.blocked=true;S.enabled=false;save();stop();line("");return;}if(S.mode==="multi"&&["audio-capture","aborted","language-not-supported"].includes(e.error)){S.mode="rotate";stop();schedule(900);}};r.onend=()=>{S.recognitions=S.recognitions.filter(x=>x!==r);schedule(S.mode==="multi"?350:650);};return r;}
-function start(){if(!S.enabled||document.hidden||S.speaking||S.blocked||!Recognition||S.recognitions.length)return;if(S.mode==="multi"){const list=LOCALES.map(recognizer);let count=0;list.forEach(r=>{try{r.start();S.recognitions.push(r);count++;}catch{}});if(count>=2)return;stop();S.mode="rotate";}const r=recognizer(LOCALES[(S.rotateIndex=(S.rotateIndex===undefined?-1:S.rotateIndex)+1)%3]);try{r.start();S.recognitions.push(r);clearTimeout(S.rotateTimer);S.rotateTimer=setTimeout(()=>{if(S.mode==="rotate"&&S.enabled&&S.recognitions.includes(r)){stop();schedule(120);}},6500);}catch{schedule(1500);}}
+function recognizer(locale){
+ const r=new Recognition();r.lang=locale;r.continuous=true;r.interimResults=false;r.maxAlternatives=3;
+ r.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){const z=e.results[i],spoken=z[0]?.transcript;if(z.isFinal&&spoken){S.batch.push({text:spoken.trim(),locale,confidence:Number(z[0].confidence||0)});clearTimeout(S.batchTimer);S.batchTimer=setTimeout(processBatch,260);}}};
+ r.onerror=e=>{S.lastError=e.error||"recognition-error";if(e.error==="not-allowed"||e.error==="service-not-allowed"){S.blocked=true;S.enabled=false;save();stop();line("");voiceStatus();}else if(e.error==="audio-capture")S.mode="rotate";};
+ r.onend=()=>{S.recognitions=S.recognitions.filter(x=>x!==r);if(S.enabled&&!document.hidden&&!S.speaking&&!S.blocked){S.rotateIndex=((S.rotateIndex||0)+1)%LOCALES.length;schedule(S.lastError==="no-speech"?250:650);}};
+ return r;
+}
+function start(){
+ if(!S.enabled||document.hidden||S.speaking||S.blocked||!Recognition||S.recognitions.length)return;
+ const locale=LOCALES[(S.rotateIndex||0)%LOCALES.length],r=recognizer(locale);S.recognitions.push(r);
+ try{r.start();S.lastError="";line("listening");voiceStatus();}
+ catch(error){S.recognitions=S.recognitions.filter(x=>x!==r);S.lastError=String(error?.name||"start-failed");schedule(1400);voiceStatus();}
+}
 function speak(msg,done){if(!msg){done?.();return;}if(!S.voice||!window.speechSynthesis||!window.SpeechSynthesisUtterance){done?.();return;}S.speaking=true;stop();try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(msg);u.lang=S.language;u.rate=1;u.pitch=1;u.onend=u.onerror=()=>{S.speaking=false;done?.();if(S.flow||S.confirm)arm();else schedule();};speechSynthesis.speak(u);}catch{S.speaking=false;done?.();schedule();}}
 function respond(msg){clearTimeout(S.commandTimer);S.armed=false;line("processing");speak(msg,()=>line(""));}
 function ask(msg){clearTimeout(S.commandTimer);S.armed=false;line("processing");speak(msg,()=>arm());}
@@ -53,12 +64,49 @@ if(has(text,["mark attendance","set attendance","హాజరు నమోదు
 if(has(text,["finalize attendance","close attendance","హాజరు ఫైనలైజ్","हाजिरी फाइनल"])){if(!admin()){respond(H[lang()].denied);return;}const e=eventMatch(text);if(!e){respond("Please say the event name.");return;}S.confirm={type:"finalize",data:{id:e.id,title:e.title}};ask("Finalize attendance for "+e.title+"? Remaining registered members will be marked absent. Say yes or no.");return;}
 if(has(text,["register me","book my place","join event","reserve my place","రిజిస్టర్ చేయి","నమోదు చేయి","रजिस्टर करो"])){const e=eventMatch(text);if(!e){respond("Please say the event name you want to register for.");return;}S.confirm={type:"register",data:{id:e.id,title:e.title}};ask("Register you for "+e.title+"? Say yes or no.");return;}
 respond(lang()==="te"?"ఆ అభ్యర్థనను అర్థం చేసుకోలేకపోయాను. సహాయం కోసం అడగండి.":lang()==="hi"?"मैं इस अनुरोध को समझ नहीं पाया। मदद के लिए पूछें।":"I couldn't match that request to an available Kinetic Crew action. Say help.");}
-function transcript(raw){if(!S.armed){const wake=/hey\s*(?:k\s*c|kc|kay\s*see|kinetic\s*crew)|హే\s*కే\s*సి|हे\s*के\s*सी/i.exec(raw);if(!wake)return;const rest=raw.slice(wake.index+wake[0].length).trim();S.armed=true;line("listening");clearTimeout(S.commandTimer);S.commandTimer=setTimeout(()=>{S.flow=null;S.confirm=null;respond("I did not hear a command. Say Hey KC again.");},14000);if(rest)process(rest);return;}process(raw);}
+function transcript(raw){
+ if(!S.armed){
+  const cleaned=String(raw||"").replace(/[.,!?;:]/g," ").replace(/\\s+/g," ").trim();
+  const wake=/hey\\s*(?:k\\s*c|kc|kay\\s*see|k\\s*see|kinetic\\s*crew)|హే\\s*కే\\s*సి|हे\\s*के\\s*सी/i.exec(cleaned);
+  if(!wake)return;
+  const rest=cleaned.slice(wake.index+wake[0].length).trim();
+  S.armed=true;line("listening");voiceStatus();clearTimeout(S.commandTimer);
+  S.commandTimer=setTimeout(()=>{S.flow=null;S.confirm=null;respond("I did not hear a command. Say Hey KC again.");},14000);
+  if(rest)process(rest);return;
+ }
+ process(raw);
+}
+function voiceStatus(){
+ const node=document.getElementById("kcVoiceStatus");if(!node)return;
+ let message="Wake-word listening is off.";
+ if(!Recognition)message="Speech recognition is not supported here. Use current Chrome.";
+ else if(S.blocked)message="Microphone or speech recognition permission is blocked. Allow it in Chrome site settings, then tap Resume.";
+ else if(S.enabled&&!S.recognitions.length)message="Enabled. Tap Resume to start listening in this browser tab.";
+ else if(S.enabled&&S.recognitions.length)message="Listening for “Hey KC” while this app stays open.";
+ if(S.lastError&& !["no-speech","aborted","audio-capture"].includes(S.lastError))message+=" Last status: "+S.lastError+".";
+ node.textContent=message;
+}
 function tile(){const hub=document.querySelector("#app .kc-settings-hub");if(!hub||hub.querySelector("[data-kc-voice-settings]"))return;const b=document.createElement("button");b.type="button";b.className="kc-settings-tile";b.dataset.kcVoiceSettings="";b.innerHTML='<span class="kc-settings-tile-icon" aria-hidden="true">⌁</span><span class="kc-settings-tile-copy"><b>KC Voice</b><small>Automatic multilingual voice assistant</small></span><span class="kc-settings-tile-arrow" aria-hidden="true">↗</span>';hub.appendChild(b);}
-function settings(){return '<div class="welcome"><div><div class="eyebrow">APP PREFERENCES <span class="muted">/ VOICE</span></div><h1>KC Voice</h1><p>Hands-free commands for Kinetic Crew. Say “Hey KC” to activate.</p></div><button type="button" class="outline" data-kc-voice-back>← Back to settings</button></div><section class="surface settings-card kc-voice-settings-card"><span class="settings-kicker">VOICE ASSISTANT</span><h3>Automatic language detection</h3><label class="settings-toggle"><span><b>Enable Hey KC</b><small>Listen while Kinetic Crew is open and active.</small></span><input id="kcVoiceEnabled" type="checkbox" '+(S.enabled?"checked":"")+'></label><label class="settings-toggle"><span><b>Spoken responses</b><small>Reply in the detected language when your device supports it.</small></span><input id="kcVoiceResponses" type="checkbox" '+(S.voice?"checked":"")+'></label><p class="kc-voice-settings-note">Automatic language matching for English, Hindi and Telugu. Browser speech recognition may send audio to the browser vendor’s speech service; Kinetic Crew does not store microphone recordings.</p><p class="kc-voice-settings-note">Wake-word listening works only while the app is open and active. It stops when the app is hidden or closed. Destructive actions require spoken confirmation and use existing authenticated app APIs.</p></section>';}
-function showSettings(){const app=document.getElementById("app");if(!app)return;S.settingsMarkup=app.innerHTML;app.innerHTML=settings();window.scrollTo({top:0,behavior:"smooth"});}
+function settings(){return '<div class="welcome"><div><div class="eyebrow">APP PREFERENCES <span class="muted">/ VOICE</span></div><h1>KC Voice</h1><p>Hands-free commands for Kinetic Crew. Say “Hey KC” to activate.</p></div><button type="button" class="outline" data-kc-voice-back>← Back to settings</button></div><section class="surface settings-card kc-voice-settings-card"><span class="settings-kicker">VOICE ASSISTANT</span><h3>Wake-word assistant</h3><label class="settings-toggle"><span><b>Enable Hey KC</b><small>Keep listening while Kinetic Crew is open and visible.</small></span><input id="kcVoiceEnabled" type="checkbox" '+(S.enabled?"checked":"")+'></label><p class="kc-voice-settings-note" id="kcVoiceStatus" aria-live="polite"></p><button type="button" class="outline" data-kc-voice-resume>Start / Resume listening</button><label class="settings-toggle"><span><b>Spoken responses</b><small>Reply in the detected language when your device supports it.</small></span><input id="kcVoiceResponses" type="checkbox" '+(S.voice?"checked":"")+'></label><p class="kc-voice-settings-note">English, Hindi and Telugu recognition rotate through one listening session at a time for better Android Chrome compatibility.</p><p class="kc-voice-settings-note">After a page reload, tap Start / Resume so Chrome can restart microphone recognition. Listening works only while the app is open and active. Browser speech recognition may send audio to the browser vendor’s speech service; Kinetic Crew does not store microphone recordings.</p></section>';}
+function showSettings(){const app=document.getElementById("app");if(!app)return;S.settingsMarkup=app.innerHTML;app.innerHTML=settings();voiceStatus();window.scrollTo({top:0,behavior:"smooth"});}
 function restoreSettings(){const app=document.getElementById("app");if(app&&S.settingsMarkup){app.innerHTML=S.settingsMarkup;S.settingsMarkup="";}}
-function enable(v){S.enabled=!!v;S.blocked=false;save();if(!S.enabled){S.armed=false;S.flow=null;S.confirm=null;clearTimeout(S.commandTimer);clearTimeout(S.restartTimer);clearTimeout(S.batchTimer);stop();if(window.speechSynthesis)speechSynthesis.cancel();S.speaking=false;line("");return;}if(!Recognition){S.enabled=false;save();const el=document.getElementById("kcVoiceEnabled");if(el)el.checked=false;alert("This browser does not support speech recognition. Please use updated Chrome.");return;}S.mode="multi";start();}
-function init(){styles();line("");const obs=new MutationObserver(tile),app=document.getElementById("app");if(app)obs.observe(app,{childList:true,subtree:true});tile();document.addEventListener("click",e=>{if(e.target.closest("[data-kc-voice-settings]")){e.preventDefault();showSettings();}else if(e.target.closest("[data-kc-voice-back]")){e.preventDefault();restoreSettings();}});document.addEventListener("change",e=>{if(e.target.id==="kcVoiceEnabled")enable(e.target.checked);if(e.target.id==="kcVoiceResponses"){S.voice=e.target.checked;save();}});const p=prefs();S.enabled=p.enabled;S.voice=p.voice;if(S.enabled&&!document.hidden)start();document.addEventListener("visibilitychange",()=>{if(document.hidden){clearTimeout(S.restartTimer);clearTimeout(S.commandTimer);stop();S.armed=false;line("");}else if(S.enabled)schedule(250);});window.addEventListener("pagehide",()=>{clearTimeout(S.restartTimer);stop();if(window.speechSynthesis)speechSynthesis.cancel();});}
+function enable(v){
+ S.enabled=!!v;S.blocked=false;S.lastError="";save();
+ if(!S.enabled){S.armed=false;S.flow=null;S.confirm=null;clearTimeout(S.commandTimer);clearTimeout(S.restartTimer);clearTimeout(S.batchTimer);stop();if(window.speechSynthesis)speechSynthesis.cancel();S.speaking=false;line("");voiceStatus();return;}
+ if(!Recognition){S.enabled=false;save();const el=document.getElementById("kcVoiceEnabled");if(el)el.checked=false;voiceStatus();return;}
+ S.rotateIndex=0;start();voiceStatus();
+}
+function init(){
+ styles();line("");const obs=new MutationObserver(tile),app=document.getElementById("app");if(app)obs.observe(app,{childList:true,subtree:true});tile();
+ document.addEventListener("click",e=>{
+  if(e.target.closest("[data-kc-voice-settings]")){e.preventDefault();showSettings();}
+  else if(e.target.closest("[data-kc-voice-back]")){e.preventDefault();restoreSettings();}
+  else if(e.target.closest("[data-kc-voice-resume]")){e.preventDefault();enable(true);voiceStatus();}
+ });
+ document.addEventListener("change",e=>{if(e.target.id==="kcVoiceEnabled")enable(e.target.checked);if(e.target.id==="kcVoiceResponses"){S.voice=e.target.checked;save();}});
+ const p=prefs();S.enabled=p.enabled;S.voice=p.voice;voiceStatus();
+ document.addEventListener("visibilitychange",()=>{if(document.hidden){clearTimeout(S.restartTimer);clearTimeout(S.commandTimer);stop();S.armed=false;line("");}else if(S.enabled)schedule(250);});
+ window.addEventListener("pagehide",()=>{clearTimeout(S.restartTimer);stop();if(window.speechSynthesis)speechSynthesis.cancel();});
+}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 })();
