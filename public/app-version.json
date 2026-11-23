@@ -1,6 +1,6 @@
 {
-  "version": "1.6.81",
+  "version": "1.6.82",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T17:30:00+05:30",
-  "release_notes": "Desktop usability: fit Home to the desktop window, restore the left navigation drawer with Escape and outside-click close, improve Profile workspace and allow saving unchanged usernames."
+  "updated_at": "2026-11-23T18:00:00+05:30",
+  "release_notes": "Complete desktop layout redesign across Home, Events, Profile, Gram, More, settings, directories and admin pages. Mobile UI unchanged."
 }
