@@ -1142,7 +1142,7 @@ function home(){
  const upcoming=all.filter(e=>new Date(e.starts_at).getTime()>=now);
  const recentPublished=all.filter(e=>new Date(e.starts_at).getTime()<now).reverse();
  const registered=upcoming.filter(e=>e.registered),yourEvents=registered.length?registered:upcoming;
- const homeEvents=[...upcoming,...recentPublished].slice(0,6);
+ const homeEvents=[...upcoming,...recentPublished].slice(0,10);
  const homeListEvents=upcoming.length?upcoming.slice(0,3):recentPublished.slice(0,3);
  const people=(S.publicMembers||[]).filter(m=>String(m.auth_id)!==String(S.user?.auth_id)).slice(0,8);
  const onlinePeople=[...new Set((S.onlineCrew||[]).map(String))].filter(id=>id!==String(S.user?.auth_id||'')).map(id=>(S.publicMembers||[]).find(m=>String(m.auth_id)===id)).filter(Boolean);
@@ -1164,7 +1164,7 @@ function home(){
   return raw?raw.toUpperCase():'CREW EVENT';
  };
  const slides=[
-  ...homeEvents.slice(0,3).map(e=>({kind:'event',view:'events',id:e.id,updated:!!(e.created_at&&e.updated_at&&new Date(e.updated_at).getTime()-new Date(e.created_at).getTime()>5000),kicker:'KINETIC CREW · '+category(e),label:new Date(e.starts_at).getTime()>=now?(e.featured?'FEATURED EVENT':'UPCOMING EVENT'):'RECENT CREW EVENT',title:e.title||'Upcoming crew event',subtitle:[ds(e.starts_at),e.location||'Venue to be announced'].filter(Boolean).join(' · '),cta:e.registered?'View your ticket':'Explore event',image:photo(e)})),
+  ...homeEvents.map(e=>({kind:'event',view:'events',id:e.id,updated:!!(e.created_at&&e.updated_at&&new Date(e.updated_at).getTime()-new Date(e.created_at).getTime()>5000),kicker:'KINETIC CREW · '+category(e),label:new Date(e.starts_at).getTime()>=now?(e.featured?'FEATURED EVENT':'UPCOMING EVENT'):'RECENT CREW EVENT',title:e.title||'Upcoming crew event',subtitle:[ds(e.starts_at),e.location||'Venue to be announced'].filter(Boolean).join(' · '),cta:e.registered?'View your ticket':'Explore event',image:photo(e)})),
   ...rehearsals.slice(0,3).map(item=>({kind:'rehearsal',view:'rehearsals',id:item.id,kicker:'KINETIC CREW · REHEARSAL',label:'UPCOMING REHEARSAL',title:item.title||'Crew rehearsal',subtitle:[dt(item.data.session_at),item.data.location||'Practice location TBA'].filter(Boolean).join(' · '),cta:'View rehearsal',image:safeSocialUrl(item.data.cover_url||item.data.image_url||'')})),
   ...announcements.slice(0,3).map(a=>({kind:'update',view:'notifications',id:a.id,kicker:'KINETIC CREW · IMPORTANT UPDATE',label:'CREW ANNOUNCEMENT',title:a.title||'A note from your crew',subtitle:a.body||a.message||'An important update from Kinetic Crew',cta:'Read update',image:safeSocialUrl(a.image_url||a.cover_url||a.banner_url||'')}))
  ];
@@ -1172,7 +1172,7 @@ function home(){
  const crewPromo={kind:'promo',view:'more',kicker:'KINETIC CREW · ONE CREW, ONE RHYTHM',label:'ONE CREW · ONE RHYTHM',title:'Kinetic Crew',subtitle:'Events, rehearsals, auditions and every moment that brings the crew together.',cta:'Explore the crew',image:''};
  const contentSlides=slides.splice(0);
  if(!contentSlides.length)slides.push({...crewPromo});
- else contentSlides.forEach(slide=>{slides.push(slide,{...crewPromo});});
+ else {slides.push(...contentSlides);slides.push({...crewPromo});}
  const pollItems=[...(S.featureItems?.polls||[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
  const updateItems=[...announcements.slice(0,2).map(a=>({kind:'announcement',created_at:a.created_at,item:a})),...(pollItems.length?[{kind:'poll',created_at:pollItems[0].created_at,item:pollItems[0]}]:[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
  const updates=updateItems.map((entry,i)=>{
@@ -1320,6 +1320,9 @@ function eventsPage(){
  +(admin()?'<button type="button" class="kce-meet-create-event-tile kce-meet-create-event-tile-events" data-kc-meet-schedule><span>◉</span><span><small>MEETING EVENT</small><b>Create a KC Meet event</b><em>Schedule a live session · No registration required</em></span><i>＋</i></button>':'')+'<section class="kc-meet-scheduled-section kc-meet-scheduled-section-events"><div><span>LIVE CONNECTIONS</span><h2>KC Meet events</h2><p>Join by invitation link. The host controls admission.</p></div><div id="kcMeetEventsScheduled" class="kcml-scheduled-grid"><p class="kcml-scheduled-empty">Loading KC Meet events…</p></div></section><label class="kce-event-search"><input id="kceEventSearch" type="search" placeholder="Search concerts, workshops, events..." value="'+esc(S.eventQuery||'')+'" autocomplete="off" aria-label="Search concerts, workshops and events"></label>'+
  (featured&&filter==='all'&&!query?'<button type="button" class="kce-featured-event" data-open-event="'+esc(featured.id)+'">'+art(featured,'featured')+'<span class="kce-featured-info"><i>✦ FEATURED EXPERIENCE</i><b>'+esc(featured.title)+'</b><small>'+esc(dt(featured.starts_at))+' · '+esc(featured.location||'Venue to be announced')+'</small><strong>View event <span>↗</span></strong></span></button>':'')+
  (filter==='all'&&!query?'<div class="kce-category-mosaic kce-event-shortcuts"><button type="button" class="kce-category kce-cat-performances" data-event-filter="performances"><i>♫</i><b>Concerts & Shows</b><small>Live performances</small></button><button type="button" class="kce-category kce-cat-workshops" data-event-filter="workshops"><i>✳</i><b>Workshops</b><small>Learn with the crew</small></button><button type="button" class="kce-category kce-cat-community" data-event-filter="community"><i>♧</i><b>Community</b><small>Meet your people</small></button><button type="button" class="kce-category" data-event-filter="auditions"><i>✦</i><b>Auditions</b><small>Join the movement</small></button></div>':'')+
+'<nav class="kce-tabs" aria-label="Event categories">'+tabs.map(([id,label])=>'<button type="button" data-event-filter="'+id+'" class="'+(filter===id?'active':'')+'" aria-pressed="'+(filter===id)+'">'+label+'</button>').join('')+'</nav>'+
+'<div class="kce-discover-label"><div><span class="kce-eyebrow">'+(filter==='past'?'EVENT ARCHIVE':filter==='tickets'?'YOUR REGISTRATIONS':'DISCOVER THE CREW')+'</span><h2>'+(filter==='past'?'Past events':filter==='tickets'?'My tickets':filter==='all'?'Upcoming events':tabs.find(t=>t[0]===filter)?.[1]||'Events')+'</h2></div><span>'+pool.length+' '+(pool.length===1?'EVENT':'EVENTS')+'</span></div>'+
+'<div class="kce-events-grid" id="kceEventsGrid">'+(pool.length?pool.map(cardUI).join(''):'<div class="kce-empty-state"><span>✦</span><b>'+(query?'No matching events':filter==='tickets'?'No tickets yet':filter==='past'?'No past events':'No events in this category yet')+'</b><small>'+(query?'Try another event name, category or venue.':filter==='tickets'?'Register for an event and your tickets will appear here.':'New crew events will appear here when they are published.')+'</small>'+(filter!=='all'&&!query?'<button type="button" data-event-filter="all">Browse all events</button>':'')+'</div>')+'</div>'+
 '<button type="button" class="kce-kc-meet-tile" data-view="meet" aria-label="Open KC Meet"><span class="kce-kc-meet-mark" aria-hidden="true">KC</span><span class="kce-kc-meet-copy"><small>CREW CONNECTION</small><b>KC Meet</b><span>Start a meeting or join your crew live</span></span><span class="kce-kc-meet-arrow" aria-hidden="true">↗</span></button>'+
  '</div>';
 }
