@@ -1,6 +1,6 @@
 {
-  "version": "1.6.82",
+  "version": "1.6.83",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T18:00:00+05:30",
-  "release_notes": "Complete desktop layout redesign across Home, Events, Profile, Gram, More, settings, directories and admin pages. Mobile UI unchanged."
+  "updated_at": "2026-11-23T19:40:00+05:30",
+  "release_notes": "Restored the app's existing desktop visual styling. Removed the unrequested desktop redesign; preserved desktop navigation behavior. Mobile UI unchanged."
 }
