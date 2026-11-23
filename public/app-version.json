@@ -1,6 +1,6 @@
 {
-  "version": "1.6.76",
+  "version": "1.6.77",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-23T10:45:00+05:30",
-  "release_notes": "KC Voice now times out unanswered commands and follow-up prompts after five seconds, clears pending actions, and returns silently to Hey KC wake-word standby."
+  "updated_at": "2026-11-23T11:15:00+05:30",
+  "release_notes": "Restore the missing Events page category navigation and event cards, and include up to ten upcoming/recent events in the homepage carousel without interleaving promo slides."
 }
