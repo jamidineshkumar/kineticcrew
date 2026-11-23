@@ -278,3 +278,13 @@
 .kce-events .kc-meet-create-event-tile,
 .kce-events-head-actions [data-view="meet"]{display:none!important}
 .kce-events-head-actions [data-event-filter="all"]{display:inline-flex!important;align-items:center;justify-content:center}
+
+
+/* Event discovery category shortcuts and the single KC Meet entry point. */
+.kce-meet-category-cta{width:100%;min-height:86px;display:flex;align-items:center;gap:14px;margin:12px 0 4px;padding:13px 15px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:linear-gradient(120deg,rgba(37,44,46,.96),rgba(27,29,36,.96));color:var(--text,#f8f5fa);text-align:left;box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 8px 22px rgba(0,0,0,.18)}
+.kce-meet-category-icon{width:52px;height:52px;flex:0 0 52px;display:grid;place-items:center;border:1px solid rgba(104,205,184,.42);border-radius:17px;background:rgba(82,183,161,.10);color:#f2a08b;font-size:20px;font-weight:800}
+.kce-meet-category-cta>span:nth-child(2){display:grid;gap:4px;min-width:0;flex:1}.kce-meet-category-cta small{color:#f0a58c;font-size:9px;font-weight:800;letter-spacing:.18em}.kce-meet-category-cta b{font-size:17px}.kce-meet-category-cta em{color:var(--muted,#aaa2b4);font-size:11px;font-style:normal}.kce-meet-category-cta>i{font-size:24px;color:#f0a58c;font-style:normal}
+.kce-live-connections{margin:14px 0 4px;padding:18px;border:1px solid var(--line,#39333f);border-radius:20px;background:var(--panel,#211d27)}
+.kce-live-connections>div:first-child>span{color:#f0a58c;font-size:9px;font-weight:800;letter-spacing:.18em}.kce-live-connections h2{margin:6px 0;font-size:20px}.kce-live-connections p{margin:0;color:var(--muted,#aaa2b4);font-size:12px}
+#kcMeetEventsSection[hidden]{display:none!important}
+@media(max-width:520px){.kce-category-mosaic{gap:9px}.kce-category{min-height:108px;padding:13px}.kce-meet-category-cta{min-height:80px}}
