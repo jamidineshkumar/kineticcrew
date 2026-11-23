@@ -1,5 +1,5 @@
 /* Kinetic Crew mobile glass interface — inspired by the supplied lavender/navy reference. */
-@media(max-width:767px){
+@media(max-width:900px){
  :root{--bg:#e9e8f4;--panel:#f5f4fb;--panel2:#eeedf7;--line:#d8d6e7;--muted:#77768d;--text:#20233b;--lime:#b7a4ff;--purple:#7665c9}
  body{background:radial-gradient(ellipse at 10% 0%,#d9d2f7 0,transparent 38%),radial-gradient(ellipse at 100% 30%,#d4e9f1 0,transparent 36%),#eeedf7;color:#252740}
  main{background:transparent}
@@ -104,7 +104,7 @@
  .welcome h1{font-size:27px}
  footer{font-size:8px}
 }
-@media(prefers-reduced-motion:no-preference) and (max-width:767px){
+@media(prefers-reduced-motion:no-preference) and (max-width:900px){
  .stat,.event,.announcement,.surface{animation:glassRise .45s ease both}
  .stat:nth-child(2){animation-delay:.04s}.stat:nth-child(3){animation-delay:.08s}.stat:nth-child(4){animation-delay:.12s}
 }
@@ -112,7 +112,7 @@
 
 
 /* Mobile navigation, dedicated event detail and simplified home. */
-@media(max-width:767px){
+@media(max-width:900px){
  .side.open{display:flex!important;position:fixed;inset:0 auto 0 0;width:min(82vw,310px);height:100dvh;z-index:30;padding:20px 14px;background:linear-gradient(160deg,#f8f7fffa,#eeebf8f7);border-right:1px solid #fff;box-shadow:24px 0 70px #302a4b44;overflow-y:auto;animation:kcDrawerIn .28s cubic-bezier(.2,.8,.2,1) both}
  .navshade{display:none;position:fixed;inset:0;z-index:29;background:#211b3859;backdrop-filter:blur(4px)}
  .navshade.open{display:block}
@@ -199,7 +199,7 @@
 
 
 /* Mobile-app ergonomics: prevent Android Chrome's focus zoom on small form controls. */
-@media (max-width: 767px) {
+@media (max-width: 900px) {
   input:not([type="checkbox"]):not([type="radio"]),
   select,
   textarea,

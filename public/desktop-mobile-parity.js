@@ -3,7 +3,7 @@
    persistent workspace sidebar. The hamburger collapses/expands it. */
 (()=>{
  'use strict';
- const desktop=()=>window.matchMedia('(min-width: 768px)').matches;
+ const desktop=()=>window.matchMedia('(min-width: 640px) and (hover: hover) and (pointer: fine)').matches;
  function initialize(){
   if(!desktop())return;
   const panel=document.getElementById('sidebar');

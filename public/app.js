@@ -2572,7 +2572,7 @@ function setMobileMenu(open){
  const sidebar=$('#sidebar'),shade=$('#navShade'),toggle=$('#menuToggle');
  if(!sidebar||!shade)return;
  if(open&&$('#nav')&&!$('#nav').children.length&&typeof paint==='function')paint();
- const desktop=window.matchMedia('(min-width: 768px)').matches;
+ const desktop=window.matchMedia('(min-width: 640px) and (hover: hover) and (pointer: fine)').matches;
  if(desktop){
   sidebar.classList.toggle('open',!!open);
   document.body.classList.toggle('kc-sidebar-collapsed',!open);
@@ -2597,7 +2597,7 @@ document.addEventListener('click',event=>{
  const toggle=event.target.closest('#menuToggle');if(!toggle)return;
  event.preventDefault();event.stopPropagation();
  const sidebar=$('#sidebar'),isOpen=!!sidebar?.classList.contains('open');
- if(window.matchMedia('(min-width: 768px)').matches){
+ if(window.matchMedia('(min-width: 640px) and (hover: hover) and (pointer: fine)').matches){
   setMobileMenu(!isOpen);
   if(!isOpen)requestAnimationFrame(()=>sidebar?.querySelector('#nav .nav-group-toggle, #nav .navitem')?.focus({preventScroll:true}));
   return;
@@ -2612,7 +2612,7 @@ document.addEventListener('keydown',event=>{
  }
 });
 let kcBackExitAt=0;window.addEventListener('popstate',event=>{if($('#sidebar')?.classList.contains('open'))setMobileMenu(false);const state=event.state;if(state?.kcApp&&typeof state.kcView==='string'){kcBackExitAt=0;go(state.kcView,{fromPop:true});return;}const now=Date.now();if(kcBackExitAt&&now-kcBackExitAt<=1800){const nativeApp=window.Capacitor?.Plugins?.App;if(nativeApp?.exitApp){nativeApp.exitApp();return;}kcBackExitAt=0;return;}kcBackExitAt=now;try{history.pushState({kcApp:true,kcView:S.view,kcRoot:true},'',location.href);}catch{}notice('Press back again to exit Kinetic Crew.');});
-$('#nav')?.addEventListener('click',event=>{if(event.target.closest('[data-view]')&&!window.matchMedia('(min-width: 768px)').matches)setMobileMenu(false);});
+$('#nav')?.addEventListener('click',event=>{if(event.target.closest('[data-view]')&&!window.matchMedia('(min-width: 640px) and (hover: hover) and (pointer: fine)').matches)setMobileMenu(false);});
 
 document.addEventListener('kc:navigate',event=>{const view=event.detail?.view;if(view)go(view);});
 document.addEventListener('click',event=>{const headerAction=event.target.closest('.kc-header-actions [data-view],.kc-header-brand[data-view]');if(!headerAction)return;event.preventDefault();go(headerAction.dataset.view);});
