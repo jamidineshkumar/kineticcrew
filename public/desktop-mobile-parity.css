@@ -1,0 +1,144 @@
+/* Kinetic Crew desktop/mobile parity layer.
+   Desktop now uses the same authenticated app shell, graphite glass surfaces,
+   compact top controls and floating navigation as the approved mobile UI.
+   This file is presentation-only; it does not alter app routes or data. */
+@media (min-width:901px){
+ :root{--kc-pc-bg:#090a0c;--kc-pc-glass:rgba(30,31,35,.72);--kc-pc-line:rgba(255,255,255,.12);--kc-pc-muted:#aaa7ad;--kc-pc-accent:#f19a83}
+ html,body{min-height:100%;background:#090a0c!important;color:#f4f2f4!important}
+ body{background:radial-gradient(ellipse at 12% 0%,rgba(235,145,126,.09),transparent 34%),radial-gradient(ellipse at 88% 28%,rgba(143,126,214,.09),transparent 36%),#090a0c!important}
+ .shell{min-height:100vh!important;background:transparent!important}
+ /* Use the same top control bar as mobile; desktop-only legacy bar is removed. */
+ .topbar{display:none!important}
+ .kc-mobile-topbar{
+  position:sticky!important;top:12px!important;z-index:120!important;
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  width:min(calc(100% - 64px),1120px)!important;height:62px!important;
+  margin:12px auto 18px!important;padding:7px 12px!important;
+  border:1px solid rgba(255,255,255,.13)!important;border-radius:22px!important;
+  background:rgba(35,35,42,.68)!important;color:#f5f4fa!important;
+  box-shadow:0 8px 28px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.07)!important;
+  backdrop-filter:blur(24px) saturate(145%)!important;-webkit-backdrop-filter:blur(24px) saturate(145%)!important;
+ }
+ .kc-mobile-topbar:after{
+  content:"KINETIC CREW";position:absolute;left:70px;top:50%;transform:translateY(-50%);
+  font:850 12px/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:.2em;
+  background:linear-gradient(95deg,#f2a27e 0%,#d68bca 48%,#83c8ed 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;pointer-events:none
+ }
+ .kc-menu-button,.kc-header-actions button{
+  position:relative!important;display:grid!important;place-items:center!important;
+  width:44px!important;height:44px!important;padding:9px!important;border-radius:50%!important;
+  border:1px solid rgba(255,255,255,.10)!important;background:rgba(255,255,255,.075)!important;
+  color:#f5f3f8!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.07)!important
+ }
+ .kc-menu-button{gap:4px!important;align-content:center!important}
+ .kc-menu-button span{display:block!important;width:20px!important;height:2px!important;border-radius:3px!important;background:#eeeef5!important}
+ .kc-header-actions{display:flex!important;align-items:center!important;gap:9px!important;margin-left:auto!important}
+ .kc-header-actions button{font-size:16px!important}
+ /* Sidebar is the same slide-out navigation used on mobile, not a permanent desktop rail. */
+ .side{
+  display:flex!important;position:fixed!important;inset:0 auto 0 0!important;
+  width:min(340px,86vw)!important;height:100dvh!important;padding:22px 16px 16px!important;
+  z-index:20000!important;overflow-y:auto!important;overflow-x:hidden!important;
+  border-right:1px solid rgba(255,255,255,.13)!important;
+  background:linear-gradient(160deg,rgba(34,35,40,.98),rgba(15,16,20,.98))!important;
+  box-shadow:24px 0 70px rgba(0,0,0,.48)!important;
+  backdrop-filter:blur(26px) saturate(145%)!important;-webkit-backdrop-filter:blur(26px) saturate(145%)!important;
+  transform:translate3d(-110%,0,0)!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;
+  transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .22s ease,visibility .22s ease!important
+ }
+ .side.open{
+  display:flex!important;transform:translate3d(0,0,0)!important;visibility:visible!important;
+  opacity:1!important;pointer-events:auto!important
+ }
+ .navshade{display:none!important;position:fixed!important;inset:0!important;z-index:19990!important;background:rgba(7,8,12,.58)!important;backdrop-filter:blur(5px)!important}
+ .navshade.open{display:block!important}
+ .side .brand{padding:0 8px 22px!important}
+ .side .workspace{border-radius:18px!important;background:rgba(255,255,255,.045)!important;border:1px solid var(--kc-pc-line)!important}
+ .side .navitem{min-height:46px!important;border-radius:14px!important}
+ .side .navitem.active{background:linear-gradient(110deg,rgba(242,159,132,.14),rgba(171,139,211,.10))!important;border-color:rgba(242,159,132,.22)!important}
+ main{width:100%!important;min-width:0!important;margin:0!important;padding:0 0 116px!important;background:transparent!important}
+ .content{
+  width:min(calc(100% - 64px),1040px)!important;max-width:1040px!important;
+  margin:0 auto!important;padding:12px 0 34px!important;color:#f4f2f4!important;
+  animation:kcPcPageIn .32s ease both
+ }
+ @keyframes kcPcPageIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+ footer{display:none!important}
+ /* Shared mobile graphite/glass language across every page. */
+ .surface,.stat,.event,.announcement,.feature-card,.notification-item,.crew-profile-tile,
+ .social-post-card,.kc-detail-panel,.kce-reserve-panel,.notice-settings,.notice-feed,
+ .formgrid,.publish,.verifyform,.attendancegrid>.surface,.wa-chat-shell,.kc-profile-metrics,
+ .kc-public-profile-bio,.kc-profile-hero,.kc-liquid-profile-card,.kc-more-banner,
+ .kc-more-menu-card,.kc-more-option,.kc-reference-profile,.kc-home-updates,
+ .kc-exact-quick,.kc-exact-event-card,.kc-exact-friends,.kc-exact-update,
+ .kc-exact-gram-entry,.kc-exact-hero,.kc-vibe-featured,.kc-vibe-event-card,
+ .kc-feed-composer,.kc-feed-stories,.kc-feed-story,.kc-feed-tabs,.kc-feed-inbox{
+  border-color:var(--kc-pc-line)!important;border-radius:22px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.022))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.065),0 14px 34px rgba(0,0,0,.22)!important;
+  backdrop-filter:blur(22px) saturate(135%)!important;-webkit-backdrop-filter:blur(22px) saturate(135%)!important
+ }
+ .welcome{margin:0 0 26px!important;padding:10px 4px 20px!important;border-bottom:1px solid rgba(255,255,255,.1)!important}
+ .welcome h1,.kc-home-greeting h1{color:#faf8f6!important;font-size:clamp(30px,3.2vw,42px)!important;letter-spacing:-.055em!important}
+ .welcome p,.sectionhead p,.crumb{color:#aaa7ad!important}
+ .primary,.kc-register-button,.kce-register-button{background:linear-gradient(120deg,#f2a184,#d98ac0 52%,#8d9fe0)!important;border:1px solid rgba(255,255,255,.25)!important;color:#171319!important;box-shadow:0 8px 24px rgba(179,128,181,.18)!important}
+ .secondary,.outline,.iconbutton,.installbutton{background:rgba(255,255,255,.055)!important;border:1px solid rgba(255,255,255,.14)!important;color:#f3f0f4!important}
+ .field,.field label{color:#eeeaf0!important}
+ .field input,.field textarea,.field select,.select,input,select,textarea{
+  background:rgba(7,8,11,.38)!important;border:1px solid rgba(255,255,255,.13)!important;
+  border-radius:14px!important;color:#f7f4f7!important
+ }
+ .field input:focus,.field textarea:focus,.field select:focus{border-color:rgba(191,158,225,.65)!important;box-shadow:0 0 0 3px rgba(171,139,211,.13)!important}
+ .sectionhead{border-color:rgba(255,255,255,.1)!important}
+ .sectionhead h2,.sectionhead h3{color:#f5f1f4!important}
+ .stat,.event,.announcement,.surface{color:#f5f1f4!important}
+ .event h3,.announcement h3,.formtitle h3{color:#f6f2f5!important}
+ .eventdesc,.eventmeta,.announcement p,.formtitle p{color:#aaa7b0!important}
+ /* Home is centered like mobile, with the same greeting, feature panels and compact rhythm. */
+ body.kc-home-screen .kc-home-reference-header{margin-bottom:22px!important}
+ body.kc-home-screen .kc-home-greeting{max-width:100%!important;gap:22px!important;min-height:150px!important;margin:0 4px 26px!important}
+ body.kc-home-screen .kc-home-greeting-copy{min-width:0!important}
+ body.kc-home-screen .kc-home-greeting h1{font-size:clamp(34px,4vw,48px)!important;line-height:1.02!important}
+ body.kc-home-screen .kc-home-greeting-mark{flex:0 0 108px!important;width:108px!important;height:108px!important;min-width:108px!important;min-height:108px!important}
+ body.kc-home-screen .kc-exact-home,body.kc-home-screen .kc-vibe-home{max-width:100%!important}
+ body.kc-home-screen .kc-exact-quick{gap:10px!important}
+ body.kc-home-screen .kc-exact-event-row{grid-auto-columns:minmax(220px,calc(33.333% - 8px))!important}
+ /* Same four-destination floating dock as the mobile app. */
+ #kcMobileDock.kc-mobile-dock{
+  position:fixed!important;z-index:1500!important;left:50%!important;right:auto!important;
+  bottom:18px!important;transform:translateX(-50%)!important;
+  width:500px!important;max-width:calc(100vw - 48px)!important;height:78px!important;min-height:78px!important;
+  display:grid!important;grid-template-columns:76px minmax(0,1fr)!important;gap:9px!important;
+  padding:6px!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:28px!important;
+  background:rgba(25,27,30,.92)!important;color:#f4f1f5!important;
+  box-shadow:0 12px 34px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.09)!important;
+  backdrop-filter:blur(26px) saturate(145%)!important;-webkit-backdrop-filter:blur(26px) saturate(145%)!important
+ }
+ #kcMobileDock .kc-dock-home,#kcMobileDock .kc-dock-group-item{
+  display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+  width:100%!important;height:64px!important;min-width:0!important;min-height:0!important;gap:3px!important;
+  padding:4px!important;border:1px solid rgba(255,255,255,.075)!important;border-radius:19px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025))!important;color:rgba(247,245,244,.82)!important
+ }
+ #kcMobileDock .kc-dock-group{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;align-items:center!important;gap:6px!important;min-width:0!important}
+ #kcMobileDock .dock-icon{display:grid!important;place-items:center!important;width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;border-radius:12px!important;background:rgba(255,255,255,.035)!important;color:inherit!important}
+ #kcMobileDock .dock-icon svg{display:block!important;width:25px!important;height:25px!important}
+ #kcMobileDock .dock-label{display:block!important;font-size:9px!important;line-height:12px!important;color:inherit!important}
+ #kcMobileDock .kc-dock-home.active,#kcMobileDock .kc-dock-group-item.active{
+  background:linear-gradient(145deg,rgba(255,174,139,.23),rgba(191,132,192,.19),rgba(117,137,203,.16))!important;
+  border-color:rgba(235,185,164,.28)!important;color:#fff!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 4px 13px rgba(0,0,0,.17)!important
+ }
+ #kcMobileDock .kc-dock-home.active .dock-icon,#kcMobileDock .kc-dock-group-item.active .dock-icon{background:rgba(255,255,255,.12)!important;color:#fff!important}
+ html[data-theme="light"] #kcMobileDock.kc-mobile-dock{background:rgba(246,247,249,.95)!important;border-color:rgba(45,48,56,.13)!important}
+ html[data-theme="light"] #kcMobileDock .kc-dock-home,html[data-theme="light"] #kcMobileDock .kc-dock-group-item{color:#555b65!important;background:linear-gradient(145deg,#fff,#eceef2)!important}
+ /* Avoid mobile-only breakpoints hiding desktop controls or creating a second shell. */
+ .kc-mobile-topbar .kc-header-actions{display:flex!important}
+}
+@media (min-width:901px) and (max-width:1100px){
+ .content{width:calc(100% - 44px)!important}
+ .kc-mobile-topbar{width:calc(100% - 44px)!important}
+}
+@media (prefers-reduced-motion:reduce){
+ @media (min-width:901px){.content{animation:none!important}*{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+}
