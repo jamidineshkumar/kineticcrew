@@ -950,7 +950,7 @@ async function loadTicketRecipientRoster(eventId){
 }
 
 async function kcShareEventCard(event){
- const shareButton=document.querySelector('[data-share-event="'+CSS.escape(String(event.id))+'"]');
+ const shareButton=Array.from(document.querySelectorAll('[data-share-event]')).find(button=>button.dataset.shareEvent===String(event.id));
  if(shareButton){shareButton.disabled=true;shareButton.textContent='Preparing card…';}
  try{
   let owner=(S.members||[]).concat(S.publicMembers||[]).find(person=>String(person.auth_id)===String(event.created_by))||null;
