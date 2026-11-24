@@ -326,3 +326,38 @@
 @keyframes kcMoreBrandOrbit{to{transform:rotate(360deg)}}
 @keyframes kcMoreBrandSweep{0%,100%{top:24%;opacity:0}45%{opacity:.8}65%{top:78%;opacity:0}}
 @media(prefers-reduced-motion:reduce){.kc-more-empty-orbit,.kc-more-empty-sweep{animation:none!important}.kc-more-ads-slide{transition:none!important}}
+
+
+/* More page only: continuous ambient gradient and glowing animated wordmark. */
+.kc-more-ads-glow{
+  background:
+    radial-gradient(ellipse at 82% 12%,rgba(236,73,151,.30),transparent 46%),
+    radial-gradient(ellipse at 14% 88%,rgba(36,201,210,.26),transparent 49%),
+    conic-gradient(from 20deg at 50% 50%,transparent 0 28%,rgba(236,73,151,.10) 38%,transparent 52%,rgba(36,201,210,.10) 67%,transparent 82%);
+  filter:blur(22px);
+  transform:translate3d(0,0,0);
+  animation:kcMoreBannerAmbient 11s ease-in-out infinite alternate;
+}
+.kc-more-empty-wordmark b{
+  background:linear-gradient(100deg,#f24f9c 0%,#ffb46d 28%,#43d1d1 56%,#f24f9c 82%,#ffb46d 100%);
+  background-size:240% 100%;
+  background-position:0% 50%;
+  background-clip:text;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+  filter:drop-shadow(0 0 12px rgba(242,79,156,.34)) drop-shadow(0 0 18px rgba(67,209,209,.20));
+  animation:kcMoreWordmarkGradient 4.5s linear infinite;
+}
+@keyframes kcMoreBannerAmbient{
+  0%{transform:translate3d(-2%,1%,0) scale(.98);opacity:.72}
+  100%{transform:translate3d(2%,-1%,0) scale(1.06);opacity:1}
+}
+@keyframes kcMoreWordmarkGradient{
+  from{background-position:100% 50%}
+  to{background-position:-140% 50%}
+}
+@media(prefers-reduced-motion:reduce){
+  .kc-more-ads-glow,.kc-more-empty-wordmark b{animation:none!important}
+  .kc-more-empty-wordmark b{background-position:50% 50%}
+}
