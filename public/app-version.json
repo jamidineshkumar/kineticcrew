@@ -1,6 +1,6 @@
 {
-  "version": "1.6.86",
+  "version": "1.6.87",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-24T01:40:00+05:30",
-  "release_notes": "Corrected desktop detection for narrower PC windows using mouse/trackpad input while restoring the original touch-device mobile breakpoints. Fixed desktop sidebar overlay layer; no app routes, feature logic, or mobile phone UI changes."
+  "updated_at": "2026-11-24T18:20:00+05:30",
+  "release_notes": "Preserve the last visited screen after browser refresh. Verify authoritative profile metadata before applying profile-completion redirects, avoiding false redirects caused by incomplete bootstrap data."
 }

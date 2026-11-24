@@ -329,12 +329,22 @@ async function refresh(){
  try{const access=await rpc('crew_access_status',{});if(!access.error&&access.data?.role)S.user.role=access.data.role;}catch(error){console.warn('Crew role could not be refreshed:',error);}
  S.offline=false;S.error='';
  paintUser();paint();
- // Profile metadata is useful but must never delay the first dashboard render.
- rpc('crew_profile_social',{p_auth_id:S.user.auth_id||S.user.id}).then(profile=>{
-  if(!profile.error&&profile.data?.profile&&S.user){S.user={...S.user,...profile.data.profile};S.profileCompletionPending=!profileIsComplete(S.user);paintUser();if(S.profileCompletionPending&&S.view!=='profile')go('profile');else if(S.view==='profile'||S.view==='overview')paint();}
- }).catch(error=>console.warn('Extended profile details will load when the connection improves:',error));
- S.profileCompletionPending=!profileIsComplete(S.user);
+ // Resolve authoritative profile metadata before enforcing profile completion.
+ // Bootstrap may omit extended profile fields; redirecting before this lookup
+ // incorrectly sends users to Profile after a browser refresh.
+ let profileMetadataVerified=false;
+ try{
+  const profile=await rpc('crew_profile_social',{p_auth_id:S.user.auth_id||S.user.id});
+  if(!profile.error){
+   if(profile.data?.profile&&S.user)S.user={...S.user,...profile.data.profile};
+   S.profileCompletionPending=!profileIsComplete(S.user);
+   profileMetadataVerified=true;
+  }
+ }catch(error){console.warn('Extended profile details could not be verified; preserving the current page:',error);}
+ if(!profileMetadataVerified)S.profileCompletionPending=false;
+ paintUser();
  if(S.profileCompletionPending&&S.view!=='profile')await go('profile');
+ else if(S.view==='profile'||S.view==='overview')paint();
  try{
   const sessionResult=await auth.getSession();
   const cacheUserId=sessionResult?.data?.session?.user?.id||S.user.auth_id||S.user.id;
