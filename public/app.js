@@ -1182,7 +1182,7 @@ function home(){
   ...rehearsals.slice(0,3).map(item=>({kind:'rehearsal',view:'rehearsals',id:item.id,kicker:'KINETIC CREW · REHEARSAL',label:'UPCOMING REHEARSAL',title:item.title||'Crew rehearsal',subtitle:[dt(item.data.session_at),item.data.location||'Practice location TBA'].filter(Boolean).join(' · '),cta:'View rehearsal',image:safeSocialUrl(item.data.cover_url||item.data.image_url||'')})),
   ...announcements.slice(0,3).map(a=>({kind:'update',view:'notifications',id:a.id,kicker:'KINETIC CREW · IMPORTANT UPDATE',label:'CREW ANNOUNCEMENT',title:a.title||'A note from your crew',subtitle:a.body||a.message||'An important update from Kinetic Crew',cta:'Read update',image:safeSocialUrl(a.image_url||a.cover_url||a.banner_url||'')}))
  ];
- if(!rehearsals.length)slides.push({kind:'rehearsal',view:'rehearsals',kicker:'KINETIC CREW · PRACTICE SESSIONS',label:'MAKE THE NEXT MOVE',title:'Plan your next practice session',subtitle:'Create a rehearsal, choose a time and share the venue with your crew.',cta:'Open rehearsals',image:''});
+ if(!slides.length)slides.push({kind:'empty',view:'events',kicker:'KINETIC CREW · ONE CREW, ONE RHYTHM',label:'YOUR NEXT CREW MOMENT',title:'No upcoming events',subtitle:'New events and crew moments will appear here.',cta:'Explore events',image:''});
  const crewPromo={kind:'promo',view:'more',kicker:'KINETIC CREW · ONE CREW, ONE RHYTHM',label:'ONE CREW · ONE RHYTHM',title:'Kinetic Crew',subtitle:'Events, rehearsals, auditions and every moment that brings the crew together.',cta:'Explore the crew',image:''};
  const contentSlides=slides.splice(0);
  // Keep real events, rehearsals and announcements consecutive; one crew promo at the end.
