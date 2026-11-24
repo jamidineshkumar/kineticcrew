@@ -12,12 +12,12 @@ function render(root){
  if(!root)return;
  const api=window.KC_SEARCH_API,snapshot=api&&typeof api.snapshot==='function'?api.snapshot():{};
  const slides=mergeSlides(snapshot.events||[],root._kcMoreAds||[],root._kcMoreAdsSettings||{});
- const signature=JSON.stringify(slides.map(s=>[s.id,s.title,s.caption,s.media_type,s.media_url]));
+ const signature=JSON.stringify(slides.map(s=>[s.id,s.title,s.caption,s.media_type]));
  if(root.dataset.kcAdsReady==='yes'&&root.dataset.kcAdsSignature===signature)return;
  const old=mounted.get(root);if(old?.timer)clearTimeout(old.timer);
  if(!slides.length){root.innerHTML='';root.hidden=true;root.dataset.kcAdsReady='yes';root.dataset.kcAdsSignature=signature;return;}root.hidden=false;
  root.innerHTML='<section class="kc-more-ads-banner" aria-label="Kinetic Crew events and promotions"><div class="kc-more-ads-glow"></div><div class="kc-more-ads-track">'+slides.map((s,i)=>{
-  const media=s.media_type==='video'?'<video class="kc-more-ads-media" muted playsinline webkit-playsinline preload="'+(i===0?'auto':'metadata')+'" src="'+safe(s.media_url)+'"></video><div class="kc-more-ads-video-action"><button type="button" data-video-play="'+i+'">▶ Tap to play video</button></div>':(s.media_url?'<img class="kc-more-ads-media" src="'+safe(s.media_url)+'" alt="" loading="'+(i===0?'eager':'lazy')+'">':'');
+  const media='';
   return '<article class="kc-more-ads-slide'+(i===0?' is-active':'')+(s.kind==='campaign'?' '+(s.ad_format==='banner'?'is-sponsored-banner':'is-sponsored-native'):'')+'" data-slide="'+i+'" aria-hidden="'+(i===0?'false':'true')+'">'+media+'<div class="kc-more-ads-shade"></div>'+(s.kind==='campaign'?'<span class="kc-more-ads-sponsored">SPONSORED</span>':'')+('<div class="kc-more-ads-copy"><h2>'+safe(s.title||s.event_title||s.event_name||s.campaign_name||s.name||'Kinetic Crew')+'</h2>'+((s.caption||s.description||s.subtitle||s.event_description||[s.event_date||s.date,s.location||s.venue].filter(Boolean).join(' · '))?'<p>'+safe(s.caption||s.description||s.subtitle||s.event_description||[s.event_date||s.date,s.location||s.venue].filter(Boolean).join(' · '))+'</p>':(s.kind==='promotion'?'<p>Events · Rehearsals · Auditions · Crew updates</p>':''))+(s.kind==='campaign'&&validUrl(s.destination_url)?'<a href="'+safe(validUrl(s.destination_url))+'" target="_blank" rel="noopener noreferrer" data-ad-click="'+safe(s.id)+'">Learn more ↗</a>':'')+'</div>')+'</article>';
  }).join('')+'</div>'+(slides.length>1?'<div class="kc-more-ads-dots">'+slides.map((s,i)=>'<button type="button" data-slide-to="'+i+'" class="'+(i===0?'active':'')+'" aria-label="Show slide '+(i+1)+'"></button>').join('')+'</div>':'')+'</section>';
  const nodes=[...root.querySelectorAll('.kc-more-ads-slide')],dots=[...root.querySelectorAll('[data-slide-to]')],bar=root.querySelector('.kc-more-ads-progress i'),count=root.querySelector('.kc-more-ads-count');let active=0,timer=null;
