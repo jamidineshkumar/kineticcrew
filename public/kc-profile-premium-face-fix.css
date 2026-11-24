@@ -1,0 +1,78 @@
+/* Premium profile identity card — reliable 2D face swap for Android WebView. */
+#app .kc-reference-profile .kc-profile-flip-shell{
+ position:relative!important;width:100%!important;max-width:620px!important;margin:0 auto!important;overflow:visible!important;
+ perspective:none!important;-webkit-perspective:none!important;background:transparent!important;isolation:isolate!important;
+ border-radius:30px!important;transform:none!important;min-height:0!important;
+}
+#app .kc-reference-profile .kc-profile-flip-inner{
+ position:relative!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;width:100%!important;height:auto!important;min-height:0!important;
+ transform:none!important;-webkit-transform:none!important;transform-style:flat!important;-webkit-transform-style:flat!important;
+ transition:none!important;will-change:auto!important;isolation:isolate!important;background:transparent!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{
+ grid-column:1!important;grid-row:1!important;position:relative!important;inset:auto!important;display:flex!important;flex-direction:column!important;
+ width:100%!important;min-width:0!important;height:auto!important;min-height:500px!important;max-height:none!important;margin:0!important;
+ box-sizing:border-box!important;overflow:hidden!important;border-radius:28px!important;
+ transform:none!important;-webkit-transform:none!important;transform-style:flat!important;-webkit-transform-style:flat!important;
+ backface-visibility:visible!important;-webkit-backface-visibility:visible!important;animation:none!important;
+ transition:opacity .28s ease,transform .34s cubic-bezier(.2,.75,.2,1),visibility .28s ease!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card{
+ z-index:2!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+ padding:22px 22px 30px!important;justify-content:flex-start!important;gap:0!important;
+ border:1px solid rgba(255,255,255,.19)!important;
+ background:radial-gradient(ellipse at 10% 4%,rgba(255,255,255,.12),transparent 38%),radial-gradient(ellipse at 100% 92%,rgba(32,205,195,.13),transparent 43%),linear-gradient(145deg,#292d39 0%,#1c2029 52%,#25232f 100%)!important;
+ box-shadow:0 24px 60px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(255,255,255,.035)!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card:before{content:""!important;display:block!important;position:absolute!important;inset:0!important;z-index:0!important;opacity:.08!important;filter:none!important;transform:none!important;background:linear-gradient(125deg,transparent 20%,rgba(255,255,255,.18) 48%,transparent 72%)!important;pointer-events:none!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card:after{content:""!important;position:absolute!important;inset:0!important;z-index:0!important;background:linear-gradient(180deg,rgba(9,13,20,.05),rgba(9,13,20,.28))!important;pointer-events:none!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-card-top,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-photo,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-copy{z-index:2!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-card-top{width:100%!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-wordmark{font-size:10px!important;letter-spacing:.2em!important;color:#d7e5e5!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-wordmark b{color:#eaa0cb!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-card-top button{border:1px solid rgba(255,255,255,.16)!important;background:rgba(255,255,255,.075)!important;color:#f7f5fa!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-card-top .kc-profile-edit-button{padding:10px 15px!important;border-radius:999px!important;font-size:11px!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-photo{
+ width:clamp(138px,39vw,190px)!important;aspect-ratio:1!important;height:auto!important;margin:28px auto 18px!important;
+ border:1px solid rgba(255,255,255,.48)!important;border-radius:27px!important;
+ box-shadow:0 18px 44px rgba(0,0,0,.34),0 0 0 6px rgba(255,255,255,.035),0 0 34px rgba(70,208,202,.12)!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-photo img{width:100%!important;height:100%!important;object-fit:cover!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-copy{text-align:center!important;width:100%!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-eyebrow{color:#9fe0db!important;letter-spacing:.24em!important;font-size:9px!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-copy h1{font-size:clamp(25px,6vw,36px)!important;line-height:1.08!important;letter-spacing:-.045em!important;color:#fff!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-copy>p{color:rgba(238,240,246,.72)!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-single-profile-tags span{display:inline-flex!important;margin-top:13px!important;padding:9px 16px!important;border:1px solid rgba(229,190,125,.36)!important;border-radius:99px!important;background:linear-gradient(110deg,rgba(229,190,125,.14),rgba(255,255,255,.035))!important;color:#efd19a!important;font-size:9px!important;letter-spacing:.16em!important;font-weight:800!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-orb{display:none!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{
+ z-index:1!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+ padding:23px!important;gap:15px!important;justify-content:space-between!important;
+ border:1px solid rgba(255,255,255,.2)!important;
+ background:radial-gradient(ellipse at 0 100%,rgba(32,199,189,.17),transparent 46%),radial-gradient(ellipse at 100% 0,rgba(218,91,166,.14),transparent 42%),linear-gradient(145deg,#292d39,#191e28 62%,#25232e)!important;
+ box-shadow:0 24px 60px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.13)!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell.is-flipped .kc-liquid-profile-card{z-index:0!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:translateY(-5px) scale(.99)!important}
+#app .kc-reference-profile .kc-profile-flip-shell.is-flipped .kc-profile-card-back{z-index:3!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;transform:translateY(0) scale(1)!important;animation:kcPremiumTicketIn .34s cubic-bezier(.2,.75,.25,1) both!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-heading{display:flex!important;align-items:flex-start!important;gap:4px!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-heading span{font-size:10px!important;letter-spacing:.22em!important;color:#a8deda!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-heading b{font-size:24px!important;letter-spacing:.08em!important;background:linear-gradient(100deg,#ef9fc8,#f2d29a 48%,#8ee0d8)!important;background-clip:text!important;-webkit-background-clip:text!important;color:transparent!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-stub{min-height:0!important;padding:13px!important;border-radius:20px!important;background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025)) padding-box,linear-gradient(125deg,rgba(90,210,201,.65),rgba(255,255,255,.16),rgba(228,132,184,.58)) border-box!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.1)!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-id-label{color:#b5c7ca!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-stub>strong{color:#f2d6a4!important;letter-spacing:.16em!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-perforation{border-color:rgba(255,255,255,.25)!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-perforation:before,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-perforation:after{background:#20242e!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-qr-wrap .kc-profile-qr{width:clamp(128px,35vw,150px)!important;height:clamp(128px,35vw,150px)!important;padding:7px!important;background:#fff!important;border:1px solid rgba(255,255,255,.75)!important;border-radius:12px!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-details{background:linear-gradient(120deg,rgba(33,187,177,.13),rgba(255,255,255,.045),rgba(216,111,169,.11))!important;border:1px solid rgba(255,255,255,.1)!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-detail strong{color:#f5f3f8!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-detail span{color:#aebbc3!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-footer{color:#aebbc3!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-card-instagram-link{border-color:rgba(232,167,202,.35)!important;background:rgba(255,255,255,.06)!important;color:#f0b5d3!important}
+#app .kc-reference-profile .kc-profile-flip-shell.kc-flip-intro .kc-profile-flip-inner{animation:none!important}
+#app .kc-reference-profile .kc-profile-flip-hint{border-color:rgba(143,220,214,.2)!important;background:linear-gradient(110deg,rgba(40,194,185,.09),rgba(255,255,255,.025))!important;color:#a9e3de!important}
+@keyframes kcPremiumTicketIn{from{opacity:.55;transform:translateY(7px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:420px){#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card{min-height:470px!important;padding:19px 16px 25px!important}#app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{min-height:490px!important;padding:17px!important}#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-details{gap:9px 7px!important;padding:10px!important}}
+@media(prefers-reduced-motion:reduce){#app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{animation:none!important}}
