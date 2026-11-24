@@ -348,7 +348,7 @@ async function refresh(){
  try{
   const sessionResult=await auth.getSession();
   const cacheUserId=sessionResult?.data?.session?.user?.id||S.user.auth_id||S.user.id;
-  if(cacheUserId)localStorage.setItem(cacheKey(cacheUserId),JSON.stringify({savedAt:Date.now(),user:S.user,events:S.events,announcements:S.announcements}));
+  if(cacheUserId)localStorage.setItem(cacheKey(cacheUserId),JSON.stringify({savedAt:Date.now(),user:S.user,events:S.events,announcements:S.announcements,members:S.members,featureItems:S.featureItems,profileDashboard:S.profileDashboard,profileStats:S.profileStats,profileAchievements:S.profileAchievements,roster:S.roster}));
  }catch(error){console.warn('Could not refresh the local crew cache:',error);}
  const keepX=window.scrollX||0,keepY=window.scrollY||0;
  const hydrate=async()=>{
@@ -387,7 +387,7 @@ function restoreOffline(user){
  try{
   const cached=JSON.parse(localStorage.getItem(cacheKey(id))||'null');
   if(!cached?.user)return false;
-  S.user=cached.user;S.events=cached.events||[];S.announcements=cached.announcements||[];S.members=[];
+  S.user=cached.user;S.events=cached.events||[];S.announcements=cached.announcements||[];S.members=cached.members||[];S.featureItems=cached.featureItems||{};S.profileDashboard=cached.profileDashboard||null;S.profileStats=cached.profileStats||{};S.profileAchievements=cached.profileAchievements||[];S.roster=cached.roster||null;
   S.offline=true;S.error='Offline mode: showing your last saved crew data. Changes and live updates need an internet connection.';
   paintUser();paint();return true;
  }catch{return false;}
