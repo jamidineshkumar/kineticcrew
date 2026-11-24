@@ -1903,7 +1903,7 @@ function appInfoPage(){
 }
 function developerPage(){
  const links=[['GitHub','https://github.com/jamidineshkumar','GH'],['LinkedIn','https://in.linkedin.com/in/jami-dinesh-kumar-696478358','in'],['Instagram','https://www.instagram.com/dinuvox/','◎'],['YouTube','https://www.youtube.com/@Dinuvoxx','▶']];
- const photo=S.appSettings?.developer_photo_url||S.user?.avatar_url||'';
+ const photo=S.appSettings?.developer_photo_url||'';
  return '<section class="kc-developer-profile" aria-label="Developer profile">'+
  '<div class="kc-developer-cover">'+(photo?'<img class="kc-developer-cover-photo" src="'+esc(photo)+'" alt="Jami Dinesh Kumar" loading="eager" onerror="this.hidden=true">':'<div class="kc-developer-cover-placeholder" aria-hidden="true"></div>')+
  '<button type="button" class="kc-developer-back" data-view="settings" aria-label="Back to settings">‹</button>'+
