@@ -1792,7 +1792,7 @@ function brandSettingsPage(){
  const brandAssets=S.appSettings?.brand_logo_assets||{};
  const current=brandAssets.app||S.appSettings?.brand_logo_url||window.KC_BRAND_LOGO_URL||window.kcPath('kinetic-crew-logo.svg');
  const brandTargets={app:true,browser:true,pwa:true,signin:true,email:false,notifications:true,share_cards:true,...(S.appSettings?.brand_logo_targets||{}),external_forms:true};
- const allBrandTargets=['app','browser','pwa','signin','email','notifications','external_forms'].every(key=>brandTargets[key]);
+ const allBrandTargets=['app','browser','pwa','signin','email','notifications','share_cards','external_forms'].every(key=>brandTargets[key]);
  setTimeout(()=>{kcBrandDraw();kcBrandSetControls(!!kcBrandEditor.image);},0);
  return welcome('Brand identity','Choose exactly where the new official logo should appear across Kinetic Crew.')+
  '<section class="surface settings-card kc-brand-settings-card">'+
