@@ -213,6 +213,8 @@ function kcConfirmDialog({title='Are you sure?',message='This action cannot be u
 }
 
 
+window.kcConfirmDialog=kcConfirmDialog;
+
 /* Multi-account menu: store account identifiers only; never persist passwords or refresh tokens. */
 const KC_ACCOUNT_LIST_KEY='kc_saved_account_emails_v1';
 function kcRememberSignedInAccount(user){
@@ -238,11 +240,11 @@ function kcOpenAccountSwitcher(){
  const showLogin=email=>{form.hidden=false;emailInput.value=email||'';emailInput.readOnly=!!email;form.elements.namedItem('password').value='';form.querySelector('input[type="password"]')?.focus();};
  $('#kcAccountClose')?.addEventListener('click',close);
  $('#kcAccountBackdrop')?.addEventListener('click',event=>{if(event.target.id==='kcAccountBackdrop')close();});
- root.querySelectorAll('[data-kc-remove-account]').forEach(button=>button.addEventListener('click',event=>{
+ root.querySelectorAll('[data-kc-remove-account]').forEach(button=>button.addEventListener('click',async event=>{
   event.preventDefault();event.stopPropagation();
   const email=String(button.dataset.kcRemoveAccount||'').trim().toLowerCase();
   if(!email||email===current)return;
-  if(!window.confirm('Remove '+email+' from saved profiles on this device? The actual Kinetic Crew account will not be deleted.'))return;
+  if(!await kcConfirmDialog({title:'Remove saved profile?',message:'Remove '+email+' from saved profiles on this device? The actual Kinetic Crew account will not be deleted.',confirmText:'Remove profile',danger:true}))return;
   const saved=rows.filter(item=>item!==email);
   try{localStorage.setItem(KC_ACCOUNT_LIST_KEY,JSON.stringify(saved));}catch(error){console.warn('Could not remove saved account:',error);}
   kcOpenAccountSwitcher();
