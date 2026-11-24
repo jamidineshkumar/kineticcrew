@@ -118,3 +118,39 @@
 .kc-home-feature-slide:before{z-index:0!important;inset:0!important;background-size:cover!important;background-position:center center!important;}
 .kc-home-featured-art,.kc-home-featured-glass{position:relative!important;z-index:1!important;}
 .kc-home-feature-slide:after{z-index:0!important;}
+
+
+/* Home featured banner: event-first artwork, never a fabricated brand/logo graphic. */
+.kc-home-feature-slide:after{content:none!important;display:none!important}
+.kc-home-featured-kicker,.kc-home-featured-brandmark,.kc-home-featured-fallback-art{display:none!important}
+.kc-home-feature-slide.no-image:before{
+ z-index:0!important;
+ background:
+  radial-gradient(ellipse at 78% 18%,rgba(171,91,174,.34),transparent 42%),
+  radial-gradient(ellipse at 16% 76%,rgba(57,126,145,.28),transparent 46%),
+  radial-gradient(ellipse at 52% 48%,rgba(104,84,137,.18),transparent 55%),
+  linear-gradient(135deg,#171a25 0%,#24202e 48%,#111c24 100%)!important;
+ background-size:180% 180%!important;
+ animation:kcEventAtmosphere 18s ease-in-out infinite alternate!important;
+}
+.kc-home-feature-slide.no-image:before{
+ content:""!important;
+}
+.kc-home-feature-slide.has-image:before{
+ z-index:0!important;
+ background-image:linear-gradient(180deg,rgba(7,9,15,.08) 0%,rgba(7,9,15,.12) 32%,rgba(7,9,15,.88) 100%),var(--kc-home-feature-image)!important;
+}
+.kc-home-featured-art{min-height:190px!important;flex:1 1 auto!important}
+.kc-home-featured-glass{margin:0 14px 14px!important}
+@keyframes kcEventAtmosphere{
+ 0%{background-position:0% 35%,100% 70%,50% 50%,0 0}
+ 100%{background-position:100% 65%,0% 30%,70% 35%,0 0}
+}
+@media(max-width:600px){
+ .kc-home-featured,.kc-home-featured-track,.kc-home-feature-slide{min-height:340px!important}
+ .kc-home-featured-art{min-height:165px!important;padding:14px!important}
+ .kc-home-featured-glass{margin:0 10px 10px!important;padding:17px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .kc-home-feature-slide.no-image:before{animation:none!important}
+}
