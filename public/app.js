@@ -529,12 +529,12 @@ function profileCardBackMarkup(user,authId,username){
  if(user?.avatar_url)qrTarget.searchParams.set('p',String(user.avatar_url));
  const instagram='https://www.instagram.com/'+encodeURIComponent(String(user?.instagram_username||handle).replace(/^@/,''))+'/';
  const displayId='KC-'+(profileId.replace(/[^a-zA-Z0-9]/g,'').slice(-8)||handle.slice(0,8)).toUpperCase();
- const role=String(user?.role==='super_admin'?'FOUNDER / SUPER ADMIN':user?.crew_title||user?.occupation||role(user?.role).toUpperCase()).toUpperCase();
+ const displayRole=String(user?.role==='super_admin'?'FOUNDER / SUPER ADMIN':user?.crew_title||user?.occupation||role(user?.role).toUpperCase()).toUpperCase();
  return '<section class="kc-profile-card-back" aria-label="Kinetic Crew digital profile ticket">'+
  '<div class="kc-ticket-heading"><span>MY PROFILE</span><b>KINETIC CREW</b></div>'+
  '<div class="kc-ticket-stub"><div class="kc-ticket-id-label">MEMBER ID</div><strong>'+esc(displayId)+'</strong><div class="kc-ticket-perforation"><i></i></div>'+
  '<div class="kc-ticket-qr-wrap"><div class="kc-profile-qr" data-profile-qr data-qr-url="'+esc(qrTarget.href)+'" aria-label="QR code to open this Kinetic Crew profile"></div></div></div>'+
- '<div class="kc-ticket-details"><div class="kc-ticket-detail"><strong>'+esc(user?.name||'Kinetic Crew Member')+'</strong><span>NAME</span></div><div class="kc-ticket-detail"><strong>@'+esc(handle)+'</strong><span>USERNAME</span></div><div class="kc-ticket-detail kc-ticket-role"><strong>'+esc(role)+'</strong><span>CREW ROLE</span></div></div>'+
+ '<div class="kc-ticket-details"><div class="kc-ticket-detail"><strong>'+esc(user?.name||'Kinetic Crew Member')+'</strong><span>NAME</span></div><div class="kc-ticket-detail"><strong>@'+esc(handle)+'</strong><span>USERNAME</span></div><div class="kc-ticket-detail kc-ticket-role"><strong>'+esc(displayRole)+'</strong><span>CREW ROLE</span></div></div>'+
  '<div class="kc-ticket-footer"><span>SCAN TO CONNECT</span><a class="kc-card-instagram-link" href="'+esc(instagram)+'" target="_blank" rel="noopener noreferrer">Instagram ↗</a></div><div class="kc-profile-flip-return-hint">↻ &nbsp; DOUBLE TAP TO RETURN</div></section>';
 }
 let kcQrLibraryPromise=null;
