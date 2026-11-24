@@ -650,10 +650,13 @@ let kcLastMessageNotificationId='';
 function showDynamicIsland(detail={}){
  const messageId=String(detail.messageId||'');if(messageId&&messageId===kcLastMessageNotificationId)return;if(messageId)kcLastMessageNotificationId=messageId;
  const title=String(detail.title||'Kinetic Crew').slice(0,90),body=String(detail.body||'You have a new crew update.').slice(0,180),target=String(detail.target||'notifications');
+ const rawStatus=String(detail.status||detail.state||detail.result||'pending').trim().toLowerCase();
+ const status=/^(success|succeeded|successful|complete|completed|approved|sent|delivered|present|paid)$/.test(rawStatus)?'success':/^(failed|failure|error|rejected|declined|cancelled|canceled|denied)$/.test(rawStatus)?'failed':'pending';
  let island=document.getElementById('kcDynamicIsland');
  if(!island){island=document.createElement('button');island.type='button';island.id='kcDynamicIsland';island.className='kc-dynamic-island';island.setAttribute('aria-live','polite');island.setAttribute('aria-label','New Kinetic Crew notification');island.innerHTML='<span class="kc-island-mark">KC</span><span class="kc-island-copy"><b></b><small></small></span><span class="kc-island-dot"></span>';document.body.appendChild(island);
  island.addEventListener('click',()=>{const view=island.dataset.target||'notifications',conversationId=island.dataset.conversationId||'';island.classList.remove('is-visible');if(view==='gram-chat'&&conversationId)window.__kgOpenConversation=conversationId;go(view);});
  }
+ island.dataset.status=status;island.classList.remove('kc-island-success','kc-island-pending','kc-island-failed');island.classList.add('kc-island-'+status);
  island.dataset.target=target;
  island.dataset.conversationId=String(detail.conversationId||'');
  island.querySelector('.kc-island-copy b').textContent=title;
