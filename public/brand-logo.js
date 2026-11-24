@@ -17,7 +17,7 @@
   if(!assets||typeof assets!=='object')assets={};
   activeAssets=Object.fromEntries(KEYS.filter(key=>validUrl(assets[key],key)).map(key=>[key,assets[key]]));
   legacyUrl=validUrl(legacy)?legacy:'';
-  activeTargets={app:true,browser:true,pwa:true,signin:true,email:false,notifications:true,external_forms:false,...(targets||{})};
+  activeTargets={app:true,browser:true,pwa:true,signin:true,email:false,notifications:true,external_forms:false,share_cards:true,...(targets||{})};
   window.KC_BRAND_LOGO_URL=urlFor('app')||legacyUrl;
   window.KC_BRAND_LOGO_ASSETS={...activeAssets};
   window.KC_SHARE_CARD_LOGO_URL=activeTargets.share_cards?urlFor('share_cards'):'';
