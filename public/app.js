@@ -1721,7 +1721,7 @@ if(S.view==='overview'){
   const show=next=>{
    current=((Math.trunc(Number(next)||0)%homeSlides.length)+homeSlides.length)%homeSlides.length;
    homeSlides.forEach((slide,i)=>{
-    const active=i===current,previous=i===(current-1+homeSlides.length)%homeSlides.length,next=i===(current+1)%homeSlides.length;
+    const active=i===current,previous=homeSlides.length>2&&i===(current-1+homeSlides.length)%homeSlides.length,next=homeSlides.length>1&&i===(current+1)%homeSlides.length;
     slide.classList.toggle('is-active',active);slide.classList.toggle('is-prev',previous&&!active);slide.classList.toggle('is-next',next&&!active);slide.classList.toggle('is-hidden-side',!active&&!previous&&!next);
     slide.setAttribute('aria-hidden',active?'false':'true');if('inert' in slide)slide.inert=!active;
    });
