@@ -35,6 +35,9 @@ jobs:
           node --check public/kc-transition.js
           node --check public/global-search.js
           node --check public/theme.js
+          node --check public/kc-more-event-ads.js
+          node --check public/kc-ads-manager.js
+          node --check public/kc-ad-experiences.js
           node --check public/sw.js
           node --check public/push-notifications.js
           node --check public/firebase-messaging-sw.js
