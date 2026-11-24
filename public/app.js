@@ -1187,7 +1187,7 @@ function home(){
  const contentSlides=slides.splice(0);
  // Keep the carousel moving even when the crew has not published events yet.
  if(contentSlides.length===1&&contentSlides[0].kind==='empty'){
-  contentSlides.splice(0,1,{...crewPromo},{kind:'promo',view:'events',kicker:'KINETIC CREW · WHAT IS NEXT',label:'DISCOVER WHAT IS NEXT',title:'Find your next crew moment',subtitle:'Explore upcoming events, performances and crew activities.',cta:'Explore events',image:''},{kind:'promo',view:'more',kicker:'KINETIC CREW · STAY CONNECTED',label:'STAY IN THE LOOP',title:'Every crew moment matters',subtitle:'Catch announcements, rehearsals, auditions and memories in one place.',cta:'Explore more',image:''});
+  contentSlides.splice(0,1,{...crewPromo,kind:'brand',label:'KINETIC CREW',title:'KINETIC CREW',subtitle:'ONE CREW · ONE RHYTHM',cta:'Explore the crew'});
  }else if(contentSlides.length===1){contentSlides.push({...crewPromo});}
  if(contentSlides.length)slides.push(...contentSlides);else slides.push({...crewPromo});
  const pollItems=[...(S.featureItems?.polls||[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
