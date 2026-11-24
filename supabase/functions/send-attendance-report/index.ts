@@ -15,36 +15,73 @@ const statusLabel = (s: string) => ({present:"Present",absent:"Absent",pending:"
 const hex = (v: string) => { const n=v.replace("#",""); return rgb(parseInt(n.slice(0,2),16)/255,parseInt(n.slice(2,4),16)/255,parseInt(n.slice(4,6),16)/255); };
 
 async function buildPdf(event: any, rows: any[], stats: any, scope: "complete"|"personal", preparedBy: string) {
- const pdf=await PDFDocument.create(); pdf.setTitle((scope==="complete"?"Attendance Report - ":"Personal Attendance - ")+event.title); pdf.setAuthor("KINETIC CREW");
+ const pdf=await PDFDocument.create();
+ pdf.setTitle((scope==="complete"?"Attendance Report - ":"Personal Attendance - ")+event.title);
+ pdf.setAuthor("KINETIC CREW");
  const regular=await pdf.embedFont(StandardFonts.Helvetica),bold=await pdf.embedFont(StandardFonts.HelveticaBold);
- const W=595.28,H=841.89,margin=42; let page=pdf.addPage([W,H]),y=798;
- const ink=hex("#24282b"),muted=hex("#747b7e"),coral=hex("#f06b4e"),pale=hex("#f7eee9"),white=hex("#ffffff");
- const draw=(v:unknown,x:number,yy:number,size=10,font=regular,color=ink)=>page.drawText(safePdf(v),{x,y:yy,size,font,color});
- const fit=(v:unknown,font:any,size:number,width:number)=>{let t=safePdf(v);while(t.length>2&&font.widthOfTextAtSize(t,size)>width)t=t.slice(0,-2)+"...";return t;};
- const tableHead=()=>{page.drawRectangle({x:margin,y:y-7,width:511,height:23,color:ink});draw("Member name",margin+7,y,8,bold,white);draw("Attendance status",margin+252,y,8,bold,white);draw("Check-in time",margin+372,y,8,bold,white);y-=22;};
- const nextPage=()=>{page=pdf.addPage([W,H]);y=798;draw("KINETIC CREW  /  ATTENDANCE REPORT",margin,y,8,bold,coral);y-=28;tableHead();};
- draw("KINETIC CREW  /  OFFICIAL REPORT",margin,y,9,bold,coral);y-=34;
- draw(scope==="complete"?"Attendance report":"Personal attendance statement",margin,y,25,bold);y-=28;
- draw(fit(event.title,bold,15,500),margin,y,15,bold);y-=20;
- draw("Date: "+dateLabel(event.starts_at)+"    Time: "+timeLabel(event.starts_at),margin,y,9,regular,muted);y-=15;
- draw("Venue: "+fit(event.location||"To be announced",regular,9,450),margin,y,9,regular,muted);y-=30;
- page.drawRectangle({x:margin,y:y-58,width:511,height:70,color:pale,borderColor:hex("#f1c6b5"),borderWidth:.7});
- const statsList=[["REGISTERED",stats.total],["PRESENT",stats.present],["ABSENT",stats.absent],["PENDING",stats.pending],["NOT ATTENDING",stats.notAttending]],bw=511/5;
- statsList.forEach((it,i)=>{const x=margin+i*bw+8;draw(String(it[1]),x,y-17,18,bold,coral);draw(it[0],x,y-38,6,bold,muted);});
- y-=88;draw(scope==="complete"?"REGISTERED MEMBER ATTENDANCE":"YOUR EVENT STATUS",margin,y,9,bold,coral);y-=18;tableHead();
- for(let i=0;i<rows.length;i++){
-  if(y<72)nextPage();
-  const row=rows[i];if(i%2===0)page.drawRectangle({x:margin,y:y-7,width:511,height:22,color:hex("#f4f5f5")});
-  draw(fit(row.name||"Crew member",regular,8.5,220),margin+7,y,8.5);
-  draw(statusLabel(row.status),margin+252,y,8.2,bold,row.status==="present"?hex("#277c62"):ink);
-  draw(stampLabel(row.marked_at),margin+372,y,7.5,regular,muted);y-=22;
+ const W=595.28,H=841.89,margin=42,ink=hex("#29292d"),muted=hex("#77747e"),purple=hex("#43105f"),magenta=hex("#b51c62"),pink=hex("#e34b86"),white=hex("#ffffff"),paper=hex("#f1eff3"),soft=hex("#e8e3eb");
+ const safe=(v:unknown)=>safePdf(v);
+ const fit=(v:unknown,font:any,size:number,width:number)=>{let t=safe(v);while(t.length>2&&font.widthOfTextAtSize(t,size)>width)t=t.slice(0,-2)+"...";return t;};
+ const line=(page:any,x1:number,y1:number,x2:number,y2:number,color:any,thickness=0.65,opacity=0.8)=>page.drawLine({start:{x:x1,y:y1},end:{x:x2,y:y2},color,thickness,opacity});
+ function pattern(page:any,top:number,bottom:number){
+  // Interlaced geometric line field inspired by the supplied purple/magenta brochure.
+  for(let i=-12;i<34;i++){
+   const x=i*24;
+   line(page,x,top,x+230,bottom,purple,0.75,0.88);
+   line(page,x+220,top,x,bottom,magenta,0.75,0.72);
+  }
+  for(let i=0;i<9;i++){
+   const inset=i*9;
+   line(page,18+inset,top-8,220+inset,bottom+8,pink,0.45,0.5);
+   line(page,W-18-inset,top-8,W-220-inset,bottom+8,magenta,0.45,0.5);
+  }
  }
- if(y<65)nextPage();else y-=18;
- draw("Prepared by: "+preparedBy,margin,y,8,regular,muted);
- draw("KINETIC CREW  |  Generated "+stampLabel(new Date().toISOString()),margin,48,7,regular,muted);
+ function basePage(first:boolean){
+  const page=pdf.addPage([W,H]);
+  page.drawRectangle({x:0,y:0,width:W,height:H,color:paper});
+  page.drawRectangle({x:0,y:H-252,width:W,height:252,color:purple});
+  pattern(page,H-12,H-252);
+  page.drawRectangle({x:28,y:H-218,width:W-56,height:156,color:ink,borderColor:magenta,borderWidth:2});
+  page.drawRectangle({x:36,y:H-210,width:W-72,height:140,borderColor:hex("#5d5962"),borderWidth:0.7});
+  page.drawText("KINETIC CREW",{x:54,y:H-98,size:9,font:bold,color:pink,characterSpacing:2});
+  page.drawText(first?(scope==="complete"?"ATTENDANCE REPORT":"PERSONAL ATTENDANCE"):"ATTENDANCE REPORT",{x:54,y:H-140,size:23,font:bold,color:white});
+  page.drawText("OFFICIAL CREW RECORD",{x:55,y:H-164,size:8,font:bold,color:hex("#c7bdcb"),characterSpacing:1.5});
+  page.drawRectangle({x:0,y:0,width:W,height:78,color:ink});
+  pattern(page,70,10);
+  page.drawRectangle({x:28,y:17,width:W-56,height:43,color:ink,borderColor:magenta,borderWidth:0.8});
+  page.drawText("KINETIC CREW  /  "+(first?"OFFICIAL DOCUMENT":"ATTENDANCE CONTINUED"),{x:42,y:34,size:7,font:bold,color:hex("#e5dce8"),characterSpacing:0.7});
+  page.drawText("Generated "+stampLabel(new Date().toISOString()),{x:W-208,y:34,size:6.5,font:regular,color:hex("#c1b9c7")});
+  return page;
+ }
+ let page=basePage(true),y=H-292;
+ const eventTitle=fit(event.title,bold,16,W-2*margin);
+ page.drawText(eventTitle,{x:margin,y,size:16,font:bold,color:ink});y-=21;
+ page.drawText("Date: "+dateLabel(event.starts_at)+"    Time: "+timeLabel(event.starts_at),{x:margin,y,size:9,font:regular,color:muted});y-=15;
+ page.drawText("Venue: "+fit(event.location||"To be announced",regular,9,W-2*margin),{x:margin,y,size:9,font:regular,color:muted});y-=30;
+ page.drawRectangle({x:margin,y:y-62,width:W-2*margin,height:76,color:ink,borderColor:magenta,borderWidth:1});
+ const statsList=[["REGISTERED",stats.total],["PRESENT",stats.present],["ABSENT",stats.absent],["PENDING",stats.pending],["NOT ATTENDING",stats.notAttending]],bw=(W-2*margin)/5;
+ statsList.forEach((it,i)=>{const x=margin+i*bw+8;if(i>0)line(page,margin+i*bw,y-50,margin+i*bw,y+4,hex("#55515b"),0.7);page.drawText(String(it[1]),{x,y:y-12,size:18,font:bold,color:pink});page.drawText(it[0],{x,y:y-34,size:5.8,font:bold,color:hex("#d5cbd8")});});
+ y-=100;
+ page.drawText(scope==="complete"?"REGISTERED MEMBER ATTENDANCE":"YOUR EVENT STATUS",{x:margin,y,size:9,font:bold,color:magenta,characterSpacing:1});y-=19;
+ const tableHead=()=>{page.drawRectangle({x:margin,y:y-8,width:W-2*margin,height:25,color:ink});page.drawText("MEMBER NAME",{x:margin+8,y:y,size:7,font:bold,color:white});page.drawText("ATTENDANCE STATUS",{x:margin+252,y:y,size:7,font:bold,color:white});page.drawText("CHECK-IN TIME",{x:margin+372,y:y,size:7,font:bold,color:white});y-=26;};
+ tableHead();
+ for(let i=0;i<rows.length;i++){
+  if(y<105){page=basePage(false);y=H-292;page.drawText("ATTENDANCE RECORDS",{x:margin,y,size:9,font:bold,color:magenta,characterSpacing:1});y-=20;tableHead();}
+  const row=rows[i];
+  if(i%2===0)page.drawRectangle({x:margin,y:y-8,width:W-2*margin,height:23,color:soft});
+  page.drawText(fit(row.name||"Crew member",regular,8.2,230),{x:margin+8,y,size:8.2,font:regular,color:ink});
+  const present=row.status==="present";
+  page.drawText(statusLabel(row.status).toUpperCase(),{x:margin+252,y,size:7.5,font:bold,color:present?hex("#277c62"):muted});
+  page.drawText(fit(stampLabel(row.marked_at),regular,7.2,125),{x:margin+372,y,size:7.2,font:regular,color:muted});
+  y-=23;
+ }
+ if(y<100){page=basePage(false);y=H-292;}
+ y-=8;
+ page.drawRectangle({x:margin,y:y-37,width:W-2*margin,height:42,color:ink,borderColor:magenta,borderWidth:0.8});
+ page.drawText("PREPARED BY",{x:margin+10,y:y-12,size:6.5,font:bold,color:pink,characterSpacing:1});
+ page.drawText(fit(preparedBy,regular,8,W-2*margin-20),{x:margin+10,y:y-27,size:8,font:regular,color:white});
  return await pdf.save();
 }
-
 Deno.serve(async(req:Request)=>{
  if(req.method==="OPTIONS")return new Response("ok",{headers:cors});
  if(req.method!=="POST")return json({error:"POST required."},405);
