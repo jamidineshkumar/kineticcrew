@@ -1,6 +1,6 @@
 {
-  "version": "1.6.91",
+  "version": "1.6.92",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-24T23:10:00+05:30",
-  "release_notes": "Add temporary shareable campaign promo cards, fix the campaign edit form opening, and clean up unreferenced ad uploads."
+  "updated_at": "2026-11-24T23:30:00+05:30",
+  "release_notes": "Add independent Share Cards logo destination and event share cards using event artwork and organiser photos."
 }
