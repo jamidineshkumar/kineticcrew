@@ -1,0 +1,69 @@
+/* Kinetic Crew compact carousel: flat copy, no inset glass card. */
+@media(max-width:900px){
+ body.kc-home-screen #app .kc-home-featured{
+  display:block!important;position:relative!important;width:100%!important;
+  height:176px!important;min-height:176px!important;max-height:176px!important;
+  aspect-ratio:auto!important;margin:0 0 20px!important;padding:0!important;
+  overflow:hidden!important;box-sizing:border-box!important;border-radius:22px!important;
+  border:1px solid rgba(255,255,255,.17)!important;
+  background:radial-gradient(ellipse at 86% 12%,rgba(240,75,151,.18),transparent 48%),radial-gradient(ellipse at 8% 92%,rgba(38,202,206,.15),transparent 48%),linear-gradient(125deg,#24212d,#141a22)!important;
+ }
+ body.kc-home-screen #app .kc-home-featured-track{
+  position:absolute!important;inset:0!important;display:block!important;
+  width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;
+  margin:0!important;padding:0!important;overflow:hidden!important;
+ }
+ body.kc-home-screen #app .kc-home-feature-slide,
+ body.kc-home-screen #app .kc-home-feature-slide.is-active{
+  position:absolute!important;inset:0!important;display:block!important;
+  width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;
+  margin:0!important;padding:0!important;overflow:hidden!important;box-sizing:border-box!important;
+  border:0!important;border-radius:inherit!important;background:transparent!important;
+ }
+ body.kc-home-screen #app .kc-home-feature-slide::before{
+  content:""!important;position:absolute!important;inset:-60%!important;z-index:0!important;
+  display:block!important;pointer-events:none!important;filter:blur(25px)!important;
+  background:conic-gradient(from 20deg,transparent 0 26%,rgba(239,72,153,.17) 38%,transparent 52%,rgba(40,204,207,.15) 69%,transparent 82%)!important;
+  animation:kcHomeAura 20s linear infinite!important;
+ }
+ body.kc-home-screen #app .kc-home-feature-slide::after{content:none!important;display:none!important}
+ body.kc-home-screen #app .kc-home-featured-copy{
+  position:absolute!important;inset:0!important;z-index:2!important;
+  display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+  justify-content:center!important;gap:7px!important;
+  width:auto!important;height:auto!important;min-height:0!important;max-height:none!important;
+  margin:0!important;padding:18px 20px 23px!important;box-sizing:border-box!important;
+  overflow:hidden!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;transform:none!important;
+ }
+ body.kc-home-screen #app .kc-home-featured-copy>.kc-home-featured-label{
+  display:block!important;margin:0!important;padding:0!important;
+  color:#bfe8e9!important;font-size:8px!important;font-weight:850!important;
+  letter-spacing:.17em!important;line-height:1.2!important;
+ }
+ body.kc-home-screen #app .kc-home-featured-copy>b{
+  display:block!important;margin:0!important;padding:0!important;
+  color:#fff!important;font-size:clamp(20px,5.7vw,25px)!important;
+  line-height:1.08!important;font-weight:850!important;
+ }
+ body.kc-home-screen #app .kc-home-featured-copy>small{
+  display:block!important;margin:0!important;padding:0!important;max-width:90%!important;
+  color:rgba(245,241,247,.84)!important;font-size:10px!important;line-height:1.35!important;
+  white-space:normal!important;overflow:visible!important;
+ }
+ body.kc-home-screen #app .kc-home-featured-copy>button{
+  display:inline-flex!important;align-items:center!important;gap:8px!important;
+  min-height:20px!important;margin:0!important;padding:0!important;
+  color:#fff!important;background:transparent!important;border:0!important;
+  font-size:10px!important;line-height:1.2!important;font-weight:850!important;
+ }
+ body.kc-home-screen #app .kc-home-featured-copy>button i{color:#ff9a70!important;font-style:normal!important}
+ body.kc-home-screen #app .kc-home-featured-dots{
+  position:absolute!important;z-index:5!important;right:13px!important;bottom:9px!important;
+  left:auto!important;display:flex!important;align-items:center!important;gap:7px!important;
+ }
+ body.kc-home-screen #app .kc-home-featured-dots button{min-width:8px!important;min-height:8px!important}
+}
+@keyframes kcHomeAura{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){body.kc-home-screen #app .kc-home-feature-slide::before{animation:none!important}}
