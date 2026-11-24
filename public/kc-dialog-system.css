@@ -122,3 +122,24 @@ body>.kc-connections-backdrop{animation:kcDialogBackdropIn .16s ease-out both}
 @media(prefers-reduced-motion:reduce){
   #modalRoot .modalback, #modalRoot .modal, body>.kc-connections-backdrop{animation:none!important}
 }
+/* Extend the shared Kinetic Crew dialog language to native and feature-specific dialogs. */
+dialog[open],.kc-dialog-surface,.kc-prompt-surface{width:min(100% - 24px,480px);max-height:min(88dvh,820px);overflow:auto;overscroll-behavior:contain;padding:clamp(20px,4vw,28px);border:1px solid var(--kc-dialog-border);border-radius:var(--kc-dialog-radius);background:radial-gradient(ellipse at 8% 0%,rgba(196,244,107,.075),transparent 42%),linear-gradient(155deg,rgba(31,35,46,.98),var(--kc-dialog-bg) 72%);color:var(--kc-dialog-text);box-shadow:0 28px 90px rgba(0,0,0,.58),inset 0 1px 0 rgba(255,255,255,.055)}
+dialog[open]::backdrop{background:rgba(5,7,12,.76);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+dialog[open] h1,dialog[open] h2,dialog[open] h3,.kc-dialog-surface h2,.kc-prompt-surface h2{color:var(--kc-dialog-text);letter-spacing:-.025em}
+dialog[open] p,.kc-dialog-surface p,.kc-prompt-surface p{color:var(--kc-dialog-muted)}
+dialog[open] input,dialog[open] textarea,dialog[open] select,.kc-dialog-surface input,.kc-prompt-surface input{width:100%;min-width:0;padding:12px 14px;border:1px solid rgba(255,255,255,.14);border-radius:13px;background:rgba(8,10,16,.72);color:var(--kc-dialog-text);font:inherit}
+dialog[open] button,.kc-dialog-surface button,.kc-prompt-surface button{min-height:42px;border-radius:13px;font:inherit;font-weight:700}
+@media(max-width:520px){dialog[open],.kc-dialog-surface,.kc-prompt-surface{width:calc(100% - 24px);max-height:calc(100dvh - 24px);padding:22px 17px;border-radius:19px}}
+
+.kc-ads-section{margin:12px 0;border:1px solid #ffffff16;border-radius:16px;background:#ffffff04;overflow:hidden}
+.kc-ads-section>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:46px;padding:12px 14px;color:#f3f1f6;font-size:12px;font-weight:750;cursor:pointer;list-style:none}
+.kc-ads-section>summary::-webkit-details-marker{display:none}
+.kc-ads-section>summary:after{content:"＋";color:#e8a990;font-size:16px}
+.kc-ads-section[open]>summary:after{content:"−"}
+.kc-ads-section[open]>.kc-ads-switches,.kc-ads-section[open]>.kc-ads-form{margin:0;border:0;border-top:1px solid #ffffff12;border-radius:0}
+.kc-ads-row{position:relative;padding-right:48px}
+.kc-ads-delete{position:absolute;top:10px;right:10px;display:grid;place-items:center;width:32px;height:32px;min-height:32px!important;padding:0;border:1px solid rgba(255,115,135,.28);border-radius:11px;background:rgba(255,90,110,.1);color:#ff9eaa;font-size:23px;line-height:1;cursor:pointer}
+.kc-ads-delete:disabled{opacity:.45;cursor:wait}
+.kc-ads-pagination{display:flex;align-items:center;justify-content:center;gap:14px;padding:12px 0 2px;color:#aaa;font-size:11px}
+.kc-ads-pagination button{min-height:34px;padding:0 12px;font-size:11px}
+.kc-ads-pagination button:disabled{opacity:.35}
