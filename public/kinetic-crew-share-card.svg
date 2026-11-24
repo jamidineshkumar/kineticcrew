@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="630" viewBox="0 0 1200 630">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#10121b"/><stop offset=".55" stop-color="#171320"/><stop offset="1" stop-color="#07171b"/></linearGradient>
+ <radialGradient id="pink"><stop stop-color="#ec4899" stop-opacity=".34"/><stop offset="1" stop-color="#ec4899" stop-opacity="0"/></radialGradient>
+ <radialGradient id="cyan"><stop stop-color="#22c8d1" stop-opacity=".3"/><stop offset="1" stop-color="#22c8d1" stop-opacity="0"/></radialGradient>
+ <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#f24f9c"/><stop offset=".5" stop-color="#ffb46d"/><stop offset="1" stop-color="#43d1d1"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="22"/></filter>
+ </defs>
+ <rect width="1200" height="630" rx="34" fill="url(#bg)"/>
+ <ellipse cx="1030" cy="100" rx="350" ry="260" fill="url(#pink)" filter="url(#glow)"/>
+ <ellipse cx="130" cy="590" rx="360" ry="260" fill="url(#cyan)" filter="url(#glow)"/>
+ <rect x="24" y="24" width="1152" height="582" rx="30" fill="none" stroke="#ffffff" stroke-opacity=".16" stroke-width="2"/>
+ <rect x="64" y="85" width="455" height="455" rx="48" fill="#05050b" stroke="#ffffff" stroke-opacity=".16" stroke-width="2"/>
+ <image x="76" y="97" width="431" height="431" preserveAspectRatio="xMidYMid meet" xlink:href="https://kineticcrew.vercel.app/kinetic-crew-logo.svg"/>
+ <rect x="590" y="112" width="248" height="42" rx="21" fill="#f24f9c" fill-opacity=".12" stroke="#f24f9c" stroke-opacity=".65"/>
+ <text x="614" y="139" font-family="Arial,sans-serif" font-size="17" font-weight="700" letter-spacing="2.1" fill="#ffd1e4">OFFICIAL KINETIC CREW</text>
+ <text x="588" y="245" font-family="Arial,sans-serif" font-size="58" font-weight="700" fill="#f7f5fa">Advertise with</text>
+ <text x="588" y="318" font-family="Arial,sans-serif" font-size="68" font-weight="800" fill="url(#accent)">Kinetic Crew</text>
+ <rect x="592" y="365" width="520" height="2" rx="1" fill="#ffffff" fill-opacity=".18"/>
+ <text x="592" y="423" font-family="Arial,sans-serif" font-size="25" fill="#dedee8">Share your brand with our community.</text>
+ <text x="592" y="465" font-family="Arial,sans-serif" font-size="25" fill="#dedee8">Submit a campaign for review.</text>
+ <rect x="592" y="515" width="170" height="7" rx="3.5" fill="#f24f9c"/>
+ <rect x="770" y="515" width="118" height="7" rx="3.5" fill="#43d1d1"/>
+</svg>
