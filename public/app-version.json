@@ -1,6 +1,6 @@
 {
-  "version": "1.6.87",
+  "version": "1.6.88",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-24T18:20:00+05:30",
-  "release_notes": "Preserve the last visited screen after browser refresh. Verify authoritative profile metadata before applying profile-completion redirects, avoiding false redirects caused by incomplete bootstrap data."
+  "updated_at": "2026-11-24T22:40:00+05:30",
+  "release_notes": "Restore the original Home featured banner styling and keep the animated gradient glow exclusively on the More page banner."
 }
