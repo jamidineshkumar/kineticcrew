@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const client=window.kcSupabase, auth=client&&client.auth, $=s=>document.querySelector(s);
-window.KC_APP_VERSION='1.6.84';
+window.KC_APP_VERSION='1.6.85';
 let kcUpdatePending=false,kcUpdateReloading=false,kcPendingVersion='';
 const KC_UPDATE_GUARD='kc_update_reload_guard_v1';
 function kcReloadAlreadyUsed(version=''){try{return sessionStorage.getItem(KC_UPDATE_GUARD)===String(version||'service-worker');}catch{return new URL(location.href).searchParams.has('kc_refresh');}}
@@ -1195,7 +1195,7 @@ function home(){
   }
   return '<button class="kc-exact-update" data-view="notifications"><span class="kc-exact-update-icon">'+(['•','↗','▧'][i%3])+'</span><span><b>'+esc(item.title||'Crew update')+'</b><small>'+esc(item.body||item.message||'A new update from your crew')+'</small></span></button>';
  }).join('')||'<div class="kc-exact-update kc-exact-empty">Crew announcements, polls and rehearsal updates will appear here.</div>';
- const slideMarkup=slides.map((item,i)=>{const slide={...item,image:''};return '<article class="kc-home-feature-slide '+(i===0?'is-active ':'')+(slide.image?'has-image':'no-image')+'" data-home-slide="'+i+'" '+(slide.image?'style="--kc-home-feature-image:url(&quot;'+esc(slide.image)+'&quot;)"':'')+'>'+(slide.image?'<div class="kc-home-featured-fallback-art" aria-hidden="true"><span>KC</span><i></i></div><img class="kc-home-feature-image" src="'+esc(slide.image)+'" alt="'+esc(slide.title||'Kinetic Crew banner')+'" '+(i===0?'fetchpriority="high"':'loading="lazy"')+' decoding="async">':'<div class="kc-home-featured-fallback-art" aria-hidden="true"><span>KC</span><i></i><b>MOVE TOGETHER</b></div>')+'<div class="kc-home-featured-art"><span class="kc-home-featured-kicker">'+esc(slide.kicker)+'</span>'+(slide.updated?'<span class="kc-event-updated-chip"><span class="kc-event-updated-fire" aria-hidden="true">🔥</span><span>UPDATED</span></span>':'')+'<span class="kc-home-featured-count">'+String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0')+'</span></div><div class="kc-home-featured-glass"><span class="kc-home-featured-label">'+esc(slide.label)+'</span><b>'+esc(slide.title)+'</b><small>'+esc(slide.subtitle)+'</small><button type="button" '+(slide.kind==='event'?'data-open-event="'+esc(slide.id)+'"':'data-view="'+slide.view+'"')+'>'+esc(slide.cta)+' <i>→</i></button></div></article>';}).join('');
+ const slideMarkup=slides.map((item,i)=>{const slide={...item,image:''};return '<article class="kc-home-feature-slide '+(i===0?'is-active ':'')+'no-image" data-home-slide="'+i+'" aria-hidden="'+(i===0?'false':'true')+'"><div class="kc-home-featured-copy"><span class="kc-home-featured-label">'+esc(slide.label)+'</span><b>'+esc(slide.title)+'</b><small>'+esc(slide.subtitle)+'</small><button type="button" '+(slide.kind==='event'?'data-open-event="'+esc(slide.id)+'"':'data-view="'+slide.view+'"')+'>'+esc(slide.cta)+' <i>→</i></button></div></article>';}).join('');
  return '<div class="kc-exact-home kc-home-reference">'+
  '<header class="kc-home-reference-header"><div class="kc-home-user"><span><small>YOUR KINETIC CREW SPACE</small><b>Welcome back, '+esc(name)+'</b></span></div><button type="button" class="kc-home-theme-toggle" data-theme-toggle aria-label="Switch colour theme" title="Switch colour theme"><span aria-hidden="true">'+(document.documentElement.dataset.theme==='dark'?'☀':'☾')+'</span></button></header>'+
  '<section class="kc-home-greeting"><div class="kc-home-greeting-copy"><h1>'+greeting+', <em>'+esc(name)+'.</em></h1><p class="kc-home-greeting-lead">'+esc(homeMood)+'</p><small class="kc-home-greeting-sub">'+esc(homePrompt)+'</small></div><div class="kc-home-greeting-mark" aria-label="Kinetic Crew logo">'+brandMarkMarkup('kc-home-greeting-logo')+'</div></section>'+
@@ -2805,10 +2805,10 @@ async function boot(){
   const saved=readPageState();
   const incomingShare=new URLSearchParams(location.search);
   const navigationType=performance.getEntriesByType?.('navigation')?.[0]?.type||'navigate';
-  // Restore the last screen after a browser refresh or an automatic app-update reload.
-  // A normal fresh launch starts at Home to avoid replaying an old screen.
-  try{sessionStorage.setItem('kc_app_session_active_v1','1');}catch{}
-  restoreSavedPage=(navigationType==='reload'||incomingShare.has('kc_refresh'));
+  // Restore the last screen only for a reload inside the same live app session.
+  // A cold launch (including a reopened installed PWA) always starts at Home.
+  let sameAppSession=false;try{sameAppSession=sessionStorage.getItem('kc_app_session_active_v1')==='1';sessionStorage.setItem('kc_app_session_active_v1','1');}catch{}
+  restoreSavedPage=sameAppSession&&(navigationType==='reload'||incomingShare.has('kc_refresh'));
   if(incomingShare.has('share_target')){
    const raw=[incomingShare.get('url'),incomingShare.get('text'),incomingShare.get('title')].filter(Boolean).join(' ');
    const match=raw.match(/https:\/\/[^\s<>"']+/i);
