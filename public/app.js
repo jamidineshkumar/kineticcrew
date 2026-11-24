@@ -1198,7 +1198,7 @@ function home(){
   }
   return '<button class="kc-exact-update" data-view="notifications"><span class="kc-exact-update-icon">'+(['•','↗','▧'][i%3])+'</span><span><b>'+esc(item.title||'Crew update')+'</b><small>'+esc(item.body||item.message||'A new update from your crew')+'</small></span></button>';
  }).join('')||'<div class="kc-exact-update kc-exact-empty">Crew announcements, polls and rehearsal updates will appear here.</div>';
- const slideMarkup=slides.map((item,i)=>{const slide={...item,image:''};return '<article class="kc-home-feature-slide '+(i===0?'is-active ':'')+'no-image" data-home-slide="'+i+'" aria-hidden="'+(i===0?'false':'true')+'"><div class="kc-home-featured-copy"><span class="kc-home-featured-label">'+esc(slide.label)+'</span><b>'+esc(slide.title)+'</b><small>'+esc(slide.subtitle)+'</small><button type="button" '+(slide.kind==='event'?'data-open-event="'+esc(slide.id)+'"':'data-view="'+slide.view+'"')+'>'+esc(slide.cta)+' <i>→</i></button></div></article>';}).join('');
+ const slideMarkup=slides.map((slide,i)=>{const image=safeSocialUrl(slide.image||'');const hasImage=!!image;return '<article class="kc-home-feature-slide '+(i===0?'is-active ':'')+(hasImage?'has-image':'no-image')+'" data-home-slide="'+i+'" aria-hidden="'+(i===0?'false':'true')+'">'+(hasImage?'<img class="kc-home-feature-image" src="'+esc(image)+'" alt="'+esc(slide.title||'Kinetic Crew featured update')+'" loading="lazy" decoding="async">':'<div class="kc-home-featured-fallback-art" aria-hidden="true"><span>KC</span><i></i><b>ONE CREW · ONE RHYTHM</b></div>')+'<div class="kc-home-featured-art"><span class="kc-home-featured-kicker">KINETIC CREW</span><span class="kc-home-featured-count">'+String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0')+'</span></div><div class="kc-home-featured-glass"><span class="kc-home-featured-label">'+esc(slide.label)+'</span><b>'+esc(slide.title)+'</b><small>'+esc(slide.subtitle)+'</small><button type="button" '+(slide.kind==='event'?'data-open-event="'+esc(slide.id)+'"':'data-view="'+esc(slide.view||'events')+'"')+'>'+esc(slide.cta)+' <i>→</i></button></div></article>';}).join('');
  return '<div class="kc-exact-home kc-home-reference">'+
  '<header class="kc-home-reference-header"><div class="kc-home-user"><span><small>YOUR KINETIC CREW SPACE</small><b>Welcome back, '+esc(name)+'</b></span></div><button type="button" class="kc-home-theme-toggle" data-theme-toggle aria-label="Switch colour theme" title="Switch colour theme"><span aria-hidden="true">'+(document.documentElement.dataset.theme==='dark'?'☀':'☾')+'</span></button></header>'+
  '<section class="kc-home-greeting"><div class="kc-home-greeting-copy"><h1>'+greeting+', <em>'+esc(name)+'.</em></h1><p class="kc-home-greeting-lead">'+esc(homeMood)+'</p><small class="kc-home-greeting-sub">'+esc(homePrompt)+'</small></div><div class="kc-home-greeting-mark" aria-label="Kinetic Crew logo">'+brandMarkMarkup('kc-home-greeting-logo')+'</div></section>'+
@@ -1719,13 +1719,9 @@ if(S.view==='overview'){
   const show=next=>{
    current=((Math.trunc(Number(next)||0)%homeSlides.length)+homeSlides.length)%homeSlides.length;
    homeSlides.forEach((slide,i)=>{
-    const active=i===current;
-    slide.classList.toggle('is-active',active);slide.setAttribute('aria-hidden',active?'false':'true');
-    if('inert' in slide)slide.inert=!active;
-    slide.style.setProperty('position','absolute','important');slide.style.setProperty('inset','0','important');
-    slide.style.setProperty('display','block','important');slide.style.setProperty('opacity',active?'1':'0','important');
-    slide.style.setProperty('visibility',active?'visible':'hidden','important');slide.style.setProperty('pointer-events',active?'auto':'none','important');
-    slide.style.setProperty('transform','translate3d(0,0,0)','important');slide.style.setProperty('z-index',active?'3':'0','important');
+    const active=i===current,previous=i===(current-1+homeSlides.length)%homeSlides.length,next=i===(current+1)%homeSlides.length;
+    slide.classList.toggle('is-active',active);slide.classList.toggle('is-prev',previous&&!active);slide.classList.toggle('is-next',next&&!active);slide.classList.toggle('is-hidden-side',!active&&!previous&&!next);
+    slide.setAttribute('aria-hidden',active?'false':'true');if('inert' in slide)slide.inert=!active;
    });
    homeDots.forEach((dot,i)=>{const active=i===current;dot.classList.toggle('active',active);dot.setAttribute('aria-current',active?'true':'false');dot.setAttribute('aria-label','Show slide '+(i+1)+' of '+homeSlides.length);});
   };
