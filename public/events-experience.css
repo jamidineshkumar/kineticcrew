@@ -288,3 +288,6 @@
 .kce-live-connections>div:first-child>span{color:#f0a58c;font-size:9px;font-weight:800;letter-spacing:.18em}.kce-live-connections h2{margin:6px 0;font-size:20px}.kce-live-connections p{margin:0;color:var(--muted,#aaa2b4);font-size:12px}
 #kcMeetEventsSection[hidden]{display:none!important}
 @media(max-width:520px){.kce-category-mosaic{gap:9px}.kce-category{min-height:108px;padding:13px}.kce-meet-category-cta{min-height:80px}}
+
+/* Event share action. */
+.kce-share-event{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;margin-top:16px;padding:0 18px;border:1px solid rgba(255,255,255,.24);border-radius:13px;background:linear-gradient(120deg,rgba(242,79,156,.2),rgba(67,209,209,.16));color:#fff;font:700 12px/1 system-ui,sans-serif;cursor:pointer}.kce-share-event:disabled{opacity:.55;cursor:wait}
