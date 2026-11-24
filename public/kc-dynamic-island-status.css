@@ -1,0 +1,5 @@
+/* Dynamic Island outcome indicator */
+.kc-dynamic-island .kc-island-dot{display:inline-block!important;width:9px!important;height:9px!important;min-width:9px!important;border-radius:50%!important;flex:0 0 9px!important;transition:background-color .18s ease,box-shadow .18s ease!important}
+.kc-dynamic-island.kc-island-success .kc-island-dot{background:#22c55e!important;box-shadow:0 0 8px #22c55e,0 0 16px #22c55e66!important}
+.kc-dynamic-island.kc-island-pending .kc-island-dot{background:#f59e0b!important;box-shadow:0 0 8px #f59e0b,0 0 16px #f59e0b66!important}
+.kc-dynamic-island.kc-island-failed .kc-island-dot{background:#ef4444!important;box-shadow:0 0 8px #ef4444,0 0 16px #ef444466!important}
