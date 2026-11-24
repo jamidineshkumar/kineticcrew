@@ -53,3 +53,19 @@
 #kcMoreAdsForm [name="media"]{display:block;width:100%;min-height:44px;padding:9px;border:1px dashed var(--border,rgba(255,255,255,.25));border-radius:12px;background:var(--background,#15171a);color:var(--text,#fff);font-size:12px}
 
 .kc-more-ads-video-action{position:absolute;z-index:6;inset:0;display:grid;place-items:center;pointer-events:none}.kc-more-ads-video-action[hidden]{display:none}.kc-more-ads-video-action button{pointer-events:auto;min-height:42px;padding:0 17px;border:1px solid #ffffff55;border-radius:999px;background:#111b;color:#fff;font:700 12px system-ui;backdrop-filter:blur(12px)}.kc-more-ads-slide.media-error .kc-more-ads-video-action button{background:#311b22;color:#ffd8df}.kc-more-ads-admin-row video{object-fit:cover}
+
+
+/* Advertiser media fallback: retain the campaign identity instead of showing the crew logo. */
+.kc-more-ads-slide.media-error .kc-more-ads-shade{
+  background:
+    radial-gradient(ellipse at 85% 15%,rgba(239,83,157,.24),transparent 48%),
+    radial-gradient(ellipse at 15% 90%,rgba(46,197,205,.22),transparent 50%),
+    linear-gradient(135deg,rgba(12,14,20,.96),rgba(24,23,34,.94));
+}
+.kc-more-media-fallback{
+  position:absolute;z-index:3;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
+  gap:9px;padding:24px;color:#fff;pointer-events:none;
+}
+.kc-more-media-fallback strong{font-size:clamp(25px,7vw,40px);font-weight:900;line-height:1.02;letter-spacing:-.05em}
+.kc-more-media-fallback span{font-size:12px;line-height:1.5;color:#eee9f1;white-space:pre-line}
+.kc-more-ads-slide.media-error .kc-more-ads-copy{z-index:4}
