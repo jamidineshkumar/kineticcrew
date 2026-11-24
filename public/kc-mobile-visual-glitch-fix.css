@@ -1,0 +1,19 @@
+/* Stabilize profile-card face switching and Home featured carousel on mobile. */
+@media(max-width:900px){
+ .kc-profile-flip-shell{perspective:none!important;-webkit-perspective:none!important;overflow:visible!important}
+ .kc-profile-flip-inner{transform:none!important;-webkit-transform:none!important;transform-style:flat!important;-webkit-transform-style:flat!important;transition:none!important}
+ .kc-profile-flip-shell.is-flipped .kc-profile-flip-inner{transform:none!important;-webkit-transform:none!important}
+ .kc-profile-flip-shell .kc-liquid-profile-card{position:relative!important;backface-visibility:visible!important;-webkit-backface-visibility:visible!important}
+ .kc-profile-flip-shell .kc-profile-card-back{display:none!important}
+ .kc-profile-flip-shell.is-flipped .kc-liquid-profile-card{display:none!important}
+ .kc-profile-flip-shell.is-flipped .kc-profile-card-back{position:relative!important;inset:auto!important;display:flex!important;min-height:500px!important;height:auto!important;transform:none!important;-webkit-transform:none!important;backface-visibility:visible!important;-webkit-backface-visibility:visible!important}
+}
+@media(max-width:900px){
+ body.kc-home-screen .kc-home-featured{position:relative!important;overflow:hidden!important}
+ body.kc-home-screen .kc-home-featured-track{position:absolute!important;inset:0!important;overflow:hidden!important}
+ body.kc-home-screen .kc-home-feature-slide{left:50%!important;right:auto!important;top:8%!important;bottom:auto!important;width:80%!important;height:84%!important;inset-block:auto!important}
+ body.kc-home-screen .kc-home-feature-slide.is-active{left:50%!important;top:5%!important;width:88%!important;height:88%!important;opacity:1!important;visibility:visible!important;z-index:5!important;transform:translate3d(-50%,0,0) scale(1)!important;filter:none!important}
+ body.kc-home-screen .kc-home-feature-slide.is-prev{left:50%!important;top:10%!important;width:78%!important;height:78%!important;opacity:.52!important;visibility:visible!important;z-index:3!important;transform:translate3d(-101%,7px,0) scale(.84)!important;filter:blur(.4px)!important}
+ body.kc-home-screen .kc-home-feature-slide.is-next{left:50%!important;top:10%!important;width:78%!important;height:78%!important;opacity:.52!important;visibility:visible!important;z-index:3!important;transform:translate3d(1%,7px,0) scale(.84)!important;filter:blur(.4px)!important}
+ body.kc-home-screen .kc-home-feature-slide.is-hidden-side{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+}
