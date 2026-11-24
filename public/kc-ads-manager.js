@@ -17,7 +17,7 @@ async function shareCampaignCard(campaign,button){
   const glow2=ctx.createRadialGradient(100,620,10,100,620,400);glow2.addColorStop(0,'rgba(38,205,213,.26)');glow2.addColorStop(1,'rgba(38,205,213,0)');ctx.fillStyle=glow2;ctx.fillRect(0,200,600,430);
   ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(24,24,1152,582,30);ctx.stroke();
   ctx.fillStyle='#05050b';ctx.beginPath();ctx.roundRect(64,86,440,440,42);ctx.fill();ctx.strokeStyle='rgba(255,255,255,.17)';ctx.stroke();
-  try{const response=await fetch('/kinetic-crew-logo.svg?v=20261124-share-card');if(response.ok){const svg=await response.text();const blob=new Blob([svg],{type:'image/svg+xml'});const objectUrl=URL.createObjectURL(blob);try{const logo=new Image();logo.src=objectUrl;await logo.decode();ctx.drawImage(logo,76,98,416,416);}finally{URL.revokeObjectURL(objectUrl);}}else throw Error('Logo unavailable');}
+  try{const logoUrl=window.KC_SHARE_CARD_LOGO_URL||window.KC_BRAND_LOGO_URL||'/kinetic-crew-logo.svg';const logo=new Image();logo.crossOrigin='anonymous';logo.src=logoUrl;await logo.decode();ctx.drawImage(logo,76,98,416,416);}
   catch(_){ctx.textAlign='center';ctx.font='900 italic 62px Arial';ctx.fillStyle='#f20a91';ctx.fillText('KINETIC',284,285);ctx.fillStyle='#12c8d4';ctx.fillText('CREW',284,365);}
   ctx.textAlign='left';ctx.fillStyle='rgba(242,79,156,.16)';ctx.beginPath();ctx.roundRect(566,104,286,44,22);ctx.fill();ctx.strokeStyle='rgba(242,79,156,.65)';ctx.stroke();ctx.fillStyle='#ffd5e8';ctx.font='700 17px Arial';ctx.fillText('KINETIC CREW  ·  PROMOTED',588,132);
   const title=String(campaign.title||'Kinetic Crew Campaign');ctx.fillStyle='#f7f5fa';ctx.font='800 58px Arial';
