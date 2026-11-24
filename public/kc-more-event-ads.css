@@ -279,3 +279,21 @@
  .kc-more-ads-copy h2{font-size:18px!important}
  .kc-more-ads-copy p{font-size:9px!important}
 }
+
+/* Unified full-width More carousel: artwork above, readable details below. */
+.kc-more-ads-slide{display:flex!important;flex-direction:column!important;justify-content:flex-start!important;background:linear-gradient(145deg,#10141a 0%,#17121f 58%,#0b171b 100%)!important}
+.kc-more-ads-media{position:absolute!important;inset:0 0 auto 0!important;width:100%!important;max-width:100%!important;height:68%!important;object-fit:contain!important;object-position:center!important;padding:10px 14px 4px!important;box-sizing:border-box!important;background:transparent!important}
+.kc-more-ads-shade{inset:48% 0 0!important;background:linear-gradient(180deg,rgba(8,9,13,0) 0%,rgba(8,9,13,.84) 28%,rgba(8,9,13,.97) 100%)!important}
+.kc-more-ads-copy{left:18px!important;right:18px!important;top:auto!important;bottom:24px!important;transform:none!important;width:auto!important;max-width:none!important;gap:5px!important;text-align:left!important}
+.kc-more-ads-copy h2{font-size:clamp(19px,5.4vw,27px)!important;line-height:1.05!important;letter-spacing:-.035em!important}
+.kc-more-ads-copy p{font-size:11px!important;line-height:1.35!important;color:rgba(255,255,255,.84)!important}
+.kc-more-ads-copy a{font-size:10px!important}
+.kc-more-ads-sponsored{top:10px!important;right:12px!important;left:auto!important}
+@media(max-width:560px){
+ .kc-more-ads-banner{height:clamp(220px,54vw,260px)!important;min-height:220px!important}
+ .kc-more-ads-media{height:67%!important;padding:8px 12px 2px!important}
+ .kc-more-ads-shade{inset:45% 0 0!important}
+ .kc-more-ads-copy{left:15px!important;right:15px!important;bottom:22px!important;gap:4px!important}
+ .kc-more-ads-copy h2{font-size:clamp(19px,5.6vw,25px)!important}
+ .kc-more-ads-copy p{font-size:10px!important;line-height:1.3!important}
+}
