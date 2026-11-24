@@ -1,6 +1,6 @@
 {
-  "version": "1.6.88",
+  "version": "1.6.89",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-24T22:40:00+05:30",
-  "release_notes": "Restore the original Home featured banner styling and keep the animated gradient glow exclusively on the More page banner."
+  "updated_at": "2026-11-24T22:55:00+05:30",
+  "release_notes": "Fix the Home featured event carousel: separate artwork and event details, prevent clipped titles and actions, and improve the mobile layout."
 }
