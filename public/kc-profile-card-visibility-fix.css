@@ -1,0 +1,38 @@
+/* Reliability-first profile card: normal document flow, explicit face switching.
+   Avoid preserve-3d/backface compositing bugs in Android WebView. */
+@media(max-width:900px){
+ #app .kc-reference-profile .kc-profile-flip-shell{
+  position:relative!important;display:block!important;width:100%!important;height:auto!important;min-height:0!important;
+  overflow:visible!important;perspective:none!important;-webkit-perspective:none!important;transform:none!important;
+  background:transparent!important;isolation:isolate!important;
+ }
+ #app .kc-reference-profile .kc-profile-flip-inner{
+  position:relative!important;display:block!important;width:100%!important;height:auto!important;min-height:0!important;
+  overflow:visible!important;transform:none!important;-webkit-transform:none!important;
+  transform-style:flat!important;-webkit-transform-style:flat!important;transition:none!important;
+ }
+ #app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card{
+  position:relative!important;inset:auto!important;display:flex!important;flex-direction:column!important;
+  width:100%!important;height:auto!important;min-height:440px!important;max-height:none!important;
+  margin:0!important;opacity:1!important;visibility:visible!important;overflow:hidden!important;
+  transform:none!important;-webkit-transform:none!important;backface-visibility:visible!important;-webkit-backface-visibility:visible!important;
+  animation:none!important;
+ }
+ #app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{
+  position:relative!important;inset:auto!important;display:none!important;flex-direction:column!important;
+  width:100%!important;height:auto!important;min-height:500px!important;max-height:none!important;
+  margin:0!important;opacity:1!important;visibility:visible!important;overflow:hidden!important;
+  transform:none!important;-webkit-transform:none!important;backface-visibility:visible!important;-webkit-backface-visibility:visible!important;
+ }
+ #app .kc-reference-profile .kc-profile-flip-shell.is-flipped .kc-liquid-profile-card{display:none!important}
+ #app .kc-reference-profile .kc-profile-flip-shell.is-flipped .kc-profile-card-back{
+  display:flex!important;animation:kcProfileFaceIn .42s cubic-bezier(.2,.75,.25,1) both!important;
+ }
+ #app .kc-reference-profile .kc-profile-flip-shell.kc-flip-intro .kc-profile-flip-inner{animation:none!important}
+ #app .kc-reference-profile .kc-profile-flip-hint{display:flex!important;opacity:1!important;visibility:visible!important}
+}
+@keyframes kcProfileFaceIn{
+ from{opacity:.35;transform:translateY(8px) scale(.985)}
+ to{opacity:1;transform:translateY(0) scale(1)}
+}
+@media(prefers-reduced-motion:reduce){#app .kc-reference-profile .kc-profile-flip-shell.is-flipped .kc-profile-card-back{animation:none!important}}
