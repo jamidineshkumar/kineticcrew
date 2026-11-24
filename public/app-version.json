@@ -1,6 +1,6 @@
 {
-  "version": "1.6.90",
+  "version": "1.6.91",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-24T23:00:00+05:30",
-  "release_notes": "Fix the Home featured event carousel: separate artwork and event details, prevent clipped titles and actions, and improve the mobile layout."
+  "updated_at": "2026-11-24T23:10:00+05:30",
+  "release_notes": "Add temporary shareable campaign promo cards, fix the campaign edit form opening, and clean up unreferenced ad uploads."
 }
