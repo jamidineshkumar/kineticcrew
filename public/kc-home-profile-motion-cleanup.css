@@ -1,0 +1,56 @@
+/* Kinetic Crew visual cleanup: clean single-slide Home carousel + smooth profile flip. */
+body.kc-home-screen .kc-home-featured{
+ position:relative!important;isolation:isolate!important;overflow:hidden!important;
+ width:100%!important;aspect-ratio:16/9!important;min-height:245px!important;height:auto!important;
+ margin:18px 0 28px!important;padding:0!important;border:1px solid rgba(255,255,255,.15)!important;border-radius:26px!important;
+ background:radial-gradient(ellipse at 18% 78%,rgba(31,197,205,.18),transparent 48%),radial-gradient(ellipse at 86% 16%,rgba(225,57,151,.17),transparent 45%),linear-gradient(145deg,#1b2029,#171821 58%,#1a1720)!important;
+ box-shadow:0 14px 34px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.1)!important;
+}
+body.kc-home-screen .kc-home-featured-track{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;overflow:hidden!important;perspective:none!important;transform:none!important}
+body.kc-home-screen .kc-home-feature-slide,
+body.kc-home-screen .kc-home-feature-slide.is-active{
+ position:absolute!important;inset:0!important;left:0!important;top:0!important;right:0!important;bottom:0!important;
+ width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;margin:0!important;
+ display:flex!important;flex-direction:column!important;justify-content:space-between!important;overflow:hidden!important;border:0!important;border-radius:inherit!important;
+ opacity:0!important;visibility:hidden!important;pointer-events:none!important;z-index:0!important;filter:none!important;
+ transform:translate3d(5%,0,0) scale(1)!important;
+ transition:opacity .42s ease,transform .58s cubic-bezier(.22,.75,.2,1),visibility .42s!important;
+ background:transparent!important;box-shadow:none!important;
+}
+body.kc-home-screen .kc-home-feature-slide.is-active{opacity:1!important;visibility:visible!important;pointer-events:auto!important;z-index:2!important;transform:translate3d(0,0,0) scale(1)!important}
+body.kc-home-screen .kc-home-feature-slide.is-prev,
+body.kc-home-screen .kc-home-feature-slide.is-next,
+body.kc-home-screen .kc-home-feature-slide.is-hidden-side{opacity:0!important;visibility:hidden!important;pointer-events:none!important;z-index:0!important;transform:translate3d(-4%,0,0) scale(1)!important}
+body.kc-home-screen .kc-home-feature-slide.has-image .kc-home-feature-image{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:cover!important;object-position:center!important;border:0!important;border-radius:inherit!important;transform:none!important;filter:none!important}
+body.kc-home-screen .kc-home-feature-slide.has-image:after{content:""!important;position:absolute!important;inset:0!important;z-index:1!important;background:linear-gradient(180deg,rgba(9,12,18,.03),rgba(9,12,18,.16) 40%,rgba(9,12,18,.78))!important;pointer-events:none!important}
+body.kc-home-screen .kc-home-featured-art{position:relative!important;z-index:3!important;display:flex!important;justify-content:space-between!important;align-items:center!important;min-height:0!important;flex:1 1 auto!important;padding:16px 18px!important;pointer-events:none!important}
+body.kc-home-screen .kc-home-featured-kicker{font-size:9px!important;letter-spacing:.18em!important;font-weight:850!important;color:rgba(255,255,255,.9)!important;text-shadow:0 2px 10px #0005!important}
+body.kc-home-screen .kc-home-featured-count{font-size:9px!important;color:#fff!important;padding:6px 9px!important;border-radius:99px!important;background:rgba(8,9,14,.3)!important;border:1px solid rgba(255,255,255,.2)!important}
+body.kc-home-screen .kc-home-featured-glass{position:relative!important;z-index:4!important;display:grid!important;gap:6px!important;margin:0 12px 12px!important;padding:13px 15px!important;border:1px solid rgba(255,255,255,.22)!important;border-radius:18px!important;background:linear-gradient(145deg,rgba(38,43,55,.76),rgba(19,23,32,.82))!important;box-shadow:0 8px 20px rgba(0,0,0,.13)!important;backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important}
+body.kc-home-screen .kc-home-featured-label{font-size:8px!important;letter-spacing:.15em!important;color:#bce7e8!important;font-weight:850!important}
+body.kc-home-screen .kc-home-featured-glass>b{font-size:clamp(18px,5vw,25px)!important;line-height:1.12!important;color:#fff!important}
+body.kc-home-screen .kc-home-featured-glass>small{font-size:10px!important;line-height:1.4!important;color:#e0e2e8!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
+body.kc-home-screen .kc-home-featured-glass>button{justify-self:start!important;display:inline-flex!important;align-items:center!important;gap:9px!important;min-height:34px!important;padding:7px 12px!important;border:1px solid rgba(255,255,255,.22)!important;border-radius:99px!important;background:rgba(255,255,255,.1)!important;color:#fff!important;font-size:10px!important;font-weight:750!important}
+body.kc-home-screen .kc-home-featured-dots{position:absolute!important;z-index:8!important;right:17px!important;bottom:15px!important;display:flex!important;gap:7px!important}
+body.kc-home-screen .kc-home-featured-dots button{width:7px!important;height:7px!important;min-width:7px!important;min-height:7px!important;padding:0!important;border:0!important;border-radius:99px!important;background:rgba(255,255,255,.4)!important}
+body.kc-home-screen .kc-home-featured-dots button.active{width:21px!important;background:linear-gradient(90deg,#ff9a77,#d47bd2,#55d0d0)!important}
+/* Brand-only fallback: one centered animated wordmark, no fake empty event cards. */
+body.kc-home-screen .kc-home-feature-slide.no-image{align-items:stretch!important;justify-content:center!important;background:radial-gradient(ellipse at 18% 80%,rgba(38,205,208,.18),transparent 48%),radial-gradient(ellipse at 86% 12%,rgba(222,57,151,.18),transparent 45%),linear-gradient(145deg,#1b2029,#171821 58%,#1a1720)!important}
+body.kc-home-screen .kc-home-feature-slide.no-image:after{content:""!important;position:absolute!important;inset:0!important;z-index:0!important;background:repeating-linear-gradient(135deg,rgba(255,255,255,.018) 0 1px,transparent 1px 11px)!important;pointer-events:none!important}
+body.kc-home-screen .kc-home-featured-fallback-art{position:absolute!important;inset:0!important;z-index:1!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:8px!important;overflow:hidden!important}
+body.kc-home-screen .kc-home-featured-fallback-art>span{font-size:clamp(64px,19vw,108px)!important;font-weight:1000!important;font-style:italic!important;line-height:.85!important;letter-spacing:-.09em!important;color:#f044a0!important;-webkit-text-stroke:1.5px #f9cf4d!important;text-shadow:0 0 16px rgba(235,53,160,.35),0 4px 0 #5a285d!important;animation:kcHomeBrandPulse 3.4s ease-in-out infinite!important}
+body.kc-home-screen .kc-home-featured-fallback-art>i{position:absolute!important;width:190px!important;height:190px!important;border:1px solid rgba(59,210,212,.28)!important;border-radius:50%!important;box-shadow:0 0 38px rgba(59,210,212,.12),inset 0 0 35px rgba(235,65,160,.09)!important;animation:kcHomeBrandOrbit 14s linear infinite!important}
+body.kc-home-screen .kc-home-featured-fallback-art>b{font-size:8px!important;letter-spacing:.28em!important;color:#c7d9dd!important}
+@keyframes kcHomeBrandPulse{0%,100%{transform:translateY(0) scale(1);filter:drop-shadow(0 0 4px #ed4a9a55)}50%{transform:translateY(-5px) scale(1.035);filter:drop-shadow(0 0 14px #2acbd088)}}
+@keyframes kcHomeBrandOrbit{to{transform:rotate(360deg)}}
+/* Real 3D flip: remove parent backface clipping and the solid black compositor layer. */
+.kc-profile-flip-shell{position:relative!important;isolation:isolate!important;overflow:visible!important;background:transparent!important;border-radius:26px!important;perspective:1400px!important;-webkit-perspective:1400px!important;transform:none!important;-webkit-transform:none!important}
+.kc-profile-flip-inner{position:relative!important;width:100%!important;transform-style:preserve-3d!important;-webkit-transform-style:preserve-3d!important;backface-visibility:visible!important;-webkit-backface-visibility:visible!important;background:transparent!important;transition:transform .82s cubic-bezier(.2,.78,.18,1)!important;will-change:transform!important}
+.kc-profile-flip-shell.is-flipped .kc-profile-flip-inner{transform:rotateY(180deg)!important;-webkit-transform:rotateY(180deg)!important}
+.kc-profile-flip-shell .kc-liquid-profile-card{position:relative!important;z-index:1!important;backface-visibility:hidden!important;-webkit-backface-visibility:hidden!important;transform:translateZ(1px)!important;-webkit-transform:translateZ(1px)!important;background:linear-gradient(145deg,#303039 0%,#202127 58%,#29252d 100%)!important}
+.kc-profile-flip-shell .kc-profile-card-back{position:absolute!important;inset:0!important;z-index:2!important;display:flex!important;backface-visibility:hidden!important;-webkit-backface-visibility:hidden!important;transform:rotateY(180deg) translateZ(1px)!important;-webkit-transform:rotateY(180deg) translateZ(1px)!important;background:linear-gradient(145deg,#34343a 0%,#25262b 55%,#303036 100%)!important}
+.kc-profile-flip-shell .kc-liquid-profile-card:before{content:none!important;display:none!important}
+.kc-profile-flip-shell .kc-liquid-profile-card:after{background:linear-gradient(180deg,rgba(10,10,15,.12),rgba(10,10,15,.28) 48%,rgba(10,10,15,.58))!important}
+.kc-profile-flip-shell .kc-liquid-orb-cyan{display:none!important}
+@media(max-width:640px){.kc-profile-flip-shell{border-radius:25px!important}.kc-profile-flip-inner{min-height:400px!important}.kc-profile-flip-shell .kc-liquid-profile-card{min-height:400px!important}.kc-profile-flip-shell .kc-profile-card-back{min-height:400px!important;padding:15px!important}}
+@media(prefers-reduced-motion:reduce){body.kc-home-screen .kc-home-feature-slide, .kc-profile-flip-inner{transition:none!important}body.kc-home-screen .kc-home-featured-fallback-art>span,body.kc-home-screen .kc-home-featured-fallback-art>i{animation:none!important}}
