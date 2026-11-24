@@ -1,0 +1,82 @@
+/* More-page brand fallback: keep the complete wordmark centered inside its banner.
+   This overrides legacy square-artwork and split-column rules that pushed the logo
+   below the banner on Android WebView. */
+.kc-more-logo-wrap.kc-more-intro.kc-more-event-ads-host{
+ display:block!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;
+ overflow:visible!important;margin:10px 0 26px!important;padding:0!important;background:transparent!important;
+}
+.kc-more-event-ads-host .kc-more-ads-banner{
+ position:relative!important;display:block!important;width:100%!important;height:clamp(230px,42vw,280px)!important;
+ min-height:230px!important;max-height:280px!important;overflow:hidden!important;box-sizing:border-box!important;
+ border-radius:25px!important;background:
+ radial-gradient(ellipse at 18% 82%,rgba(35,206,211,.16),transparent 48%),
+ radial-gradient(ellipse at 84% 14%,rgba(238,66,157,.17),transparent 46%),
+ linear-gradient(145deg,#20232c,#171821 60%,#1b1922)!important;
+}
+.kc-more-event-ads-host .kc-more-ads-track{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;overflow:hidden!important}
+.kc-more-event-ads-host .kc-more-ads-slide.brand-fallback{
+ position:absolute!important;inset:0!important;display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;
+ min-height:0!important;max-height:none!important;margin:0!important;padding:0!important;overflow:hidden!important;
+ opacity:1!important;visibility:visible!important;transform:none!important;background:transparent!important;
+}
+.kc-more-event-ads-host .kc-more-ads-slide.brand-fallback .kc-more-empty-brand{
+ position:absolute!important;inset:0!important;display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;gap:10px!important;
+ width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;
+ margin:0!important;padding:18px!important;box-sizing:border-box!important;overflow:hidden!important;
+ border:0!important;border-radius:inherit!important;background:transparent!important;box-shadow:none!important;
+}
+.kc-more-event-ads-host .kc-more-empty-orbit{display:none!important}
+.kc-more-event-ads-host .kc-more-empty-wordmark{
+ position:relative!important;z-index:2!important;display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;gap:0!important;
+ width:100%!important;max-width:100%!important;margin:0!important;padding:0!important;
+ font-size:clamp(39px,10.5vw,60px)!important;line-height:.9!important;letter-spacing:-.075em!important;
+ text-align:center!important;white-space:nowrap!important;transform:skew(-6deg)!important;
+ animation:kcMoreBrandWordmarkIn 1s cubic-bezier(.2,.75,.2,1) both!important;
+}
+.kc-more-event-ads-host .kc-more-empty-wordmark span,
+.kc-more-event-ads-host .kc-more-empty-wordmark b{
+ display:block!important;position:relative!important;z-index:2!important;line-height:.9!important;
+}
+.kc-more-event-ads-host .kc-more-empty-wordmark span{
+ color:#f13e9d!important;-webkit-text-stroke:1px #ffd23f!important;
+ text-shadow:0 3px 0 #6c185d,0 0 18px rgba(241,62,157,.25)!important;
+}
+.kc-more-event-ads-host .kc-more-empty-wordmark b{
+ color:#22d3d0!important;-webkit-text-stroke:1px #0b707b!important;
+ text-shadow:0 3px 0 #124b60,0 0 18px rgba(34,211,208,.22)!important;
+ background:none!important;-webkit-text-fill-color:initial!important;
+}
+.kc-more-event-ads-host .kc-more-empty-brand>small{
+ position:relative!important;z-index:2!important;margin-top:5px!important;
+ color:rgba(255,255,255,.72)!important;font-size:8px!important;font-weight:850!important;
+ letter-spacing:.25em!important;text-align:center!important;
+}
+.kc-more-event-ads-host .kc-more-empty-sweep{display:none!important}
+.kc-more-event-ads-host .kc-more-empty-text{
+ display:flex!important;position:relative!important;align-items:center!important;justify-content:center!important;
+ width:100%!important;height:clamp(230px,42vw,280px)!important;min-height:230px!important;max-height:280px!important;
+ overflow:hidden!important;box-sizing:border-box!important;border-radius:25px!important;
+ background:
+ radial-gradient(ellipse at 18% 82%,rgba(35,206,211,.16),transparent 48%),
+ radial-gradient(ellipse at 84% 14%,rgba(238,66,157,.17),transparent 46%),
+ linear-gradient(145deg,#20232c,#171821 60%,#1b1922)!important;
+}
+.kc-more-event-ads-host .kc-more-empty-text:before{
+ font-size:clamp(23px,6.5vw,38px)!important;white-space:nowrap!important;
+ animation:kcMoreEmptyTextGradient 6s ease-in-out infinite!important;
+}
+@keyframes kcMoreBrandWordmarkIn{
+ from{opacity:0;transform:translateY(10px) skew(-6deg) scale(.97)}
+ to{opacity:1;transform:translateY(0) skew(-6deg) scale(1)}
+}
+@media(max-width:390px){
+ .kc-more-event-ads-host .kc-more-empty-wordmark{font-size:clamp(35px,10vw,43px)!important}
+ .kc-more-event-ads-host .kc-more-empty-brand>small{font-size:7px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .kc-more-event-ads-host .kc-more-empty-wordmark{animation:none!important}
+ .kc-more-event-ads-host .kc-more-empty-text:before{animation:none!important;background-position:50% 50%!important}
+}
