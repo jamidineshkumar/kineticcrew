@@ -168,3 +168,80 @@ body.kc-home-screen #app .kc-home-featured-dots button.active{width:18px!importa
 @media(prefers-reduced-motion:reduce){
  .kc-more-brand-interstitial:before,.kc-more-brand-overline,.kc-more-brand-interstitial strong,.kc-more-brand-interstitial strong em,.kc-more-brand-sweep{animation:none!important}
 }
+
+
+/* FINAL OVERRIDE — visible artwork when an event has no uploaded poster. */
+body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-home-featured-fallback-art{
+ display:block!important;position:absolute!important;z-index:1!important;inset:0!important;
+ width:100%!important;height:100%!important;overflow:hidden!important;
+ background:
+  radial-gradient(ellipse at 82% 14%,rgba(226,91,157,.28),transparent 43%),
+  radial-gradient(ellipse at 12% 82%,rgba(67,183,190,.23),transparent 48%),
+  linear-gradient(128deg,#242432 0%,#191c29 55%,#101a20 100%)!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-home-featured-fallback-art:before,
+body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-home-featured-fallback-art:after{
+ content:""!important;display:block!important;position:absolute!important;border-radius:50%!important;
+ border:1px solid rgba(255,255,255,.13)!important;pointer-events:none!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-home-featured-fallback-art:before{
+ width:210px!important;height:210px!important;right:-34px!important;top:-112px!important;
+ box-shadow:0 0 0 16px rgba(255,255,255,.025),0 0 0 38px rgba(255,255,255,.018)!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-home-featured-fallback-art:after{
+ width:140px!important;height:140px!important;left:-55px!important;bottom:-90px!important;
+ border-color:rgba(90,207,205,.24)!important;box-shadow:0 0 0 16px rgba(90,207,205,.035)!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-fallback-eyebrow{
+ position:absolute!important;left:18px!important;top:17px!important;z-index:2!important;
+ display:inline-flex!important;align-items:center!important;width:auto!important;
+ padding:6px 9px!important;border:1px solid rgba(255,255,255,.17)!important;border-radius:99px!important;
+ background:rgba(13,17,25,.34)!important;color:rgba(231,245,246,.82)!important;
+ font:800 8px/1 system-ui,sans-serif!important;letter-spacing:.16em!important;
+ -webkit-backdrop-filter:blur(8px)!important;backdrop-filter:blur(8px)!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-fallback-title{
+ position:absolute!important;left:19px!important;top:51px!important;z-index:2!important;
+ display:block!important;max-width:70%!important;margin:0!important;
+ color:rgba(255,255,255,.16)!important;font:950 clamp(34px,9vw,54px)/.94 system-ui,sans-serif!important;
+ letter-spacing:-.065em!important;text-transform:uppercase!important;overflow-wrap:anywhere!important;
+ text-shadow:0 3px 22px rgba(0,0,0,.12)!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-fallback-orbit{
+ position:absolute!important;z-index:1!important;right:36px!important;top:35px!important;
+ display:block!important;width:91px!important;height:91px!important;border:1px solid rgba(255,255,255,.20)!important;
+ border-radius:50%!important;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.14),rgba(255,255,255,.015) 68%)!important;
+ box-shadow:0 0 0 10px rgba(255,255,255,.025),inset 0 0 24px rgba(255,255,255,.04)!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-fallback-orbit:before{
+ content:"";position:absolute;left:19px;top:43px;width:54px;height:5px;border-radius:99px;
+ background:linear-gradient(90deg,#ff8b78,#c878df,#54d3d0);transform:rotate(-25deg);
+ box-shadow:0 0 16px rgba(194,113,215,.28);
+}
+body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-fallback-orbit:after{
+ content:"";position:absolute;left:24px;top:56px;width:36px;height:3px;border-radius:99px;
+ background:rgba(255,255,255,.58);transform:rotate(17deg);
+}
+body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-home-featured-fallback-art>small,
+body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-home-featured-fallback-art>em{display:none!important}
+body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-home-featured-glass{z-index:5!important}
+body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-home-featured-art{z-index:4!important}
+@media(max-width:600px){
+ body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-fallback-title{font-size:36px!important;top:52px!important}
+ body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-fallback-orbit{width:76px!important;height:76px!important;right:25px!important;top:39px!important}
+}
+
+/* More-page branded interstitial must be visible immediately, even while ad auth/data loads. */
+.kc-more-reference .kc-more-logo-wrap.kc-more-intro.kc-more-event-ads-host{
+ height:118px!important;min-height:118px!important;max-height:118px!important;
+}
+.kc-more-reference .kc-more-ads-banner{height:118px!important;min-height:118px!important;max-height:118px!important}
+.kc-more-reference .kc-more-brand-slide.is-active{
+ display:block!important;opacity:1!important;visibility:visible!important;z-index:4!important;
+}
+.kc-more-reference .kc-more-brand-slide .kc-more-brand-interstitial{
+ position:absolute!important;inset:0!important;display:flex!important;visibility:visible!important;opacity:1!important;
+ width:100%!important;height:100%!important;align-items:center!important;justify-content:center!important;
+ border-radius:inherit!important;
+}
+.kc-more-reference .kc-more-brand-slide .kc-more-brand-interstitial strong{display:block!important;visibility:visible!important;opacity:1!important}
