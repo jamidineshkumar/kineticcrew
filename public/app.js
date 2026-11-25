@@ -1213,14 +1213,9 @@ function home(){
   ...announcements.slice(0,3).map(a=>({kind:'update',view:'notifications',id:a.id,kicker:'KINETIC CREW · IMPORTANT UPDATE',label:'CREW ANNOUNCEMENT',title:a.title||'A note from your crew',subtitle:a.body||a.message||'An important update from Kinetic Crew',cta:'Read update',image:safeSocialUrl(a.image_url||a.cover_url||a.banner_url||'')}))
  ];
  if(!slides.length)slides.push({kind:'empty',view:'events',kicker:'KINETIC CREW · ONE CREW, ONE RHYTHM',label:'YOUR NEXT CREW MOMENT',title:'No upcoming events',subtitle:'New events and crew moments will appear here.',cta:'Explore events',image:''});
- const crewPromo={kind:'promo',view:'more',kicker:'KINETIC CREW · ONE CREW, ONE RHYTHM',label:'ONE CREW · ONE RHYTHM',title:'Kinetic Crew',subtitle:'Events, rehearsals, auditions and every moment that brings the crew together.',cta:'Explore the crew',image:''};
  const contentSlides=slides.splice(0);
- // Keep the carousel moving even when the crew has not published events yet.
- if(contentSlides.length===1&&contentSlides[0].kind==='empty'){
-  contentSlides.splice(0,1,{...crewPromo,kind:'brand',label:'KINETIC CREW',title:'KINETIC CREW',subtitle:'ONE CREW · ONE RHYTHM',cta:'Explore the crew'});
- }
- if(contentSlides.length===1&&contentSlides[0].kind!=='empty')contentSlides.push({...crewPromo,kind:'brand',label:'ONE CREW · ONE RHYTHM',title:'Kinetic Crew',subtitle:'Every event. Every rehearsal. Every moment together.',cta:'Explore the crew',image:''});
- if(contentSlides.length)slides.push(...contentSlides);else slides.push({...crewPromo});
+ // Keep this carousel focused on real crew events and updates. Do not inject a large brand-only slide.
+ if(contentSlides.length)slides.push(...contentSlides);
  const pollItems=[...(S.featureItems?.polls||[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
  const updateItems=[...announcements.slice(0,2).map(a=>({kind:'announcement',created_at:a.created_at,item:a})),...(pollItems.length?[{kind:'poll',created_at:pollItems[0].created_at,item:pollItems[0]}]:[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
  const updates=updateItems.map((entry,i)=>{
