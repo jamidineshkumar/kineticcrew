@@ -37,6 +37,7 @@ function scan(){document.querySelectorAll('.kc-more-intro').forEach(root=>{if(!r
 
 function start(){scan();const target=document.getElementById('app')||document.body;new MutationObserver(()=>scan()).observe(target,{childList:true,subtree:true});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-window.addEventListener('kc:more-ads-refresh',()=>document.querySelectorAll('.kc-more-intro').forEach(root=>{root.dataset.kcAdsReady='no';loadPromotions(root);}));\ndocument.addEventListener('visibilitychange',()=>{if(!document.hidden)document.querySelectorAll('.kc-more-intro').forEach(root=>{if(!root._kcMoreAds?.some(a=>a.kind==='campaign'))loadPromotions(root);});});
+window.addEventListener('kc:more-ads-refresh',()=>document.querySelectorAll('.kc-more-intro').forEach(root=>{root.dataset.kcAdsReady='no';loadPromotions(root);}));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)document.querySelectorAll('.kc-more-intro').forEach(root=>{if(!root._kcMoreAds?.some(a=>a.kind==='campaign'))loadPromotions(root);});});
 
 })();
