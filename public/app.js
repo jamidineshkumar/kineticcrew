@@ -1230,7 +1230,7 @@ function home(){
    '<div class="kc-event-countdown-stage">'+
     '<div class="kc-countdown-watermark" aria-hidden="true">KC</div>'+
     '<div class="kc-event-countdown-content">'+
-     (slide.startsAt&&slide.showCountdown?'<div class="kc-event-countdown" data-event-countdown><div class="kc-countdown-units"><span><b data-countdown-days>00</b><small>DAYS</small></span><i>:</i><span><b data-countdown-hours>00</b><small>HRS</small></span><i>:</i><span><b data-countdown-minutes>00</b><small>MIN</small></span><i>:</i><span><b data-countdown-seconds>00</b><small>SEC</small></span></div></div>':'<div class="kc-event-countdown is-empty"><strong>NO UPCOMING EVENTS</strong></div>')+
+     (slide.kind==='event'?(slide.startsAt&&slide.showCountdown?'<div class="kc-event-countdown" data-event-countdown><div class="kc-countdown-units"><span><b data-countdown-days>00</b><small>DAYS</small></span><i>:</i><span><b data-countdown-hours>00</b><small>HRS</small></span><i>:</i><span><b data-countdown-minutes>00</b><small>MIN</small></span><i>:</i><span><b data-countdown-seconds>00</b><small>SEC</small></span></div></div>':''):'<div class="kc-event-countdown is-empty"><strong>NO UPCOMING EVENTS</strong></div>')+
      (slide.kind==='event'?'<div class="kc-countdown-event-details"><b>'+esc(slide.title)+'</b>'+(slide.eventDateLabel?'<span>◷ &nbsp;'+esc(slide.eventDateLabel)+'</span>':'')+(slide.location?'<span>⌖ &nbsp;'+esc(slide.location)+'</span>':'')+(slide.description?'<small>'+esc(slide.description)+'</small>':'')+'<span class="kc-home-slide-cta">VIEW EVENT <i>↗</i></span></div>':'')+
     '</div>'+
    '</div>'+
