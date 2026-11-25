@@ -1789,7 +1789,7 @@ if(S.view==='overview'){
      if(justStarted&&!alreadyShown){
       try{localStorage.setItem('kc-event-started-'+slide.dataset.eventId,'1');}catch{}
       const celebration=document.createElement('div');celebration.className='kc-countdown-celebration';celebration.setAttribute('aria-hidden','true');
-      celebration.innerHTML='<strong>EVENT STARTED</strong><div class="kc-countdown-confetti">'+Array.from({length:24},(_,i)=>'<i style="--x:'+((i*37+9)%100)+'%;--drift:'+(i%2?24:-24)+'px"></i>').join('')+'</div>';
+      celebration.innerHTML='<strong>EVENT STARTED</strong><div class="kc-countdown-confetti">'+Array.from({length:24},(_,i)=>'<i style="--x:'+((i*37+9)%100)+'%;--i:'+i+';--drift:'+(i%2?24:-24)+'px"></i>').join('')+'</div>';
       slide.appendChild(celebration);slide.classList.add('is-celebrating');
       setTimeout(()=>{slide.classList.remove('is-celebrating');celebration.remove();},3200);
      }
