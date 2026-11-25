@@ -421,3 +421,66 @@ body.kc-home-screen #app .kc-countdown-event-details>small{
  body.kc-home-screen #app .kc-countdown-event-details>span{font-size:9px!important}
  body.kc-home-screen #app .kc-countdown-event-details>small{font-size:9px!important}
 }
+
+
+/* Countdown reference pass: compact illuminated glass card with event details nested below. */
+body.kc-home-screen #app .kc-event-countdown-stage{
+  align-items:center!important;justify-content:center!important;padding:16px 12px!important;
+}
+body.kc-home-screen #app .kc-countdown-watermark{
+  top:50%!important;left:50%!important;color:rgba(255,255,255,.055)!important;
+  font-size:clamp(145px,43vw,230px)!important;letter-spacing:-.15em!important;
+}
+body.kc-home-screen #app .kc-event-countdown-content{
+  width:min(100%,440px)!important;max-width:440px!important;gap:10px!important;
+  padding:15px 12px 12px!important;box-sizing:border-box!important;
+  border:1px solid transparent!important;border-radius:23px!important;
+  background:
+    linear-gradient(145deg,rgba(18,22,34,.94),rgba(20,18,31,.92) 54%,rgba(37,25,31,.90)) padding-box,
+    linear-gradient(125deg,rgba(139,111,226,.72),rgba(255,255,255,.20) 42%,rgba(242,164,105,.82)) border-box!important;
+  box-shadow:0 15px 36px rgba(0,0,0,.30),0 0 28px rgba(148,105,211,.10),inset 0 1px rgba(255,255,255,.10)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.15)!important;backdrop-filter:blur(18px) saturate(1.15)!important;
+  transform:none!important;
+}
+body.kc-home-screen #app .kc-event-countdown{
+  width:100%!important;max-width:none!important;min-height:48px!important;
+}
+body.kc-home-screen #app .kc-countdown-units{gap:clamp(7px,2.6vw,17px)!important}
+body.kc-home-screen #app .kc-countdown-units>span{gap:6px!important}
+body.kc-home-screen #app .kc-countdown-units b{
+  font-size:clamp(28px,7.6vw,42px)!important;letter-spacing:-.07em!important;
+  text-shadow:0 2px 20px rgba(190,145,255,.16)!important;
+}
+body.kc-home-screen #app .kc-countdown-units small{
+  font-size:7px!important;letter-spacing:.19em!important;color:rgba(241,235,249,.62)!important;
+}
+body.kc-home-screen #app .kc-countdown-units>i{
+  margin-top:-14px!important;color:rgba(245,190,205,.58)!important;font-size:20px!important;
+}
+body.kc-home-screen #app .kc-countdown-event-details{
+  width:100%!important;max-width:none!important;gap:5px!important;
+  padding:11px 12px!important;border-radius:15px!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  background:linear-gradient(115deg,rgba(87,83,163,.24),rgba(150,80,117,.19) 55%,rgba(183,111,72,.18))!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.07),0 5px 16px rgba(0,0,0,.12)!important;
+}
+body.kc-home-screen #app .kc-countdown-event-details>b{
+  font-size:clamp(15px,4vw,19px)!important;letter-spacing:-.025em!important;
+}
+body.kc-home-screen #app .kc-countdown-event-details>span{font-size:9px!important}
+body.kc-home-screen #app .kc-countdown-event-details>small{font-size:9px!important;line-height:1.3!important}
+body.kc-home-screen #app .kc-countdown-celebration{
+  background:radial-gradient(ellipse at center,rgba(20,18,34,.30),rgba(8,10,16,.08) 75%)!important;
+}
+body.kc-home-screen #app .kc-countdown-celebration>strong{
+  border-color:rgba(255,255,255,.30)!important;
+  background:linear-gradient(120deg,rgba(62,49,91,.92),rgba(89,43,75,.90))!important;
+  box-shadow:0 12px 38px rgba(0,0,0,.32),0 0 34px rgba(211,127,199,.24)!important;
+}
+@media(max-width:600px){
+  body.kc-home-screen #app .kc-event-countdown-content{
+    width:100%!important;padding:13px 10px 10px!important;gap:9px!important;border-radius:21px!important;
+  }
+  body.kc-home-screen #app .kc-countdown-event-details{padding:10px 10px!important}
+  body.kc-home-screen #app .kc-countdown-watermark{font-size:175px!important}
+}
