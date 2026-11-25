@@ -245,3 +245,136 @@ body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-home-featured-art{z
  border-radius:inherit!important;
 }
 .kc-more-reference .kc-more-brand-slide .kc-more-brand-interstitial strong{display:block!important;visibility:visible!important;opacity:1!important}
+
+
+/* Home event countdown carousel — minimal KC watermark, no event-card clutter. */
+body.kc-home-screen #app .kc-home-featured{
+ position:relative!important;isolation:isolate!important;overflow:hidden!important;
+}
+body.kc-home-screen #app .kc-home-featured-track{
+ position:relative!important;width:100%!important;height:100%!important;min-height:0!important;
+ display:grid!important;grid-template:1fr/1fr!important;overflow:hidden!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide,
+body.kc-home-screen #app .kc-home-feature-slide.is-active{
+ position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ min-height:0!important;max-height:none!important;display:block!important;
+ overflow:hidden!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+ transform:translate3d(22px,0,0) scale(.99)!important;
+ transition:opacity .7s ease,transform .85s cubic-bezier(.2,.75,.2,1),visibility .7s!important;
+ border-radius:inherit!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide.is-active{
+ opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+ transform:translate3d(0,0,0) scale(1)!important;z-index:3!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide.is-prev{transform:translate3d(-22px,0,0) scale(.99)!important}
+body.kc-home-screen #app .kc-home-feature-slide .kc-home-feature-image{
+ position:absolute!important;z-index:0!important;inset:0!important;width:100%!important;height:100%!important;
+ display:block!important;object-fit:cover!important;opacity:.38!important;filter:saturate(.72) brightness(.68)!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide:before{
+ content:""!important;position:absolute!important;z-index:1!important;inset:0!important;display:block!important;
+ background:
+  radial-gradient(ellipse at 82% 16%,rgba(210,105,169,.22),transparent 48%),
+  radial-gradient(ellipse at 12% 88%,rgba(65,193,190,.20),transparent 48%),
+  linear-gradient(135deg,rgba(17,21,31,.42),rgba(13,17,25,.84))!important;
+ pointer-events:none!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide:after{content:none!important;display:none!important}
+body.kc-home-screen #app .kc-event-countdown-stage{
+ position:absolute!important;z-index:5!important;inset:0!important;display:flex!important;
+ align-items:center!important;justify-content:center!important;overflow:hidden!important;
+ padding:22px 14px!important;box-sizing:border-box!important;
+}
+body.kc-home-screen #app .kc-countdown-watermark{
+ position:absolute!important;left:50%!important;top:49%!important;
+ transform:translate(-50%,-50%) rotate(-12deg)!important;
+ color:rgba(255,255,255,.075)!important;font:950 clamp(170px,49vw,270px)/.8 system-ui,sans-serif!important;
+ letter-spacing:-.14em!important;white-space:nowrap!important;pointer-events:none!important;
+ user-select:none!important;text-shadow:0 8px 38px rgba(0,0,0,.12)!important;
+}
+body.kc-home-screen #app .kc-event-countdown{
+ position:relative!important;z-index:2!important;display:flex!important;align-items:center!important;
+ justify-content:center!important;width:100%!important;max-width:480px!important;
+ color:#fff!important;text-align:center!important;
+}
+body.kc-home-screen #app .kc-countdown-units{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ gap:clamp(5px,2.2vw,15px)!important;width:100%!important;
+}
+body.kc-home-screen #app .kc-countdown-units>span{
+ display:flex!important;flex:0 1 auto!important;min-width:0!important;flex-direction:column!important;
+ align-items:center!important;gap:7px!important;
+}
+body.kc-home-screen #app .kc-countdown-units b{
+ display:block!important;color:#fff!important;font:800 clamp(27px,8vw,46px)/1 system-ui,sans-serif!important;
+ letter-spacing:-.065em!important;font-variant-numeric:tabular-nums!important;
+ text-shadow:0 3px 24px rgba(0,0,0,.24)!important;
+}
+body.kc-home-screen #app .kc-countdown-units small{
+ display:block!important;color:rgba(238,244,250,.68)!important;
+ font:750 8px/1 system-ui,sans-serif!important;letter-spacing:.16em!important;
+}
+body.kc-home-screen #app .kc-countdown-units>i{
+ display:block!important;margin-top:-15px!important;color:rgba(245,190,205,.68)!important;
+ font:400 24px/1 system-ui,sans-serif!important;font-style:normal!important;
+}
+body.kc-home-screen #app .kc-event-countdown.is-empty strong,
+body.kc-home-screen #app .kc-event-countdown.is-started strong{
+ display:block!important;color:#fff!important;font:850 clamp(23px,6vw,36px)/1.05 system-ui,sans-serif!important;
+ letter-spacing:-.045em!important;text-align:center!important;
+ text-shadow:0 4px 24px rgba(0,0,0,.28)!important;
+}
+body.kc-home-screen #app .kc-home-featured-dots{
+ z-index:9!important;right:15px!important;top:auto!important;bottom:13px!important;
+}
+body.kc-home-screen #app .kc-home-featured-dots button{
+ width:6px!important;height:6px!important;min-width:6px!important;min-height:6px!important;
+ background:rgba(255,255,255,.38)!important;border:0!important;border-radius:99px!important;
+ transition:width .3s ease,background .3s ease!important;
+}
+body.kc-home-screen #app .kc-home-featured-dots button.active{
+ width:20px!important;background:linear-gradient(90deg,#f2a18b,#c979d7,#64d2cf)!important;
+}
+body.kc-home-screen #app .kc-countdown-celebration{
+ position:absolute!important;z-index:12!important;inset:0!important;display:flex!important;
+ align-items:center!important;justify-content:center!important;overflow:hidden!important;
+ background:radial-gradient(ellipse at center,rgba(18,21,31,.26),rgba(10,13,20,.04) 70%)!important;
+ animation:kcCountdownPopup .72s cubic-bezier(.2,.8,.2,1) both!important;pointer-events:none!important;
+}
+body.kc-home-screen #app .kc-countdown-celebration>strong{
+ position:relative!important;z-index:2!important;padding:13px 19px!important;
+ border:1px solid rgba(255,255,255,.24)!important;border-radius:999px!important;
+ background:rgba(18,22,32,.72)!important;color:#fff!important;
+ font:850 clamp(19px,5vw,28px)/1 system-ui,sans-serif!important;letter-spacing:.035em!important;
+ box-shadow:0 12px 36px rgba(0,0,0,.26),0 0 35px rgba(209,115,202,.18)!important;
+ -webkit-backdrop-filter:blur(14px)!important;backdrop-filter:blur(14px)!important;
+}
+body.kc-home-screen #app .kc-countdown-confetti{position:absolute!important;inset:0!important;overflow:hidden!important}
+body.kc-home-screen #app .kc-countdown-confetti i{
+ position:absolute!important;left:calc((var(--i)*37 + 9)%100 * 1%)!important;top:-12px!important;
+ width:7px!important;height:12px!important;border-radius:2px!important;
+ background:hsl(calc(var(--i)*31),78%,70%)!important;
+ transform:rotate(calc(var(--i)*47deg))!important;
+ animation:kcConfettiFall 2.7s cubic-bezier(.2,.6,.35,1) calc(var(--i)*.025s) both!important;
+}
+@keyframes kcCountdownPopup{
+ 0%{opacity:0;transform:scale(.82)}65%{opacity:1;transform:scale(1.04)}100%{opacity:1;transform:scale(1)}
+}
+@keyframes kcConfettiFall{
+ 0%{opacity:0;translate:0 -10px;rotate:0deg}
+ 12%{opacity:1}
+ 100%{opacity:0;translate:calc((var(--i)%2)*34px - 17px) 290px;rotate:640deg}
+}
+@media(max-width:600px){
+ body.kc-home-screen #app .kc-countdown-units{gap:6px!important}
+ body.kc-home-screen #app .kc-countdown-units b{font-size:clamp(27px,8.1vw,37px)!important}
+ body.kc-home-screen #app .kc-countdown-units small{font-size:7px!important}
+ body.kc-home-screen #app .kc-countdown-watermark{font-size:205px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body.kc-home-screen #app .kc-home-feature-slide{transition:none!important}
+ body.kc-home-screen #app .kc-countdown-confetti i{animation:none!important;display:none!important}
+ body.kc-home-screen #app .kc-countdown-celebration{animation:none!important}
+}
