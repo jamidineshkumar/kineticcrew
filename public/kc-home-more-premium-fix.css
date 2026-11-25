@@ -545,3 +545,8 @@ body.kc-home-screen #app .kc-home-slide-cta i{font-style:normal!important;color:
 /* Always suppress the timer node when an event's saved preference is OFF. */
 body.kc-home-screen #app .kc-home-feature-slide.kc-slide-no-countdown [data-event-countdown]{display:none!important;visibility:hidden!important}
 body.kc-home-screen #app .kc-home-feature-slide.kc-slide-no-countdown .kc-event-countdown-content{justify-content:center!important}
+
+/* The native hidden attribute must win over countdown display declarations. */
+body.kc-home-screen #app .kc-event-countdown[hidden]{display:none!important}
+body.kc-home-screen #app .kc-event-countdown.is-started[hidden]{display:flex!important}
+body.kc-home-screen #app .kc-countdown-confetti i{background:hsl(calc(var(--i,0)*31),82%,68%)!important}
