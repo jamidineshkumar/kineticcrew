@@ -369,10 +369,11 @@ async function refresh(){
   if(promoPref&&!promoPref.error)S.promotionalUpdatesEnabled=promoPref.data!==false;
   const metaResult=jobs[2].status==='fulfilled'?jobs[2].value:null;
   const statusResult=jobs[3].status==='fulfilled'?jobs[3].value:null;
-  const meta=[...(Array.isArray(metaResult?.data)?metaResult.data:[]),...(Array.isArray(statusResult?.data)?statusResult.data:[])];
+  const eventRows=value=>Array.isArray(value)?value:(Array.isArray(value?.data)?value.data:(Array.isArray(value?.events)?value.events:[]));
+  const meta=[...eventRows(metaResult?.data),...eventRows(statusResult?.data)];
   if(cfg&&!cfg.error)S.appSettings=cfg.data||{};
   const eventMeta=new Map(meta.map(item=>[String(item.id),item]));
-  if(meta.length)S.events=(S.events||[]).map(event=>({...event,...(eventMeta.get(String(event.id))||{})}));
+  if(meta.length)S.events=(S.events||[]).map(event=>{const extra=eventMeta.get(String(event.id))||{};return {...event,...extra,show_countdown:typeof extra.show_countdown==='boolean'?extra.show_countdown:(typeof event.show_countdown==='boolean'?event.show_countdown:true)};});
   const featureNames=['rehearsals','chat','polls'];
   for(let i=0;i<featureNames.length;i++){
    const result=jobs[i+4];
