@@ -241,3 +241,53 @@
 @media(prefers-reduced-motion:reduce){
  #app .kc-reference-profile .kc-profile-flip-inner{transition:none!important}
 }
+
+
+/* Final Android WebView correction: swap faces in 2D so the reverse ticket never mirrors. */
+#app .kc-reference-profile .kc-profile-flip-shell{
+ position:relative!important;display:block!important;width:100%!important;max-width:620px!important;
+ min-height:0!important;height:auto!important;overflow:visible!important;
+ perspective:none!important;-webkit-perspective:none!important;transform:none!important;-webkit-transform:none!important;
+}
+#app .kc-reference-profile .kc-profile-flip-inner{
+ position:relative!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ width:100%!important;min-height:0!important;height:auto!important;
+ transform:none!important;-webkit-transform:none!important;transform-style:flat!important;-webkit-transform-style:flat!important;
+ transition:none!important;will-change:auto!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{
+ position:relative!important;inset:auto!important;grid-column:1!important;grid-row:1!important;
+ align-self:stretch!important;justify-self:stretch!important;width:100%!important;height:auto!important;min-height:470px!important;
+ margin:0!important;box-sizing:border-box!important;transform:none!important;-webkit-transform:none!important;
+ transform-style:flat!important;-webkit-transform-style:flat!important;
+ backface-visibility:visible!important;-webkit-backface-visibility:visible!important;
+ direction:ltr!important;writing-mode:horizontal-tb!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card{
+ z-index:2!important;display:flex!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+ transition:opacity .24s ease,visibility .24s ease,translate .24s ease!important;translate:0 0!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{
+ z-index:1!important;display:flex!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+ translate:0 7px!important;transition:opacity .24s ease,visibility .24s ease,translate .24s ease!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell.is-flipped .kc-liquid-profile-card{
+ z-index:1!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;translate:0 -7px!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell.is-flipped .kc-profile-card-back{
+ z-index:3!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;translate:0 0!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back *{
+ direction:ltr!important;writing-mode:horizontal-tb!important;transform:none!important;-webkit-transform:none!important;
+ rotate:none!important;scale:1!important;
+}
+@media(max-width:640px){
+ #app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card,
+ #app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{min-height:450px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card,
+ #app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{transition:none!important}
+}
