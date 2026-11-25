@@ -1782,6 +1782,7 @@ if(S.view==='overview'){
    if(remaining<=0){
     if(!box.classList.contains('is-started')){
      box.classList.add('is-started');
+     box.hidden=false;
      box.innerHTML='<strong>EVENT STARTED</strong>';
      const justStarted=true;
      let alreadyShown=false;
