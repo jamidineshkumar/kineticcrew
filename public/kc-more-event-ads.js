@@ -5,7 +5,7 @@ const date=v=>{const d=new Date(v);return Number.isNaN(+d)?'Date to be announced
 const validUrl=v=>{try{const u=new URL(String(v||''),location.href);return u.protocol==='https:'||u.origin===location.origin?u.href:'';}catch{return '';}};
 function mergeSlides(events,ads,settings={}){
  const now=Date.now(),eventSlides=(settings.show_upcoming_events===false?[]:(events||[])).filter(e=>e&&e.id&&e.title&&e.starts_at&&new Date(e.starts_at).getTime()>=now&&e.event_status!=='cancelled').sort((a,b)=>Number(!!b.featured)-Number(!!a.featured)||new Date(a.starts_at)-new Date(b.starts_at)).map(e=>({kind:'event',id:'event-'+e.id,title:e.title,caption:[date(e.starts_at),e.location||'Venue to be announced',e.event_status&&e.event_status!=='scheduled'?String(e.event_status).toUpperCase():''].filter(Boolean).join(' · '),media_type:'image',media_url:validUrl(e.cover_url||e.image_url||e.banner_url||e.poster_url||e.image),label:'UPCOMING EVENT'}));
- const promoSlides=(settings.show_promotions===false?[]:(ads||[])).filter(a=>a&&a.media_url&&a.is_active!==false).map(a=>({...a,kind:'promotion',media_url:validUrl(a.media_url)})).filter(a=>a.media_url);
+ const promoSlides=(ads||[]).filter(a=>a&&a.media_url&&a.is_active!==false&&(a.kind==='campaign'||settings.show_promotions!==false)).map(a=>({...a,kind:a.kind==='campaign'?'campaign':'promotion',media_url:validUrl(a.media_url)})).filter(a=>a.media_url);
  const result=[];let ei=0,pi=0;while(ei<eventSlides.length||pi<promoSlides.length){if(ei<eventSlides.length)result.push(eventSlides[ei++]);if(pi<promoSlides.length)result.push(promoSlides[pi++]);}return result;
 }
 function render(root){
