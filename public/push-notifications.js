@@ -194,5 +194,18 @@ async function send(title, body, audience = "all", options = {}) {
   }
   return pushResult;
 }
-window.kcPush = { enable, send, syncExistingPermission };
+async function schedule(title, body, audience = "all", options = {}) {
+  return invoke("schedule", {
+    title, body, audience,
+    imageUrl: String(options?.imageUrl || ""),
+    scheduledAt: String(options?.scheduledAt || "")
+  });
+}
+async function listScheduled() {
+  return invoke("list_scheduled");
+}
+async function cancelScheduled(sourceId) {
+  return invoke("cancel_scheduled", { sourceId: String(sourceId || "") });
+}
+window.kcPush = { enable, send, schedule, listScheduled, cancelScheduled, syncExistingPermission };
 window.dispatchEvent(new Event('kc:push-ready'));
