@@ -1985,7 +1985,6 @@ function showAttendanceSuccess(memberName,eventTitle,eventDate,message){
 }
 function showOtp(code,expires,title){$('#modalRoot').innerHTML='<div class="modalback" id="otpBackdrop"><div class="modal" role="dialog" aria-modal="true"><button class="iconbutton modalclose" id="closeOtp">×</button><div class="modalemblem">◎</div><div class="eyebrow" style="justify-content:center">ATTENDANCE PASS / '+esc(title)+'</div><h2>Your code is ready.</h2><p>Show this six-digit code to an authorized crew admin.</p><div class="code">'+code.split('').map(d=>'<span>'+d+'</span>').join('')+'</div><div class="modalhint">◷ Expires '+esc(new Date(expires).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}))+'</div><p>✦ Single-use · Keep your code private</p><button class="primary full" id="doneOtp">Got it ✓</button></div></div>';$('#closeOtp').onclick=()=>$('#modalRoot').innerHTML='';$('#doneOtp').onclick=()=>$('#modalRoot').innerHTML='';$('#otpBackdrop').onclick=e=>{if(e.target.id==='otpBackdrop')$('#modalRoot').innerHTML='';};}
 
-let kcProfileLastTap=0,kcProfileLastTapCard=null,kcLastTouchFlipAt=0;
 function kcMarkProfileFlipHintSeen(card){
  const hint=card?.parentElement?.querySelector('[data-profile-flip-hint]');
  if(hint){hint.classList.add('is-dismissed');setTimeout(()=>hint.remove(),260);}
@@ -1998,18 +1997,16 @@ function kcFlipProfileCard(card){
  card.setAttribute('aria-pressed',card.classList.contains('is-flipped')?'true':'false');
  kcMarkProfileFlipHintSeen(card);
 }
+/* Single tap flips the card on touch and desktop; interactive controls are excluded. */
 document.addEventListener('pointerup',event=>{
- if(event.pointerType!=='touch')return;
  const card=event.target.closest('[data-profile-flip]');
- if(!card||event.target.closest('button,a,input,textarea,summary,[contenteditable="true"]')){kcProfileLastTap=0;kcProfileLastTapCard=null;return;}
- const now=performance.now();
- if(kcProfileLastTapCard===card&&now-kcProfileLastTap>=90&&now-kcProfileLastTap<=650){
-  kcFlipProfileCard(card);kcLastTouchFlipAt=now;kcProfileLastTap=0;kcProfileLastTapCard=null;
- }else{kcProfileLastTap=now;kcProfileLastTapCard=card;}
+ if(!card||event.target.closest('button,a,input,textarea,summary,[contenteditable="true"]'))return;
+ if(event.pointerType==='mouse'&&event.button!==0)return;
+ kcFlipProfileCard(card);
 },{passive:true});
-document.addEventListener('dblclick',event=>{
- if(performance.now()-kcLastTouchFlipAt<850)return;
- const card=event.target.closest('[data-profile-flip]');
+document.addEventListener('keydown',event=>{
+ if(event.key!=='Enter'&&event.key!==' ')return;
+ const card=event.target.closest?.('[data-profile-flip]');
  if(!card||event.target.closest('button,a,input,textarea,summary,[contenteditable="true"]'))return;
  event.preventDefault();kcFlipProfileCard(card);
 });
