@@ -36,3 +36,11 @@
   color:#b8bbc0!important;
   font-size:12px!important;
 }
+
+/* KC Memories card preview: consistent image stage and graceful legacy-memory fallback. */
+.kc-memory-card .feature-media-link{margin:14px 0!important}
+.kc-memory-card .feature-media-preview{width:100%!important;max-height:460px!important;min-height:190px!important;object-fit:contain!important}
+.kc-memory-card .kc-memory-no-media{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:150px;margin:14px 0;padding:22px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:radial-gradient(ellipse at 50% 0%,rgba(226,126,113,.18),transparent 65%),linear-gradient(135deg,rgba(118,78,143,.13),rgba(35,105,111,.12));text-align:center;color:rgba(255,255,255,.8)}
+.kc-memory-card .kc-memory-no-media>span{font-size:28px;color:#ff9a78}
+.kc-memory-card .kc-memory-no-media>b{font-size:10px;letter-spacing:.2em}
+.kc-memory-card .kc-memory-no-media>small{font-size:11px;color:rgba(255,255,255,.52)}
