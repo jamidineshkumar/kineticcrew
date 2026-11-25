@@ -44,3 +44,24 @@
 .kc-memory-card .kc-memory-no-media>span{font-size:28px;color:#ff9a78}
 .kc-memory-card .kc-memory-no-media>b{font-size:10px;letter-spacing:.2em}
 .kc-memory-card .kc-memory-no-media>small{font-size:11px;color:rgba(255,255,255,.52)}
+
+/* Memories social controls and native full-screen image viewer. */
+.kc-memory-card .kc-memory-social{display:grid!important;gap:10px!important;margin:12px 0 2px!important;padding-top:11px!important;border-top:1px solid rgba(255,255,255,.09)!important}
+.kc-memory-card .kc-memory-like{display:inline-flex!important;align-items:center!important;justify-self:start!important;gap:7px!important;min-height:36px!important;padding:0 12px!important;border:1px solid rgba(255,255,255,.13)!important;border-radius:99px!important;background:rgba(255,255,255,.045)!important;color:rgba(255,255,255,.8)!important;font-size:12px!important}
+.kc-memory-card .kc-memory-like>span{font-size:16px!important;color:#a9adb5!important}
+.kc-memory-card .kc-memory-like.is-liked{border-color:rgba(255,91,137,.38)!important;background:rgba(255,91,137,.12)!important;color:#ffd7e1!important}
+.kc-memory-card .kc-memory-like.is-liked>span{color:#ff648c!important}
+.kc-memory-card .kc-memory-like small{font-size:11px!important;color:inherit!important}
+.kc-memory-card .kc-memory-comments{display:grid!important;gap:6px!important}
+.kc-memory-card .kc-memory-comments p{margin:0!important;padding:8px 10px!important;border-radius:12px!important;background:rgba(255,255,255,.045)!important;color:rgba(255,255,255,.8)!important;font-size:11px!important;line-height:1.4!important}
+.kc-memory-card .kc-memory-comments p b{color:#f2b5a4!important;margin-right:4px!important}
+.kc-memory-card .kc-memory-comment-form{display:flex!important;gap:8px!important;min-width:0!important}
+.kc-memory-card .kc-memory-comment-form input{flex:1 1 auto!important;min-width:0!important;min-height:40px!important;padding:0 12px!important;border:1px solid rgba(255,255,255,.13)!important;border-radius:13px!important;background:rgba(255,255,255,.05)!important;color:#fff!important;font-size:12px!important}
+.kc-memory-card .kc-memory-comment-form button{flex:0 0 auto!important;min-width:54px!important;padding:0 12px!important;border:1px solid rgba(255,255,255,.18)!important;border-radius:13px!important;background:linear-gradient(120deg,#d85cae,#6d79dc)!important;color:#fff!important;font-size:11px!important;font-weight:800!important}
+.kc-memory-card .kc-memory-zoom-trigger{display:block!important;width:100%!important;padding:0!important;border:0!important;cursor:zoom-in!important;text-align:inherit!important}
+.kc-memory-card .kc-memory-zoom-trigger>span{display:flex!important;justify-content:center!important}
+.kc-memory-viewer{position:fixed!important;z-index:10050!important;inset:0!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:12px!important;padding:calc(18px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom))!important;box-sizing:border-box!important;background:rgba(4,6,11,.97)!important;backdrop-filter:blur(18px)!important;color:#fff!important}
+.kc-memory-viewer-close{position:absolute!important;z-index:5!important;top:max(14px,env(safe-area-inset-top))!important;right:16px!important;width:44px!important;height:44px!important;border:1px solid rgba(255,255,255,.24)!important;border-radius:50%!important;background:rgba(255,255,255,.1)!important;color:#fff!important;font-size:28px!important;line-height:1!important}
+.kc-memory-viewer-stage{display:grid!important;place-items:center!important;width:100%!important;height:calc(100% - 48px)!important;overflow:hidden!important;touch-action:none!important}
+.kc-memory-viewer-stage img{display:block!important;max-width:100%!important;max-height:100%!important;width:auto!important;height:auto!important;object-fit:contain!important;transform-origin:center center!important;will-change:transform!important;user-select:none!important;-webkit-user-drag:none!important}
+.kc-memory-viewer>small{color:rgba(255,255,255,.62)!important;font-size:10px!important;letter-spacing:.04em!important}
