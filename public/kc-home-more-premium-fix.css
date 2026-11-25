@@ -541,3 +541,7 @@ body.kc-home-screen #app .kc-home-slide-cta i{font-style:normal!important;color:
 }
 .kc-countdown-setting{display:flex;flex-direction:column;align-items:flex-start!important;gap:6px}
 .kc-countdown-setting>small{padding-left:28px;color:var(--muted,#aaa2b4);font-size:10px;line-height:1.45}
+
+/* Always suppress the timer node when an event's saved preference is OFF. */
+body.kc-home-screen #app .kc-home-feature-slide.kc-slide-no-countdown [data-event-countdown]{display:none!important;visibility:hidden!important}
+body.kc-home-screen #app .kc-home-feature-slide.kc-slide-no-countdown .kc-event-countdown-content{justify-content:center!important}
