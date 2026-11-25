@@ -1,0 +1,42 @@
+/* More menu banner recovery: enforce visible fallback and stable carousel geometry. */
+.kc-more-reference .kc-more-event-ads-host,
+.kc-more-logo-wrap.kc-more-intro.kc-more-event-ads-host{
+ display:block!important;position:relative!important;width:100%!important;height:auto!important;
+ min-height:0!important;max-height:none!important;overflow:visible!important;margin:10px 0 26px!important;
+ padding:0!important;background:transparent!important;
+}
+.kc-more-event-ads-host .kc-more-ads-banner{
+ display:block!important;position:relative!important;width:100%!important;height:clamp(190px,42vw,230px)!important;
+ min-height:190px!important;max-height:230px!important;overflow:hidden!important;box-sizing:border-box!important;
+ border-radius:24px!important;background:#171923!important;
+}
+.kc-more-event-ads-host .kc-more-ads-track{position:absolute!important;inset:0!important;display:block!important;overflow:hidden!important}
+.kc-more-event-ads-host .kc-more-ads-slide{position:absolute!important;inset:0!important;display:block!important;
+ width:100%!important;height:100%!important;min-height:0!important;margin:0!important;padding:0!important;
+ opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+.kc-more-event-ads-host .kc-more-ads-slide.is-active{opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+.kc-more-event-ads-host .kc-more-brand-slide{
+ background:radial-gradient(ellipse at 15% 88%,rgba(36,201,210,.23),transparent 48%),
+ radial-gradient(ellipse at 86% 12%,rgba(236,73,151,.24),transparent 46%),
+ linear-gradient(135deg,#1b202b,#24202d 55%,#111820)!important;
+}
+.kc-more-event-ads-host .kc-more-brand-slide .kc-more-empty-text{
+ position:absolute!important;inset:0!important;display:flex!important;align-items:center!important;justify-content:center!important;
+ width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;
+ margin:0!important;padding:12px!important;box-sizing:border-box!important;border:0!important;border-radius:inherit!important;
+ background:transparent!important;color:transparent!important;font-size:clamp(24px,6.8vw,40px)!important;
+}
+.kc-more-event-ads-host .kc-more-brand-slide .kc-more-empty-text:before{
+ content:"KINETIC CREW"!important;position:absolute!important;inset:0!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ white-space:nowrap!important;font-size:inherit!important;font-weight:1000!important;letter-spacing:-.06em!important;
+ background:linear-gradient(100deg,#ff765f,#ff55a4,#a96bff,#4cc9ff,#7cf0ce,#ff9877)!important;
+ background-size:260% 100%!important;background-clip:text!important;-webkit-background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;animation:kcMoreEmptyTextGradient 5s ease-in-out infinite!important;
+}
+.kc-more-event-ads-host .kc-more-brand-slide .kc-more-brand-overline{
+ position:absolute!important;left:0!important;right:0!important;bottom:25px!important;text-align:center!important;
+ color:rgba(255,255,255,.68)!important;font-size:8px!important;font-weight:850!important;letter-spacing:.25em!important;
+}
+.kc-more-event-ads-host .kc-more-ads-progress{position:absolute!important;z-index:8!important;left:0!important;right:0!important;bottom:0!important;height:3px!important}
+@media(prefers-reduced-motion:reduce){.kc-more-event-ads-host .kc-more-brand-slide .kc-more-empty-text:before{animation:none!important}}
