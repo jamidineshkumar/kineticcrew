@@ -104,3 +104,74 @@
 @keyframes kcTicketRevealUpright{from{opacity:.2;transform:perspective(900px) rotateY(-12deg) translateX(12px) scale(.985)}to{opacity:1;transform:none}}
 @keyframes kcProfileFaceReturn{from{opacity:.55;transform:translateX(-8px) scale(.99)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){#app .kc-reference-profile .kc-profile-flip-shell.is-flipped .kc-profile-card-back,#app .kc-reference-profile .kc-profile-flip-shell:not(.is-flipped) .kc-liquid-profile-card{animation:none!important}}
+
+
+/* Final mobile profile-card balance + reliable animated face swap. */
+#app .kc-reference-profile .kc-profile-flip-shell{
+ width:100%!important;max-width:620px!important;overflow:visible!important;
+ direction:ltr!important;writing-mode:horizontal-tb!important;
+}
+#app .kc-reference-profile .kc-profile-flip-inner{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ position:relative!important;isolation:isolate!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{
+ grid-column:1!important;grid-row:1!important;align-self:stretch!important;justify-self:stretch!important;
+ min-height:450px!important;height:auto!important;max-height:none!important;
+ transition:opacity .34s ease,transform .46s cubic-bezier(.2,.75,.2,1),visibility 0s linear .34s!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card{
+ display:flex!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+ transform:perspective(900px) rotateY(0deg) translateX(0) scale(1)!important;
+ padding:22px 20px 28px!important;justify-content:flex-start!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-photo{
+ display:block!important;flex:none!important;
+ width:clamp(176px,52vw,210px)!important;height:clamp(176px,52vw,210px)!important;
+ max-width:210px!important;aspect-ratio:1/1!important;
+ margin:30px auto 20px!important;border-radius:28px!important;overflow:hidden!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-photo img{
+ display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-copy h1{
+ margin:8px 0 5px!important;font-size:clamp(22px,5.8vw,30px)!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-copy>p{margin:4px 0!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{
+ display:flex!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+ transform:perspective(900px) rotateY(8deg) translateX(12px) scale(.985)!important;
+ transition:opacity .34s ease,transform .46s cubic-bezier(.2,.75,.2,1),visibility 0s linear .34s!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell.is-flipped .kc-liquid-profile-card{
+ display:flex!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+ transform:perspective(900px) rotateY(-8deg) translateX(-12px) scale(.985)!important;
+ transition:opacity .28s ease,transform .46s cubic-bezier(.2,.75,.2,1),visibility 0s linear .34s!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell.is-flipped .kc-profile-card-back{
+ display:flex!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+ transform:perspective(900px) rotateY(0deg) translateX(0) scale(1)!important;
+ transition:opacity .34s ease,transform .46s cubic-bezier(.2,.75,.2,1),visibility 0s!important;
+ animation:none!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{
+ direction:ltr!important;writing-mode:horizontal-tb!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-heading,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-stub,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-details,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-footer{
+ direction:ltr!important;writing-mode:horizontal-tb!important;transform:none!important;
+}
+@media(max-width:420px){
+ #app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card{min-height:430px!important;padding:18px 15px 24px!important}
+ #app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-photo{
+  width:clamp(170px,51vw,194px)!important;height:clamp(170px,51vw,194px)!important;margin:25px auto 17px!important
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card,
+ #app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{transition:none!important}
+}
