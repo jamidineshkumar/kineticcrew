@@ -94,3 +94,14 @@
 #app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-detail{min-width:0!important;text-align:left!important}
 #app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-detail strong{display:block!important;overflow-wrap:anywhere!important;line-height:1.3!important}
 @keyframes kcPassReveal{from{opacity:.35;transform:translateY(7px) scale(.985)}to{opacity:1;transform:none}}
+
+
+/* Counteract the legacy rotateY back-face transform still reaching the ticket
+   in Android WebView. Unmirror each first-level content block so its text,
+   link and QR remain readable while the card surface stays in place. */
+#app .kc-reference-profile .kc-profile-flip-shell.is-flipped .kc-profile-card-back > *{
+ direction:ltr!important;
+ writing-mode:horizontal-tb!important;
+ transform:scaleX(-1)!important;
+ -webkit-transform:scaleX(-1)!important;
+}
