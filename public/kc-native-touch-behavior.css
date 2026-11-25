@@ -1,0 +1,20 @@
+/* Native mobile-app interaction: suppress browser text selection outside editable controls. */
+#app, #app *{
+ -webkit-user-select:none!important;
+ user-select:none!important;
+ -webkit-touch-callout:none!important;
+ -webkit-tap-highlight-color:transparent!important;
+}
+#app input,#app textarea,#app select,
+#app [contenteditable="true"],#app [contenteditable=""],
+#app .ProseMirror,#app .ql-editor,
+#app input *,#app textarea *{
+ -webkit-user-select:text!important;
+ user-select:text!important;
+ -webkit-touch-callout:default!important;
+}
+#app button,#app a,#app [role="button"],#app [role="tab"],
+#app .kc-card,#app article,#app .kc-memory-card{
+ -webkit-user-select:none!important;user-select:none!important;
+ -webkit-touch-callout:none!important;
+}
