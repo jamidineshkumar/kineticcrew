@@ -1,0 +1,170 @@
+/* Kinetic Crew — premium, restrained carousel and compact More advertising strip. */
+
+/* Home: keep the event artwork and information clear; never use oversized decorative word art. */
+body.kc-home-screen #app .kc-home-featured{
+  height:268px!important;min-height:268px!important;max-height:268px!important;
+  margin:12px 0 22px!important;border-radius:22px!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+  background:#141820!important;box-shadow:0 12px 30px rgba(0,0,0,.24)!important;
+}
+body.kc-home-screen #app .kc-home-featured-track{height:100%!important;min-height:0!important}
+body.kc-home-screen #app .kc-home-feature-slide,
+body.kc-home-screen #app .kc-home-feature-slide.is-active{
+  height:100%!important;min-height:0!important;max-height:none!important;
+  border-radius:inherit!important;overflow:hidden!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide.has-image .kc-home-feature-image{
+  object-fit:cover!important;object-position:center!important;opacity:1!important;
+  filter:saturate(.92) contrast(1.02)!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide.no-image{
+  background:radial-gradient(ellipse at 88% 12%,rgba(193,91,157,.16),transparent 45%),
+    radial-gradient(ellipse at 8% 92%,rgba(62,174,183,.14),transparent 48%),
+    linear-gradient(135deg,#20232d 0%,#171a22 58%,#111820 100%)!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide.no-image:before,
+body.kc-home-screen #app .kc-home-feature-slide.no-image:after{content:none!important;display:none!important}
+body.kc-home-screen #app .kc-home-feature-slide.no-image .kc-home-featured-fallback-art{display:none!important}
+body.kc-home-screen #app .kc-home-feature-slide:after{
+  background:linear-gradient(180deg,rgba(5,8,14,.02) 15%,rgba(5,8,14,.12) 44%,rgba(5,8,14,.78) 100%)!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide .kc-home-featured-art{
+  top:12px!important;right:13px!important;left:auto!important;min-height:0!important;padding:0!important;
+}
+body.kc-home-screen #app .kc-home-featured-count{
+  padding:6px 9px!important;font-size:9px!important;
+  border:1px solid rgba(255,255,255,.18)!important;background:rgba(8,12,18,.38)!important;
+}
+body.kc-home-screen #app .kc-home-feature-slide .kc-home-featured-glass{
+  left:12px!important;right:12px!important;bottom:12px!important;top:auto!important;
+  display:grid!important;gap:5px!important;margin:0!important;padding:13px 14px!important;
+  border:1px solid rgba(255,255,255,.16)!important;border-radius:17px!important;
+  background:linear-gradient(145deg,rgba(18,22,31,.78),rgba(13,17,25,.88))!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.08)!important;
+  -webkit-backdrop-filter:blur(15px) saturate(1.08)!important;backdrop-filter:blur(15px) saturate(1.08)!important;
+}
+body.kc-home-screen #app .kc-home-featured-label{
+  display:block!important;width:auto!important;padding:0!important;border:0!important;
+  background:none!important;box-shadow:none!important;color:#b8d9db!important;
+  font-size:8px!important;letter-spacing:.15em!important;font-weight:800!important;
+}
+body.kc-home-screen #app .kc-home-featured-glass>b{
+  font-size:clamp(20px,5.2vw,25px)!important;line-height:1.08!important;
+  letter-spacing:-.035em!important;font-weight:780!important;
+}
+body.kc-home-screen #app .kc-home-featured-glass>small{
+  font-size:10px!important;line-height:1.35!important;color:rgba(245,247,250,.82)!important;
+}
+body.kc-home-screen #app .kc-home-featured-glass>button{
+  justify-self:start!important;min-height:34px!important;margin-top:2px!important;padding:0 12px!important;
+  border:1px solid rgba(255,255,255,.18)!important;border-radius:99px!important;
+  background:rgba(255,255,255,.10)!important;box-shadow:none!important;
+  font-size:10px!important;font-weight:700!important;
+}
+body.kc-home-screen #app .kc-home-featured-glass>button i{font-style:normal!important;color:#f2a6c7!important}
+body.kc-home-screen #app .kc-home-featured-dots{top:14px!important;right:14px!important;bottom:auto!important;z-index:9!important}
+body.kc-home-screen #app .kc-home-featured-dots button{width:6px!important;height:6px!important;min-width:6px!important;min-height:6px!important}
+body.kc-home-screen #app .kc-home-featured-dots button.active{width:18px!important}
+@media(max-width:600px){
+ body.kc-home-screen #app .kc-home-featured{height:260px!important;min-height:260px!important;max-height:260px!important;margin:10px 0 20px!important;border-radius:21px!important}
+ body.kc-home-screen #app .kc-home-feature-slide .kc-home-featured-glass{left:10px!important;right:10px!important;bottom:10px!important;padding:11px 12px!important}
+ body.kc-home-screen #app .kc-home-featured-glass>b{font-size:21px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body.kc-home-screen #app .kc-home-feature-slide{transition:none!important}
+}
+
+/* More: this is an ad slot, not a hero banner. */
+.kc-more-reference .kc-more-logo-wrap.kc-more-intro.kc-more-event-ads-host{
+ height:118px!important;min-height:118px!important;max-height:118px!important;
+ margin:8px 0 19px!important;padding:0!important;overflow:hidden!important;
+ display:block!important;border:0!important;border-radius:0!important;background:none!important;
+}
+.kc-more-reference .kc-more-ads-banner{
+ width:100%!important;height:118px!important;min-height:118px!important;max-height:118px!important;
+ overflow:hidden!important;border:1px solid rgba(255,255,255,.13)!important;border-radius:17px!important;
+ box-shadow:0 8px 22px rgba(0,0,0,.20)!important;
+}
+.kc-more-reference .kc-more-ads-track{position:absolute!important;inset:0!important}
+.kc-more-reference .kc-more-ads-slide{background:#171a22!important}
+.kc-more-reference .kc-more-ads-media{
+ left:0!important;right:auto!important;top:0!important;bottom:0!important;
+ width:36%!important;max-width:36%!important;height:100%!important;padding:7px!important;
+ box-sizing:border-box!important;object-fit:contain!important;object-position:center!important;
+}
+.kc-more-reference .kc-more-ads-shade{
+ inset:0!important;background:linear-gradient(90deg,rgba(12,15,22,.02) 0%,rgba(16,18,27,.12) 25%,rgba(16,18,27,.94) 39%,rgba(16,18,27,.98) 100%)!important;
+}
+.kc-more-reference .kc-more-ads-copy{
+ left:39%!important;right:12px!important;top:50%!important;bottom:auto!important;
+ transform:translateY(-50%)!important;display:grid!important;gap:4px!important;max-width:none!important;
+}
+.kc-more-reference .kc-more-ads-copy h2{
+ margin:0!important;font-size:clamp(13px,3.6vw,17px)!important;line-height:1.12!important;
+ letter-spacing:-.025em!important;font-weight:780!important;
+}
+.kc-more-reference .kc-more-ads-copy p{
+ margin:0!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;
+ overflow:hidden!important;font-size:9px!important;line-height:1.25!important;color:rgba(255,255,255,.76)!important;
+}
+.kc-more-reference .kc-more-ads-copy a{
+ justify-self:start!important;margin-top:2px!important;font-size:9px!important;font-weight:750!important;
+ color:#f3b3d2!important;text-decoration:none!important;
+}
+.kc-more-reference .kc-more-ads-sponsored{
+ top:8px!important;right:9px!important;left:auto!important;padding:4px 7px!important;
+ font-size:7px!important;letter-spacing:.12em!important;
+}
+.kc-more-reference .kc-more-ads-dots{right:10px!important;bottom:8px!important;gap:5px!important}
+.kc-more-reference .kc-more-ads-dots button{width:5px!important;height:5px!important;min-width:5px!important;min-height:5px!important}
+.kc-more-reference .kc-more-ads-dots button.active{width:14px!important}
+
+/* The Kinetic Crew interstitial occupies the same small ad slot. */
+.kc-more-reference .kc-more-brand-slide{background:linear-gradient(120deg,#171922,#20202c 55%,#141b22)!important}
+.kc-more-brand-interstitial{
+ position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ overflow:hidden;isolation:isolate;gap:7px;
+ background:radial-gradient(ellipse at 14% 100%,rgba(50,205,207,.17),transparent 46%),
+ radial-gradient(ellipse at 88% 0%,rgba(237,77,157,.20),transparent 48%),
+ linear-gradient(115deg,#171922,#22202b 54%,#151a22);
+}
+.kc-more-brand-interstitial:before{
+ content:"";position:absolute;inset:-60%;z-index:-1;
+ background:conic-gradient(from 0deg,transparent 0 30%,rgba(239,83,162,.18) 42%,transparent 55%,rgba(54,207,208,.16) 70%,transparent 84%);
+ animation:kcMoreBrandTurn 13s linear infinite;
+}
+.kc-more-brand-overline{
+ color:rgba(240,231,242,.62);font-size:7px;font-weight:800;letter-spacing:.28em;
+ animation:kcMoreBrandAppear .65s ease both;
+}
+.kc-more-brand-interstitial strong{
+ font-size:clamp(23px,6.2vw,31px);line-height:1;letter-spacing:-.065em;font-weight:950;
+ color:#fff;text-shadow:0 5px 20px rgba(0,0,0,.25);
+ animation:kcMoreBrandAppear .8s cubic-bezier(.2,.8,.2,1) both;
+}
+.kc-more-brand-interstitial strong em{
+ font-style:normal;background:linear-gradient(100deg,#ff659e,#c77cf0 48%,#50d5d0 88%);
+ background-size:220% 100%;background-clip:text;-webkit-background-clip:text;
+ -webkit-text-fill-color:transparent;animation:kcMoreBrandGradient 4s ease-in-out infinite;
+}
+.kc-more-brand-sweep{
+ position:absolute;left:-35%;right:-35%;top:0;height:1px;
+ background:linear-gradient(90deg,transparent,rgba(255,255,255,.48),transparent);
+ filter:drop-shadow(0 0 5px rgba(220,107,212,.55));
+ animation:kcMoreBrandSweep 3.8s ease-in-out infinite;
+}
+@keyframes kcMoreBrandTurn{to{transform:rotate(360deg)}}
+@keyframes kcMoreBrandGradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes kcMoreBrandAppear{from{opacity:0;transform:translateY(8px);filter:blur(3px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
+@keyframes kcMoreBrandSweep{0%{transform:translateY(0);opacity:0}30%{opacity:.8}100%{transform:translateY(118px);opacity:0}}
+@media(max-width:560px){
+ .kc-more-reference .kc-more-logo-wrap.kc-more-intro.kc-more-event-ads-host,
+ .kc-more-reference .kc-more-ads-banner{height:112px!important;min-height:112px!important;max-height:112px!important}
+ .kc-more-reference .kc-more-ads-media{width:34%!important;max-width:34%!important;padding:6px!important}
+ .kc-more-reference .kc-more-ads-copy{left:37%!important;right:10px!important}
+ .kc-more-reference .kc-more-ads-copy h2{font-size:14px!important}
+ .kc-more-brand-interstitial strong{font-size:27px}
+}
+@media(prefers-reduced-motion:reduce){
+ .kc-more-brand-interstitial:before,.kc-more-brand-overline,.kc-more-brand-interstitial strong,.kc-more-brand-interstitial strong em,.kc-more-brand-sweep{animation:none!important}
+}
