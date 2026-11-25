@@ -175,3 +175,69 @@
  #app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card,
  #app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{transition:none!important}
 }
+
+
+/* Restore the native two-face 3D card: parent rotates, reverse face counter-rotates.
+   This is required to keep every character and the QR upright on the ticket side. */
+#app .kc-reference-profile .kc-profile-flip-shell{
+ position:relative!important;display:block!important;width:100%!important;max-width:620px!important;
+ min-height:500px!important;perspective:1400px!important;-webkit-perspective:1400px!important;
+ overflow:visible!important;isolation:isolate!important;touch-action:pan-y!important;
+}
+#app .kc-reference-profile .kc-profile-flip-inner{
+ position:relative!important;display:block!important;width:100%!important;min-height:500px!important;
+ transform-style:preserve-3d!important;-webkit-transform-style:preserve-3d!important;
+ transform:rotateY(0deg)!important;-webkit-transform:rotateY(0deg)!important;
+ transition:transform .78s cubic-bezier(.2,.72,.18,1)!important;
+ will-change:transform!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell.is-flipped .kc-profile-flip-inner{
+ transform:rotateY(180deg)!important;-webkit-transform:rotateY(180deg)!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{
+ position:absolute!important;inset:0!important;grid-column:auto!important;grid-row:auto!important;
+ display:flex!important;flex-direction:column!important;width:100%!important;height:auto!important;
+ min-height:500px!important;margin:0!important;box-sizing:border-box!important;
+ overflow:hidden!important;backface-visibility:hidden!important;-webkit-backface-visibility:hidden!important;
+ transform-style:preserve-3d!important;-webkit-transform-style:preserve-3d!important;
+ visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+ transition:none!important;animation:none!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card{
+ z-index:2!important;transform:rotateY(0deg) translateZ(1px)!important;
+ -webkit-transform:rotateY(0deg) translateZ(1px)!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{
+ z-index:1!important;transform:rotateY(180deg) translateZ(1px)!important;
+ -webkit-transform:rotateY(180deg) translateZ(1px)!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell.is-flipped .kc-liquid-profile-card{pointer-events:none!important}
+#app .kc-reference-profile .kc-profile-flip-shell.is-flipped .kc-profile-card-back{pointer-events:auto!important}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-photo{
+ width:clamp(180px,54vw,220px)!important;height:clamp(180px,54vw,220px)!important;
+ max-width:220px!important;aspect-ratio:1!important;flex:none!important;
+ margin:28px auto 20px!important;overflow:hidden!important;border-radius:28px!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-photo img{
+ width:100%!important;height:100%!important;display:block!important;object-fit:cover!important;object-position:center!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-heading,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-stub,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-details,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-footer{
+ direction:ltr!important;writing-mode:horizontal-tb!important;
+}
+@media(max-width:640px){
+ #app .kc-reference-profile .kc-profile-flip-shell,
+ #app .kc-reference-profile .kc-profile-flip-inner{min-height:470px!important}
+ #app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-card,
+ #app .kc-reference-profile .kc-profile-flip-shell .kc-profile-card-back{min-height:470px!important}
+ #app .kc-reference-profile .kc-profile-flip-shell .kc-liquid-profile-photo{
+  width:clamp(176px,52vw,205px)!important;height:clamp(176px,52vw,205px)!important;
+  margin:25px auto 17px!important
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #app .kc-reference-profile .kc-profile-flip-inner{transition:none!important}
+}
