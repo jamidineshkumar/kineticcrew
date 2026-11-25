@@ -149,12 +149,15 @@ async function loadMemories(){
  if(paths.length){
   const {data:signedRows,error:signedError}=await client.storage.from('crew-memories').createSignedUrls(paths,3600);
   if(signedError)console.warn('KC Memories image signing failed:',signedError);
-  else (signedRows||[]).forEach(item=>{if(item?.path&&item?.signedUrl)signedByPath.set(item.path,item.signedUrl);});
+  else (signedRows||[]).forEach(item=>{const url=item?.signedUrl||item?.signedURL||item?.signed_url;if(item?.path&&url)signedByPath.set(item.path,url);});
+  for(const path of paths){if(signedByPath.has(path))continue;try{const {data:single,error:singleError}=await client.storage.from('crew-memories').createSignedUrl(path,3600);if(!singleError&&single?.signedUrl)signedByPath.set(path,single.signedUrl);}catch(signError){console.warn('KC Memories fallback signing failed:',signError);}}
  }
  S.featureItems.memories=rows.map(item=>{
   const itemData=item?.data&&typeof item.data==='object'?item.data:{};
-  const signedUrl=itemData.storage_path?signedByPath.get(itemData.storage_path)||'':'';
-  return {...item,data:{...itemData,signed_media_url:signedUrl||itemData.media_url||''}};
+  const storagePath=itemData.storage_path||itemData.storagePath||itemData.file_path||'';
+  const signedUrl=storagePath?signedByPath.get(storagePath)||'':'';
+  const mediaUrl=signedUrl||itemData.signed_media_url||itemData.media_url||itemData.image_url||itemData.photo_url||itemData.image||itemData.photo||'';
+  return {...item,data:{...itemData,storage_path:storagePath,signed_media_url:mediaUrl}};
  });
  return S.featureItems.memories;
 }
@@ -1062,7 +1065,8 @@ async function loadSocialFeed(){
  if(mediaPaths.length){
   const {data:signedRows,error:signedError}=await client.storage.from('crew-gram-media').createSignedUrls(mediaPaths,3600);
   if(signedError)console.warn('Kinetic Gram media signing was deferred:',signedError);
-  else (signedRows||[]).forEach(item=>{if(item?.path&&item?.signedUrl)signedByPath.set(item.path,item.signedUrl);});
+  else (signedRows||[]).forEach(item=>{const url=item?.signedUrl||item?.signedURL||item?.signed_url;if(item?.path&&url)signedByPath.set(item.path,url);});
+  for(const path of paths){if(signedByPath.has(path))continue;try{const {data:single,error:singleError}=await client.storage.from('crew-memories').createSignedUrl(path,3600);if(!singleError&&single?.signedUrl)signedByPath.set(path,single.signedUrl);}catch(signError){console.warn('KC Memories fallback signing failed:',signError);}}
  }
  S.socialPosts=rows.map(post=>({...post,signed_media_url:signedByPath.get(post.storage_path)||''}));
  S.socialLikes=likes.data||[];S.socialComments=comments.data||[];
@@ -1119,7 +1123,7 @@ function featureCard(key,item){
    if(admin()&&key==='auditions'&&status==='open')extra+='<div class="feature-actions"><button class="outline" data-moderate="'+esc(item.id)+'" data-status="selected" data-feature="'+key+'">Select</button><button class="outline" data-moderate="'+esc(item.id)+'" data-status="rejected" data-feature="'+key+'">Not selected</button></div>';
  }
  
- const mediaValue=data.signed_media_url||data.media_url;
+ const mediaValue=data.signed_media_url||data.media_url||data.image_url||data.photo_url||data.image||data.photo;
  if(mediaValue){const media=String(mediaValue),safe=esc(media),isImage=String(data.media_type||'').startsWith('image/')||/\.(jpe?g|png|gif|webp|avif)(\?.*)?($|#)/i.test(media);if(isImage)extra+='<a class="feature-media-link" href="'+safe+'" target="_blank" rel="noopener"><img class="feature-media-preview" src="'+safe+'" alt="'+esc(item.title)+'" loading="lazy" decoding="async" onerror="this.closest(\'a\').classList.add(\'media-unavailable\');this.remove();"><span>Open photo ↗</span></a>';else if(/\.(mp4|webm|ogg)(\?.*)?$/i.test(media))extra+='<video class="feature-video-preview" src="'+safe+'" controls preload="metadata" playsinline></video>';else extra+='<p><a class="feature-link" href="'+safe+'" target="_blank" rel="noopener">Open shared media ↗</a></p>';}
  if(data.from_date)extra+='<p class="feature-meta">'+esc(data.from_date)+' → '+esc(data.to_date||data.from_date)+'</p>';
  if(key==='rehearsals'){if(data.session_at)extra+='<p class="feature-meta">◷ '+esc(dt(data.session_at))+' · '+esc(data.location||'Location TBA')+'</p>';if(status==='postponed')extra+='<div class="feature-status">This rehearsal has been postponed.</div>';if(status==='cancelled')extra+='<div class="feature-status">This rehearsal has been cancelled.</div>';if(admin())extra+='<div class="feature-actions"><button type="button" class="outline" data-rehearsal-status="'+esc(item.id)+'" data-status="open">Scheduled</button><button type="button" class="outline" data-rehearsal-status="'+esc(item.id)+'" data-status="postponed">Postpone</button><button type="button" class="outline danger-link" data-rehearsal-status="'+esc(item.id)+'" data-status="cancelled">Cancel</button></div>';}
@@ -1127,7 +1131,8 @@ function featureCard(key,item){
   extra+='<div class="feature-actions"><span class="feature-meta">'+Number(item.registration_count||0)+' registered</span><button type="button" class="outline" data-rehearsal-register="'+esc(item.id)+'" data-registered="'+(item.registered?'true':'false')+'">'+(item.registered?'Cancel registration':'Register for rehearsal')+'</button></div>';
  }
  
- return '<article class="surface feature-card"><div class="feature-card-top"><span class="pill">'+esc(status)+'</span><small>'+esc(dt(item.created_at))+'</small></div><h3>'+esc(item.title)+'</h3><p>'+esc(item.body||'')+'</p>'+extra+'<div class="feature-card-foot"><span>By '+esc(item.author_name||'Crew member')+'</span>'+(admin()||item.author_id===S.user.auth_id?'<button class="textlink" data-feature-delete="'+esc(item.id)+'" data-feature="'+key+'">Delete</button>':'')+'</div></article>';
+ if(key==='memories'&&!mediaValue)extra+='<div class="kc-memory-no-media"><span>✦</span><b>CREW MEMORY</b><small>A moment worth remembering</small></div>';
+ return '<article class="surface feature-card '+(key==='memories'?'kc-memory-card':'')+'"><div class="feature-card-top"><span class="pill">'+esc(status)+'</span><small>'+esc(dt(item.created_at))+'</small></div><h3>'+esc(item.title)+'</h3>'+(item.body?'<p>'+esc(item.body)+'</p>':'')+extra+'<div class="feature-card-foot"><span>By '+esc(item.author_name||'Crew member')+'</span>'+(admin()||item.author_id===S.user.auth_id?'<button class="textlink" data-feature-delete="'+esc(item.id)+'" data-feature="'+key+'">Delete</button>':'')+'</div></article>';
 }
 
 function pollsPage(){
