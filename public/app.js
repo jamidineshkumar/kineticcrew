@@ -1207,15 +1207,11 @@ function home(){
   if(/workshop|class|training|masterclass/.test(words))return 'WORKSHOP';
   return raw?raw.toUpperCase():'CREW EVENT';
  };
- const slides=[
-  ...homeEvents.map(e=>({kind:'event',view:'events',id:e.id,updated:!!(e.created_at&&e.updated_at&&new Date(e.updated_at).getTime()-new Date(e.created_at).getTime()>5000),kicker:'KINETIC CREW · '+category(e),label:new Date(e.starts_at).getTime()>=now?(e.featured?'FEATURED EVENT':'UPCOMING EVENT'):'RECENT CREW EVENT',title:e.title||'Upcoming crew event',subtitle:[ds(e.starts_at),e.location||'Venue to be announced'].filter(Boolean).join(' · '),cta:e.registered?'View your ticket':'Explore event',image:photo(e)})),
-  ...rehearsals.slice(0,3).map(item=>({kind:'rehearsal',view:'rehearsals',id:item.id,kicker:'KINETIC CREW · REHEARSAL',label:'UPCOMING REHEARSAL',title:item.title||'Crew rehearsal',subtitle:[dt(item.data.session_at),item.data.location||'Practice location TBA'].filter(Boolean).join(' · '),cta:'View rehearsal',image:safeSocialUrl(item.data.cover_url||item.data.image_url||'')})),
-  ...announcements.slice(0,3).map(a=>({kind:'update',view:'notifications',id:a.id,kicker:'KINETIC CREW · IMPORTANT UPDATE',label:'CREW ANNOUNCEMENT',title:a.title||'A note from your crew',subtitle:a.body||a.message||'An important update from Kinetic Crew',cta:'Read update',image:safeSocialUrl(a.image_url||a.cover_url||a.banner_url||'')}))
- ];
- if(!slides.length)slides.push({kind:'empty',view:'events',kicker:'KINETIC CREW · ONE CREW, ONE RHYTHM',label:'YOUR NEXT CREW MOMENT',title:'No upcoming events',subtitle:'New events and crew moments will appear here.',cta:'Explore events',image:''});
- const contentSlides=slides.splice(0);
- // Keep this carousel focused on real crew events and updates. Do not inject a large brand-only slide.
- if(contentSlides.length)slides.push(...contentSlides);
+ const slides=homeEvents.map(e=>({
+  kind:'event',view:'events',id:e.id,startsAt:e.starts_at,
+  title:e.title||'Crew event',image:photo(e)
+ }));
+ if(!slides.length)slides.push({kind:'empty',view:'events',id:'no-upcoming-events',startsAt:null,title:'NO UPCOMING EVENTS',image:''});
  const pollItems=[...(S.featureItems?.polls||[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
  const updateItems=[...announcements.slice(0,2).map(a=>({kind:'announcement',created_at:a.created_at,item:a})),...(pollItems.length?[{kind:'poll',created_at:pollItems[0].created_at,item:pollItems[0]}]:[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
  const updates=updateItems.map((entry,i)=>{
@@ -1226,7 +1222,16 @@ function home(){
   }
   return '<button class="kc-exact-update" data-view="notifications"><span class="kc-exact-update-icon">'+(['•','↗','▧'][i%3])+'</span><span><b>'+esc(item.title||'Crew update')+'</b><small>'+esc(item.body||item.message||'A new update from your crew')+'</small></span></button>';
  }).join('')||'<div class="kc-exact-update kc-exact-empty">Crew announcements, polls and rehearsal updates will appear here.</div>';
- const slideMarkup=slides.map((slide,i)=>{const image=safeSocialUrl(slide.image||'');const hasImage=!!image;return '<article class="kc-home-feature-slide '+(i===0?'is-active ':'')+(hasImage?'has-image ':'no-image ')+(slide.kind==='brand'?'kc-slide-brand':slide.kind==='event'?'kc-slide-event':'kc-slide-promo')+'" data-home-slide="'+i+'" aria-hidden="'+(i===0?'false':'true')+'">'+(hasImage?'<img class="kc-home-feature-image" src="'+esc(image)+'" alt="'+esc(slide.title||'Event cover')+'" loading="lazy" decoding="async">':'<div class="kc-home-featured-fallback-art '+(slide.kind==='brand'||slide.kind==='promo'?'kc-brand-slide':'kc-event-slide')+'" aria-hidden="true"><span class="kc-fallback-eyebrow">KINETIC CREW</span><b class="kc-fallback-title">'+esc(slide.title||'KINETIC CREW')+'</b><i class="kc-fallback-orbit"></i><small>'+esc(slide.subtitle||'ONE CREW · ONE RHYTHM')+'</small><em>KC</em></div>')+'<div class="kc-home-featured-art" aria-hidden="true"><span class="kc-home-featured-count">'+String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0')+'</span></div><div class="kc-home-featured-glass"><span class="kc-home-featured-label">'+esc(slide.label)+'</span><b>'+esc(slide.title)+'</b><small>'+esc(slide.subtitle)+'</small><button type="button" '+(slide.kind==='event'?'data-open-event="'+esc(slide.id)+'"':'data-view="'+esc(slide.view||'events')+'"')+'>'+esc(slide.cta)+' <i>→</i></button></div></article>';}).join('');
+ const slideMarkup=slides.map((slide,i)=>{
+  const image=safeSocialUrl(slide.image||''),hasImage=!!image;
+  return '<article class="kc-home-feature-slide '+(i===0?'is-active ':'')+(hasImage?'has-image ':'no-image ')+(slide.kind==='event'?'kc-slide-event':'kc-slide-empty')+'" data-home-slide="'+i+'" data-event-id="'+esc(slide.id||'')+'" data-starts-at="'+esc(slide.startsAt||'')+'" aria-hidden="'+(i===0?'false':'true')+'">'+
+   (hasImage?'<img class="kc-home-feature-image" src="'+esc(image)+'" alt="" aria-hidden="true" loading="eager" decoding="async">':'')+
+   '<div class="kc-event-countdown-stage">'+
+    '<div class="kc-countdown-watermark" aria-hidden="true">KC</div>'+
+    (slide.startsAt?'<div class="kc-event-countdown" data-event-countdown><div class="kc-countdown-units"><span><b data-countdown-days>00</b><small>DAYS</small></span><i>:</i><span><b data-countdown-hours>00</b><small>HRS</small></span><i>:</i><span><b data-countdown-minutes>00</b><small>MIN</small></span><i>:</i><span><b data-countdown-seconds>00</b><small>SEC</small></span></div></div>':'<div class="kc-event-countdown is-empty"><strong>NO UPCOMING EVENTS</strong></div>')+
+   '</div>'+
+  '</article>';
+ }).join('');
  return '<div class="kc-exact-home kc-home-reference">'+
  '<header class="kc-home-reference-header"><div class="kc-home-user"><span><small>YOUR KINETIC CREW SPACE</small><b>Welcome back, '+esc(name)+'</b></span></div><button type="button" class="kc-home-theme-toggle" data-theme-toggle aria-label="Switch colour theme" title="Switch colour theme"><span aria-hidden="true">'+(document.documentElement.dataset.theme==='dark'?'☀':'☾')+'</span></button></header>'+
  '<section class="kc-home-greeting"><div class="kc-home-greeting-copy"><h1>'+greeting+', <em>'+esc(name)+'.</em></h1><p class="kc-home-greeting-lead">'+esc(homeMood)+'</p><small class="kc-home-greeting-sub">'+esc(homePrompt)+'</small></div><div class="kc-home-greeting-mark" aria-label="Kinetic Crew logo">'+brandMarkMarkup('kc-home-greeting-logo')+'</div></section>'+
@@ -1736,8 +1741,36 @@ if(founderProfileEntry){
  const founderApp=$('#app');founderApp.classList.add('kc-founder-enter');
  setTimeout(()=>founderApp.classList.remove('kc-founder-enter'),1650);
 }
-if(S.homeCarouselTimer){clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=null;}if(S.homeRailTimer){clearInterval(S.homeRailTimer);S.homeRailTimer=null;}
+if(S.homeCarouselTimer){clearInterval(S.homeCarouselTimer);S.homeCarouselTimer=null;}if(S.homeRailTimer){clearInterval(S.homeRailTimer);S.homeRailTimer=null;}if(S.homeCountdownTimer){clearInterval(S.homeCountdownTimer);S.homeCountdownTimer=null;}
 if(S.view==='overview'){
+ const updateEventCountdowns=()=>{
+  document.querySelectorAll('.kc-home-feature-slide[data-starts-at]').forEach(slide=>{
+   const target=new Date(slide.dataset.startsAt).getTime(),remaining=target-Date.now(),box=slide.querySelector('[data-event-countdown]');
+   if(!box||!Number.isFinite(target))return;
+   if(remaining<=0){
+    if(!box.classList.contains('is-started')){
+     box.classList.add('is-started');
+     box.innerHTML='<strong>EVENT STARTED</strong>';
+     const justStarted=remaining>-1800;
+     let alreadyShown=false;
+     try{alreadyShown=localStorage.getItem('kc-event-started-'+slide.dataset.eventId)==='1';}catch{}
+     if(justStarted&&!alreadyShown){
+      try{localStorage.setItem('kc-event-started-'+slide.dataset.eventId,'1');}catch{}
+      const celebration=document.createElement('div');celebration.className='kc-countdown-celebration';celebration.setAttribute('aria-hidden','true');
+      celebration.innerHTML='<strong>EVENT STARTED</strong><div class="kc-countdown-confetti">'+Array.from({length:24},(_,i)=>'<i style="--i:'+i+'"></i>').join('')+'</div>';
+      slide.appendChild(celebration);slide.classList.add('is-celebrating');
+      setTimeout(()=>{slide.classList.remove('is-celebrating');celebration.remove();},3200);
+     }
+    }
+    return;
+   }
+   const total=Math.floor(remaining/1000),days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),minutes=Math.floor(total%3600/60),seconds=total%60;
+   const put=(key,value)=>{const node=box.querySelector('[data-countdown-'+key+']');if(node)node.textContent=String(value).padStart(2,'0');};
+   put('days',days);put('hours',hours);put('minutes',minutes);put('seconds',seconds);
+  });
+ };
+ updateEventCountdowns();
+ S.homeCountdownTimer=setInterval(updateEventCountdowns,1000);
  // Remove the stray legacy placeholder text seen on the home screen.
  const homeRoot=document.getElementById('app');
  if(homeRoot){const cleanStrayText=()=>{const walker=document.createTreeWalker(homeRoot,NodeFilter.SHOW_TEXT);const stray=[];while(walker.nextNode()){const value=(walker.currentNode.nodeValue||'').trim();if(value==='ONaN'||value==='NaN'||value==='0')stray.push(walker.currentNode);}stray.forEach(node=>node.remove());};cleanStrayText();requestAnimationFrame(cleanStrayText);}
