@@ -1209,7 +1209,7 @@ function home(){
  };
  const slides=homeEvents.map(e=>({
   kind:'event',view:'events',id:e.id,startsAt:e.starts_at,
-  title:e.title||'Crew event',image:photo(e)
+  title:e.title||'Crew event',description:e.description||e.details||e.short_description||'',location:e.location||e.venue||e.venue_name||e.address||'',image:photo(e),eventDateLabel:(()=>{const d=new Date(e.starts_at);return Number.isFinite(d.getTime())?new Intl.DateTimeFormat(undefined,{weekday:'short',day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'}).format(d):''})()
  }));
  if(!slides.length)slides.push({kind:'empty',view:'events',id:'no-upcoming-events',startsAt:null,title:'NO UPCOMING EVENTS',image:''});
  const pollItems=[...(S.featureItems?.polls||[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
@@ -1228,7 +1228,10 @@ function home(){
    (hasImage?'<img class="kc-home-feature-image" src="'+esc(image)+'" alt="" aria-hidden="true" loading="eager" decoding="async">':'')+
    '<div class="kc-event-countdown-stage">'+
     '<div class="kc-countdown-watermark" aria-hidden="true">KC</div>'+
-    (slide.startsAt?'<div class="kc-event-countdown" data-event-countdown><div class="kc-countdown-units"><span><b data-countdown-days>00</b><small>DAYS</small></span><i>:</i><span><b data-countdown-hours>00</b><small>HRS</small></span><i>:</i><span><b data-countdown-minutes>00</b><small>MIN</small></span><i>:</i><span><b data-countdown-seconds>00</b><small>SEC</small></span></div></div>':'<div class="kc-event-countdown is-empty"><strong>NO UPCOMING EVENTS</strong></div>')+
+    <div class="kc-event-countdown-content">'+
+     (slide.startsAt?'<div class="kc-event-countdown" data-event-countdown><div class="kc-countdown-units"><span><b data-countdown-days>00</b><small>DAYS</small></span><i>:</i><span><b data-countdown-hours>00</b><small>HRS</small></span><i>:</i><span><b data-countdown-minutes>00</b><small>MIN</small></span><i>:</i><span><b data-countdown-seconds>00</b><small>SEC</small></span></div></div>':'<div class="kc-event-countdown is-empty"><strong>NO UPCOMING EVENTS</strong></div>')+
+     (slide.kind==='event'?'<div class="kc-countdown-event-details"><b>'+esc(slide.title)+'</b>'+(slide.eventDateLabel?'<span>◷ &nbsp;'+esc(slide.eventDateLabel)+'</span>':'')+(slide.location?'<span>⌖ &nbsp;'+esc(slide.location)+'</span>':'')+(slide.description?'<small>'+esc(slide.description)+'</small>':'')+'</div>':'')+
+    '</div>'+
    '</div>'+
   '</article>';
  }).join('');
