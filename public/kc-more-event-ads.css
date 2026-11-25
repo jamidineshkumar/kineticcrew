@@ -401,3 +401,119 @@
 @media(prefers-reduced-motion:reduce){
   .kc-more-empty-text::before{animation:none;background-position:50% 50%}
 }
+
+/* More-page ad carousel: stable full-width stage and animated KC fallback wordmark. */
+.kc-more-event-ads-host{
+ display:block!important;width:100%!important;min-width:0!important;overflow:visible!important;
+}
+.kc-more-event-ads-host .kc-more-ads-banner{
+ position:relative!important;display:block!important;width:100%!important;
+ height:clamp(185px,42vw,225px)!important;min-height:185px!important;max-height:225px!important;
+ margin:0!important;padding:0!important;overflow:hidden!important;isolation:isolate!important;
+ box-sizing:border-box!important;border:1px solid rgba(255,255,255,.15)!important;
+ border-radius:23px!important;background:#171922!important;
+ box-shadow:0 14px 34px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.08)!important;
+}
+.kc-more-event-ads-host .kc-more-ads-glow{
+ position:absolute!important;z-index:0!important;inset:-25%!important;display:block!important;
+ opacity:.9!important;pointer-events:none!important;
+ background:radial-gradient(ellipse at 82% 12%,rgba(236,73,151,.34),transparent 47%),
+ radial-gradient(ellipse at 14% 88%,rgba(36,201,210,.30),transparent 50%),
+ conic-gradient(from 20deg at 50% 50%,transparent 0 28%,rgba(236,73,151,.12) 38%,transparent 52%,rgba(36,201,210,.12) 67%,transparent 82%)!important;
+ filter:blur(24px)!important;animation:kcMoreBannerAmbient 9s ease-in-out infinite alternate!important;
+}
+.kc-more-event-ads-host .kc-more-ads-track{
+ position:absolute!important;z-index:1!important;inset:0!important;width:100%!important;height:100%!important;
+ overflow:hidden!important;
+}
+.kc-more-event-ads-host .kc-more-ads-slide{
+ position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ display:block!important;overflow:hidden!important;opacity:0!important;visibility:hidden!important;
+ pointer-events:none!important;transform:translateX(12px) scale(.995)!important;
+ transition:opacity .55s ease,transform .7s cubic-bezier(.2,.75,.2,1),visibility .55s!important;
+}
+.kc-more-event-ads-host .kc-more-ads-slide.is-active{
+ opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+ transform:translateX(0) scale(1)!important;z-index:2!important;
+}
+.kc-more-event-ads-host .kc-more-ads-media{
+ position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;
+ max-width:none!important;max-height:none!important;object-fit:cover!important;object-position:center!important;
+}
+.kc-more-event-ads-host .kc-more-ads-shade{
+ position:absolute!important;inset:0!important;z-index:1!important;pointer-events:none!important;
+ background:linear-gradient(90deg,rgba(9,12,20,.12),rgba(9,12,20,.30) 45%,rgba(9,12,20,.78))!important;
+}
+.kc-more-event-ads-host .kc-more-ads-copy{
+ position:absolute!important;z-index:3!important;left:40%!important;right:18px!important;top:50%!important;
+ bottom:auto!important;transform:translateY(-50%)!important;display:grid!important;gap:7px!important;
+ max-width:none!important;padding:0!important;color:#fff!important;
+}
+.kc-more-event-ads-host .kc-more-ads-copy h2{
+ margin:0!important;font-size:clamp(17px,4.5vw,24px)!important;line-height:1.08!important;
+ letter-spacing:-.035em!important;font-weight:850!important;
+}
+.kc-more-event-ads-host .kc-more-ads-copy p{
+ margin:0!important;font-size:10px!important;line-height:1.35!important;color:rgba(255,255,255,.82)!important;
+}
+.kc-more-event-ads-host .kc-more-ads-copy a{
+ justify-self:start!important;color:#ffc0d7!important;font-size:10px!important;font-weight:800!important;
+}
+.kc-more-event-ads-host .kc-more-brand-slide{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ background:
+  radial-gradient(ellipse at 16% 88%,rgba(36,201,210,.25),transparent 49%),
+  radial-gradient(ellipse at 86% 10%,rgba(236,73,151,.26),transparent 48%),
+  linear-gradient(135deg,#1b202b,#24202d 55%,#111820)!important;
+}
+.kc-more-event-ads-host .kc-more-brand-interstitial{
+ position:absolute!important;inset:0!important;z-index:3!important;display:flex!important;
+ flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ gap:12px!important;overflow:hidden!important;background:transparent!important;
+}
+.kc-more-event-ads-host .kc-more-brand-interstitial:before{
+ content:""!important;position:absolute!important;inset:-60%!important;z-index:-1!important;
+ background:conic-gradient(from 0deg,transparent 0 32%,rgba(236,73,151,.17) 43%,transparent 55%,rgba(36,201,210,.16) 70%,transparent 84%)!important;
+ animation:kcMoreBrandTurn 14s linear infinite!important;
+}
+.kc-more-event-ads-host .kc-more-brand-overline{
+ color:rgba(255,255,255,.68)!important;font-size:8px!important;font-weight:850!important;
+ letter-spacing:.28em!important;
+}
+.kc-more-event-ads-host .kc-more-brand-interstitial strong{
+ display:block!important;color:#fff!important;font-size:clamp(32px,9vw,48px)!important;
+ line-height:.95!important;letter-spacing:-.07em!important;font-weight:1000!important;
+ text-align:center!important;text-shadow:0 6px 24px rgba(0,0,0,.32)!important;
+}
+.kc-more-event-ads-host .kc-more-brand-interstitial strong span{
+ color:#ff62a8!important;-webkit-text-stroke:1px rgba(255,210,75,.8)!important;
+}
+.kc-more-event-ads-host .kc-more-brand-interstitial strong em{
+ font-style:normal!important;background:linear-gradient(100deg,#ffb46d,#52d8d2,#d879f0,#ff75a8)!important;
+ background-size:240% 100%!important;background-clip:text!important;-webkit-background-clip:text!important;
+ color:transparent!important;-webkit-text-fill-color:transparent!important;
+ animation:kcMoreWordmarkGradient 4s linear infinite!important;
+}
+.kc-more-event-ads-host .kc-more-brand-sweep{
+ position:absolute!important;left:-30%!important;right:-30%!important;top:0!important;height:1px!important;
+ background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent)!important;
+ animation:kcMoreBrandSweep 4s ease-in-out infinite!important;
+}
+.kc-more-event-ads-host .kc-more-ads-progress{
+ position:absolute!important;z-index:8!important;left:0!important;right:0!important;bottom:0!important;
+ height:3px!important;background:rgba(255,255,255,.13)!important;overflow:hidden!important;
+}
+.kc-more-event-ads-host .kc-more-ads-progress i{
+ display:block!important;width:100%!important;height:100%!important;transform:scaleX(0)!important;
+ transform-origin:left!important;background:linear-gradient(90deg,#ef589e,#ffae6c,#43d2d1)!important;
+}
+@media(max-width:560px){
+ .kc-more-event-ads-host .kc-more-ads-banner{height:clamp(185px,42vw,210px)!important;min-height:185px!important}
+ .kc-more-event-ads-host .kc-more-ads-copy{left:39%!important;right:13px!important}
+ .kc-more-event-ads-host .kc-more-ads-copy h2{font-size:17px!important}
+ .kc-more-event-ads-host .kc-more-ads-copy p{font-size:9px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .kc-more-event-ads-host .kc-more-ads-glow,.kc-more-event-ads-host .kc-more-brand-interstitial:before,
+ .kc-more-event-ads-host .kc-more-brand-interstitial strong em,.kc-more-event-ads-host .kc-more-brand-sweep{animation:none!important}
+}
