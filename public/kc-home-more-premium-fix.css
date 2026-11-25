@@ -378,3 +378,46 @@ body.kc-home-screen #app .kc-countdown-confetti i{
  body.kc-home-screen #app .kc-countdown-confetti i{animation:none!important;display:none!important}
  body.kc-home-screen #app .kc-countdown-celebration{animation:none!important}
 }
+
+/* Home countdown: lift the timer and surface the selected event's real details. */
+body.kc-home-screen #app .kc-event-countdown-stage{
+ align-items:center!important;justify-content:center!important;
+ padding:22px 16px 28px!important;
+}
+body.kc-home-screen #app .kc-event-countdown-content{
+ position:relative!important;z-index:3!important;width:100%!important;max-width:520px!important;
+ display:flex!important;flex-direction:column!important;align-items:center!important;
+ justify-content:center!important;gap:20px!important;
+ transform:translateY(-24px)!important;
+}
+body.kc-home-screen #app .kc-event-countdown{width:100%!important;flex:none!important}
+body.kc-home-screen #app .kc-countdown-event-details{
+ width:min(100%,440px)!important;display:flex!important;flex-direction:column!important;
+ align-items:center!important;gap:6px!important;text-align:center!important;
+ padding:12px 16px!important;box-sizing:border-box!important;
+ border:1px solid rgba(255,255,255,.14)!important;border-radius:16px!important;
+ background:linear-gradient(135deg,rgba(255,255,255,.105),rgba(255,255,255,.045))!important;
+ box-shadow:0 8px 24px rgba(0,0,0,.13),inset 0 1px rgba(255,255,255,.08)!important;
+ -webkit-backdrop-filter:blur(12px)!important;backdrop-filter:blur(12px)!important;
+}
+body.kc-home-screen #app .kc-countdown-event-details>b{
+ display:block!important;max-width:100%!important;color:#fff!important;
+ font:800 clamp(16px,4.5vw,21px)/1.15 system-ui,sans-serif!important;
+ letter-spacing:-.035em!important;overflow-wrap:anywhere!important;
+}
+body.kc-home-screen #app .kc-countdown-event-details>span{
+ display:block!important;max-width:100%!important;color:rgba(242,245,250,.82)!important;
+ font:650 10px/1.35 system-ui,sans-serif!important;letter-spacing:.025em!important;
+}
+body.kc-home-screen #app .kc-countdown-event-details>small{
+ display:-webkit-box!important;max-width:100%!important;overflow:hidden!important;
+ -webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;
+ color:rgba(235,240,248,.68)!important;font:450 10px/1.35 system-ui,sans-serif!important;
+}
+@media(max-width:600px){
+ body.kc-home-screen #app .kc-event-countdown-content{gap:17px!important;transform:translateY(-27px)!important}
+ body.kc-home-screen #app .kc-countdown-event-details{padding:10px 13px!important;border-radius:14px!important}
+ body.kc-home-screen #app .kc-countdown-event-details>b{font-size:16px!important}
+ body.kc-home-screen #app .kc-countdown-event-details>span{font-size:9px!important}
+ body.kc-home-screen #app .kc-countdown-event-details>small{font-size:9px!important}
+}
