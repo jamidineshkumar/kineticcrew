@@ -668,7 +668,7 @@ function showDynamicIsland(detail={}){
  const rawStatus=String(detail.status||detail.state||detail.result||'pending').trim().toLowerCase();
  const status=/^(success|succeeded|successful|complete|completed|approved|sent|delivered|present|paid)$/.test(rawStatus)?'success':/^(failed|failure|error|rejected|declined|cancelled|canceled|denied)$/.test(rawStatus)?'failed':'pending';
  const progress=Number.isFinite(Number(detail.progress))?Math.max(0,Math.min(100,Number(detail.progress))):null;
- const count=detail.current!=null&&detail.total!=null?String(detail.current)+' / '+String(detail.total):'';
+ const count=detail.current!=null&&detail.total!=null?String(detail.current)+' / '+String(detail.total):progress!=null?Math.round(progress)+'%':'';
  let island=document.getElementById('kcDynamicIsland');
  if(!island){
   island=document.createElement('div');island.id='kcDynamicIsland';island.className='kc-dynamic-island';
