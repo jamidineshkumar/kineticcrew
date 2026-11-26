@@ -95,9 +95,9 @@ begin
     select * into v_item from public.crew_feature_items where id=v_id and feature='polls' and status='open' for update;
     if not found then raise exception 'This poll is no longer open.'; end if;
     if coalesce(v_item.data->>'selection_mode','single')='multiple' then
-      if jsonb_typeof(p_payload->'choices')<>'array' then raise exception 'Select one or more options.'; end if;
+      if coalesce(jsonb_typeof(p_payload->'choices'),'')<>'array' then raise exception 'Select one or more options.'; end if;
       if jsonb_array_length(p_payload->'choices')<1 or jsonb_array_length(p_payload->'choices')>10 then raise exception 'Select between 1 and 10 options.'; end if;
-      if exists(select 1 from jsonb_array_elements_text(p_payload->'choices') c where length(trim(c))=0 or length(c)>120 or not (c=any(string_to_array(v_item.body,',')))) then
+      if exists(select 1 from jsonb_array_elements_text(p_payload->'choices') c where length(trim(c))=0 or length(c)>120 or not exists(select 1 from unnest(string_to_array(v_item.body,',')) o where trim(o)=c)) then
         raise exception 'One or more selected options are invalid.';
       end if;
       v_title:=p_payload->'choices'::text;
