@@ -1,100 +1,131 @@
-/* Dynamic Island outcome indicator */
-.kc-dynamic-island .kc-island-dot{position:absolute!important;top:20px!important;left:62px!important;z-index:5!important;border:2px solid rgba(18,18,25,.98)!important;box-sizing:content-box!important}
-.kc-dynamic-island .kc-island-dot{display:inline-block!important;width:9px!important;height:9px!important;min-width:9px!important;border-radius:50%!important;flex:0 0 9px!important;transition:background-color .18s ease,box-shadow .18s ease!important}
-.kc-dynamic-island.kc-island-success .kc-island-dot{background:#22c55e!important;box-shadow:0 0 8px #22c55e,0 0 16px #22c55e66!important}
-.kc-dynamic-island.kc-island-pending .kc-island-dot{background:#f59e0b!important;box-shadow:0 0 8px #f59e0b,0 0 16px #f59e0b66!important}
-.kc-dynamic-island.kc-island-failed .kc-island-dot{background:#ef4444!important;box-shadow:0 0 8px #ef4444,0 0 16px #ef444466!important}
-
-
-/* Reference-inspired Kinetic Crew Dynamic Island task card */
+/* Kinetic Crew Dynamic Island — rebuilt to match the user's uploaded three-row reference video. */
 #kcDynamicIsland.kc-dynamic-island{
- --kc-island-accent:#55c8ff;--kc-island-progress:32%;
  position:fixed!important;z-index:25000!important;
- top:calc(env(safe-area-inset-top,0px) + 14px)!important;left:50%!important;
- width:min(460px,calc(100vw - 28px))!important;min-height:104px!important;
- display:grid!important;grid-template-columns:58px minmax(0,1fr) auto!important;
- align-items:center!important;column-gap:14px!important;
- padding:16px 18px 20px!important;margin:0!important;
- overflow:hidden!important;isolation:isolate!important;
- border:1px solid rgba(255,255,255,.11)!important;border-radius:29px!important;
- color:#f7f7fb!important;text-align:left!important;cursor:pointer!important;
- background:radial-gradient(ellipse at 50% 0,rgba(255,255,255,.09),transparent 68%),linear-gradient(145deg,rgba(23,23,31,.98),rgba(8,8,13,.985))!important;
- box-shadow:0 20px 58px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,255,255,.08)!important;
- -webkit-backdrop-filter:blur(28px) saturate(160%)!important;backdrop-filter:blur(28px) saturate(160%)!important;
+ top:calc(env(safe-area-inset-top,0px) + 8px)!important;left:50%!important;
+ width:min(390px,calc(100vw - 26px))!important;
+ display:flex!important;flex-direction:column!important;gap:7px!important;
+ padding:0!important;margin:0!important;overflow:visible!important;isolation:isolate!important;
+ border:0!important;border-radius:0!important;background:transparent!important;
+ color:#f6f6fb!important;text-align:left!important;cursor:default!important;
+ box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;
  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
- transform:translate(-50%,-18px) scale(.97)!important;
- transition:opacity .28s ease,transform .34s cubic-bezier(.2,.8,.2,1),visibility .28s ease!important
+ transform:translate(-50%,-16px) scale(.985)!important;
+ transition:opacity .25s ease,transform .32s cubic-bezier(.2,.8,.2,1),visibility .25s ease!important;
 }
 #kcDynamicIsland.kc-dynamic-island.is-visible{
  opacity:1!important;visibility:visible!important;pointer-events:auto!important;
- transform:translate(-50%,0) scale(1)!important
+ transform:translate(-50%,0) scale(1)!important;
 }
-#kcDynamicIsland.kc-dynamic-island:before{
- content:""!important;position:absolute!important;inset:0!important;z-index:-1!important;padding:1.5px!important;
- border-radius:inherit!important;
- background:linear-gradient(110deg,#55c8ff,#9a72ff 38%,#ff6eaa 68%,#58e4ad)!important;
- background-size:240% 100%!important;animation:kcIslandBorderFlow 5s linear infinite!important;
+#kcDynamicIsland .kc-island-task,
+#kcDynamicIsland .kc-island-live,
+#kcDynamicIsland .kc-island-tickets{
+ position:relative!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;
+ display:flex!important;align-items:center!important;gap:10px!important;
+ padding:9px 11px!important;overflow:hidden!important;
+ border:1px solid rgba(255,255,255,.105)!important;border-radius:17px!important;
+ color:#f5f5fa!important;text-align:left!important;
+ background:linear-gradient(110deg,rgba(17,19,28,.97),rgba(9,10,17,.985))!important;
+ box-shadow:0 8px 25px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.055)!important;
+ -webkit-backdrop-filter:blur(24px) saturate(155%)!important;backdrop-filter:blur(24px) saturate(155%)!important;
+}
+#kcDynamicIsland .kc-island-task{min-height:49px!important;cursor:pointer!important}
+#kcDynamicIsland .kc-island-task:before{
+ content:""!important;position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none!important;
+ border-radius:inherit!important;padding:1px!important;
+ background:linear-gradient(105deg,var(--kc-task-border,#3a9c82),rgba(255,255,255,.08) 58%,rgba(255,255,255,.02))!important;
  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0)!important;
- -webkit-mask-composite:xor!important;mask-composite:exclude!important;pointer-events:none!important
+ -webkit-mask-composite:xor!important;mask-composite:exclude!important;
 }
 #kcDynamicIsland .kc-island-mark{
- width:58px!important;height:58px!important;display:grid!important;place-items:center!important;
- border-radius:19px!important;flex:0 0 58px!important;
- color:#fff!important;font:800 23px/1 system-ui,sans-serif!important;
- background:linear-gradient(145deg,#183744,#171c31)!important;
- border:1px solid rgba(85,200,255,.34)!important;
- box-shadow:0 0 25px rgba(85,200,255,.15),inset 0 1px 0 rgba(255,255,255,.1)!important
+ position:relative!important;z-index:1!important;display:grid!important;place-items:center!important;
+ width:27px!important;height:27px!important;flex:0 0 27px!important;
+ border-radius:9px!important;color:#fff!important;
+ font:850 14px/1 system-ui,sans-serif!important;
+ background:linear-gradient(145deg,#087e5c,#19b97d)!important;
+ border:1px solid rgba(255,255,255,.12)!important;
+ box-shadow:0 0 18px rgba(32,210,142,.14)!important;
 }
-#kcDynamicIsland .kc-island-copy{display:grid!important;gap:5px!important;min-width:0!important}
+#kcDynamicIsland .kc-island-dot{display:none!important}
+#kcDynamicIsland .kc-island-copy{
+ position:relative!important;z-index:1!important;display:grid!important;gap:3px!important;
+ flex:1 1 auto!important;min-width:0!important;
+}
 #kcDynamicIsland .kc-island-copy b{
- display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;
- color:#f6f5fa!important;font:750 16px/1.25 system-ui,sans-serif!important;letter-spacing:-.02em!important
+ display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+ color:#f4f4f8!important;font:750 12px/1.2 system-ui,sans-serif!important;letter-spacing:-.01em!important;
 }
 #kcDynamicIsland .kc-island-copy small{
- display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;
- color:#b7b5c2!important;font:550 13px/1.35 system-ui,sans-serif!important
+ display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+ color:#a9b0bd!important;font:550 10px/1.25 system-ui,sans-serif!important;
 }
 #kcDynamicIsland .kc-island-count{
- color:#c6c4d0!important;font:750 13px/1 system-ui,sans-serif!important;
- white-space:nowrap!important;margin-left:4px!important
+ position:relative!important;z-index:1!important;flex:0 0 auto!important;margin-left:auto!important;
+ color:#e6e7ed!important;font:750 10px/1 system-ui,sans-serif!important;white-space:nowrap!important;
 }
 #kcDynamicIsland .kc-island-retry{
- display:inline-flex!important;align-items:center!important;justify-content:center!important;
- min-height:34px!important;padding:0 12px!important;border-radius:999px!important;
- border:1px solid rgba(255,255,255,.22)!important;background:rgba(255,255,255,.1)!important;
- color:#fff!important;font:700 12px/1 system-ui,sans-serif!important
+ position:relative!important;z-index:2!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ min-height:26px!important;padding:0 9px!important;border-radius:999px!important;
+ border:1px solid rgba(255,255,255,.18)!important;background:rgba(255,255,255,.09)!important;
+ color:#fff!important;font:700 10px/1 system-ui,sans-serif!important;
 }
 #kcDynamicIsland .kc-island-retry[hidden],#kcDynamicIsland .kc-island-count[hidden]{display:none!important}
 #kcDynamicIsland .kc-island-progress{
- position:absolute!important;left:0!important;right:0!important;bottom:0!important;
- height:3px!important;display:block!important;overflow:hidden!important;
- background:rgba(255,255,255,.06)!important
+ position:absolute!important;z-index:2!important;left:0!important;right:0!important;bottom:0!important;
+ height:2px!important;display:block!important;overflow:hidden!important;background:rgba(255,255,255,.045)!important;
 }
 #kcDynamicIsland .kc-island-progress i{
- display:block!important;width:var(--kc-island-progress)!important;height:100%!important;
- border-radius:0 5px 5px 0!important;
- background:linear-gradient(90deg,#55c8ff,#9a72ff,#ff70ae)!important;
- box-shadow:0 0 12px rgba(129,129,255,.65)!important;
- transition:width .45s ease!important
+ display:block!important;width:var(--kc-island-progress,32%)!important;height:100%!important;
+ border-radius:0 5px 5px 0!important;background:linear-gradient(90deg,#45d6a0,#67e4ba)!important;
+ box-shadow:0 0 9px rgba(61,225,163,.5)!important;transition:width .35s ease!important;
 }
-#kcDynamicIsland.kc-island-success{--kc-island-accent:#45e5a0}
-#kcDynamicIsland.kc-island-success:before{background:linear-gradient(110deg,#b4df50,#36d69a,#44e0bd)!important;background-size:240% 100%!important}
-#kcDynamicIsland.kc-island-success .kc-island-mark{background:linear-gradient(145deg,#087f59,#16bd80)!important;border-color:#43e2a0!important;box-shadow:0 0 26px #21d88c44!important}
-#kcDynamicIsland.kc-island-success .kc-island-progress i{background:linear-gradient(90deg,#b8df50,#28d69a)!important}
-#kcDynamicIsland.kc-island-pending .kc-island-mark{color:#ffe29a!important;background:linear-gradient(145deg,#46351a,#211b1b)!important;border-color:#e8a83d66!important}
-#kcDynamicIsland.kc-island-failed:before{background:linear-gradient(110deg,#f3a43b,#f04b79,#8e4b9e)!important;background-size:240% 100%!important}
-#kcDynamicIsland.kc-island-failed .kc-island-mark{color:#ffb2c8!important;background:linear-gradient(145deg,#491b31,#211622)!important;border-color:#ed557b88!important}
-#kcDynamicIsland.kc-island-failed .kc-island-progress i{background:linear-gradient(90deg,#f3a43b,#f04b79)!important}
-#kcDynamicIsland.is-persistent .kc-island-progress i{animation:kcIslandIndeterminate 1.8s ease-in-out infinite alternate!important}
-@keyframes kcIslandBorderFlow{to{background-position:240% 0}}
-@keyframes kcIslandIndeterminate{from{width:18%!important}to{width:82%!important}}
+#kcDynamicIsland.kc-island-success{--kc-task-border:#35d99b}
+#kcDynamicIsland.kc-island-success .kc-island-mark{background:linear-gradient(145deg,#07845d,#20c98a)!important;color:#fff!important}
+#kcDynamicIsland.kc-island-pending{--kc-task-border:#d49a3e}
+#kcDynamicIsland.kc-island-pending .kc-island-mark{background:linear-gradient(145deg,#66421b,#9b6a26)!important;color:#ffd88a!important;box-shadow:0 0 17px rgba(237,171,67,.16)!important}
+#kcDynamicIsland.kc-island-pending .kc-island-progress i{background:linear-gradient(90deg,#e7a83e,#f2c36b)!important;box-shadow:0 0 9px rgba(237,171,67,.4)!important}
+#kcDynamicIsland.kc-island-failed{--kc-task-border:#e45c87}
+#kcDynamicIsland.kc-island-failed .kc-island-mark{background:linear-gradient(145deg,#752342,#b63760)!important;color:#ffd2df!important;box-shadow:0 0 17px rgba(235,76,126,.16)!important}
+#kcDynamicIsland.kc-island-failed .kc-island-progress i{background:linear-gradient(90deg,#e45c87,#ff8b9e)!important}
+#kcDynamicIsland .kc-island-live,
+#kcDynamicIsland .kc-island-tickets{min-height:43px!important;cursor:pointer!important;transition:border-color .18s ease,transform .18s ease!important}
+#kcDynamicIsland .kc-island-live:active,
+#kcDynamicIsland .kc-island-tickets:active{transform:scale(.985)!important}
+#kcDynamicIsland .kc-island-live{border-color:rgba(178,93,222,.23)!important}
+#kcDynamicIsland .kc-island-live-mark{
+ display:grid!important;place-items:center!important;flex:0 0 25px!important;width:25px!important;height:25px!important;
+ border-radius:9px!important;color:#fff!important;font:850 9px/1 system-ui,sans-serif!important;
+ background:linear-gradient(145deg,#ed55c6,#7147d8)!important;
+ box-shadow:0 0 14px rgba(175,79,220,.25)!important;
+}
+#kcDynamicIsland .kc-island-live-copy{display:grid!important;gap:2px!important;min-width:0!important;flex:1 1 auto!important}
+#kcDynamicIsland .kc-island-live-copy b,
+#kcDynamicIsland .kc-island-ticket-copy b{
+ display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+ color:#f1eff8!important;font:750 11px/1.15 system-ui,sans-serif!important;letter-spacing:-.005em!important;
+}
+#kcDynamicIsland .kc-island-live-copy small{
+ display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+ color:#9695a8!important;font:550 9px/1.2 system-ui,sans-serif!important;
+}
+#kcDynamicIsland .kc-island-live-badge{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ min-width:31px!important;height:17px!important;padding:0 6px!important;border-radius:999px!important;
+ border:1px solid rgba(186,128,255,.28)!important;background:rgba(132,76,192,.2)!important;
+ color:#d6aaff!important;font:800 8px/1 system-ui,sans-serif!important;letter-spacing:.06em!important;
+}
+#kcDynamicIsland .kc-island-tickets{border-color:rgba(255,255,255,.08)!important}
+#kcDynamicIsland .kc-island-ticket-mark{
+ display:grid!important;place-items:center!important;flex:0 0 25px!important;width:25px!important;height:25px!important;
+ border-radius:8px!important;background:rgba(62,157,187,.14)!important;
+ color:#6ccce5!important;font:700 15px/1 system-ui,sans-serif!important;
+}
+#kcDynamicIsland .kc-island-ticket-copy{display:block!important;min-width:0!important;flex:1 1 auto!important}
+#kcDynamicIsland .kc-island-ticket-arrow{margin-left:auto!important;color:#9b9bad!important;font:500 22px/1 system-ui,sans-serif!important}
 @media(max-width:520px){
- #kcDynamicIsland.kc-dynamic-island{min-height:88px!important;padding:13px 14px 17px!important;grid-template-columns:50px minmax(0,1fr) auto!important;column-gap:11px!important;border-radius:25px!important}
- #kcDynamicIsland .kc-island-mark{width:50px!important;height:50px!important;flex-basis:50px!important;border-radius:16px!important;font-size:20px!important}
- #kcDynamicIsland .kc-island-copy b{font-size:14px!important}
- #kcDynamicIsland .kc-island-copy small{font-size:12px!important}
- #kcDynamicIsland .kc-island-count{font-size:11px!important}
+ #kcDynamicIsland.kc-dynamic-island{width:min(360px,calc(100vw - 28px))!important;gap:6px!important;top:calc(env(safe-area-inset-top,0px) + 7px)!important}
+ #kcDynamicIsland .kc-island-task{min-height:47px!important;padding:8px 10px!important;gap:9px!important;border-radius:16px!important}
+ #kcDynamicIsland .kc-island-live,#kcDynamicIsland .kc-island-tickets{min-height:41px!important;padding:8px 10px!important;border-radius:15px!important}
 }
 @media(prefers-reduced-motion:reduce){
- #kcDynamicIsland.kc-dynamic-island,#kcDynamicIsland:before,#kcDynamicIsland .kc-island-progress i{animation:none!important;transition:none!important}
+ #kcDynamicIsland.kc-dynamic-island,#kcDynamicIsland .kc-island-task,#kcDynamicIsland .kc-island-live,#kcDynamicIsland .kc-island-tickets{animation:none!important;transition:none!important}
 }
