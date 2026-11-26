@@ -1,6 +1,5 @@
 {
-  "version": "1.6.94",
-  "minimum_version": "1.2.7",
-  "updated_at": "2026-11-26T12:35:00+05:30",
-  "release_notes": "Fix desktop hamburger drawer to match the Kinetic Crew mobile navigation, including overlay, open/close, and navigation behaviour."
+  "version": "1.6.95",
+  "updated_at": "2026-11-26T13:10:00+05:30",
+  "release_notes": "Desktop navigation and workspace layout refinement"
 }
