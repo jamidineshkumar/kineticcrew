@@ -12,24 +12,39 @@ async function shareCampaignCard(campaign,button){
  try{
   const canvas=document.createElement('canvas');canvas.width=1200;canvas.height=630;
   const ctx=canvas.getContext('2d');if(!ctx)throw Error('Image sharing is not supported in this browser.');
-  const bg=ctx.createLinearGradient(0,0,1200,630);bg.addColorStop(0,'#10121b');bg.addColorStop(.55,'#1a1421');bg.addColorStop(1,'#07191c');ctx.fillStyle=bg;ctx.fillRect(0,0,1200,630);
-  const glow1=ctx.createRadialGradient(1040,90,10,1040,90,430);glow1.addColorStop(0,'rgba(239,65,151,.34)');glow1.addColorStop(1,'rgba(239,65,151,0)');ctx.fillStyle=glow1;ctx.fillRect(620,0,580,500);
-  const glow2=ctx.createRadialGradient(100,620,10,100,620,400);glow2.addColorStop(0,'rgba(38,205,213,.26)');glow2.addColorStop(1,'rgba(38,205,213,0)');ctx.fillStyle=glow2;ctx.fillRect(0,200,600,430);
-  ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(24,24,1152,582,30);ctx.stroke();
-  ctx.fillStyle='#05050b';ctx.beginPath();ctx.roundRect(64,86,440,440,42);ctx.fill();ctx.strokeStyle='rgba(255,255,255,.17)';ctx.stroke();
-  try{const logoUrl=window.KC_SHARE_CARD_LOGO_URL||window.KC_BRAND_LOGO_URL||'/kinetic-crew-logo.svg';const logo=new Image();logo.crossOrigin='anonymous';logo.src=logoUrl;await logo.decode();ctx.drawImage(logo,76,98,416,416);}
-  catch(_){ctx.textAlign='center';ctx.font='900 italic 62px Arial';ctx.fillStyle='#f20a91';ctx.fillText('KINETIC',284,285);ctx.fillStyle='#12c8d4';ctx.fillText('CREW',284,365);}
-  ctx.textAlign='left';ctx.fillStyle='rgba(242,79,156,.16)';ctx.beginPath();ctx.roundRect(566,104,286,44,22);ctx.fill();ctx.strokeStyle='rgba(242,79,156,.65)';ctx.stroke();ctx.fillStyle='#ffd5e8';ctx.font='700 17px Arial';ctx.fillText('KINETIC CREW  ·  PROMOTED',588,132);
-  const title=String(campaign.title||'Kinetic Crew Campaign');ctx.fillStyle='#f7f5fa';ctx.font='800 58px Arial';
-  const wrap=(value,maxWidth,font)=>{ctx.font=font;const words=String(value||'').split(/\s+/);const lines=[];let line='';for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word;}else line=test;}if(line)lines.push(line);return lines;};
-  const titleLines=wrap(title,570,'800 58px Arial').slice(0,2);titleLines.forEach((line,i)=>ctx.fillText(line,568,236+i*68));
-  const caption=String(campaign.caption||'Discover this campaign with Kinetic Crew.');const captionLines=wrap(caption,560,'400 27px Arial').slice(0,3);captionLines.forEach((line,i)=>{ctx.fillStyle='#d6d5df';ctx.fillText(line,570,390+i*40);});
-  const destination=String(campaign.destination_url||'https://kineticcrew.vercel.app');ctx.fillStyle='rgba(255,255,255,.15)';ctx.fillRect(568,510,560,2);ctx.fillStyle='#ff9ac4';ctx.font='700 22px Arial';ctx.fillText('DISCOVER MORE  ↗',570,558);ctx.fillStyle='#c8dce0';ctx.font='400 18px Arial';ctx.fillText(destination.length>54?destination.slice(0,51)+'…':destination,570,588);
+  const round=(x,y,w,h,r)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);};
+  const loadImage=async url=>{if(!url)return null;try{const img=new Image();img.crossOrigin='anonymous';img.src=url;await img.decode();return img;}catch(_){return null;}};
+  const bg=ctx.createLinearGradient(0,0,1200,630);bg.addColorStop(0,'#10121b');bg.addColorStop(.56,'#1b1724');bg.addColorStop(1,'#07191c');ctx.fillStyle=bg;ctx.fillRect(0,0,1200,630);
+  const glow=ctx.createRadialGradient(1050,70,10,1050,70,430);glow.addColorStop(0,'rgba(239,65,151,.30)');glow.addColorStop(1,'rgba(239,65,151,0)');ctx.fillStyle=glow;ctx.fillRect(600,0,600,500);
+  const glow2=ctx.createRadialGradient(80,620,10,80,620,390);glow2.addColorStop(0,'rgba(38,205,213,.23)');glow2.addColorStop(1,'rgba(38,205,213,0)');ctx.fillStyle=glow2;ctx.fillRect(0,250,600,380);
+  ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=2;round(22,22,1156,586,30);ctx.stroke();
+  const image=await loadImage(campaign.media_url||campaign.image_url||campaign.cover_url),ix=54,iy=54,iw=430,ih=522;
+  ctx.save();round(ix,iy,iw,ih,24);ctx.clip();
+  if(image){const scale=Math.max(iw/image.width,ih/image.height),w=image.width*scale,h=image.height*scale;ctx.drawImage(image,ix+(iw-w)/2,iy+(ih-h)/2,w,h);}
+  else{const g=ctx.createLinearGradient(ix,iy,ix+iw,iy+ih);g.addColorStop(0,'#302034');g.addColorStop(.55,'#18343a');g.addColorStop(1,'#151722');ctx.fillStyle=g;ctx.fillRect(ix,iy,iw,ih);ctx.fillStyle='rgba(255,255,255,.72)';ctx.font='800 27px Arial';ctx.fillText('FEATURED BRAND',ix+28,iy+260);}
+  const shade=ctx.createLinearGradient(0,iy+330,0,iy+ih);shade.addColorStop(0,'rgba(0,0,0,0)');shade.addColorStop(1,'rgba(0,0,0,.68)');ctx.fillStyle=shade;ctx.fillRect(ix,iy+300,iw,ih-300);ctx.restore();
+  const brand=String(campaign.advertiser_name||campaign.brand_name||'Featured brand'),title=String(campaign.title||'Campaign'),caption=String(campaign.caption||'Discover this promotion.'),tx=532,tw=600;
+  ctx.fillStyle='rgba(255,255,255,.08)';round(tx,62,230,36,18);ctx.fill();ctx.fillStyle='#f3b2d0';ctx.font='800 15px Arial';ctx.fillText('FEATURED PROMOTION',tx+15,86);
+  const brandLogo=await loadImage(campaign.advertiser_logo_url);
+  if(brandLogo){ctx.save();round(tx,122,62,62,14);ctx.clip();ctx.drawImage(brandLogo,tx,122,62,62);ctx.restore();}
+  ctx.fillStyle='#bfc5d2';ctx.font='700 15px Arial';ctx.fillText('BY',brandLogo?tx+78:tx,146);
+  ctx.fillStyle='#fff';ctx.font='800 27px Arial';ctx.fillText(brand.slice(0,42),brandLogo?tx+112:tx+35,147);
+  const wrap=(value,width,font,max)=>{ctx.font=font;const words=String(value||'').split(/\s+/),lines=[];let line='';for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>width&&line){lines.push(line);line=word;}else line=test;}if(line)lines.push(line);return lines.slice(0,max);};
+  const titleLines=wrap(title,tw,'800 48px Arial',3);ctx.fillStyle='#fbf8fc';ctx.font='800 48px Arial';titleLines.forEach((line,i)=>ctx.fillText(line,tx,238+i*58));
+  const captionY=238+titleLines.length*58+12;ctx.fillStyle='#d4d2dc';wrap(caption,tw,'400 23px Arial',3).forEach((line,i)=>{ctx.font='400 23px Arial';ctx.fillText(line,tx,captionY+i*34);});
+  const destination=String(campaign.destination_url||'https://kineticcrew.vercel.app');
+  ctx.strokeStyle='rgba(255,255,255,.16)';ctx.beginPath();ctx.moveTo(tx,514);ctx.lineTo(1128,514);ctx.stroke();
+  ctx.fillStyle='#ffb0d0';ctx.font='800 19px Arial';ctx.fillText('EXPLORE THIS PROMOTION  ↗',tx,550);
+  ctx.fillStyle='#c6c5d0';ctx.font='400 16px Arial';ctx.fillText(destination.length>60?destination.slice(0,57)+'…':destination,tx,579);
+  const kcLogo=await loadImage(window.KC_SHARE_CARD_LOGO_URL||window.KC_BRAND_LOGO_URL||'/kinetic-crew-logo.svg');
+  ctx.textAlign='right';ctx.fillStyle='rgba(255,255,255,.76)';ctx.font='700 13px Arial';ctx.fillText('PROMOTED ON',1126,48);
+  if(kcLogo){ctx.globalAlpha=.84;ctx.drawImage(kcLogo,1080,55,44,44);ctx.globalAlpha=1;}else{ctx.fillStyle='#f06aa8';ctx.font='900 19px Arial';ctx.fillText('KC',1126,82);}
+  ctx.textAlign='left';
   const blob=await new Promise((resolve,reject)=>canvas.toBlob(v=>v?resolve(v):reject(Error('Could not create the share image.')),'image/png'));
-  const file=new File([blob],(String(campaign.title||'kinetic-crew').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'kinetic-crew')+'-promo.png',{type:'image/png'});
-  const message=String(campaign.title||'Kinetic Crew campaign')+'\n'+String(campaign.caption||'')+'\n'+destination;
-  if(navigator.share&&navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:campaign.title||'Kinetic Crew',text:message});}
-  else{const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=file.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000);try{await navigator.clipboard?.writeText(message);}catch(_){}toast('Share card downloaded. Attach it to your post; campaign link copied when supported.');}
+  const file=new File([blob],(brand.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'brand')+'-kinetic-crew-promo.png',{type:'image/png'});
+  const message=brand+' — '+title+'\n'+caption+'\n'+destination+'\nPromoted on Kinetic Crew.';
+  if(navigator.share&&navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:brand+' · '+title,text:message});}
+  else{const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=file.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000);try{await navigator.clipboard?.writeText(message);}catch(_){}toast('Branded promotion card downloaded. Attach it to your post; campaign details copied when supported.');}
  }catch(error){if(error?.name!=='AbortError')toast(error?.message||'Could not create the share card.');}
  finally{button.disabled=false;}
 }
