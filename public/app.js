@@ -144,7 +144,7 @@ async function loadMemories(){
  const {data,error}=await rpc('crew_memories_list',{});
  if(error)throw error;
  const rows=Array.isArray(data)?data:(Array.isArray(data?.items)?data.items:[]);
- const memoryStoragePath=item=>{const d=item?.data&&typeof item.data==='object'?item.data:{};return String(d.storage_path||d.storagePath||d.file_path||d.media_path||d.photo_path||d.image_path||'').replace(/^\\/+/, '');};
+ const memoryStoragePath=item=>{const d=item?.data&&typeof item.data==='object'?item.data:{};return String(d.storage_path||d.storagePath||d.file_path||d.media_path||d.photo_path||d.image_path||'').replace(/^[/]+/, '');};
  const paths=[...new Set(rows.map(memoryStoragePath).filter(Boolean))];
  const signedByPath=new Map();
  if(paths.length){
