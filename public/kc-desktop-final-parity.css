@@ -1,5 +1,5 @@
 /* Kinetic Crew desktop final parity pass — desktop-only. Mobile styling remains untouched. */
-@media (min-width:901px) and (hover:hover) and (pointer:fine){
+@media (min-width:1100px) and (min-device-width:1024px) and (hover:hover) and (pointer:fine){
   /* Desktop already has the full workspace navigation in the left rail.
      Do not show the four-item mobile dock a second time. */
   #kcMobileDock,#kcMobileDock.kc-mobile-dock{display:none!important;visibility:hidden!important;pointer-events:none!important}
@@ -52,7 +52,7 @@
 }
 
 /* Desktop parity hotfix: never render the mobile dock beside the desktop sidebar. */
-@media (min-width:901px) and (hover:hover) and (pointer:fine){
+@media (min-width:1100px) and (min-device-width:1024px) and (hover:hover) and (pointer:fine){
  html body #kcMobileDock,html body nav#kcMobileDock.kc-mobile-dock,html body .kc-mobile-dock#kcMobileDock{
   display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;position:absolute!important;left:-10000px!important
  }
@@ -66,7 +66,7 @@
  html body #app .kc-exact-poll-update>.kc-exact-poll-results:hover{color:#f2dfff!important;-webkit-text-fill-color:#f2dfff!important;text-decoration:underline!important}
 }
 /* Kinetic Crew desktop hamburger drawer — same visual language and behaviour as mobile. */
-@media (min-width:901px) and (hover:hover) and (pointer:fine){
+@media (min-width:1100px) and (min-device-width:1024px) and (hover:hover) and (pointer:fine){
  html body .shell{min-height:100vh!important}
  html body .kc-mobile-topbar{
   position:sticky!important;top:12px!important;z-index:180!important;
@@ -105,12 +105,12 @@
  html body .content{width:min(calc(100% - 64px),1040px)!important;max-width:1040px!important;margin:0 auto!important;padding:12px 0 48px!important}
  html body.kc-menu-open{overflow:hidden!important}
 }
-@media (prefers-reduced-motion:reduce){@media (min-width:901px) and (hover:hover) and (pointer:fine){html body .side{transition:none!important}}}
+@media (prefers-reduced-motion:reduce){@media (min-width:1100px) and (min-device-width:1024px) and (hover:hover) and (pointer:fine){html body .side{transition:none!important}}}
 
 
 /* Desktop workspace correction: persistent compact rail + full-width workspace.
    Mobile drawer rules above remain unchanged and are scoped out below 640px. */
-@media (min-width:901px) and (hover:hover) and (pointer:fine){
+@media (min-width:1100px) and (min-device-width:1024px) and (hover:hover) and (pointer:fine){
  html body .shell{display:block!important;min-height:100vh!important}
  html body .side,html body .side.open{
   position:fixed!important;inset:14px auto 14px 14px!important;
@@ -170,7 +170,7 @@
 
 
 /* FINAL desktop hamburger parity: same expanded menu composition as mobile. */
-@media (min-width:901px) and (hover:hover) and (pointer:fine){
+@media (min-width:1100px) and (min-device-width:1024px) and (hover:hover) and (pointer:fine){
  html body .side,html body .side.open{
   position:fixed!important;top:0!important;bottom:0!important;left:0!important;right:auto!important;
   width:min(430px,88vw)!important;max-width:430px!important;height:100dvh!important;min-height:100dvh!important;
