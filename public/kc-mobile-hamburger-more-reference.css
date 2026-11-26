@@ -1,0 +1,129 @@
+/* Mobile hamburger menu: align the More page to the supplied phone reference.
+   Scoped to the More view and small screens; all other mobile screens stay unchanged. */
+@media (max-width:900px){
+ body.kc-more-open #app .kc-more-reference{
+  box-sizing:border-box!important;
+  width:100%!important;max-width:none!important;min-height:calc(100dvh - 12px)!important;
+  margin:0!important;padding:17px 17px calc(150px + env(safe-area-inset-bottom))!important;
+  overflow:visible!important;border-radius:0 0 24px 24px!important;
+  color:#f6f4f8!important;
+  background:
+   radial-gradient(ellipse at 88% 9%,rgba(132,42,111,.15),transparent 38%),
+   radial-gradient(ellipse at 12% 58%,rgba(41,102,111,.07),transparent 36%),
+   linear-gradient(145deg,#1d1e23 0%,#17181d 56%,#202127 100%)!important;
+ }
+ body.kc-more-open #app .kc-more-reference-header{
+  display:flex!important;align-items:center!important;gap:14px!important;
+  height:52px!important;margin:0 0 17px!important;
+ }
+ body.kc-more-open #app .kc-more-back{
+  display:grid!important;place-items:center!important;flex:0 0 58px!important;
+  width:58px!important;height:58px!important;padding:0!important;
+  border:1px solid rgba(255,255,255,.075)!important;border-radius:20px!important;
+  background:linear-gradient(145deg,#292b32,#1b1c22)!important;
+  color:#f7f5f8!important;box-shadow:5px 6px 13px rgba(0,0,0,.22),inset 1px 1px rgba(255,255,255,.035)!important;
+ }
+ body.kc-more-open #app .kc-more-back svg{width:29px!important;height:29px!important}
+ body.kc-more-open #app .kc-more-reference-header h1{
+  margin:0!important;color:#fff!important;font-size:29px!important;
+  line-height:1!important;font-weight:760!important;letter-spacing:-.045em!important;
+ }
+ body.kc-more-open #app .kc-more-reference-header h1 em{
+  color:#fff!important;background:none!important;-webkit-text-fill-color:#fff!important;font-style:normal!important;
+ }
+ body.kc-more-open #app .kc-more-reference-hero{
+  display:block!important;position:relative!important;isolation:isolate!important;
+  width:100%!important;height:clamp(190px,45vw,310px)!important;
+  min-height:190px!important;max-height:310px!important;
+  margin:8px 0 29px!important;padding:0!important;overflow:hidden!important;
+  border:1px solid rgba(255,255,255,.09)!important;border-radius:25px!important;
+  background:
+   radial-gradient(ellipse at 94% 4%,rgba(175,53,145,.32),transparent 43%),
+   radial-gradient(ellipse at 2% 100%,rgba(31,143,151,.32),transparent 48%),
+   linear-gradient(125deg,#20232d 0%,#24202b 58%,#241b2b 100%)!important;
+  box-shadow:0 14px 32px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.045)!important;
+ }
+ body.kc-more-open #app .kc-more-reference-hero-copy{
+  position:absolute!important;inset:0!important;display:grid!important;
+  place-items:center!important;width:100%!important;height:100%!important;
+  margin:0!important;padding:0!important;left:0!important;top:0!important;right:0!important;
+  color:transparent!important;font-size:0!important;line-height:0!important;text-align:center!important;
+ }
+ body.kc-more-open #app .kc-more-reference-hero-copy:before{
+  content:"KINETIC CREW"!important;display:block!important;
+  color:#dc70d2!important;font:850 clamp(27px,7.3vw,46px)/1 system-ui,sans-serif!important;
+  letter-spacing:-.055em!important;
+  background:linear-gradient(100deg,#e45ab8 0%,#ba68e9 52%,#6d9af5 100%)!important;
+  background-clip:text!important;-webkit-background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;
+  filter:drop-shadow(0 5px 18px rgba(202,91,193,.16))!important;
+ }
+ body.kc-more-open #app .kc-more-reference-group{margin:0 0 31px!important}
+ body.kc-more-open #app .kc-more-reference-group h2{
+  margin:0 0 16px!important;color:#a9a9b2!important;
+  font-size:20px!important;line-height:1.2!important;font-weight:600!important;
+  letter-spacing:-.025em!important;
+ }
+ body.kc-more-open #app .kc-more-reference-pills,
+ body.kc-more-open #app .kc-more-reference-others-grid{
+  display:grid!important;width:100%!important;max-width:none!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:stretch!important;gap:12px!important;
+ }
+ body.kc-more-open #app .kc-more-pill{
+  position:relative!important;display:flex!important;align-items:center!important;
+  justify-content:flex-start!important;width:100%!important;min-width:0!important;
+  min-height:78px!important;box-sizing:border-box!important;
+  padding:11px 12px!important;gap:10px!important;
+  border:1px solid rgba(255,255,255,.065)!important;border-radius:19px!important;
+  background:linear-gradient(145deg,#292b30,#1e2025)!important;
+  color:#f1eff2!important;white-space:normal!important;
+  box-shadow:5px 6px 13px rgba(0,0,0,.23),-3px -3px 9px rgba(255,255,255,.018),inset 1px 1px rgba(255,255,255,.025)!important;
+ }
+ body.kc-more-open #app .kc-more-pill-icon{
+  display:grid!important;place-items:center!important;
+  width:34px!important;height:34px!important;flex:0 0 34px!important;
+  color:#d99a9d!important;
+ }
+ body.kc-more-open #app .kc-more-pill-icon svg{
+  width:100%!important;height:100%!important;stroke:currentColor!important;stroke-width:1.7!important;
+ }
+ body.kc-more-open #app .kc-more-pill b{
+  min-width:0!important;color:#f0eef2!important;
+  font-size:clamp(12px,3.7vw,16px)!important;line-height:1.25!important;
+  font-weight:560!important;letter-spacing:-.02em!important;overflow-wrap:anywhere!important;
+ }
+ body.kc-more-open #app .kc-more-pill em{
+  position:absolute!important;top:-9px!important;right:9px!important;
+  padding:4px 9px!important;border-radius:999px!important;
+  background:#b95750!important;color:#fff!important;font-size:9px!important;
+  font-style:normal!important;font-weight:800!important;letter-spacing:.04em!important;
+ }
+ body.kc-more-open #app .kc-more-reference-others{margin-top:2px!important}
+ body.kc-more-open #app .kc-more-other{
+  display:flex!important;align-items:center!important;min-width:0!important;
+  min-height:70px!important;padding:9px 10px!important;gap:9px!important;
+  border:1px solid rgba(255,255,255,.065)!important;border-radius:18px!important;
+  background:linear-gradient(145deg,#292b30,#1e2025)!important;
+  color:#f1eff2!important;box-shadow:5px 6px 13px rgba(0,0,0,.22)!important;
+ }
+ body.kc-more-open #app .kc-more-other-icon{
+  display:grid!important;place-items:center!important;flex:0 0 34px!important;
+  width:34px!important;height:34px!important;padding:8px!important;color:#d99a9d!important;
+ }
+ body.kc-more-open #app .kc-more-other b{
+  min-width:0!important;font-size:clamp(11px,3.5vw,15px)!important;
+  line-height:1.22!important;font-weight:560!important;overflow-wrap:anywhere!important;
+ }
+ body.kc-more-open #app .kc-more-signout{
+  width:100%!important;max-width:none!important;min-height:78px!important;
+  margin:18px 0 0!important;
+ }
+ body.kc-more-open #app .kc-more-reference-footer{margin-top:28px!important;font-size:16px!important}
+}
+@media (max-width:380px){
+ body.kc-more-open #app .kc-more-reference{padding-left:13px!important;padding-right:13px!important}
+ body.kc-more-open #app .kc-more-pill{min-height:72px!important;padding:9px!important;gap:8px!important}
+ body.kc-more-open #app .kc-more-pill-icon{width:30px!important;height:30px!important;flex-basis:30px!important}
+ body.kc-more-open #app .kc-more-pill b{font-size:12px!important}
+}
