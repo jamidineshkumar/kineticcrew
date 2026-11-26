@@ -151,7 +151,7 @@ async function loadMemories(){
   const {data:signedRows,error:signedError}=await client.storage.from('crew-memories').createSignedUrls(paths,3600);
   if(signedError)console.warn('KC Memories image signing failed:',signedError);
   else (signedRows||[]).forEach(item=>{const url=item?.signedUrl||item?.signedURL||item?.signed_url;if(item?.path&&url)signedByPath.set(item.path,url);});
-  for(const path of mediaPaths){if(signedByPath.has(path))continue;try{const {data:single,error:singleError}=await client.storage.from('crew-gram-media').createSignedUrl(path,3600);if(!singleError&&single?.signedUrl)signedByPath.set(path,single.signedUrl);}catch(signError){console.warn('Kinetic Gram fallback signing failed:',signError);}}
+  for(const path of paths){if(signedByPath.has(path))continue;try{const {data:single,error:singleError}=await client.storage.from('crew-memories').createSignedUrl(path,3600);if(!singleError&&single?.signedUrl)signedByPath.set(path,single.signedUrl);}catch(signError){console.warn('KC Memories fallback signing failed:',signError);}}
  }
  S.featureItems.memories=await Promise.all(rows.map(async item=>{
   const itemData=item?.data&&typeof item.data==='object'?item.data:{};
@@ -1096,7 +1096,7 @@ async function loadSocialFeed(){
   const {data:signedRows,error:signedError}=await client.storage.from('crew-gram-media').createSignedUrls(mediaPaths,3600);
   if(signedError)console.warn('Kinetic Gram media signing was deferred:',signedError);
   else (signedRows||[]).forEach(item=>{const url=item?.signedUrl||item?.signedURL||item?.signed_url;if(item?.path&&url)signedByPath.set(item.path,url);});
-  for(const path of paths){if(signedByPath.has(path))continue;try{const {data:single,error:singleError}=await client.storage.from('crew-memories').createSignedUrl(path,3600);if(!singleError&&single?.signedUrl)signedByPath.set(path,single.signedUrl);}catch(signError){console.warn('KC Memories fallback signing failed:',signError);}}
+  for(const path of mediaPaths){if(signedByPath.has(path))continue;try{const {data:single,error:singleError}=await client.storage.from('crew-gram-media').createSignedUrl(path,3600);if(!singleError&&single?.signedUrl)signedByPath.set(path,single.signedUrl);}catch(signError){console.warn('Kinetic Gram fallback signing failed:',signError);}}
  }
  S.socialPosts=rows.map(post=>({...post,signed_media_url:signedByPath.get(post.storage_path)||''}));
  S.socialLikes=likes.data||[];S.socialComments=comments.data||[];
