@@ -2703,26 +2703,33 @@ function setMobileMenu(open){
  const sidebar=$('#sidebar'),shade=$('#navShade'),toggle=$('#menuToggle');
  if(!sidebar||!shade)return;
  if(open&&$('#nav')&&!$('#nav').children.length&&typeof paint==='function')paint();
- const desktop=window.matchMedia('(min-width: 640px) and (hover: hover) and (pointer: fine)').matches;
- sidebar.classList.toggle('open',!!open);
- shade.classList.toggle('open',!!open);
+ const desktop=window.matchMedia('(min-width: 901px) and (hover: hover) and (pointer: fine)').matches;
+ if(desktop){
+  document.body.classList.toggle('kc-sidebar-collapsed',!open);
+  document.body.classList.remove('kc-menu-open');
+  sidebar.classList.remove('open');shade.classList.remove('open');
+  sidebar.setAttribute('aria-hidden','false');
+  sidebar.style.transform='none';sidebar.style.visibility='visible';sidebar.style.opacity='1';sidebar.style.pointerEvents='auto';
+  shade.style.pointerEvents='none';
+  if(toggle){toggle.setAttribute('aria-expanded',open?'true':'false');toggle.setAttribute('aria-label',open?'Collapse navigation':'Expand navigation');}
+  return;
+ }
+ sidebar.classList.toggle('open',!!open);shade.classList.toggle('open',!!open);
  sidebar.setAttribute('aria-hidden',open?'false':'true');
  sidebar.style.transform=open?'translate3d(0,0,0)':'translate3d(-110%,0,0)';
- sidebar.style.visibility=open?'visible':'hidden';
- sidebar.style.opacity=open?'1':'0';
- sidebar.style.pointerEvents=open?'auto':'none';
+ sidebar.style.visibility=open?'visible':'hidden';sidebar.style.opacity=open?'1':'0';sidebar.style.pointerEvents=open?'auto':'none';
  shade.style.zIndex='19990';sidebar.style.zIndex='20000';
  if(toggle){toggle.setAttribute('aria-expanded',open?'true':'false');toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');}
  document.body.classList.toggle('kc-menu-open',!!open);
- document.body.classList.remove('kc-sidebar-collapsed');
 }
 document.addEventListener('click',event=>{
  const toggle=event.target.closest('#menuToggle');if(!toggle)return;
  event.preventDefault();event.stopPropagation();
- const sidebar=$('#sidebar'),isOpen=!!sidebar?.classList.contains('open');
- if(window.matchMedia('(min-width: 640px) and (hover: hover) and (pointer: fine)').matches){
-  setMobileMenu(!isOpen);
-  if(!isOpen)requestAnimationFrame(()=>sidebar?.querySelector('#nav .nav-group-toggle, #nav .navitem')?.focus({preventScroll:true}));
+ const desktop=window.matchMedia('(min-width: 901px) and (hover: hover) and (pointer: fine)').matches;
+ if(desktop){
+  const expanded=!document.body.classList.contains('kc-sidebar-collapsed');
+  setMobileMenu(!expanded);
+  if(expanded===false)requestAnimationFrame(()=>$('#sidebar')?.querySelector('#nav .nav-group-toggle, #nav .navitem')?.focus({preventScroll:true}));
   return;
  }
  setMobileMenu(false);go('more');
@@ -2730,9 +2737,14 @@ document.addEventListener('click',event=>{
 document.addEventListener('keydown',event=>{
  if(event.key!=='Escape')return;
  const sidebar=$('#sidebar');
- if(sidebar?.classList.contains('open')){
-  event.preventDefault();setMobileMenu(false);$('#menuToggle')?.focus({preventScroll:true});
- }
+ if(sidebar?.classList.contains('open')){event.preventDefault();setMobileMenu(false);$('#menuToggle')?.focus({preventScroll:true});}
+});
+document.addEventListener('click',event=>{
+ if(!event.target.closest('[data-view], [data-audition-admin]'))return;
+ if(!window.matchMedia('(min-width: 901px) and (hover: hover) and (pointer: fine)').matches)setMobileMenu(false);
+});
+$('#nav')?.addEventListener('click',event=>{
+ if(event.target.closest('[data-view], [data-audition-admin]')&&!window.matchMedia('(min-width: 901px) and (hover: hover) and (pointer: fine)').matches)setMobileMenu(false);
 });
 let kcBackExitAt=0;window.addEventListener('popstate',event=>{if($('#sidebar')?.classList.contains('open'))setMobileMenu(false);const state=event.state;if(state?.kcApp&&typeof state.kcView==='string'){kcBackExitAt=0;go(state.kcView,{fromPop:true});return;}const now=Date.now();if(kcBackExitAt&&now-kcBackExitAt<=1800){const nativeApp=window.Capacitor?.Plugins?.App;if(nativeApp?.exitApp){nativeApp.exitApp();return;}kcBackExitAt=0;return;}kcBackExitAt=now;try{history.pushState({kcApp:true,kcView:S.view,kcRoot:true},'',location.href);}catch{}notice('Press back again to exit Kinetic Crew.');});
 $('#nav')?.addEventListener('click',event=>{if(event.target.closest('[data-view], [data-audition-admin]'))setMobileMenu(false);});
