@@ -368,3 +368,23 @@
  #app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip] .kc-liquid-profile-card,
  #app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip] .kc-profile-card-back{transition:none!important}
 }
+
+/* Larger QR with a clean white quiet-zone for reliable phone-camera scanning. */
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-qr-wrap{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ padding:10px!important;background:#fff!important;border-radius:17px!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-qr-wrap .kc-profile-qr{
+ width:220px!important;height:220px!important;max-width:100%!important;
+ padding:8px!important;box-sizing:border-box!important;background:#fff!important;
+ border:0!important;border-radius:10px!important;overflow:hidden!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-qr-wrap .kc-profile-qr img,
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-qr-wrap .kc-profile-qr canvas{
+ display:block!important;width:100%!important;height:100%!important;image-rendering:pixelated!important;
+}
+@media(max-width:640px){
+ #app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-qr-wrap .kc-profile-qr{
+  width:min(220px,58vw)!important;height:min(220px,58vw)!important;
+ }
+}
