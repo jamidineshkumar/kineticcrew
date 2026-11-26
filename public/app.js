@@ -2623,9 +2623,10 @@ document.addEventListener('submit',async e=>{
   }
   if(key==='rehearsals'){data.session_at=new Date(d.get('session_at')).toISOString();data.location=d.get('location')||'';}
   if(key==='leave'&&new Date(data.from_date)>new Date(data.to_date)){notice('End date must be on or after the start date.');return;}
-  const body=key==='polls'?d.getAll('poll_option').map(value=>String(value||'').trim()).filter(Boolean).join(', '):String(d.get('body')||'');
+  const pollOptions=key==='polls'?d.getAll('poll_option').map(value=>String(value||'').trim()).filter(Boolean):[];const body=key==='polls'?pollOptions.join(', '):String(d.get('body')||'');
   if(key==='polls')data.selection_mode=String(d.get('selection_mode')||'single')==='multiple'?'multiple':'single';
   if(key==='polls'){
+   if(pollOptions.some(value=>value.includes(','))){notice('Do not use commas inside an individual poll option.');return;}
    const options=body.split(',').map(value=>value.trim()).filter(Boolean),unique=[...new Set(options.map(value=>value.toLowerCase()))];
    if(unique.length<2){notice('Add at least two different poll options, separated by commas.');return;}
    if(unique.length>10){notice('A poll can have up to 10 options.');return;}
