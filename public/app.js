@@ -657,24 +657,64 @@ function notificationItems(){
 function unread(){return notificationItems().filter(a=>!isRead(a.notice_id||a.id)).length}
 let kcIslandTimer=null;
 let kcLastMessageNotificationId='';
+let kcIslandRetryAction=null;
 function showDynamicIsland(detail={}){
- const messageId=String(detail.messageId||'');if(messageId&&messageId===kcLastMessageNotificationId)return;if(messageId)kcLastMessageNotificationId=messageId;
- const title=String(detail.title||'Kinetic Crew').slice(0,90),body=String(detail.body||'You have a new crew update.').slice(0,180),target=String(detail.target||'notifications');
+ const messageId=String(detail.messageId||'');
+ if(messageId&&messageId===kcLastMessageNotificationId&&detail.progress==null)return;
+ if(messageId)kcLastMessageNotificationId=messageId;
+ const title=String(detail.title||'Kinetic Crew').slice(0,90);
+ const body=String(detail.body||'You have a new crew update.').slice(0,180);
+ const target=String(detail.target||'notifications');
  const rawStatus=String(detail.status||detail.state||detail.result||'pending').trim().toLowerCase();
  const status=/^(success|succeeded|successful|complete|completed|approved|sent|delivered|present|paid)$/.test(rawStatus)?'success':/^(failed|failure|error|rejected|declined|cancelled|canceled|denied)$/.test(rawStatus)?'failed':'pending';
+ const progress=Number.isFinite(Number(detail.progress))?Math.max(0,Math.min(100,Number(detail.progress))):null;
+ const count=detail.current!=null&&detail.total!=null?String(detail.current)+' / '+String(detail.total):'';
  let island=document.getElementById('kcDynamicIsland');
- if(!island){island=document.createElement('button');island.type='button';island.id='kcDynamicIsland';island.className='kc-dynamic-island';island.setAttribute('aria-live','polite');island.setAttribute('aria-label','New Kinetic Crew notification');island.innerHTML='<span class="kc-island-mark">KC</span><span class="kc-island-copy"><b></b><small></small></span><span class="kc-island-dot"></span>';document.body.appendChild(island);
- island.addEventListener('click',()=>{const view=island.dataset.target||'notifications',conversationId=island.dataset.conversationId||'';island.classList.remove('is-visible');if(view==='gram-chat'&&conversationId)window.__kgOpenConversation=conversationId;go(view);});
+ if(!island){
+  island=document.createElement('div');island.id='kcDynamicIsland';island.className='kc-dynamic-island';
+  island.setAttribute('role','status');island.setAttribute('aria-live','polite');
+  island.innerHTML='<span class="kc-island-mark" aria-hidden="true"></span><span class="kc-island-copy"><b></b><small></small></span><span class="kc-island-count"></span><button type="button" class="kc-island-retry" hidden>Retry</button><span class="kc-island-progress" aria-hidden="true"><i></i></span>';
+  document.body.appendChild(island);
+  island.addEventListener('click',event=>{
+   if(event.target.closest('.kc-island-retry'))return;
+   const view=island.dataset.target||'notifications',conversationId=island.dataset.conversationId||'';
+   island.classList.remove('is-visible');
+   if(view==='gram-chat'&&conversationId)window.__kgOpenConversation=conversationId;
+   go(view);
+  });
+  island.addEventListener('keydown',event=>{
+   if(event.key==='Enter'||event.key===' '){if(event.target===island){event.preventDefault();island.click();}}
+  });
+  island.tabIndex=0;island.setAttribute('aria-label','Kinetic Crew task status');
+  island.querySelector('.kc-island-retry').addEventListener('click',event=>{
+   event.stopPropagation();
+   if(typeof kcIslandRetryAction==='function'){const action=kcIslandRetryAction;kcIslandRetryAction=null;Promise.resolve().then(action).catch(error=>console.warn('Kinetic Crew retry failed:',error));}
+  });
  }
- island.dataset.status=status;island.classList.remove('kc-island-success','kc-island-pending','kc-island-failed');island.classList.add('kc-island-'+status);
- island.dataset.target=target;
+ island.dataset.status=status;island.dataset.target=target;
  island.dataset.conversationId=String(detail.conversationId||'');
+ island.classList.remove('kc-island-success','kc-island-pending','kc-island-failed');
+ island.classList.add('kc-island-'+status);
+ const mark=island.querySelector('.kc-island-mark');
+ mark.textContent=String(detail.icon||(status==='success'?'✓':status==='failed'?'!':'↗')).slice(0,4);
  island.querySelector('.kc-island-copy b').textContent=title;
  island.querySelector('.kc-island-copy small').textContent=body;
+ const countNode=island.querySelector('.kc-island-count');countNode.textContent=count;
+ countNode.hidden=!count;
+ const retry=island.querySelector('.kc-island-retry');
+ kcIslandRetryAction=typeof detail.retry==='function'?detail.retry:null;
+ retry.hidden=!(status==='failed'&&kcIslandRetryAction);
+ island.style.setProperty('--kc-island-progress',progress==null?(status==='pending'?'32%':'100%'):progress+'%');
+ island.classList.toggle('has-progress',progress!=null||status==='pending');
+ island.classList.toggle('is-persistent',detail.persistent===true);
  island.classList.remove('is-visible');void island.offsetWidth;island.classList.add('is-visible');
- clearTimeout(kcIslandTimer);kcIslandTimer=setTimeout(()=>island.classList.remove('is-visible'),6500);
-}
-window.addEventListener('kc:notification',event=>{const detail=event.detail||{};if(detail.conversationId&&String(window.kcGramActiveConversation||'')===String(detail.conversationId))return;showDynamicIsland(detail);if(notificationPrefs().sound)playNoticeSound();});
+ clearTimeout(kcIslandTimer);
+ if(detail.persistent!==true){
+  const duration=Number(detail.duration);
+  const timeout=Number.isFinite(duration)?Math.max(1800,Math.min(15000,duration)):(status==='failed'?9000:status==='success'?4800:6500);
+  kcIslandTimer=setTimeout(()=>island.classList.remove('is-visible'),timeout);
+ }
+}window.addEventListener('kc:notification',event=>{const detail=event.detail||{};if(detail.conversationId&&String(window.kcGramActiveConversation||'')===String(detail.conversationId))return;showDynamicIsland(detail);if(notificationPrefs().sound)playNoticeSound();});
 
 let kcGramInboxChannel=null,kcGramInboxUserId='';
 async function refreshKcGramUnreadBadge(userId=kcGramInboxUserId){
