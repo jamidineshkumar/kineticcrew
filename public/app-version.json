@@ -1,5 +1,5 @@
 {
-  "version": "1.6.97",
-  "updated_at": "2026-11-26T15:04:00+05:30",
-  "release_notes": "Restore mobile UI behaviour; desktop-only styling"
+  "version": "1.6.98",
+  "updated_at": "2026-11-26T18:05:00+05:30",
+  "release_notes": "Prevent desktop navigation styling from activating on mobile devices"
 }
