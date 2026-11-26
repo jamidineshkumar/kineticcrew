@@ -1,5 +1,5 @@
 {
-  "version": "1.6.97",
-  "updated_at": "2026-11-26T14:56:00+05:30",
-  "release_notes": "Desktop hamburger menu now matches mobile navigation UI"
+  "version": "1.6.98",
+  "updated_at": "2026-11-26T15:02:00+05:30",
+  "release_notes": "Dynamic Island now has animated task progress, success and failure states with retry support"
 }
