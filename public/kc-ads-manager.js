@@ -44,13 +44,13 @@ async function shareCampaignCard(campaign,button){
   const titleY=1190,titleLines=wrap(title,920,'800 58px Arial',3);
   ctx.fillStyle='#fff';ctx.font='800 58px Arial';titleLines.forEach((line,i)=>ctx.fillText(line,76,titleY+i*72));
   const captionY=titleY+titleLines.length*72+24;
-  ctx.fillStyle='#d8d4df';ctx.font='400 31px Arial';wrap(caption,920,'400 31px Arial',4).forEach((line,i)=>ctx.fillText(line,76,captionY+i*47));
+  ctx.fillStyle='#d8d4df';ctx.font='400 31px Arial';wrap(caption,920,'400 31px Arial',3).forEach((line,i)=>ctx.fillText(line,76,captionY+i*47));
   // Strong, visible CTA; URL is also copied for use in an Instagram Story Link sticker.
-  const ctaY=captionY+220;
+  const ctaY=captionY+165;
   ctx.fillStyle='rgba(246,126,177,.16)';round(76,ctaY,928,112,30);ctx.fill();
   ctx.strokeStyle='rgba(255,176,208,.52)';round(76,ctaY,928,112,30);ctx.stroke();
   ctx.fillStyle='#ffb0d0';ctx.font='800 31px Arial';ctx.fillText('TAP THE LINK TO VISIT WEBSITE  ↗',112,ctaY+68);
-  if(destination){ctx.fillStyle='#e6e1eb';ctx.font='400 22px Arial';wrap(destination,920,'400 22px Arial',2).forEach((line,i)=>ctx.fillText(line,80,ctaY+158+i*34));}
+  if(destination){ctx.fillStyle='#e6e1eb';ctx.font='400 22px Arial';wrap(destination,920,'400 22px Arial',2).forEach((line,i)=>ctx.fillText(line,80,ctaY+140+i*34));}
   // Discreet KC attribution, not competing with advertiser branding.
   ctx.strokeStyle='rgba(255,255,255,.14)';ctx.beginPath();ctx.moveTo(76,1770);ctx.lineTo(1004,1770);ctx.stroke();
   ctx.fillStyle='rgba(255,255,255,.58)';ctx.font='700 17px Arial';ctx.fillText('PROMOTED ON KINETIC CREW',76,1818);
