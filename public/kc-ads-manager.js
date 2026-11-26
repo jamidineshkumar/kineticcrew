@@ -10,14 +10,16 @@ async function upload(f){let ext=(f.name.split('.').pop()||'').toLowerCase(),vid
 async function shareCampaignCard(campaign,button){
  button.disabled=true;
  try{
-  const canvas=document.createElement('canvas');canvas.width=1200;canvas.height=630;
+  const canvas=document.createElement('canvas');canvas.width=1600;canvas.height=900;
   const ctx=canvas.getContext('2d');if(!ctx)throw Error('Image sharing is not supported in this browser.');
   const round=(x,y,w,h,r)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);};
+  // Draw in a 1200 × 675 design space and export at 1600 × 900 (exact 16:9).
+  ctx.scale(4/3,4/3);
   const loadImage=async url=>{if(!url)return null;try{const img=new Image();img.crossOrigin='anonymous';img.src=url;await img.decode();return img;}catch(_){return null;}};
-  const bg=ctx.createLinearGradient(0,0,1200,630);bg.addColorStop(0,'#10121b');bg.addColorStop(.56,'#1b1724');bg.addColorStop(1,'#07191c');ctx.fillStyle=bg;ctx.fillRect(0,0,1200,630);
+  const bg=ctx.createLinearGradient(0,0,1200,630);bg.addColorStop(0,'#10121b');bg.addColorStop(.56,'#1b1724');bg.addColorStop(1,'#07191c');ctx.fillStyle=bg;ctx.fillRect(0,0,1200,675);
   const glow=ctx.createRadialGradient(1050,70,10,1050,70,430);glow.addColorStop(0,'rgba(239,65,151,.30)');glow.addColorStop(1,'rgba(239,65,151,0)');ctx.fillStyle=glow;ctx.fillRect(600,0,600,500);
   const glow2=ctx.createRadialGradient(80,620,10,80,620,390);glow2.addColorStop(0,'rgba(38,205,213,.23)');glow2.addColorStop(1,'rgba(38,205,213,0)');ctx.fillStyle=glow2;ctx.fillRect(0,250,600,380);
-  ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=2;round(22,22,1156,586,30);ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=2;round(22,22,1156,631,30);ctx.stroke();
   const image=await loadImage(campaign.media_url||campaign.image_url||campaign.cover_url),ix=54,iy=54,iw=430,ih=522;
   ctx.save();round(ix,iy,iw,ih,24);ctx.clip();
   if(image){const scale=Math.max(iw/image.width,ih/image.height),w=image.width*scale,h=image.height*scale;ctx.drawImage(image,ix+(iw-w)/2,iy+(ih-h)/2,w,h);}
@@ -40,6 +42,7 @@ async function shareCampaignCard(campaign,button){
   ctx.textAlign='right';ctx.fillStyle='rgba(255,255,255,.76)';ctx.font='700 13px Arial';ctx.fillText('PROMOTED ON',1126,48);
   if(kcLogo){ctx.globalAlpha=.84;ctx.drawImage(kcLogo,1080,55,44,44);ctx.globalAlpha=1;}else{ctx.fillStyle='#f06aa8';ctx.font='900 19px Arial';ctx.fillText('KC',1126,82);}
   ctx.textAlign='left';
+  ctx.fillStyle='rgba(255,255,255,.42)';ctx.font='600 12px Arial';ctx.fillText('KINETIC CREW  ·  BRAND PARTNER PROMOTION',54,646);
   const blob=await new Promise((resolve,reject)=>canvas.toBlob(v=>v?resolve(v):reject(Error('Could not create the share image.')),'image/png'));
   const file=new File([blob],(brand.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'brand')+'-kinetic-crew-promo.png',{type:'image/png'});
   const message=brand+' — '+title+'\n'+caption+'\n'+destination+'\nPromoted on Kinetic Crew.';
