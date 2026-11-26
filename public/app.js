@@ -2074,7 +2074,7 @@ document.addEventListener('pointerup',event=>{
  if(!card||event.target.closest('button,a,input,textarea,summary,[contenteditable="true"],select,label'))return;
  if(event.pointerType==='mouse'&&event.button!==0)return;
  const now=Date.now(),previous=kcProfileTapState.get(card)||0;
- if(now-previous<=420){
+ if(now-previous<=750){
   kcProfileTapState.set(card,0);
   kcFlipProfileCard(card);
  }else{
