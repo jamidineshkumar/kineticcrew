@@ -673,7 +673,7 @@ function showDynamicIsland(detail={}){
  if(!island){
   island=document.createElement('div');island.id='kcDynamicIsland';island.className='kc-dynamic-island';
   island.setAttribute('role','status');island.setAttribute('aria-live','polite');
-  island.innerHTML='<span class="kc-island-mark" aria-hidden="true"></span><span class="kc-island-copy"><b></b><small></small></span><span class="kc-island-count"></span><button type="button" class="kc-island-retry" hidden>Retry</button><span class="kc-island-progress" aria-hidden="true"><i></i></span>';
+  island.innerHTML='<span class="kc-island-mark" aria-hidden="true"></span><span class="kc-island-dot" aria-hidden="true"></span><span class="kc-island-copy"><b></b><small></small></span><span class="kc-island-count"></span><button type="button" class="kc-island-retry" hidden>Retry</button><span class="kc-island-progress" aria-hidden="true"><i></i></span>';
   document.body.appendChild(island);
   island.addEventListener('click',event=>{
    if(event.target.closest('.kc-island-retry'))return;
