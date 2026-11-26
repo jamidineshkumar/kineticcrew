@@ -1,0 +1,52 @@
+/* Kinetic Crew desktop final parity pass — desktop-only. Mobile styling remains untouched. */
+@media (min-width:901px) and (hover:hover) and (pointer:fine){
+  /* Desktop already has the full workspace navigation in the left rail.
+     Do not show the four-item mobile dock a second time. */
+  #kcMobileDock,#kcMobileDock.kc-mobile-dock{display:none!important;visibility:hidden!important;pointer-events:none!important}
+  main{padding-bottom:36px!important}
+  .content{
+    width:min(calc(100% - 64px),1280px)!important;
+    max-width:1280px!important;
+    margin:0 auto!important;
+    padding:28px 0 48px!important;
+    box-sizing:border-box!important;
+  }
+  .side{
+    scrollbar-width:thin;
+    scrollbar-color:rgba(255,255,255,.2) transparent;
+  }
+  .side::-webkit-scrollbar{width:6px}
+  .side::-webkit-scrollbar-track{background:transparent}
+  .side::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:99px}
+  .side .sidebottom{position:sticky!important;bottom:0!important;z-index:2!important;background:linear-gradient(180deg,transparent,rgba(19,20,24,.98) 18%)!important;padding-top:12px!important}
+  /* Match the mobile poll card: results is a text action, never a browser-default grey button. */
+  body.kc-home-screen .kc-exact-poll-results,
+  .kc-exact-poll-results{
+    appearance:none!important;-webkit-appearance:none!important;
+    display:inline-flex!important;align-items:center!important;justify-content:flex-start!important;
+    width:auto!important;min-width:0!important;min-height:38px!important;
+    margin:8px 0 0!important;padding:7px 0!important;
+    border:0!important;border-radius:0!important;
+    background:transparent!important;box-shadow:none!important;
+    color:#dcb3ff!important;-webkit-text-fill-color:#dcb3ff!important;
+    font:700 13px/1.25 system-ui,sans-serif!important;
+    text-align:left!important;white-space:nowrap!important;cursor:pointer!important;
+  }
+  body.kc-home-screen .kc-exact-poll-results:hover,
+  .kc-exact-poll-results:hover{color:#f2dfff!important;-webkit-text-fill-color:#f2dfff!important;text-decoration:underline!important}
+  body.kc-home-screen .kc-exact-poll-results:focus-visible,
+  .kc-exact-poll-results:focus-visible{outline:2px solid rgba(220,179,255,.7)!important;outline-offset:4px!important;border-radius:5px!important}
+  body.kc-home-screen .kc-exact-poll-open{
+    appearance:none!important;-webkit-appearance:none!important;
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    min-height:42px!important;padding:0 18px!important;border-radius:999px!important;
+    border:1px solid rgba(217,167,229,.38)!important;
+    background:linear-gradient(120deg,rgba(145,101,190,.27),rgba(202,124,157,.22))!important;
+    color:#e9c3ff!important;font:700 13px/1 system-ui,sans-serif!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08)!important;
+  }
+  body.kc-home-screen .kc-home-poll-options .kc-poll-choice{
+    box-sizing:border-box!important;width:100%!important;min-height:58px!important;
+    border-radius:17px!important;text-align:left!important;
+  }
+}
