@@ -1,6 +1,6 @@
 /* Desktop uses the same slide-out drawer interaction as the mobile app. */
 (()=>{'use strict';
- const desktop=()=>window.matchMedia('(min-width:640px) and (hover:hover) and (pointer:fine)').matches;
+ const desktop=()=>window.matchMedia('(min-width:1100px) and (min-device-width:1024px) and (hover:hover) and (pointer:fine)').matches;
  function initialize(){
   if(!desktop())return;
   const panel=document.getElementById('sidebar'),shade=document.getElementById('navShade'),toggle=document.getElementById('menuToggle');
