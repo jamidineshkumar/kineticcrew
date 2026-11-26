@@ -36,7 +36,7 @@ async function shareCampaignCard(campaign,button){
   ctx.fillStyle='#c5c2ce';ctx.font='700 20px Arial';ctx.fillText('PRESENTED BY',brandLogo?218:78,211);
   ctx.fillStyle='#fff';ctx.font='800 48px Arial';const brandLines=wrap(brand,brandLogo?780:920,'800 48px Arial',2);brandLines.forEach((line,i)=>ctx.fillText(line,brandLogo?218:78,272+i*56));
   // Tall visual window. Fill with a soft crop, then place the original artwork fully visible above it.
-  const px=68,py=370,pw=944,ph=790;
+  const px=68,py=370,pw=944,ph=700;
   ctx.save();round(px,py,pw,ph,34);ctx.clip();
   if(media){
    ctx.save();ctx.filter='blur(30px) brightness(.48) saturate(1.15)';cover(media,px-32,py-32,pw+64,ph+64);ctx.restore();
@@ -48,12 +48,12 @@ async function shareCampaignCard(campaign,button){
   }
   ctx.restore();ctx.strokeStyle='rgba(255,255,255,.23)';ctx.lineWidth=2;round(px,py,pw,ph,34);ctx.stroke();
   // Campaign copy is given its own generous portrait section.
-  let y=1240;ctx.fillStyle='#fff';ctx.font='800 58px Arial';
+  let y=1120;ctx.fillStyle='#fff';ctx.font='800 58px Arial';
   const titleLines=wrap(title,920,'800 58px Arial',3);titleLines.forEach(line=>{ctx.fillText(line,78,y);y+=72;});
   y+=18;ctx.fillStyle='#e0dce6';ctx.font='400 31px Arial';
   wrap(caption,920,'400 31px Arial',3).forEach(line=>{ctx.fillText(line,80,y);y+=47;});
   // Explicit Link-sticker instruction avoids implying that a PNG itself is clickable.
-  const ctaY=1595;
+  const ctaY=1530;
   ctx.fillStyle='rgba(246,126,177,.18)';round(76,ctaY,928,126,32);ctx.fill();
   ctx.strokeStyle='rgba(255,176,208,.62)';round(76,ctaY,928,126,32);ctx.stroke();
   ctx.fillStyle='#ffb5d3';ctx.font='800 29px Arial';ctx.fillText('ADD INSTAGRAM LINK STICKER  ↗',112,ctaY+52);
