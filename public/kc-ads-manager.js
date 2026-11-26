@@ -14,11 +14,12 @@ async function shareCampaignCard(campaign,button){
   const ctx=canvas.getContext('2d');if(!ctx)throw Error('Image sharing is not supported in this browser.');
   const round=(x,y,w,h,r)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);};
   const loadImage=async url=>{if(!url)return null;try{const img=new Image();img.crossOrigin='anonymous';img.src=url;await img.decode();return img;}catch(_){return null;}};
-  const fitImage=(img,x,y,w,h)=>{if(!img)return;const scale=Math.min(w/img.width,h/img.height),dw=img.width*scale,dh=img.height*scale;ctx.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh);};
-  const bg=ctx.createLinearGradient(0,0,1080,1920);bg.addColorStop(0,'#10121b');bg.addColorStop(.48,'#211b2a');bg.addColorStop(1,'#07191c');ctx.fillStyle=bg;ctx.fillRect(0,0,1080,1920);
-  const glow=ctx.createRadialGradient(920,180,20,920,180,620);glow.addColorStop(0,'rgba(239,65,151,.34)');glow.addColorStop(1,'rgba(239,65,151,0)');ctx.fillStyle=glow;ctx.fillRect(360,0,720,820);
-  const glow2=ctx.createRadialGradient(100,1550,10,100,1550,560);glow2.addColorStop(0,'rgba(38,205,213,.23)');glow2.addColorStop(1,'rgba(38,205,213,0)');ctx.fillStyle=glow2;ctx.fillRect(0,1100,700,820);
-  ctx.strokeStyle='rgba(255,255,255,.17)';ctx.lineWidth=2;round(28,28,1024,1864,42);ctx.stroke();
+  const cover=(img,x,y,w,h)=>{if(!img)return;const scale=Math.max(w/img.width,h/img.height),dw=img.width*scale,dh=img.height*scale;ctx.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh);};
+  const contain=(img,x,y,w,h)=>{if(!img)return;const scale=Math.min(w/img.width,h/img.height),dw=img.width*scale,dh=img.height*scale;ctx.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh);};
+  const bg=ctx.createLinearGradient(0,0,1080,1920);bg.addColorStop(0,'#11121b');bg.addColorStop(.48,'#211827');bg.addColorStop(1,'#07191c');ctx.fillStyle=bg;ctx.fillRect(0,0,1080,1920);
+  const glow=ctx.createRadialGradient(900,170,10,900,170,700);glow.addColorStop(0,'rgba(239,65,151,.34)');glow.addColorStop(1,'rgba(239,65,151,0)');ctx.fillStyle=glow;ctx.fillRect(250,0,830,950);
+  const glow2=ctx.createRadialGradient(100,1500,10,100,1500,650);glow2.addColorStop(0,'rgba(38,205,213,.24)');glow2.addColorStop(1,'rgba(38,205,213,0)');ctx.fillStyle=glow2;ctx.fillRect(0,900,700,1020);
+  ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=2;round(26,26,1028,1868,42);ctx.stroke();
   const brand=String(campaign.advertiser_name||campaign.brand_name||'Featured brand');
   const title=String(campaign.title||'Campaign');
   const caption=String(campaign.caption||'Discover this promotion.');
@@ -28,40 +29,50 @@ async function shareCampaignCard(campaign,button){
   const brandLogo=await loadImage(campaign.advertiser_logo_url);
   const kcLogo=await loadImage(window.KC_SHARE_CARD_LOGO_URL||window.KC_BRAND_LOGO_URL||'/kinetic-crew-logo.svg');
   const wrap=(value,width,font,max)=>{ctx.font=font;const words=String(value||'').split(/\s+/),lines=[];let line='';for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>width&&line){lines.push(line);line=word;}else line=test;}if(line)lines.push(line);return lines.slice(0,max);};
-  // Brand-first header.
-  ctx.fillStyle='rgba(255,255,255,.08)';round(68,76,360,54,27);ctx.fill();
-  ctx.fillStyle='#f3b2d0';ctx.font='800 21px Arial';ctx.fillText('BRAND PARTNER PROMOTION',92,111);
-  if(brandLogo){ctx.save();round(72,168,112,112,24);ctx.clip();fitImage(brandLogo,72,168,112,112);ctx.restore();}
-  ctx.fillStyle='#bfc5d2';ctx.font='700 20px Arial';ctx.fillText('PRESENTED BY',brandLogo?212:76,205);
-  ctx.fillStyle='#fff';ctx.font='800 42px Arial';const brandLines=wrap(brand,brandLogo?780:920,'800 42px Arial',2);brandLines.forEach((line,i)=>ctx.fillText(line,brandLogo?212:76,258+i*50));
-  // Large portrait creative panel; image is contained, never stretched or cropped.
-  const panelY=360,panelH=760;
-  ctx.fillStyle='rgba(255,255,255,.055)';round(64,panelY,952,panelH,34);ctx.fill();
-  ctx.strokeStyle='rgba(255,255,255,.15)';round(64,panelY,952,panelH,34);ctx.stroke();
-  if(media){ctx.save();round(88,panelY+24,904,panelH-48,24);ctx.clip();fitImage(media,88,panelY+24,904,panelH-48);ctx.restore();}
-  else{const mg=ctx.createLinearGradient(88,panelY+24,992,panelY+panelH-24);mg.addColorStop(0,'#302034');mg.addColorStop(.55,'#18343a');mg.addColorStop(1,'#151722');ctx.fillStyle=mg;round(88,panelY+24,904,panelH-48,24);ctx.fill();ctx.fillStyle='#fff';ctx.font='800 34px Arial';ctx.fillText('FEATURED BRAND',120,panelY+380);}
-  // Campaign copy with generous vertical spacing.
-  const titleY=1190,titleLines=wrap(title,920,'800 58px Arial',3);
-  ctx.fillStyle='#fff';ctx.font='800 58px Arial';titleLines.forEach((line,i)=>ctx.fillText(line,76,titleY+i*72));
-  const captionY=titleY+titleLines.length*72+24;
-  ctx.fillStyle='#d8d4df';ctx.font='400 31px Arial';wrap(caption,920,'400 31px Arial',3).forEach((line,i)=>ctx.fillText(line,76,captionY+i*47));
-  // Strong, visible CTA; URL is also copied for use in an Instagram Story Link sticker.
-  const ctaY=captionY+165;
-  ctx.fillStyle='rgba(246,126,177,.16)';round(76,ctaY,928,112,30);ctx.fill();
-  ctx.strokeStyle='rgba(255,176,208,.52)';round(76,ctaY,928,112,30);ctx.stroke();
-  ctx.fillStyle='#ffb0d0';ctx.font='800 31px Arial';ctx.fillText('TAP THE LINK TO VISIT WEBSITE  ↗',112,ctaY+68);
-  if(destination){ctx.fillStyle='#e6e1eb';ctx.font='400 22px Arial';wrap(destination,920,'400 22px Arial',2).forEach((line,i)=>ctx.fillText(line,80,ctaY+140+i*34));}
-  // Discreet KC attribution, not competing with advertiser branding.
-  ctx.strokeStyle='rgba(255,255,255,.14)';ctx.beginPath();ctx.moveTo(76,1770);ctx.lineTo(1004,1770);ctx.stroke();
-  ctx.fillStyle='rgba(255,255,255,.58)';ctx.font='700 17px Arial';ctx.fillText('PROMOTED ON KINETIC CREW',76,1818);
-  if(kcLogo){ctx.globalAlpha=.7;fitImage(kcLogo,900,1784,92,70);ctx.globalAlpha=1;}else{ctx.fillStyle='#f06aa8';ctx.font='900 28px Arial';ctx.fillText('KC',940,1820);}
-  const blob=await new Promise((resolve,reject)=>canvas.toBlob(v=>v?resolve(v):reject(Error('Could not create the share image.')),'image/png'));
-  const file=new File([blob],(brand.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'brand')+'-kinetic-crew-story.png',{type:'image/png'});
-  const message=brand+' — '+title+'\n'+caption+'\n'+(destination||'')+'\nPromoted on Kinetic Crew.';
+  // Portrait-first header: advertiser identity is prominent, KC remains secondary.
+  ctx.fillStyle='rgba(255,255,255,.09)';round(70,78,430,56,28);ctx.fill();
+  ctx.fillStyle='#f5b4d1';ctx.font='800 21px Arial';ctx.fillText('OFFICIAL BRAND PROMOTION',96,115);
+  if(brandLogo){ctx.save();round(76,174,116,116,26);ctx.clip();contain(brandLogo,76,174,116,116);ctx.restore();}
+  ctx.fillStyle='#c5c2ce';ctx.font='700 20px Arial';ctx.fillText('PRESENTED BY',brandLogo?218:78,211);
+  ctx.fillStyle='#fff';ctx.font='800 48px Arial';const brandLines=wrap(brand,brandLogo?780:920,'800 48px Arial',2);brandLines.forEach((line,i)=>ctx.fillText(line,brandLogo?218:78,272+i*56));
+  // Tall visual window. Fill with a soft crop, then place the original artwork fully visible above it.
+  const px=68,py=370,pw=944,ph=700;
+  ctx.save();round(px,py,pw,ph,34);ctx.clip();
+  if(media){
+   ctx.save();ctx.filter='blur(30px) brightness(.48) saturate(1.15)';cover(media,px-32,py-32,pw+64,ph+64);ctx.restore();
+   ctx.fillStyle='rgba(8,9,16,.18)';ctx.fillRect(px,py,pw,ph);
+   contain(media,px+24,py+22,pw-48,ph-44);
+  }else{
+   const mg=ctx.createLinearGradient(px,py,px+pw,py+ph);mg.addColorStop(0,'#302034');mg.addColorStop(.55,'#18343a');mg.addColorStop(1,'#151722');ctx.fillStyle=mg;ctx.fillRect(px,py,pw,ph);
+   ctx.fillStyle='#fff';ctx.font='800 38px Arial';ctx.fillText('FEATURED BRAND',px+48,py+ph/2);
+  }
+  ctx.restore();ctx.strokeStyle='rgba(255,255,255,.23)';ctx.lineWidth=2;round(px,py,pw,ph,34);ctx.stroke();
+  // Campaign copy is given its own generous portrait section.
+  let y=1120;ctx.fillStyle='#fff';ctx.font='800 58px Arial';
+  const titleLines=wrap(title,920,'800 58px Arial',3);titleLines.forEach(line=>{ctx.fillText(line,78,y);y+=72;});
+  y+=18;ctx.fillStyle='#e0dce6';ctx.font='400 31px Arial';
+  wrap(caption,920,'400 31px Arial',3).forEach(line=>{ctx.fillText(line,80,y);y+=47;});
+  // Explicit Link-sticker instruction avoids implying that a PNG itself is clickable.
+  const ctaY=1530;
+  ctx.fillStyle='rgba(246,126,177,.18)';round(76,ctaY,928,126,32);ctx.fill();
+  ctx.strokeStyle='rgba(255,176,208,.62)';round(76,ctaY,928,126,32);ctx.stroke();
+  ctx.fillStyle='#ffb5d3';ctx.font='800 29px Arial';ctx.fillText('ADD INSTAGRAM LINK STICKER  ↗',112,ctaY+52);
+  ctx.fillStyle='#fff';ctx.font='600 22px Arial';ctx.fillText(destination?new URL(destination).hostname:'Visit advertiser website',112,ctaY+91);
+  ctx.strokeStyle='rgba(255,255,255,.16)';ctx.beginPath();ctx.moveTo(78,1780);ctx.lineTo(1002,1780);ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.64)';ctx.font='700 18px Arial';ctx.fillText('PROMOTED ON KINETIC CREW',78,1830);
+  if(kcLogo){ctx.globalAlpha=.72;contain(kcLogo,900,1790,94,72);ctx.globalAlpha=1;}else{ctx.fillStyle='#f06aa8';ctx.font='900 28px Arial';ctx.fillText('KC',950,1832);}
+  const blob=await new Promise((resolve,reject)=>canvas.toBlob(v=>v?resolve(v):reject(Error('Could not create the portrait story card.')),'image/png'));
+  const file=new File([blob],(brand.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'brand')+'-kinetic-crew-story-1080x1920.png',{type:'image/png'});
+  const message=brand+' — '+title+'\n'+caption+'\n'+destination+'\nPromoted on Kinetic Crew.';
   if(destination){try{await navigator.clipboard?.writeText(destination);}catch(_){}}
-  if(navigator.share&&navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:brand+' · '+title,text:message});if(destination)toast('Vertical story card shared. Website URL copied — add it with Instagram’s Link sticker so viewers can tap through.');}
-  else{const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=file.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000);toast(destination?'Vertical story card downloaded. Website URL copied for the Instagram Link sticker.':'Vertical story card downloaded.');}
- }catch(error){if(error?.name!=='AbortError')toast(error?.message||'Could not create the share card.');}
+  if(navigator.share&&navigator.canShare?.({files:[file]})){
+   await navigator.share({files:[file],title:brand+' · '+title,text:message});
+   if(destination)toast('Portrait story shared. Website URL copied — add Instagram’s Link sticker and paste it to make the story tappable.');
+  }else{
+   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=file.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000);
+   toast(destination?'Portrait story downloaded. Website URL copied — add Instagram’s Link sticker and paste it.':'Portrait story downloaded.');
+  }
+ }catch(error){if(error?.name!=='AbortError')toast(error?.message||'Could not create the portrait story card.');}
  finally{button.disabled=false;}
 }
 async function removeCampaignMediaIfUnused(mediaUrl,excludeCampaignId){
