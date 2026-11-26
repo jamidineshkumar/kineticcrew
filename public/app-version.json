@@ -1,6 +1,6 @@
 {
-  "version": "1.6.92",
+  "version": "1.6.93",
   "minimum_version": "1.2.7",
-  "updated_at": "2026-11-24T23:30:00+05:30",
-  "release_notes": "Add independent Share Cards logo destination and event share cards using event artwork and organiser photos."
+  "updated_at": "2026-11-26T12:18:00+05:30",
+  "release_notes": "Refresh desktop app shell and enforce desktop/mobile navigation parity."
 }
