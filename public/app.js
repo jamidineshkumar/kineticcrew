@@ -534,7 +534,7 @@ function profileCardBackMarkup(user,authId,username){
  if(profileId)qrTarget.searchParams.set('id',profileId);
  qrTarget.searchParams.set('u',handle);
  qrTarget.searchParams.set('n',String(user?.name||'Kinetic Crew Member'));
- // Keep the QR payload compact; the connect page can resolve identity from the member ID.
+ if(user?.avatar_url)qrTarget.searchParams.set('p',String(user.avatar_url));
  const instagram='https://www.instagram.com/'+encodeURIComponent(String(user?.instagram_username||handle).replace(/^@/,''))+'/';
  const displayId='KC-'+(profileId.replace(/[^a-zA-Z0-9]/g,'').slice(-8)||handle.slice(0,8)).toUpperCase();
  const displayRole=String(user?.role==='super_admin'?'FOUNDER / SUPER ADMIN':user?.crew_title||user?.occupation||role(user?.role).toUpperCase()).toUpperCase();
