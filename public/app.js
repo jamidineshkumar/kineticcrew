@@ -2745,12 +2745,8 @@ function setMobileMenu(open){
  if(open&&$('#nav')&&!$('#nav').children.length&&typeof paint==='function')paint();
  sidebar.classList.toggle('open',!!open);shade.classList.toggle('open',!!open);
  sidebar.setAttribute('aria-hidden',open?'false':'true');
- sidebar.style.transform=open?'translate3d(0,0,0)':'translate3d(-110%,0,0)';
- sidebar.style.visibility=open?'visible':'hidden';sidebar.style.opacity=open?'1':'0';sidebar.style.pointerEvents=open?'auto':'none';
- shade.style.zIndex='19990';sidebar.style.zIndex='20000';
  if(toggle){toggle.setAttribute('aria-expanded',open?'true':'false');toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');}
  document.body.classList.toggle('kc-menu-open',!!open);
- document.body.classList.remove('kc-sidebar-collapsed');
 }
 document.addEventListener('click',event=>{
  const toggle=event.target.closest('#menuToggle');if(!toggle)return;
