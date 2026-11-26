@@ -534,7 +534,7 @@ function profileCardBackMarkup(user,authId,username){
  if(profileId)qrTarget.searchParams.set('id',profileId);
  qrTarget.searchParams.set('u',handle);
  qrTarget.searchParams.set('n',String(user?.name||'Kinetic Crew Member'));
- if(user?.avatar_url)qrTarget.searchParams.set('p',String(user.avatar_url));
+ // Keep the QR payload compact; the connect page can resolve identity from the member ID.
  const instagram='https://www.instagram.com/'+encodeURIComponent(String(user?.instagram_username||handle).replace(/^@/,''))+'/';
  const displayId='KC-'+(profileId.replace(/[^a-zA-Z0-9]/g,'').slice(-8)||handle.slice(0,8)).toUpperCase();
  const displayRole=String(user?.role==='super_admin'?'FOUNDER / SUPER ADMIN':user?.crew_title||user?.occupation||role(user?.role).toUpperCase()).toUpperCase();
@@ -559,7 +559,7 @@ function ensureKcQrLibrary(){
 }
 async function renderProfileQrCards(){
  const nodes=[...document.querySelectorAll('[data-profile-qr]:not([data-qr-ready])')];if(!nodes.length)return;
- try{const QR=await ensureKcQrLibrary();nodes.forEach(node=>{if(!node.isConnected||node.dataset.qrReady)return;try{node.innerHTML='';new QR(node,{text:node.dataset.qrUrl,width:148,height:148,colorDark:'#17191d',colorLight:'#f4f1e9',correctLevel:QR.CorrectLevel.H});node.dataset.qrReady='yes';}catch(error){node.textContent='QR unavailable';console.warn('Profile QR could not render:',error);}});}
+ try{const QR=await ensureKcQrLibrary();nodes.forEach(node=>{if(!node.isConnected||node.dataset.qrReady)return;try{node.innerHTML='';new QR(node,{text:node.dataset.qrUrl,width:220,height:220,colorDark:'#111316',colorLight:'#ffffff',correctLevel:QR.CorrectLevel.M});node.dataset.qrReady='yes';}catch(error){node.textContent='QR unavailable';console.warn('Profile QR could not render:',error);}});}
  catch(error){nodes.forEach(node=>{node.dataset.qrReady='';node.textContent='QR temporarily unavailable';});console.warn('Kinetic Crew QR library unavailable:',error);}
 }
 function profilePage(){
@@ -2066,12 +2066,20 @@ function kcFlipProfileCard(card){
  card.setAttribute('aria-pressed',card.classList.contains('is-flipped')?'true':'false');
  kcMarkProfileFlipHintSeen(card);
 }
-/* Single tap flips the card on touch and desktop; interactive controls are excluded. */
+/* Require two deliberate taps on the card. A WeakMap avoids global state and
+   interactive links/buttons (including Instagram) never trigger a face change. */
+const kcProfileTapState=new WeakMap();
 document.addEventListener('pointerup',event=>{
  const card=event.target.closest('[data-profile-flip]');
- if(!card||event.target.closest('button,a,input,textarea,summary,[contenteditable="true"]'))return;
+ if(!card||event.target.closest('button,a,input,textarea,summary,[contenteditable="true"],select,label'))return;
  if(event.pointerType==='mouse'&&event.button!==0)return;
- kcFlipProfileCard(card);
+ const now=Date.now(),previous=kcProfileTapState.get(card)||0;
+ if(now-previous<=420){
+  kcProfileTapState.set(card,0);
+  kcFlipProfileCard(card);
+ }else{
+  kcProfileTapState.set(card,now);
+ }
 },{passive:true});
 document.addEventListener('keydown',event=>{
  if(event.key!=='Enter'&&event.key!==' ')return;
