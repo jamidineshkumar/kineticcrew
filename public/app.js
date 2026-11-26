@@ -2751,6 +2751,12 @@ function setMobileMenu(open){
 document.addEventListener('click',event=>{
  const toggle=event.target.closest('#menuToggle');if(!toggle)return;
  event.preventDefault();event.stopPropagation();
+ // Desktop uses the approved More-page menu layout; keep the mobile drawer unchanged.
+ if(window.matchMedia('(min-width: 901px)').matches){
+  setMobileMenu(false);
+  if(S.view!=='more')go('more');
+  return;
+ }
  setMobileMenu(!$('#sidebar')?.classList.contains('open'));
 });
 document.addEventListener('keydown',event=>{
