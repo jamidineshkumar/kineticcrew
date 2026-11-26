@@ -1,0 +1,77 @@
+
+
+/* Final production face swap: no 3D transforms anywhere in the ticket subtree. */
+#app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip]{
+ position:relative!important;display:block!important;min-height:0!important;height:auto!important;
+ perspective:none!important;-webkit-perspective:none!important;transform:none!important;-webkit-transform:none!important;
+ overflow:visible!important;isolation:isolate!important;
+}
+#app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip] .kc-profile-flip-inner{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;position:relative!important;
+ width:100%!important;height:auto!important;min-height:0!important;
+ transform:none!important;-webkit-transform:none!important;transform-style:flat!important;-webkit-transform-style:flat!important;
+ transition:none!important;perspective:none!important;-webkit-perspective:none!important;will-change:auto!important;
+}
+#app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip] .kc-liquid-profile-card,
+#app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip] .kc-profile-card-back{
+ grid-column:1!important;grid-row:1!important;position:relative!important;inset:auto!important;
+ width:100%!important;height:auto!important;min-height:470px!important;margin:0!important;
+ transform:none!important;-webkit-transform:none!important;transform-style:flat!important;-webkit-transform-style:flat!important;
+ backface-visibility:visible!important;-webkit-backface-visibility:visible!important;
+ direction:ltr!important;writing-mode:horizontal-tb!important;
+}
+#app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip] .kc-liquid-profile-card{
+ display:flex!important;z-index:2!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+ transition:opacity .22s ease,visibility .22s ease!important;
+}
+#app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip] .kc-profile-card-back{
+ display:none!important;z-index:1!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+}
+#app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip].is-flipped .kc-liquid-profile-card{
+ display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+}
+#app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip].is-flipped .kc-profile-card-back{
+ display:flex!important;z-index:3!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+}
+#app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip] .kc-profile-card-back,
+#app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip] .kc-profile-card-back *{
+ transform:none!important;-webkit-transform:none!important;rotate:none!important;scale:1!important;
+ direction:ltr!important;writing-mode:horizontal-tb!important;
+}
+@media(max-width:640px){
+ #app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip] .kc-liquid-profile-card,
+ #app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip] .kc-profile-card-back{min-height:450px!important}
+}
+
+/* More page fallback uses real text nodes, not pseudo-element generated content. */
+#app .kc-more-event-ads-host .kc-more-ads-banner{min-height:200px!important}
+#app .kc-more-event-ads-host .kc-more-brand-slide{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+ background:radial-gradient(ellipse at 15% 88%,rgba(36,201,210,.23),transparent 48%),
+ radial-gradient(ellipse at 86% 12%,rgba(236,73,151,.24),transparent 46%),
+ linear-gradient(135deg,#1b202b,#24202d 55%,#111820)!important;
+}
+#app .kc-more-event-ads-host .kc-more-brand-slide.is-active{opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+#app .kc-more-event-ads-host .kc-more-brand-content{
+ position:absolute!important;inset:0!important;display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;gap:13px!important;padding:18px!important;
+}
+#app .kc-more-event-ads-host .kc-more-brand-content strong{
+ display:block!important;text-align:center!important;white-space:nowrap!important;
+ font-size:clamp(31px,8.8vw,49px)!important;line-height:1!important;letter-spacing:-.065em!important;font-weight:1000!important;
+ text-shadow:0 5px 22px rgba(0,0,0,.3)!important;
+}
+#app .kc-more-event-ads-host .kc-more-brand-content strong span{
+ color:#ff70a8!important;-webkit-text-stroke:.6px rgba(255,218,114,.55)!important;
+}
+#app .kc-more-event-ads-host .kc-more-brand-content strong em{
+ color:#78e5dc!important;font-style:normal!important;-webkit-text-stroke:.5px rgba(30,102,119,.7)!important;
+}
+#app .kc-more-event-ads-host .kc-more-brand-content small{
+ color:rgba(255,255,255,.72)!important;font-size:8px!important;font-weight:850!important;letter-spacing:.25em!important;
+}
+@media(prefers-reduced-motion:reduce){
+ #app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip] .kc-liquid-profile-card,
+ #app .kc-reference-profile.kc-liquid-profile .kc-profile-flip-shell[data-profile-flip] .kc-profile-card-back{transition:none!important}
+}
