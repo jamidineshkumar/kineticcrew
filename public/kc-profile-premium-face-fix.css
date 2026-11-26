@@ -388,3 +388,27 @@
   width:min(220px,58vw)!important;height:min(220px,58vw)!important;
  }
 }
+
+
+/* QRCode.js creates both a canvas and a fallback image. Never display both:
+   Android WebView was laying them out side-by-side, leaving a blank half-panel. */
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-qr-wrap{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ width:100%!important;min-width:0!important;overflow:hidden!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-qr-wrap .kc-profile-qr{
+ position:relative!important;display:block!important;flex:0 0 auto!important;
+ width:min(220px,58vw)!important;height:min(220px,58vw)!important;
+ max-width:100%!important;min-width:0!important;overflow:hidden!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-qr-wrap .kc-profile-qr img{
+ display:none!important;visibility:hidden!important;width:0!important;height:0!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-qr-wrap .kc-profile-qr canvas{
+ display:block!important;position:relative!important;inset:auto!important;
+ width:100%!important;height:100%!important;max-width:100%!important;
+ margin:0 auto!important;object-fit:contain!important;image-rendering:pixelated!important;
+}
+#app .kc-reference-profile .kc-profile-flip-shell .kc-ticket-qr-wrap .kc-profile-qr table{
+ display:none!important;
+}
