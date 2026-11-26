@@ -662,61 +662,43 @@ function showDynamicIsland(detail={}){
  const messageId=String(detail.messageId||'');
  if(messageId&&messageId===kcLastMessageNotificationId&&detail.progress==null)return;
  if(messageId)kcLastMessageNotificationId=messageId;
- const title=String(detail.title||'Kinetic Crew').slice(0,90);
- const body=String(detail.body||'You have a new crew update.').slice(0,180);
- const target=String(detail.target||'notifications');
- const rawStatus=String(detail.status||detail.state||detail.result||'pending').trim().toLowerCase();
+ const title=String(detail.title||'Kinetic Crew').slice(0,90),body=String(detail.body||'You have a new crew update.').slice(0,180);
+ const target=String(detail.target||'notifications'),rawStatus=String(detail.status||detail.state||detail.result||'pending').trim().toLowerCase();
  const status=/^(success|succeeded|successful|complete|completed|approved|sent|delivered|present|paid)$/.test(rawStatus)?'success':/^(failed|failure|error|rejected|declined|cancelled|canceled|denied)$/.test(rawStatus)?'failed':'pending';
- const progress=Number.isFinite(Number(detail.progress))?Math.max(0,Math.min(100,Number(detail.progress))):null;
+ const progress=detail.progress!==undefined&&detail.progress!==null&&Number.isFinite(Number(detail.progress))?Math.max(0,Math.min(100,Number(detail.progress))):null;
  const count=detail.current!=null&&detail.total!=null?String(detail.current)+' / '+String(detail.total):progress!=null?Math.round(progress)+'%':'';
  let island=document.getElementById('kcDynamicIsland');
  if(!island){
-  island=document.createElement('div');island.id='kcDynamicIsland';island.className='kc-dynamic-island';
+  island=document.createElement('section');island.id='kcDynamicIsland';island.className='kc-dynamic-island';
   island.setAttribute('role','status');island.setAttribute('aria-live','polite');
-  island.innerHTML='<div class="kc-island-task" role="group"><span class="kc-island-mark" aria-hidden="true"></span><span class="kc-island-dot" aria-hidden="true"></span><span class="kc-island-copy"><b></b><small></small></span><span class="kc-island-count"></span><button type="button" class="kc-island-retry" hidden>Retry</button><span class="kc-island-progress" aria-hidden="true"><i></i></span></div><button type="button" class="kc-island-live"><span class="kc-island-live-mark">KC</span><span class="kc-island-live-copy"><b>KC Gram · KINETIC CREW</b><small>Executive Showcase Console</small></span><span class="kc-island-live-badge">LIVE</span></button><button type="button" class="kc-island-tickets"><span class="kc-island-ticket-mark" aria-hidden="true">✉</span><span class="kc-island-ticket-copy"><b>Send Event Tickets</b></span><span class="kc-island-ticket-arrow" aria-hidden="true">›</span></button>';
+  island.innerHTML='<div class="kc-island-task" role="button" tabindex="0" aria-label="Open latest Kinetic Crew update"><span class="kc-island-mark" aria-hidden="true"></span><span class="kc-island-copy"><b></b><small></small></span><span class="kc-island-count" hidden></span><button type="button" class="kc-island-retry" hidden>Retry</button><span class="kc-island-progress" aria-hidden="true"><i></i></span></div><button type="button" class="kc-island-live"><span class="kc-island-live-mark">KC</span><span class="kc-island-live-copy"><b>KC Gram · KINETIC CREW</b><small>Executive Showcase Console</small></span><span class="kc-island-live-badge">LIVE</span></button><button type="button" class="kc-island-tickets"><span class="kc-island-ticket-mark" aria-hidden="true">✉</span><span class="kc-island-ticket-copy"><b>Send Event Tickets</b></span><span class="kc-island-ticket-arrow" aria-hidden="true">›</span></button><button type="button" class="kc-island-dismiss" aria-label="Dismiss notification">×</button>';
   document.body.appendChild(island);
   island.addEventListener('click',event=>{
+   if(event.target.closest('.kc-island-dismiss')){clearTimeout(kcIslandTimer);island.classList.remove('is-visible');return;}
    if(event.target.closest('.kc-island-retry'))return;
-   const live=event.target.closest('.kc-island-live');
-   const tickets=event.target.closest('.kc-island-tickets');
-   const view=live?'gram':tickets?'events':(island.dataset.target||'notifications');
-   const conversationId=island.dataset.conversationId||'';
-   island.classList.remove('is-visible');
+   const live=event.target.closest('.kc-island-live'),tickets=event.target.closest('.kc-island-tickets'),task=event.target.closest('.kc-island-task');
+   if(!live&&!tickets&&!task)return;
+   const view=live?'gram':tickets?'events':(island.dataset.target||'notifications'),conversationId=island.dataset.conversationId||'';
+   clearTimeout(kcIslandTimer);island.classList.remove('is-visible');
    if(view==='gram-chat'&&conversationId)window.__kgOpenConversation=conversationId;
    go(view);
   });
-  island.addEventListener('keydown',event=>{
-   if(event.key==='Enter'||event.key===' '){if(event.target===island){event.preventDefault();island.click();}}
-  });
-  island.tabIndex=0;island.setAttribute('aria-label','Kinetic Crew task status');
+  island.querySelector('.kc-island-task').addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();island.querySelector('.kc-island-task').click();}});
   island.querySelector('.kc-island-retry').addEventListener('click',event=>{
    event.stopPropagation();
    if(typeof kcIslandRetryAction==='function'){const action=kcIslandRetryAction;kcIslandRetryAction=null;Promise.resolve().then(action).catch(error=>console.warn('Kinetic Crew retry failed:',error));}
   });
  }
- island.dataset.status=status;island.dataset.target=target;
- island.dataset.conversationId=String(detail.conversationId||'');
- island.classList.remove('kc-island-success','kc-island-pending','kc-island-failed');
- island.classList.add('kc-island-'+status);
- const mark=island.querySelector('.kc-island-mark');
- mark.textContent=String(detail.icon||(status==='success'?'✓':status==='failed'?'!':'↗')).slice(0,4);
- island.querySelector('.kc-island-copy b').textContent=title;
- island.querySelector('.kc-island-copy small').textContent=body;
- const countNode=island.querySelector('.kc-island-count');countNode.textContent=count;
- countNode.hidden=!count;
- const retry=island.querySelector('.kc-island-retry');
- kcIslandRetryAction=typeof detail.retry==='function'?detail.retry:null;
- retry.hidden=!(status==='failed'&&kcIslandRetryAction);
+ island.dataset.status=status;island.dataset.target=target;island.dataset.conversationId=String(detail.conversationId||'');
+ island.classList.remove('kc-island-success','kc-island-pending','kc-island-failed');island.classList.add('kc-island-'+status);
+ island.querySelector('.kc-island-mark').textContent=String(detail.icon||(status==='success'?'✓':status==='failed'?'!':'↗')).slice(0,4);
+ island.querySelector('.kc-island-copy b').textContent=title;island.querySelector('.kc-island-copy small').textContent=body;
+ const countNode=island.querySelector('.kc-island-count');countNode.textContent=count;countNode.hidden=!count;
+ const retry=island.querySelector('.kc-island-retry');kcIslandRetryAction=typeof detail.retry==='function'?detail.retry:null;retry.hidden=!(status==='failed'&&kcIslandRetryAction);
  island.style.setProperty('--kc-island-progress',progress==null?(status==='pending'?'32%':'100%'):progress+'%');
- island.classList.toggle('has-progress',progress!=null||status==='pending');
- island.classList.toggle('is-persistent',detail.persistent===true);
- island.classList.remove('is-visible');void island.offsetWidth;island.classList.add('is-visible');
- clearTimeout(kcIslandTimer);
- if(detail.persistent!==true){
-  const duration=Number(detail.duration);
-  const timeout=Number.isFinite(duration)?Math.max(1800,Math.min(15000,duration)):(status==='failed'?9000:status==='success'?4800:6500);
-  kcIslandTimer=setTimeout(()=>island.classList.remove('is-visible'),timeout);
- }
+ island.classList.toggle('has-progress',progress!=null||status==='pending');island.classList.toggle('is-persistent',detail.persistent===true);
+ island.classList.remove('is-visible');void island.offsetWidth;island.classList.add('is-visible');clearTimeout(kcIslandTimer);
+ if(detail.persistent!==true){const duration=Number(detail.duration),timeout=Number.isFinite(duration)&&detail.duration!=null?Math.max(1800,Math.min(15000,duration)):(status==='failed'?9000:status==='success'?4800:6500);kcIslandTimer=setTimeout(()=>island.classList.remove('is-visible'),timeout);}
 }window.addEventListener('kc:notification',event=>{const detail=event.detail||{};if(detail.conversationId&&String(window.kcGramActiveConversation||'')===String(detail.conversationId))return;showDynamicIsland(detail);if(notificationPrefs().sound)playNoticeSound();});
 
 let kcGramInboxChannel=null,kcGramInboxUserId='';
@@ -2003,16 +1985,12 @@ async function loadAppInfoData(){
  if(S.view==='app-info')paint();
 }
 function appInfoPage(){
- const meta=window.kcAppVersionMetadata||{},version=window.KC_APP_VERSION||meta.version||'1.6.59';
- const data=S.aboutData||{},details=data.update_details||{},releases=Array.isArray(data.releases)?data.releases:[];
- const title=String(details.title||'Latest improvements');
- const summary=String(details.summary||meta.release_notes||'The latest Kinetic Crew improvements and fixes.');
- const features=Array.isArray(details.features)?details.features:[];
- const fixes=Array.isArray(details.fixes)?details.fixes:[];
+ const meta=window.kcAppVersionMetadata||{},data=S.aboutData||{},details=data.update_details||{},releases=Array.isArray(data.releases)?data.releases:[];
+ const version=String(details.version||window.KC_APP_VERSION||meta.version||'1.7.02'),title=String(details.title||'Latest improvements'),summary=String(details.summary||meta.release_notes||'The latest Kinetic Crew improvements and fixes.');
+ const features=Array.isArray(details.features)?details.features:[],fixes=Array.isArray(details.fixes)?details.fixes:[];
  const history=releases.map(item=>'<details class="kc-about-history-item"><summary><span><b>v'+esc(item.version)+'</b><strong>'+esc(item.title)+'</strong></span><small>'+esc(item.published_at?new Date(item.published_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'')+'</small></summary><p>'+esc(item.summary||'')+'</p>'+(Array.isArray(item.features)&&item.features.length?'<ul>'+item.features.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'')+(Array.isArray(item.fixes)&&item.fixes.length?'<p class="kc-about-history-fixes">Fixes: '+item.fixes.map(esc).join(' · ')+'</p>':'')+'</details>').join('');
- const editForm=admin()?'<div class="kc-about-admin-actions"><button type="button" class="outline" data-kc-about-edit>✎ Edit update details</button></div><form id="kcAboutEditForm" class="kc-about-edit-form" hidden><label>Update heading<input name="title" maxlength="140" required value="'+esc(title)+'"></label><label>What’s new<textarea name="summary" rows="3" maxlength="2000" required>'+esc(summary)+'</textarea></label><label>New features <small>One item per line</small><textarea name="features" rows="3">'+esc(features.join('\n'))+'</textarea></label><label>Fixes <small>One item per line</small><textarea name="fixes" rows="2">'+esc(fixes.join('\n'))+'</textarea></label><div class="kc-about-edit-actions"><button type="submit" class="primary">Save update</button><button type="button" class="outline" data-kc-about-cancel>Cancel</button></div><small class="kc-about-edit-status" aria-live="polite"></small></form>':'';
- return settingsSubpage('About Kinetic Crew','Software information and update history.',
- '<section class="surface settings-card kc-settings-detail kc-about-software"><div class="kc-about-version-head"><span class="settings-kicker">KINETIC CREW · SOFTWARE</span><span class="kc-about-current-pill">CURRENT VERSION</span></div><h3>Kinetic Crew</h3><div class="kc-about-version-number">v'+esc(version)+'</div><p class="kc-about-developer">Developer · '+esc((S.appSettings||{}).developer||'Kinetic Crew Development Team')+'</p><div class="kc-about-update-state"><span class="kc-about-update-dot"></span><span>App updates are checked automatically when the app opens and returns to the foreground.</span></div><div class="kc-about-whats-new"><span class="settings-kicker">WHAT’S NEW</span><h4>'+esc(title)+'</h4><p>'+esc(summary)+'</p>'+(features.length?'<ul>'+features.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'')+(fixes.length?'<p class="kc-about-history-fixes">Fixes: '+fixes.map(esc).join(' · ')+'</p>':'')+'</div>'+editForm+'<details class="kc-about-version-history"><summary><span>Version history</span><small>'+releases.length+' release'+(releases.length===1?'':'s')+'</small></summary><div class="kc-about-history-list">'+(history||'<p class="kc-about-history-empty">'+(S.aboutDataLoading?'Loading release history…':'No previous release notes have been published yet.')+'</p>')+'</div></details>'+(S.aboutDataError?'<p class="kc-about-history-empty">'+esc(S.aboutDataError)+'</p>':'')+'</section>');
+ const editForm=superadmin()?'<div class="kc-about-admin-actions"><button type="button" class="outline" data-kc-about-edit>✎ Manage version & updates</button></div><form id="kcAboutEditForm" class="kc-about-edit-form" hidden><label>App version number<input name="version" maxlength="32" pattern="[0-9]+\\.[0-9]+\\.[0-9]+([+-][A-Za-z0-9.-]+)?" required value="'+esc(version)+'" placeholder="1.7.02"></label><small>Version label shown in the app. Publishing code changes still requires a deployment.</small><label>Update heading<input name="title" maxlength="140" required value="'+esc(title)+'"></label><label>What’s new<textarea name="summary" rows="3" maxlength="2000" required>'+esc(summary)+'</textarea></label><label>New features <small>One item per line</small><textarea name="features" rows="3">'+esc(features.join('\\n'))+'</textarea></label><label>Fixes <small>One item per line</small><textarea name="fixes" rows="2">'+esc(fixes.join('\\n'))+'</textarea></label><div class="kc-about-edit-actions"><button type="submit" class="primary">Publish update details</button><button type="button" class="outline" data-kc-about-cancel>Cancel</button></div><small class="kc-about-edit-status" aria-live="polite"></small></form>':'';
+ return settingsSubpage('About Kinetic Crew','Software information, update notes and release history.','<section class="surface settings-card kc-settings-detail kc-about-software"><div class="kc-about-version-head"><span class="settings-kicker">KINETIC CREW · SOFTWARE</span><span class="kc-about-current-pill">CURRENT VERSION</span></div><h3>Kinetic Crew</h3><div class="kc-about-version-number">v'+esc(version)+'</div><p class="kc-about-developer">Developer · '+esc((S.appSettings||{}).developer||'Kinetic Crew Development Team')+'</p><div class="kc-about-update-state"><span class="kc-about-update-dot"></span><span>Updates are checked automatically when the app opens and returns to the foreground.</span></div><div class="kc-about-whats-new"><span class="settings-kicker">WHAT’S NEW</span><h4>'+esc(title)+'</h4><p>'+esc(summary)+'</p>'+(features.length?'<ul>'+features.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'')+(fixes.length?'<p class="kc-about-history-fixes">Fixes: '+fixes.map(x=>esc(x)).join(' · ')+'</p>':'')+'</div>'+editForm+'<details class="kc-about-version-history"><summary><span>Version history</span><small>'+releases.length+' release'+(releases.length===1?'':'s')+'</small></summary><div class="kc-about-history-list">'+(history||'<p class="kc-about-history-empty">'+(S.aboutDataLoading?'Loading release history…':'No previous release notes have been published yet.')+'</p>')+'</div></details>'+(S.aboutDataError?'<p class="kc-about-history-empty">'+esc(S.aboutDataError)+'</p>':'')+'</section>');
 }
 function developerPage(){
  const links=[['GitHub','https://github.com/jamidineshkumar','GH'],['LinkedIn','https://in.linkedin.com/in/jami-dinesh-kumar-696478358','in'],['Instagram','https://www.instagram.com/dinuvox/','◎'],['YouTube','https://www.youtube.com/@Dinuvoxx','▶']];
@@ -3219,9 +3197,9 @@ document.addEventListener('click',event=>{
 document.addEventListener('submit',async event=>{
  const form=event.target.closest('#kcAboutEditForm');if(!form)return;
  event.preventDefault();
- if(!admin()){notice('Admin access required.');return;}
+ if(!superadmin()){notice('Super Admin access required to publish version updates.');return;}
  const fd=new FormData(form),lines=name=>String(fd.get(name)||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
- const details={title:String(fd.get('title')||'').trim(),summary:String(fd.get('summary')||'').trim(),features:lines('features'),fixes:lines('fixes')};
+ const version=String(fd.get('version')||'').trim();if(!/^\\d+\\.\\d+\\.\\d+(?:[+-][A-Za-z0-9.-]+)?$/.test(version)){notice('Enter a valid version number, for example 1.7.02.');return;}const details={version,title:String(fd.get('title')||'').trim(),summary:String(fd.get('summary')||'').trim(),features:lines('features'),fixes:lines('fixes')};
  const button=form.querySelector('[type="submit"]'),status=form.querySelector('.kc-about-edit-status');
  button.disabled=true;button.textContent='Saving…';if(status)status.textContent='Saving update details…';
  try{
