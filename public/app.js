@@ -2704,17 +2704,8 @@ function setMobileMenu(open){
  if(!sidebar||!shade)return;
  if(open&&$('#nav')&&!$('#nav').children.length&&typeof paint==='function')paint();
  const desktop=window.matchMedia('(min-width: 640px) and (hover: hover) and (pointer: fine)').matches;
- if(desktop){
-  sidebar.classList.toggle('open',!!open);
-  document.body.classList.toggle('kc-sidebar-collapsed',!open);
-  sidebar.setAttribute('aria-hidden',open?'false':'true');
-  sidebar.style.transform='';sidebar.style.visibility='';sidebar.style.opacity='';sidebar.style.pointerEvents='';
-  shade.classList.remove('open');shade.style.display='none';
-  if(toggle){toggle.setAttribute('aria-expanded',open?'true':'false');toggle.setAttribute('aria-label',open?'Collapse navigation':'Expand navigation');}
-  document.body.classList.remove('kc-menu-open');
-  return;
- }
- sidebar.classList.toggle('open',!!open);shade.classList.toggle('open',!!open);
+ sidebar.classList.toggle('open',!!open);
+ shade.classList.toggle('open',!!open);
  sidebar.setAttribute('aria-hidden',open?'false':'true');
  sidebar.style.transform=open?'translate3d(0,0,0)':'translate3d(-110%,0,0)';
  sidebar.style.visibility=open?'visible':'hidden';
@@ -2723,6 +2714,7 @@ function setMobileMenu(open){
  shade.style.zIndex='19990';sidebar.style.zIndex='20000';
  if(toggle){toggle.setAttribute('aria-expanded',open?'true':'false');toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');}
  document.body.classList.toggle('kc-menu-open',!!open);
+ document.body.classList.remove('kc-sidebar-collapsed');
 }
 document.addEventListener('click',event=>{
  const toggle=event.target.closest('#menuToggle');if(!toggle)return;
@@ -2743,7 +2735,7 @@ document.addEventListener('keydown',event=>{
  }
 });
 let kcBackExitAt=0;window.addEventListener('popstate',event=>{if($('#sidebar')?.classList.contains('open'))setMobileMenu(false);const state=event.state;if(state?.kcApp&&typeof state.kcView==='string'){kcBackExitAt=0;go(state.kcView,{fromPop:true});return;}const now=Date.now();if(kcBackExitAt&&now-kcBackExitAt<=1800){const nativeApp=window.Capacitor?.Plugins?.App;if(nativeApp?.exitApp){nativeApp.exitApp();return;}kcBackExitAt=0;return;}kcBackExitAt=now;try{history.pushState({kcApp:true,kcView:S.view,kcRoot:true},'',location.href);}catch{}notice('Press back again to exit Kinetic Crew.');});
-$('#nav')?.addEventListener('click',event=>{if(event.target.closest('[data-view]')&&!window.matchMedia('(min-width: 640px) and (hover: hover) and (pointer: fine)').matches)setMobileMenu(false);});
+$('#nav')?.addEventListener('click',event=>{if(event.target.closest('[data-view], [data-audition-admin]'))setMobileMenu(false);});
 
 document.addEventListener('kc:navigate',event=>{const view=event.detail?.view;if(view)go(view);});
 document.addEventListener('click',event=>{const headerAction=event.target.closest('.kc-header-actions [data-view],.kc-header-brand[data-view]');if(!headerAction)return;event.preventDefault();go(headerAction.dataset.view);});
