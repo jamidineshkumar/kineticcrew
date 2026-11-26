@@ -66,7 +66,7 @@
  html body #app .kc-exact-poll-update>.kc-exact-poll-results:hover{color:#f2dfff!important;-webkit-text-fill-color:#f2dfff!important;text-decoration:underline!important}
 }
 /* Kinetic Crew desktop hamburger drawer — same visual language and behaviour as mobile. */
-@media (min-width:640px) and (hover:hover) and (pointer:fine){
+@media (min-width:901px) and (hover:hover) and (pointer:fine){
  html body .shell{min-height:100vh!important}
  html body .kc-mobile-topbar{
   position:sticky!important;top:12px!important;z-index:180!important;
@@ -105,7 +105,7 @@
  html body .content{width:min(calc(100% - 64px),1040px)!important;max-width:1040px!important;margin:0 auto!important;padding:12px 0 48px!important}
  html body.kc-menu-open{overflow:hidden!important}
 }
-@media (prefers-reduced-motion:reduce){@media (min-width:640px) and (hover:hover) and (pointer:fine){html body .side{transition:none!important}}}
+@media (prefers-reduced-motion:reduce){@media (min-width:901px) and (hover:hover) and (pointer:fine){html body .side{transition:none!important}}}
 
 
 /* Desktop workspace correction: persistent compact rail + full-width workspace.
