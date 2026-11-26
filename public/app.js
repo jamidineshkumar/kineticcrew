@@ -673,11 +673,14 @@ function showDynamicIsland(detail={}){
  if(!island){
   island=document.createElement('div');island.id='kcDynamicIsland';island.className='kc-dynamic-island';
   island.setAttribute('role','status');island.setAttribute('aria-live','polite');
-  island.innerHTML='<span class="kc-island-mark" aria-hidden="true"></span><span class="kc-island-dot" aria-hidden="true"></span><span class="kc-island-copy"><b></b><small></small></span><span class="kc-island-count"></span><button type="button" class="kc-island-retry" hidden>Retry</button><span class="kc-island-progress" aria-hidden="true"><i></i></span>';
+  island.innerHTML='<div class="kc-island-task" role="group"><span class="kc-island-mark" aria-hidden="true"></span><span class="kc-island-dot" aria-hidden="true"></span><span class="kc-island-copy"><b></b><small></small></span><span class="kc-island-count"></span><button type="button" class="kc-island-retry" hidden>Retry</button><span class="kc-island-progress" aria-hidden="true"><i></i></span></div><button type="button" class="kc-island-live"><span class="kc-island-live-mark">KC</span><span class="kc-island-live-copy"><b>KC Gram · KINETIC CREW</b><small>Executive Showcase Console</small></span><span class="kc-island-live-badge">LIVE</span></button><button type="button" class="kc-island-tickets"><span class="kc-island-ticket-mark" aria-hidden="true">✉</span><span class="kc-island-ticket-copy"><b>Send Event Tickets</b></span><span class="kc-island-ticket-arrow" aria-hidden="true">›</span></button>';
   document.body.appendChild(island);
   island.addEventListener('click',event=>{
    if(event.target.closest('.kc-island-retry'))return;
-   const view=island.dataset.target||'notifications',conversationId=island.dataset.conversationId||'';
+   const live=event.target.closest('.kc-island-live');
+   const tickets=event.target.closest('.kc-island-tickets');
+   const view=live?'gram':tickets?'events':(island.dataset.target||'notifications');
+   const conversationId=island.dataset.conversationId||'';
    island.classList.remove('is-visible');
    if(view==='gram-chat'&&conversationId)window.__kgOpenConversation=conversationId;
    go(view);
