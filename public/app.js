@@ -144,7 +144,8 @@ async function loadMemories(){
  const {data,error}=await rpc('crew_memories_list',{});
  if(error)throw error;
  const rows=Array.isArray(data)?data:(Array.isArray(data?.items)?data.items:[]);
- const paths=[...new Set(rows.map(item=>item?.data?.storage_path).filter(Boolean))];
+ const memoryStoragePath=item=>{const d=item?.data&&typeof item.data==='object'?item.data:{};return String(d.storage_path||d.storagePath||d.file_path||d.media_path||d.photo_path||d.image_path||'').replace(/^\\/+/, '');};
+ const paths=[...new Set(rows.map(memoryStoragePath).filter(Boolean))];
  const signedByPath=new Map();
  if(paths.length){
   const {data:signedRows,error:signedError}=await client.storage.from('crew-memories').createSignedUrls(paths,3600);
@@ -154,7 +155,7 @@ async function loadMemories(){
  }
  S.featureItems.memories=await Promise.all(rows.map(async item=>{
   const itemData=item?.data&&typeof item.data==='object'?item.data:{};
-  const storagePath=itemData.storage_path||itemData.storagePath||itemData.file_path||'';
+  const storagePath=memoryStoragePath(item);
   const signedUrl=storagePath?signedByPath.get(storagePath)||'':'';
   const mediaUrl=signedUrl||itemData.signed_media_url||itemData.media_url||itemData.image_url||itemData.photo_url||itemData.image||itemData.photo||'';
   let social={likes:0,liked:false,comments:[]};
