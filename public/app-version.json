@@ -1,5 +1,5 @@
 {
-  "version": "1.7.02",
-  "updated_at": "2026-11-27T00:00:00+05:30",
-  "release_notes": "Dynamic Island interaction redesign and Super Admin software update manager"
+  "version": "1.7.03",
+  "updated_at": "2026-11-27T17:45:00+05:30",
+  "release_notes": "Rehearsals rebuilt with Events scheduling, registration, tickets, QR check-in, sharing and admin management"
 }
