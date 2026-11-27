@@ -381,3 +381,6 @@
  .kce-nightpulse .kce-detail-panel,.kce-nightpulse .kce-reserve-panel{padding:16px!important}
 }
 @media(min-width:701px){.kce-nightpulse .kce-events-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.kce-nightpulse .kce-detail-banner{aspect-ratio:1.8/1!important}}
+
+/* Mobile reference layout: one vertical, image-led event/rehearsal feed. */
+@media(max-width:700px){.kce-nightpulse .kce-events-grid{grid-template-columns:minmax(0,1fr)!important;gap:12px!important}.kce-nightpulse .kce-event-card>.kce-art,.kce-nightpulse .kce-ticket-wallet-main .kce-art{min-height:168px!important}.kce-nightpulse .kce-event-card .kce-art>b,.kce-nightpulse .kce-ticket-wallet-main .kce-art>b{font-size:17px!important}}
