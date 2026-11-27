@@ -1,0 +1,110 @@
+/* Kinetic Crew orange event-booking reference skin.
+   Strictly scoped to Events and Rehearsals. Presentation only: no handlers,
+   data attributes, markup contracts, registration logic or navigation changed. */
+.kce-events.kce-nightpulse,.kce-event-detail.kce-nightpulse{
+ --kc-ref-bg:#101010;--kc-ref-panel:#1b1b1b;--kc-ref-panel2:#242424;
+ --kc-ref-line:rgba(255,255,255,.10);--kc-ref-muted:#aaa5a0;
+ --kc-ref-orange:#ff6a2b;--kc-ref-orange2:#ff8a3d;
+ width:100%!important;max-width:1180px!important;margin:0 auto!important;
+ padding:clamp(15px,3vw,28px)!important;
+ padding-bottom:calc(112px + env(safe-area-inset-bottom))!important;
+ color:#f8f6f3!important;background:#101010!important;border-radius:26px!important;
+}
+.kce-nightpulse .kce-eyebrow{color:#ff9a68!important;letter-spacing:.17em!important}
+.kce-nightpulse .kce-events-head{align-items:flex-end!important;gap:14px!important;margin:4px 0 18px!important}
+.kce-nightpulse .kce-events-head h1{color:#fff!important;font-size:clamp(29px,5vw,44px)!important;line-height:1.02!important;letter-spacing:-.055em!important}
+.kce-nightpulse .kce-events-head h1 em,.kce-nightpulse.kce-rehearsal-mode .kce-events-head h1 em{background:linear-gradient(100deg,#ffd0a5,#ff7438 65%,#f34c23)!important;background-clip:text!important;-webkit-background-clip:text!important;color:transparent!important}
+.kce-nightpulse .kce-events-head p{color:#aaa5a0!important;font-size:12px!important}
+.kce-nightpulse .kce-ticket-shortcut,.kce-nightpulse .kce-admin-event{min-height:39px!important;padding:0 13px!important;border:1px solid #ffffff18!important;border-radius:999px!important;background:#202020!important;color:#f5f2ef!important;font-size:10px!important}
+.kce-nightpulse .kce-ticket-shortcut b{background:#ff6a2b!important;color:#fff!important}
+.kce-nightpulse .kce-admin-event{background:linear-gradient(110deg,#ff8b43,#f45124)!important;border:0!important;color:#1b100b!important}
+.kce-nightpulse .kce-event-search{display:flex!important;align-items:center!important;gap:11px!important;min-height:48px!important;margin:0 0 18px!important;padding:0 15px!important;border:1px solid #ffffff16!important;border-radius:15px!important;background:#1b1b1b!important;color:#ff8750!important}
+.kce-nightpulse .kce-event-search:before{content:"⌕"!important;font-size:22px!important;color:#ff8750!important}
+.kce-nightpulse .kce-event-search input{flex:1!important;min-width:0!important;border:0!important;outline:0!important;background:transparent!important;color:#fff!important;font-size:12px!important}
+.kce-nightpulse .kce-event-search input::placeholder{color:#89837e!important}
+.kce-nightpulse .kce-featured-event{position:relative!important;display:block!important;width:100%!important;min-height:0!important;height:clamp(235px,58vw,350px)!important;margin:0 0 21px!important;padding:0!important;overflow:hidden!important;border:1px solid #ff7a3c35!important;border-radius:23px!important;background:#20140f!important;text-align:left!important;box-shadow:0 18px 42px #0008!important}
+.kce-nightpulse .kce-featured-event>.kce-art-featured{position:absolute!important;inset:0!important;min-height:0!important;height:100%!important;background-size:cover!important;background-position:center!important;filter:none!important}
+.kce-nightpulse .kce-featured-event>.kce-art-featured:before{background:linear-gradient(180deg,#09090908 8%,#09090925 38%,#090909e8 100%)!important}
+.kce-nightpulse .kce-featured-info{left:0!important;right:0!important;bottom:0!important;max-width:none!important;padding:19px!important;align-items:flex-start!important;gap:7px!important}
+.kce-nightpulse .kce-featured-info>i{color:#ffad7b!important;font-size:8px!important;letter-spacing:.17em!important}
+.kce-nightpulse .kce-featured-info>b{color:#fff!important;font-size:clamp(21px,5vw,30px)!important;line-height:1.05!important}
+.kce-nightpulse .kce-featured-info>small{color:#ded8d2!important;font-size:10px!important}
+.kce-nightpulse .kce-featured-info>strong{display:inline-flex!important;align-items:center!important;gap:12px!important;margin-top:4px!important;padding:10px 15px!important;border-radius:999px!important;background:linear-gradient(110deg,#ff8c45,#ff5727)!important;color:#21110a!important;font-size:10px!important;box-shadow:0 7px 20px #ff642c38!important}
+.kce-nightpulse .kce-category-mosaic{display:flex!important;gap:8px!important;overflow-x:auto!important;padding:2px 0 11px!important;scrollbar-width:none!important}
+.kce-nightpulse .kce-category-mosaic::-webkit-scrollbar,.kce-nightpulse .kce-tabs::-webkit-scrollbar{display:none!important}
+.kce-nightpulse .kce-category{position:relative!important;flex:0 0 auto!important;min-width:fit-content!important;min-height:39px!important;padding:0 14px!important;display:flex!important;flex-direction:row!important;align-items:center!important;gap:7px!important;border:1px solid #ffffff18!important;border-radius:999px!important;background:#202020!important;color:#f6f2ee!important;box-shadow:none!important}
+.kce-nightpulse .kce-category:after{display:none!important}
+.kce-nightpulse .kce-category i{font-size:14px!important;color:#ff8952!important}
+.kce-nightpulse .kce-category b{font-size:10px!important;white-space:nowrap!important}
+.kce-nightpulse .kce-category small{display:none!important}
+.kce-nightpulse .kce-tabs{display:flex!important;gap:7px!important;overflow-x:auto!important;padding:3px 0 11px!important;scrollbar-width:none!important}
+.kce-nightpulse .kce-tabs button{flex:0 0 auto!important;min-height:35px!important;padding:0 14px!important;border:1px solid #ffffff18!important;border-radius:999px!important;background:#202020!important;color:#aaa5a0!important;font-size:10px!important;font-weight:750!important}
+.kce-nightpulse .kce-tabs button.active{border-color:#ff8147!important;background:linear-gradient(110deg,#ff8a43,#f45125)!important;color:#21110b!important;box-shadow:0 6px 17px #ff642c2b!important}
+.kce-nightpulse .kce-discover-label,.kce-nightpulse .kce-list-heading{display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:10px!important;margin:10px 0 12px!important}
+.kce-nightpulse .kce-discover-label h2,.kce-nightpulse .kce-list-heading h2{color:#fff!important;font-size:19px!important;letter-spacing:-.03em!important}
+.kce-nightpulse .kce-discover-label>span,.kce-nightpulse .kce-list-heading>span{color:#a9a39e!important;font-size:9px!important}
+.kce-nightpulse .kce-events-grid{display:flex!important;gap:12px!important;overflow-x:auto!important;overflow-y:hidden!important;padding:2px 2px 13px!important;scroll-snap-type:x mandatory!important;scrollbar-width:none!important}
+.kce-nightpulse .kce-events-grid::-webkit-scrollbar{display:none!important}
+.kce-nightpulse .kce-event-card{flex:0 0 clamp(220px,76vw,310px)!important;min-width:0!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;padding:0!important;border:1px solid #ffffff18!important;border-radius:20px!important;background:#1b1b1b!important;color:#fff!important;text-align:left!important;box-shadow:0 12px 28px #0007!important;scroll-snap-align:start!important}
+.kce-nightpulse .kce-event-card>.kce-art{min-height:clamp(145px,45vw,185px)!important;padding:13px!important;background-color:#29170f!important;background-size:cover!important;background-position:center!important}
+.kce-nightpulse .kce-event-card>.kce-art:before{background:linear-gradient(180deg,#09090904 12%,#090909c9 100%)!important}
+.kce-nightpulse .kce-art-kicker{color:#ffb184!important;font-size:8px!important;letter-spacing:.1em!important}
+.kce-nightpulse .kce-art>b{color:#fff!important;font-size:17px!important;line-height:1.08!important}
+.kce-nightpulse .kce-art>small{color:#e2d8d0!important;font-size:9px!important}
+.kce-nightpulse .kce-event-meta{display:flex!important;flex-direction:column!important;gap:6px!important;padding:12px 13px 13px!important}
+.kce-nightpulse .kce-event-meta>b{color:#fff!important;font-size:12px!important}
+.kce-nightpulse .kce-event-meta>small{color:#aaa5a0!important;font-size:9px!important}
+.kce-nightpulse .kce-event-meta>span{display:flex!important;justify-content:space-between!important;border-color:#ffffff15!important;color:#ff9a68!important;font-size:9px!important}
+.kce-nightpulse .kce-event-meta>span i{color:#ff7840!important}
+.kce-nightpulse .kce-ticket-wallet-card{flex:0 0 clamp(220px,76vw,310px)!important;overflow:hidden!important;border:1px solid #ffffff18!important;border-radius:20px!important;background:#1b1b1b!important;color:#fff!important;scroll-snap-align:start!important}
+.kce-nightpulse .kce-ticket-wallet-main{width:100%!important;background:transparent!important;color:#fff!important}
+.kce-nightpulse .kce-wallet-qr{border:1px solid #ffffff18!important;border-radius:12px!important;background:#25211f!important;color:#ff9a68!important}
+.kce-nightpulse .kce-empty-state{border:1px dashed #ffffff25!important;border-radius:20px!important;background:#1b1b1b!important;color:#fff!important}
+.kce-nightpulse .kce-empty-state>span{color:#ff8952!important}.kce-nightpulse .kce-empty-state>small{color:#aaa5a0!important}
+.kce-nightpulse .kce-empty-state>button{border:0!important;border-radius:999px!important;background:linear-gradient(110deg,#ff8b43,#f45125)!important;color:#21110b!important}
+.kce-nightpulse .kce-back-events{display:inline-flex!important;align-items:center!important;gap:8px!important;min-height:38px!important;margin:0 0 14px!important;padding:0 14px!important;border:1px solid #ffffff18!important;border-radius:999px!important;background:#202020!important;color:#fff!important}
+.kce-nightpulse .kce-detail-hero{position:relative!important;display:flex!important;align-items:flex-end!important;min-height:clamp(430px,112vw,590px)!important;overflow:hidden!important;border:1px solid #ff7a3c38!important;border-radius:25px!important;background-color:#21140f!important;box-shadow:0 20px 42px #0009!important}
+.kce-nightpulse .kce-detail-banner{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;opacity:1!important}
+.kce-nightpulse .kce-detail-overlay{position:absolute!important;inset:0!important;background:linear-gradient(180deg,#08080808 4%,#08080830 38%,#080808f2 100%)!important}
+.kce-nightpulse .kce-detail-content{position:relative!important;z-index:1!important;width:100%!important;padding:20px!important;color:#fff!important}
+.kce-nightpulse .kce-detail-status{border:1px solid #ff9a6855!important;border-radius:999px!important;background:#251811cc!important;color:#ffb58b!important}
+.kce-nightpulse .kce-detail-content h1{color:#fff!important;font-size:clamp(29px,7vw,46px)!important;line-height:1!important;letter-spacing:-.05em!important}
+.kce-nightpulse .kce-detail-content p{color:#e2d8d0!important;font-size:12px!important;line-height:1.6!important}
+.kce-nightpulse .kce-detail-meta{display:flex!important;flex-wrap:wrap!important;gap:8px!important;color:#f1b18b!important}
+.kce-nightpulse .kce-detail-meta span{padding:8px 11px!important;border:1px solid #ffffff20!important;border-radius:999px!important;background:#1c1714b8!important;color:#f5e8df!important;font-size:10px!important;backdrop-filter:blur(12px)!important}
+.kce-nightpulse .kce-share-event,.kce-nightpulse .kce-register-button,.kce-nightpulse .kce-ticket-actions .primary{display:flex!important;align-items:center!important;justify-content:center!important;gap:12px!important;min-height:47px!important;border:0!important;border-radius:999px!important;background:linear-gradient(110deg,#ff8c45,#f45125)!important;color:#21110b!important;font-size:12px!important;font-weight:850!important;box-shadow:0 8px 22px #ff642c38!important}
+.kce-nightpulse .kce-register-button{width:100%!important;justify-content:space-between!important;padding:0 17px!important}
+.kce-nightpulse .kce-register-button:disabled{opacity:.6!important}
+.kce-nightpulse .kce-detail-columns{display:grid!important;grid-template-columns:minmax(0,1.35fr) minmax(240px,.8fr)!important;gap:12px!important;margin-top:14px!important}
+.kce-nightpulse .kce-detail-panel,.kce-nightpulse .kce-reserve-panel,.kce-nightpulse .kce-admin-mailer{border:1px solid #ffffff16!important;border-radius:20px!important;background:#1b1b1b!important;color:#fff!important;box-shadow:0 12px 28px #0005!important}
+.kce-nightpulse .kce-detail-panel h2,.kce-nightpulse .kce-reserve-panel h2,.kce-nightpulse .kce-detail-panel h3{color:#fff!important}
+.kce-nightpulse .kce-detail-panel>p,.kce-nightpulse .kce-reserve-panel>p,.kce-nightpulse .kce-reserve-panel>small{color:#aaa5a0!important}
+.kce-nightpulse .kce-detail-facts>div{border-color:#ffffff15!important;border-radius:13px!important;background:#242424!important}
+.kce-nightpulse .kce-detail-facts small{color:#ff9a68!important}
+.kce-nightpulse .kce-detail-facts b{color:#fff!important}
+.kce-nightpulse .kce-confirmed{border:1px solid #ff875055!important;border-radius:14px!important;background:#ff6a2b16!important;color:#ffc09b!important}
+.kce-nightpulse .kce-ticket-modal{border:1px solid #ff875044!important;border-radius:23px!important;background:#171717!important;color:#fff!important}
+.kce-nightpulse .kce-ticket-top{background:radial-gradient(ellipse at 85% 0%,#ff6a2b50,transparent 52%),linear-gradient(145deg,#2b1b14,#171717)!important}
+.kce-nightpulse .kce-ticket-top .eyebrow{color:#ffad7c!important}
+.kce-nightpulse .kce-ticket-qr{border-radius:15px!important;background:#fff!important}
+.kce-nightpulse .kce-ticket-foot strong{color:#ffb58b!important}
+.kce-nightpulse .kce-rehearsal-mode .kce-featured-event,.kce-nightpulse.kce-rehearsal-mode .kce-featured-event,.kce-rehearsal-detail .kce-detail-hero{border-color:#ff8a4b55!important}
+.kce-nightpulse.kce-rehearsal-mode .kce-events-head .kce-eyebrow{color:#ff9a68!important}
+.kce-nightpulse.kce-rehearsal-mode .kce-events-head h1 em{background:linear-gradient(100deg,#ffd0a5,#ff7438 65%,#f34c23)!important;background-clip:text!important;-webkit-background-clip:text!important}
+@media(max-width:700px){
+ .kce-events.kce-nightpulse,.kce-event-detail.kce-nightpulse{padding:14px 13px calc(108px + env(safe-area-inset-bottom))!important;border-radius:22px!important}
+ .kce-nightpulse .kce-events-head{align-items:flex-start!important;flex-direction:column!important;margin:3px 0 16px!important}
+ .kce-nightpulse .kce-events-head-actions{width:100%!important;justify-content:flex-start!important}
+ .kce-nightpulse .kce-featured-event{height:clamp(225px,66vw,300px)!important;border-radius:21px!important}
+ .kce-nightpulse .kce-events-grid{gap:10px!important}
+ .kce-nightpulse .kce-event-card{flex-basis:min(78vw,300px)!important;border-radius:18px!important}
+ .kce-nightpulse .kce-event-card>.kce-art{min-height:clamp(140px,43vw,175px)!important}
+ .kce-nightpulse .kce-detail-hero{min-height:clamp(420px,122vw,570px)!important;border-radius:23px!important}
+ .kce-nightpulse .kce-detail-columns{grid-template-columns:1fr!important;gap:10px!important}
+ .kce-nightpulse .kce-detail-panel,.kce-nightpulse .kce-reserve-panel{padding:16px!important}
+}
+@media(min-width:701px){
+ .kce-nightpulse .kce-events-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;overflow:visible!important}
+ .kce-nightpulse .kce-event-card{min-width:0!important}
+ .kce-nightpulse .kce-detail-hero{min-height:530px!important}
+}
