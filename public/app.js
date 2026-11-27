@@ -432,6 +432,8 @@ document.addEventListener('input',event=>{
  }
 });
 document.addEventListener('click',event=>{
+ const editorToggle=event.target.closest('[data-memory-editor-toggle]');
+ if(editorToggle){const area=editorToggle.closest('.kc-memory-create-area'),editor=area?.querySelector('[data-memory-editor]');if(editor){editor.hidden=!editor.hidden;editorToggle.setAttribute('aria-expanded',editor.hidden?'false':'true');editorToggle.querySelector('b').textContent=editor.hidden?'Add memory':'Close editor';if(!editor.hidden)editor.scrollIntoView({behavior:'smooth',block:'start'});}return;}
  const form=event.target.closest('[data-feature-form="memories"]');if(!form)return;
  if(event.target.closest('[data-memory-add-media]')){const options=form.querySelector('.memory-media-options');if(options)options.hidden=!options.hidden;return;}
  if(event.target.closest('[data-memory-pick-photo]')){form.querySelector('input[name="memory_photo"]')?.click();return;}
@@ -1256,6 +1258,7 @@ function featurePage(key){
  const canCreate=key==='memories'||key==='leave'||admin();
  const title=featureLabels[key]||'Crew feature';
  const descriptions={memories:'Relive performances, rehearsals and the moments in between.',leave:'Send a leave request to the crew admins.',rehearsals:'Practice plans and rehearsal details.',auditions:'Audition announcements and submissions.'};
+ if(key==='memories')return welcome(title,descriptions[key])+'<section class="kc-memory-create-area"><button type="button" class="kc-memory-create-trigger" data-memory-editor-toggle aria-expanded="false"><span>＋</span><b>Add memory</b></button><div class="kc-memory-editor" data-memory-editor hidden>'+featureForm(key)+'</div></section><div class="feature-feed">'+(items.map(item=>featureCard(key,item)).join('')||empty('No memories yet','Add the first moment to your crew memories.'))+'</div>';
  return welcome(title,descriptions[key]||'Everything happening across Kinetic Crew.')+(canCreate?featureForm(key):'')+'<div class="feature-feed">'+(items.map(item=>featureCard(key,item)).join('')||empty('Nothing here yet','New '+title.toLowerCase()+' will appear here.'))+'</div>';
 }
 
