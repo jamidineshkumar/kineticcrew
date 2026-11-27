@@ -316,3 +316,75 @@
  #app .kc-more-reference .kc-more-event-ads-host .kc-more-event-copy h2{font-size:clamp(24px,7.2vw,32px)!important}
  #app .kc-more-reference .kc-more-event-ads-host .kc-more-event-copy p{font-size:11px!important}
 }
+
+/* Restore visible cinematic motion on the live More carousel. */
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-glow{
+ animation:kcMoreAmbientPulse 7s ease-in-out infinite alternate!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-slide.is-active{
+ animation:kcMoreSlideArrive .8s cubic-bezier(.2,.75,.2,1) both!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-campaign-slide.is-active .kc-more-campaign-backdrop{
+ animation:kcMoreBackdropDrift 12s ease-in-out infinite alternate!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-campaign-slide.is-active .kc-more-campaign-poster{
+ animation:kcMorePosterReveal 1.05s cubic-bezier(.18,.75,.2,1) both!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-campaign-slide.is-active .kc-more-ads-sponsored,
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-campaign-slide.is-active .kc-more-campaign-cta{
+ animation:kcMoreChipReveal .65s .28s ease-out both!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-event-slide.is-active .kc-more-event-copy > *{
+ animation:kcMoreCopyRise .62s cubic-bezier(.2,.7,.2,1) both!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-event-slide.is-active .kc-more-event-copy > *:nth-child(1){animation-delay:.08s!important}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-event-slide.is-active .kc-more-event-copy > *:nth-child(2){animation-delay:.17s!important}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-event-slide.is-active .kc-more-event-copy > *:nth-child(3){animation-delay:.26s!important}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-event-slide.is-active .kc-more-event-copy > *:nth-child(4){animation-delay:.36s!important}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-brand-slide.is-active .kc-more-brand-wordmark{
+ animation:kcMoreBrandEntrance .9s cubic-bezier(.2,.75,.2,1) both!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-brand-slide.is-active .kc-more-brand-overline,
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-brand-slide.is-active .kc-more-brand-tagline{
+ animation:kcMoreCopyRise .7s .2s ease-out both!important;
+}
+@keyframes kcMoreAmbientPulse{
+ from{transform:translate3d(-1.5%,1%,0) scale(.98);opacity:.65}
+ to{transform:translate3d(1.5%,-1%,0) scale(1.05);opacity:1}
+}
+@keyframes kcMoreSlideArrive{
+ from{filter:brightness(.78);clip-path:inset(0 0 0 4%)}
+ to{filter:brightness(1);clip-path:inset(0 0 0 0)}
+}
+@keyframes kcMorePosterReveal{
+ from{opacity:0;transform:scale(.965) translateY(8px);filter:blur(5px) drop-shadow(0 8px 22px rgba(0,0,0,.35))}
+ to{opacity:1;transform:scale(1) translateY(0);filter:drop-shadow(0 8px 22px rgba(0,0,0,.35))}
+}
+@keyframes kcMoreBackdropDrift{
+ from{transform:scale(1.02) translate3d(-.5%,0,0)}
+ to{transform:scale(1.12) translate3d(.5%,0,0)}
+}
+@keyframes kcMoreCopyRise{
+ from{opacity:0;transform:translate3d(0,13px,0);filter:blur(3px)}
+ to{opacity:1;transform:translate3d(0,0,0);filter:blur(0)}
+}
+@keyframes kcMoreChipReveal{
+ from{opacity:0;transform:translateY(8px) scale(.96)}
+ to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes kcMoreBrandEntrance{
+ from{opacity:0;transform:scale(.92);filter:blur(8px)}
+ to{opacity:1;transform:scale(1);filter:blur(0)}
+}
+@media(prefers-reduced-motion:reduce){
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-glow,
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-slide.is-active,
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-campaign-slide.is-active .kc-more-campaign-backdrop,
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-campaign-slide.is-active .kc-more-campaign-poster,
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-campaign-slide.is-active .kc-more-ads-sponsored,
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-campaign-slide.is-active .kc-more-campaign-cta,
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-event-slide.is-active .kc-more-event-copy > *,
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-brand-slide.is-active .kc-more-brand-wordmark,
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-brand-slide.is-active .kc-more-brand-overline,
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-brand-slide.is-active .kc-more-brand-tagline{animation:none!important}
+}
