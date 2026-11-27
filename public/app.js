@@ -1338,7 +1338,7 @@ const pill=(view,key,label,disabled=false)=>'<button type="button" class="kc-mor
 const other=(view,key,label,disabled=false)=>'<button type="button" class="kc-more-other '+(disabled?'is-disabled':'')+'" '+(disabled?'disabled':'data-view="'+view+'"')+'><span class="kc-more-other-icon">'+icon(key)+'</span><b>'+label+'</b></button>';
 return '<div class="kc-more-reference">'+
 '<header class="kc-more-reference-header"><button type="button" class="kc-more-back" data-view="overview" aria-label="Back to home"><svg viewBox="0 0 24 24"><path d="m15 4-8 8 8 8"/></svg></button><h1><em>More</em></h1><span class="kc-more-spacer"></span></header>'+
-'<div class="kc-more-logo-wrap kc-more-intro kc-more-reference-hero" aria-label="One crew. One rhythm."><div class="kc-more-reference-hero-copy">ONE CREW.<br>ONE <em>RHYTHM.</em></div></div>'+
+'<div class="kc-more-logo-wrap kc-more-intro kc-more-reference-hero kc-more-event-ads-host" aria-label="One crew. One rhythm."><div class="kc-more-reference-hero-copy">ONE CREW.<br>ONE <em>RHYTHM.</em></div></div>'+
 '<section class="kc-more-reference-group"><h2>My Crew</h2><div class="kc-more-reference-pills">'+
 pill('events','events','Events')+
 pill('rehearsals','rehearsal','Rehearsals')+pill('polls','polls','Polls & voting')+pill('attendance','attendance','Attendance')+
