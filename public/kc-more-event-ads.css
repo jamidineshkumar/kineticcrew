@@ -517,3 +517,6 @@
  .kc-more-event-ads-host .kc-more-ads-glow,.kc-more-event-ads-host .kc-more-brand-interstitial:before,
  .kc-more-event-ads-host .kc-more-brand-interstitial strong em,.kc-more-event-ads-host .kc-more-brand-sweep{animation:none!important}
 }
+
+/* Event slides in the More-page carousel need a visible action, matching sponsored-slide links. */
+.kc-more-ads-event-cta{display:inline-flex!important;align-items:center!important;gap:7px!important;width:max-content!important;max-width:100%!important;padding:8px 12px!important;border:1px solid rgba(255,255,255,.42)!important;border-radius:999px!important;background:rgba(8,12,18,.48)!important;color:#fff!important;font-size:10px!important;font-weight:900!important;letter-spacing:.12em!important;pointer-events:none!important;backdrop-filter:blur(10px)!important}
