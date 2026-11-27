@@ -575,3 +575,91 @@
 @media(prefers-reduced-motion:reduce){
  #app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-scene::before{animation:none!important;display:none!important}
 }
+
+
+/* Cinematic announcement poster: visual motion remains even when an announcement has no uploaded artwork. */
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-announcement-slide{
+ isolation:isolate!important;overflow:hidden!important;
+ background:
+  radial-gradient(ellipse at 84% 12%,rgba(230,70,160,.34),transparent 43%),
+  radial-gradient(ellipse at 10% 94%,rgba(41,207,213,.25),transparent 47%),
+  linear-gradient(128deg,#080c17 0%,#171326 55%,#080d16 100%)!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-announcement-slide::before{
+ content:"KC"!important;position:absolute!important;z-index:0!important;
+ right:-.06em!important;bottom:-.25em!important;pointer-events:none!important;
+ color:rgba(205,154,255,.085)!important;font:1000 clamp(190px,53vw,360px)/.78 system-ui,sans-serif!important;
+ letter-spacing:-.16em!important;white-space:nowrap!important;transform:rotate(-12deg)!important;
+ text-shadow:0 0 48px rgba(191,104,255,.16)!important;
+ animation:kcAnnouncementWatermark 8s ease-in-out infinite alternate!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-announcement-slide::after{
+ content:""!important;position:absolute!important;z-index:2!important;
+ top:-45%!important;bottom:-45%!important;left:-55%!important;width:38%!important;
+ pointer-events:none!important;transform:skewX(-20deg)!important;
+ background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),rgba(245,137,205,.13),transparent)!important;
+ animation:kcAnnouncementSweep 7s ease-in-out infinite!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-announcement-slide .kc-more-ads-shade{
+ z-index:1!important;background:linear-gradient(90deg,rgba(5,8,15,.16),rgba(5,8,15,.08) 55%,rgba(5,8,15,.3))!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-announcement-slide .kc-more-ads-copy{
+ left:7%!important;right:7%!important;top:50%!important;z-index:4!important;
+ display:grid!important;gap:clamp(8px,2.3vw,13px)!important;max-width:620px!important;
+ transform:translateY(-50%)!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-announcement-slide .kc-more-announcement-kicker{
+ color:#f4a9d2!important;font-size:9px!important;font-weight:950!important;
+ letter-spacing:.24em!important;text-shadow:0 2px 14px #0008!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-announcement-slide .kc-more-ads-copy h2{
+ max-width:100%!important;font-size:clamp(25px,7.1vw,39px)!important;
+ line-height:1.02!important;letter-spacing:-.055em!important;
+ text-wrap:balance!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-announcement-slide .kc-more-ads-copy p{
+ max-width:100%!important;font-size:clamp(11px,2.9vw,14px)!important;
+ line-height:1.45!important;color:rgba(249,245,251,.9)!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-announcement-slide .kc-more-announcement-author{
+ display:block!important;width:max-content!important;max-width:100%!important;
+ padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;
+ color:rgba(255,255,255,.58)!important;font-size:8px!important;
+ font-weight:800!important;letter-spacing:.16em!important;text-transform:uppercase!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-announcement-slide .kc-more-announcement-cta{
+ justify-self:start!important;min-height:34px!important;margin-top:0!important;
+ padding:0 13px!important;border-radius:999px!important;
+ border:1px solid rgba(255,255,255,.24)!important;
+ background:linear-gradient(110deg,rgba(152,83,192,.55),rgba(223,106,152,.42))!important;
+ box-shadow:0 7px 24px rgba(0,0,0,.22)!important;
+}
+@keyframes kcAnnouncementWatermark{from{transform:translate3d(0,0,0) rotate(-12deg) scale(.97);opacity:.7}to{transform:translate3d(-12px,-8px,0) rotate(-8deg) scale(1.04);opacity:1}}
+@keyframes kcAnnouncementSweep{0%,22%{left:-55%;opacity:0}38%{opacity:1}72%,100%{left:125%;opacity:0}}
+@media(prefers-reduced-motion:reduce){
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-announcement-slide::before,
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-announcement-slide::after{animation:none!important}
+}
+
+
+/* Explicit slide controls and a working autoplay progress indicator. */
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-dots{
+ position:absolute!important;z-index:9!important;right:16px!important;bottom:13px!important;
+ display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:6px!important;
+ max-width:55%!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-dots button{
+ display:block!important;flex:0 0 auto!important;width:6px!important;height:6px!important;min-width:6px!important;
+ min-height:6px!important;padding:0!important;border:0!important;border-radius:999px!important;
+ background:rgba(255,255,255,.42)!important;box-shadow:none!important;transition:width .25s ease,background .25s ease!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-dots button.active{
+ width:19px!important;background:linear-gradient(90deg,#ee72b9,#73d9df)!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-progress i{
+ transform:scaleX(0)!important;transform-origin:left center!important;
+}
+@keyframes kcMoreAdsProgress{to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-dots button{transition:none!important}
+}
