@@ -29,3 +29,8 @@
 #kcDynamicIsland .kc-island-ticket-arrow,#kcDynamicIsland .kc-island-publish-arrow{margin-left:auto!important;color:#aeb8c8!important;font:500 20px/1 system-ui,sans-serif!important}
 @media(max-width:520px){#kcDynamicIsland.kc-dynamic-island{width:min(356px,calc(100vw - 24px))!important;top:calc(env(safe-area-inset-top,0px) + 6px)!important;gap:5px!important}#kcDynamicIsland .kc-island-task{min-height:53px!important;padding:9px 40px 9px 10px!important;border-radius:16px!important;gap:9px!important}#kcDynamicIsland .kc-island-live,#kcDynamicIsland .kc-island-tickets,#kcDynamicIsland .kc-island-publish{min-height:44px!important;padding:8px 10px!important;border-radius:15px!important;gap:9px!important}}
 @media(prefers-reduced-motion:reduce){#kcDynamicIsland.kc-dynamic-island,#kcDynamicIsland .kc-island-task,#kcDynamicIsland .kc-island-live,#kcDynamicIsland .kc-island-tickets,#kcDynamicIsland .kc-island-publish{animation:none!important;transition:none!important}}
+
+/* Animated indeterminate task state for operations without a measurable percentage. */
+#kcDynamicIsland.is-indeterminate .kc-island-progress i{width:34%!important;transform:translateX(-110%);animation:kcIslandIndeterminate 1.15s cubic-bezier(.4,0,.2,1) infinite!important}
+@keyframes kcIslandIndeterminate{0%{transform:translateX(-110%)}100%{transform:translateX(330%)}}
+@media(prefers-reduced-motion:reduce){#kcDynamicIsland.is-indeterminate .kc-island-progress i{animation:none!important;transform:translateX(0)!important}}
