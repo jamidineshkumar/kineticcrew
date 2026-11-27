@@ -1,0 +1,130 @@
+/* Home feed polish — announcement and poll cards only. */
+@media(max-width:900px){
+ body.kc-home-screen .kc-home-latest-section .kc-exact-update-row{gap:15px!important}
+ body.kc-home-screen .kc-home-latest-section .kc-exact-announcement,
+ body.kc-home-screen .kc-home-latest-section .kc-exact-poll-update{
+  position:relative!important;isolation:isolate!important;overflow:hidden!important;
+  padding:18px!important;border:1px solid transparent!important;border-radius:24px!important;
+  background:linear-gradient(145deg,#20232a 0%,#1b1d25 58%,#28212b 100%) padding-box,
+   linear-gradient(120deg,rgba(157,126,225,.72),rgba(229,155,137,.48),rgba(91,191,203,.45)) border-box!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 13px 30px rgba(0,0,0,.24)!important;
+  -webkit-backdrop-filter:blur(20px)!important;backdrop-filter:blur(20px)!important;
+  animation:kcFeedCardIn .55s cubic-bezier(.2,.75,.25,1) both!important;
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-exact-announcement:before,
+ body.kc-home-screen .kc-home-latest-section .kc-exact-poll-update:before{
+  content:""!important;position:absolute!important;z-index:-1!important;inset:0!important;pointer-events:none!important;
+  background:radial-gradient(ellipse at 100% 0%,rgba(180,124,224,.16),transparent 48%),
+   radial-gradient(ellipse at 0% 100%,rgba(86,181,195,.08),transparent 48%)!important;
+  opacity:1!important;
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-exact-announcement{gap:12px!important}
+ body.kc-home-screen .kc-home-latest-section .kc-home-announcement-icon,
+ body.kc-home-screen .kc-home-latest-section .kc-home-poll-symbol,
+ body.kc-home-screen .kc-home-latest-section .kc-exact-update-icon,
+ body.kc-home-screen .kc-home-latest-section .kc-exact-poll-open{display:none!important}
+ body.kc-home-screen .kc-home-latest-section .kc-home-announcement-top{
+  display:flex!important;align-items:center!important;gap:8px!important;margin:0!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-home-announcement-label{
+  display:inline-flex!important;align-items:center!important;min-height:27px!important;padding:0 11px!important;
+  border:1px solid rgba(205,161,241,.28)!important;border-radius:999px!important;
+  background:linear-gradient(110deg,rgba(155,105,203,.22),rgba(211,137,176,.12))!important;
+  color:#e3c4f5!important;font:850 9px/1 system-ui!important;letter-spacing:.14em!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-home-announcement-top time{
+  margin-left:auto!important;color:#aaa6b2!important;font:500 10px/1.2 system-ui!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-exact-announcement h3{
+  margin:1px 0 0!important;color:#fff!important;font:780 19px/1.22 system-ui!important;letter-spacing:-.035em!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-exact-announcement p{
+  display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:4!important;
+  overflow:hidden!important;margin:0!important;color:#d0cdd6!important;font:450 13px/1.58 system-ui!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-home-announcement-footer{
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;
+  padding-top:11px!important;border-top:1px solid rgba(255,255,255,.09)!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-home-announcement-footer>span{
+  color:#aaa6b2!important;font:550 11px/1.3 system-ui!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-home-poll-kicker{
+  display:flex!important;align-items:center!important;gap:8px!important;margin:0 0 2px!important;
+  color:#f0c5a7!important;font:850 9px/1 system-ui!important;letter-spacing:.15em!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-home-poll-kicker>span:nth-child(1){display:none!important}
+ body.kc-home-screen .kc-home-latest-section .kc-home-poll-kicker b{
+  margin-left:auto!important;padding:7px 11px!important;border:1px solid rgba(245,190,151,.28)!important;
+  border-radius:999px!important;background:rgba(207,132,92,.13)!important;color:#f4c6a5!important;
+  font:850 8px/1 system-ui!important;letter-spacing:.1em!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-home-poll-kicker b.is-closed{
+  color:#b7b3bd!important;border-color:rgba(255,255,255,.12)!important;background:rgba(255,255,255,.06)!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-exact-poll-head{
+  display:block!important;margin:0 0 12px!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-exact-poll-head>span:nth-child(2){
+  display:grid!important;gap:5px!important;min-width:0!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-exact-poll-head b{
+  color:#fff!important;font:780 19px/1.24 system-ui!important;letter-spacing:-.03em!important;white-space:normal!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-exact-poll-head small{
+  color:#aaa7b1!important;font:500 11px/1.35 system-ui!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-home-poll-options{
+  display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:9px!important;
+  width:100%!important;margin:0!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-home-poll-options .kc-poll-choice{
+  display:flex!important;align-items:center!important;gap:12px!important;width:100%!important;
+  min-height:57px!important;padding:12px 14px!important;border:1px solid rgba(255,255,255,.13)!important;
+  border-radius:17px!important;background:linear-gradient(120deg,rgba(255,255,255,.075),rgba(255,255,255,.025))!important;
+  color:#f5f1f7!important;font:650 13px/1.4 system-ui!important;text-align:left!important;
+  transition:transform .2s ease,border-color .25s ease,background .25s ease,box-shadow .25s ease!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-home-poll-options .kc-poll-choice:active{transform:scale(.985)!important}
+ body.kc-home-screen .kc-home-latest-section .kc-home-poll-options .kc-poll-choice.is-selected{
+  border-color:rgba(216,163,232,.8)!important;
+  background:linear-gradient(105deg,rgba(139,92,186,.32),rgba(203,123,153,.19))!important;
+  box-shadow:inset 0 0 0 1px rgba(218,166,236,.14),0 0 22px rgba(171,112,206,.12)!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-home-poll-footer{
+  display:flex!important;align-items:center!important;justify-content:flex-end!important;
+  padding-top:11px!important;border-top:1px solid rgba(255,255,255,.09)!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-home-poll-footer>span{display:none!important}
+ body.kc-home-screen .kc-home-latest-section .kc-home-poll-footer .kc-exact-poll-results{
+  display:inline-flex!important;align-items:center!important;min-height:30px!important;margin:0!important;
+  padding:0 3px!important;border:0!important;background:transparent!important;color:#dfb9f3!important;
+  font:750 11px/1 system-ui!important
+ }
+ body.kc-home-screen .kc-home-latest-section .kc-poll-submit-vote{
+  min-height:45px!important;margin:10px 0 0!important;border-radius:15px!important;
+  background:linear-gradient(110deg,#9164c6,#bd719e,#d58c79)!important;
+  box-shadow:0 8px 22px rgba(165,103,181,.22)!important
+ }
+}
+@keyframes kcFeedCardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(hover:hover){
+ body.kc-home-screen .kc-home-latest-section .kc-exact-announcement:hover,
+ body.kc-home-screen .kc-home-latest-section .kc-exact-poll-update:hover{
+  transform:translateY(-2px)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 17px 36px rgba(0,0,0,.3)!important
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ body.kc-home-screen .kc-home-latest-section .kc-exact-announcement,
+ body.kc-home-screen .kc-home-latest-section .kc-exact-poll-update{animation:none!important;transition:none!important}
+}
+html[data-theme="light"] body.kc-home-screen .kc-home-latest-section .kc-exact-announcement,
+html[data-theme="light"] body.kc-home-screen .kc-home-latest-section .kc-exact-poll-update{
+ background:linear-gradient(145deg,#fff,#f1f0f4) padding-box,
+  linear-gradient(120deg,rgba(139,102,187,.5),rgba(218,143,125,.42),rgba(83,164,174,.35)) border-box!important;
+ box-shadow:0 12px 28px rgba(35,32,44,.09),inset 0 1px 0 #fff!important
+}
+html[data-theme="light"] body.kc-home-screen .kc-home-latest-section .kc-exact-announcement h3,
+html[data-theme="light"] body.kc-home-screen .kc-home-latest-section .kc-exact-poll-head b{color:#24232b!important}
+html[data-theme="light"] body.kc-home-screen .kc-home-latest-section .kc-exact-announcement p{color:#57535f!important}
+html[data-theme="light"] body.kc-home-screen .kc-home-latest-section .kc-home-announcement-label{color:#78539b!important}
