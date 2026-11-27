@@ -388,3 +388,147 @@
  #app .kc-more-reference .kc-more-event-ads-host .kc-more-brand-slide.is-active .kc-more-brand-overline,
  #app .kc-more-reference .kc-more-event-ads-host .kc-more-brand-slide.is-active .kc-more-brand-tagline{animation:none!important}
 }
+
+/* Kinetic Crew brand-only advertising banner: animated identity, no navigation or promo cards. */
+#app .kc-more-reference .kc-more-event-ads-host.kc-more-event-ads-host{
+ margin:10px 0 26px!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-brand-ad-banner{
+ height:clamp(260px,68vw,320px)!important;min-height:260px!important;max-height:320px!important;
+ overflow:hidden!important;isolation:isolate!important;
+ background:#080a12!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-brand-ad-banner .kc-more-ads-glow{
+ z-index:0!important;inset:-45%!important;opacity:.9!important;filter:blur(28px)!important;
+ background:conic-gradient(from 0deg at 50% 50%,transparent 0 15%,rgba(237,76,166,.48) 25%,transparent 37%,rgba(46,214,220,.42) 54%,transparent 68%,rgba(153,87,236,.35) 82%,transparent 94%)!important;
+ animation:kcBrandAdAmbient 14s linear infinite!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-brand-ad{
+ background:
+ radial-gradient(ellipse at 50% 48%,rgba(93,49,129,.24),transparent 57%),
+ linear-gradient(135deg,#080b15 0%,#11101d 52%,#090d16 100%)!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-scene{
+ position:absolute!important;inset:0!important;overflow:hidden!important;isolation:isolate!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ background:
+ radial-gradient(ellipse at 12% 100%,rgba(31,209,211,.16),transparent 45%),
+ radial-gradient(ellipse at 92% 0%,rgba(231,71,163,.2),transparent 47%)!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-grid{
+ position:absolute!important;inset:-40%!important;z-index:0!important;opacity:.19!important;
+ background-image:linear-gradient(rgba(255,255,255,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.1) 1px,transparent 1px)!important;
+ background-size:35px 35px!important;transform:perspective(260px) rotateX(58deg) scale(1.6)!important;
+ transform-origin:center 80%!important;mask-image:linear-gradient(transparent,#000 38%,transparent 95%)!important;
+ animation:kcBrandAdGridDrift 12s linear infinite!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-orbit{
+ position:absolute!important;z-index:1!important;left:50%!important;top:50%!important;
+ width:min(72vw,390px)!important;height:min(72vw,390px)!important;border:1px solid rgba(238,124,199,.22)!important;
+ border-radius:50%!important;transform:translate(-50%,-50%) rotate(-24deg) scaleY(.36)!important;
+ box-shadow:0 0 24px rgba(232,88,180,.12),inset 0 0 24px rgba(44,209,219,.08)!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-orbit-one{
+ animation:kcBrandAdOrbit 9s linear infinite!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-orbit-two{
+ width:min(58vw,310px)!important;height:min(58vw,310px)!important;
+ border-color:rgba(70,218,220,.3)!important;transform:translate(-50%,-50%) rotate(34deg) scaleY(.43)!important;
+ animation:kcBrandAdOrbitReverse 12s linear infinite!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-light{
+ position:absolute!important;z-index:1!important;width:38vw!important;height:38vw!important;
+ max-width:230px!important;max-height:230px!important;border-radius:50%!important;
+ filter:blur(48px)!important;opacity:.38!important;pointer-events:none!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-light-one{
+ left:-13%!important;bottom:-35%!important;background:#16cbd0!important;
+ animation:kcBrandAdFloatOne 7s ease-in-out infinite alternate!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-light-two{
+ right:-12%!important;top:-38%!important;background:#e34aa4!important;
+ animation:kcBrandAdFloatTwo 8s ease-in-out infinite alternate!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-pulse{
+ position:absolute!important;z-index:1!important;width:clamp(135px,40vw,230px)!important;
+ height:clamp(135px,40vw,230px)!important;border-radius:50%!important;
+ border:1px solid rgba(255,255,255,.16)!important;
+ box-shadow:0 0 0 14px rgba(255,255,255,.025),0 0 0 30px rgba(255,255,255,.018),0 0 70px rgba(208,79,178,.2)!important;
+ animation:kcBrandAdPulse 3.8s ease-out infinite!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-copy{
+ position:relative!important;z-index:4!important;display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;gap:13px!important;
+ width:100%!important;height:100%!important;padding:22px!important;box-sizing:border-box!important;
+ text-align:center!important;background:transparent!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-eyebrow{
+ color:rgba(255,255,255,.72)!important;font-size:9px!important;font-weight:900!important;
+ letter-spacing:.3em!important;animation:kcBrandAdEyebrow 1s .1s both!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-title{
+ display:flex!important;align-items:center!important;justify-content:center!important;gap:.17em!important;
+ margin:0!important;padding:0!important;color:#fff!important;font-size:clamp(37px,10vw,64px)!important;
+ line-height:.92!important;letter-spacing:-.085em!important;font-weight:1000!important;
+ white-space:nowrap!important;text-shadow:0 7px 32px rgba(0,0,0,.55)!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-title span{
+ animation:kcBrandAdTitleIn .95s cubic-bezier(.18,.8,.2,1) both!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-title em{
+ font-style:normal!important;
+ background:linear-gradient(105deg,#f4a6d0 0%,#f5d2e9 25%,#e96caf 48%,#74e1df 76%,#f4a6d0 100%)!important;
+ background-size:260% 100%!important;background-clip:text!important;-webkit-background-clip:text!important;
+ color:transparent!important;-webkit-text-fill-color:transparent!important;
+ animation:kcBrandAdShimmer 4s ease-in-out infinite, kcBrandAdTitleIn 1s .12s both!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-line{
+ display:block!important;width:clamp(55px,18vw,100px)!important;height:2px!important;
+ border-radius:9px!important;background:linear-gradient(90deg,transparent,#ee78bc,#63d9dc,transparent)!important;
+ box-shadow:0 0 16px rgba(228,94,184,.65)!important;
+ animation:kcBrandAdLine 2.8s ease-in-out infinite!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-tagline{
+ color:rgba(255,255,255,.78)!important;font-size:clamp(8px,2.3vw,10px)!important;
+ font-weight:850!important;letter-spacing:.24em!important;
+ animation:kcBrandAdTaglineIn .9s .38s both!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-equalizer{
+ position:absolute!important;z-index:2!important;left:50%!important;bottom:13px!important;
+ transform:translateX(-50%)!important;display:flex!important;align-items:center!important;
+ justify-content:center!important;gap:4px!important;height:18px!important;opacity:.66!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-equalizer i{
+ display:block!important;width:2px!important;height:6px!important;border-radius:4px!important;
+ background:linear-gradient(#f18ac5,#63d9dc)!important;
+ animation:kcBrandAdBars .85s ease-in-out infinite alternate!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-equalizer i:nth-child(2n){animation-delay:.18s!important}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-equalizer i:nth-child(3n){animation-delay:.34s!important}
+#app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-corner{
+ position:absolute!important;z-index:4!important;right:16px!important;top:14px!important;
+ color:rgba(255,255,255,.4)!important;font-size:8px!important;font-weight:900!important;letter-spacing:.2em!important;
+}
+@keyframes kcBrandAdAmbient{to{transform:rotate(360deg)}}
+@keyframes kcBrandAdGridDrift{from{background-position:0 0}to{background-position:0 70px}}
+@keyframes kcBrandAdOrbit{to{transform:translate(-50%,-50%) rotate(336deg) scaleY(.36)}}
+@keyframes kcBrandAdOrbitReverse{to{transform:translate(-50%,-50%) rotate(-326deg) scaleY(.43)}}
+@keyframes kcBrandAdFloatOne{to{transform:translate(28px,-24px) scale(1.2);opacity:.55}}
+@keyframes kcBrandAdFloatTwo{to{transform:translate(-24px,22px) scale(1.15);opacity:.58}}
+@keyframes kcBrandAdPulse{0%{transform:scale(.78);opacity:.2}55%{transform:scale(1.08);opacity:.65}100%{transform:scale(1.22);opacity:0}}
+@keyframes kcBrandAdShimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes kcBrandAdTitleIn{from{opacity:0;transform:translateY(22px) scale(.94);filter:blur(8px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes kcBrandAdEyebrow{from{opacity:0;letter-spacing:.55em}to{opacity:1;letter-spacing:.3em}}
+@keyframes kcBrandAdLine{0%,100%{transform:scaleX(.65);opacity:.65}50%{transform:scaleX(1.25);opacity:1}}
+@keyframes kcBrandAdTaglineIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes kcBrandAdBars{from{height:3px;opacity:.45}to{height:17px;opacity:1}}
+@media(max-width:560px){
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-brand-ad-banner{height:clamp(255px,68vw,290px)!important;min-height:255px!important;max-height:290px!important}
+ #app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-copy{gap:12px!important;padding:18px!important}
+ #app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-title{font-size:clamp(35px,9.5vw,48px)!important}
+ #app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-tagline{font-size:8px!important;letter-spacing:.17em!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #app .kc-more-reference .kc-more-event-ads-host .kc-brand-ad-scene *,
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-glow{animation:none!important}
+}
