@@ -466,6 +466,30 @@ document.addEventListener('change',event=>{
  if(image?.dataset.objectUrl)URL.revokeObjectURL(image.dataset.objectUrl);
  const url=URL.createObjectURL(file);if(image)image.dataset.objectUrl=url;showMemoryMediaPreview(form,url,file.name);
 });
+document.addEventListener('change',async event=>{
+ const input=event.target;
+ if(!input.matches('input[data-memory-restore-photo]'))return;
+ const file=input.files?.[0];if(!file)return;
+ const memoryId=input.dataset.memoryRestorePhoto;
+ if(!/^image\/(jpeg|png|webp|gif)$/.test(file.type)){notice('Choose a JPG, PNG, WEBP or GIF photo.');input.value='';return;}
+ if(file.size>15*1024*1024){notice('Photo must be 15 MB or smaller.');input.value='';return;}
+ let uploadedPath='';
+ input.disabled=true;
+ try{
+  uploadedPath=S.user.auth_id+'/'+Date.now()+'-'+String(file.name||'memory-photo').replace(/[^a-zA-Z0-9._-]/g,'-').slice(-90);
+  const uploaded=await kcUploadWithProgress('crew-memories',uploadedPath,file,{cacheControl:'3600',upsert:false,contentType:file.type,activityLabel:'Restoring KC Memory photo'});
+  if(uploaded.error)throw uploaded.error;
+  const {error}=await rpc('crew_memory_attach_photo',{p_memory_id:memoryId,p_storage_path:uploadedPath,p_mime:file.type});
+  if(error)throw error;
+  uploadedPath='';
+  await loadMemories();
+  paint();
+  notice('Memory photo restored.');
+ }catch(error){
+  if(uploadedPath)await client.storage.from('crew-memories').remove([uploadedPath]).catch(()=>{});
+  notice('Could not restore this memory photo: '+(error.message||'Please try again.'));
+ }finally{input.disabled=false;input.value='';}
+});
 document.addEventListener('submit',async event=>{
  const memoryForm=event.target.closest('[data-memory-comment]');
  if(memoryForm){event.preventDefault();const input=memoryForm.querySelector('input[name="comment"]'),body=String(input?.value||'').trim();if(!body)return;const id=memoryForm.dataset.memoryComment;const submit=memoryForm.querySelector('button');if(submit)submit.disabled=true;await action(async()=>{const {data,error}=await rpc('crew_memory_social',{p_action:'comment',p_memory_id:id,p_body:body});if(error)throw error;const item=(S.featureItems.memories||[]).find(x=>String(x.id)===String(id));if(item)item.social={...(item.social||{}),...(data||{})};paint();notice('Comment posted.');});return;}
@@ -1204,7 +1228,7 @@ function featureCard(key,item){
   extra+='<div class="feature-actions"><span class="feature-meta">'+Number(item.registration_count||0)+' registered</span><button type="button" class="outline" data-rehearsal-register="'+esc(item.id)+'" data-registered="'+(item.registered?'true':'false')+'">'+(item.registered?'Cancel registration':'Register for rehearsal')+'</button></div>';
  }
  
- if(key==='memories'&&!mediaValue)extra+='<div class="kc-memory-no-media"><span>✦</span><b>CREW MEMORY</b><small>A moment worth remembering</small></div>';
+ if(key==='memories'&&!mediaValue)extra+='<div class="kc-memory-no-media"><span>✦</span><b>CREW MEMORY</b><small>'+(item.author_id===S.user?.auth_id?'This memory has no photo yet. Add the original moment.':'A moment worth remembering')+'</small>'+(item.author_id===S.user?.auth_id?'<label class="kc-memory-restore-photo"><span>Add photo</span><input type="file" accept="image/jpeg,image/png,image/webp,image/gif" data-memory-restore-photo="'+esc(item.id)+'" aria-label="Add a photo to this memory"></label>':'')+'</div>';
  if(key==='memories'){
   const social=item.social||{},comments=Array.isArray(social.comments)?social.comments:[];
   extra+='<section class="kc-memory-social"><button type="button" class="kc-memory-like '+(social.liked?'is-liked':'')+'" data-memory-like="'+esc(item.id)+'" aria-pressed="'+(social.liked?'true':'false')+'"><span>♥</span> <b>'+(social.liked?'Liked':'Like')+'</b> <small>'+Number(social.likes||0)+'</small></button><div class="kc-memory-comments">'+comments.slice(-3).map(c=>'<p><b>'+esc(c.author_name||'Crew member')+'</b> '+esc(c.body)+'</p>').join('')+'</div><form class="kc-memory-comment-form" data-memory-comment="'+esc(item.id)+'"><input name="comment" maxlength="1000" placeholder="Write a comment…" autocomplete="off" required><button type="submit" aria-label="Post comment">Post</button></form></section>';
