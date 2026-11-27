@@ -78,3 +78,26 @@
   opacity:1!important;visibility:visible!important;pointer-events:auto!important
  }
 }
+
+
+/* Visible Kinetic Crew watermark inside the full-screen mobile hamburger drawer. */
+@media screen and (max-width:900px){
+ html body #appRoot .shell aside#sidebar.side.open{isolation:isolate!important;}
+ html body #appRoot .shell aside#sidebar.side.open::before{
+  content:"KC"!important;display:block!important;position:absolute!important;z-index:0!important;
+  right:-.13em!important;bottom:12%!important;left:auto!important;top:auto!important;
+  width:auto!important;height:auto!important;pointer-events:none!important;user-select:none!important;
+  color:rgba(191,133,255,.085)!important;
+  font:950 clamp(250px,76vw,420px)/.78 system-ui,sans-serif!important;
+  letter-spacing:-.16em!important;white-space:nowrap!important;
+  text-shadow:0 0 34px rgba(190,89,255,.12),2px 2px 0 rgba(255,255,255,.025)!important;
+  transform:rotate(-12deg)!important;transform-origin:bottom right!important;
+ }
+ html body #appRoot .shell aside#sidebar.side.open>.brand,
+ html body #appRoot .shell aside#sidebar.side.open>.workspace,
+ html body #appRoot .shell aside#sidebar.side.open>.navtitle,
+ html body #appRoot .shell aside#sidebar.side.open>nav#nav,
+ html body #appRoot .shell aside#sidebar.side.open>.sidebottom{
+  position:relative!important;z-index:1!important;
+ }
+}
