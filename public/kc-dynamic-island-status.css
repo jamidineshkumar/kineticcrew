@@ -34,3 +34,34 @@
 #kcDynamicIsland.is-indeterminate .kc-island-progress i{width:34%!important;transform:translateX(-110%);animation:kcIslandIndeterminate 1.15s cubic-bezier(.4,0,.2,1) infinite!important}
 @keyframes kcIslandIndeterminate{0%{transform:translateX(-110%)}100%{transform:translateX(330%)}}
 @media(prefers-reduced-motion:reduce){#kcDynamicIsland.is-indeterminate .kc-island-progress i{animation:none!important;transform:translateX(0)!important}}
+
+/* Compact, single-activity Dynamic Island. */
+#kcDynamicIsland.kc-dynamic-island{position:fixed!important;z-index:25000!important;top:calc(env(safe-area-inset-top,0px) + 8px)!important;left:50%!important;width:min(340px,calc(100vw - 44px))!important;display:block!important;padding:0!important;margin:0!important;overflow:visible!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:translate(-50%,-12px) scale(.94)!important;transition:opacity .24s ease,transform .34s cubic-bezier(.2,.85,.25,1),visibility .24s ease!important}
+#kcDynamicIsland.kc-dynamic-island.is-visible{opacity:1!important;visibility:visible!important;pointer-events:auto!important;transform:translate(-50%,0) scale(1)!important}
+#kcDynamicIsland .kc-island-shell{width:100%;overflow:hidden;border:1px solid rgba(255,255,255,.14);border-radius:24px;background:linear-gradient(135deg,rgba(24,26,38,.97),rgba(7,9,17,.985));box-shadow:0 12px 38px rgba(0,0,0,.42),0 0 0 1px rgba(138,108,255,.08),inset 0 1px 0 rgba(255,255,255,.09);-webkit-backdrop-filter:blur(28px) saturate(175%);backdrop-filter:blur(28px) saturate(175%)}
+#kcDynamicIsland .kc-island-main{position:relative!important;display:flex!important;align-items:center!important;gap:11px!important;width:100%!important;min-height:64px!important;padding:10px 15px!important;border:0!important;border-radius:inherit!important;background:transparent!important;color:#fff!important;text-align:left!important;cursor:pointer!important}
+#kcDynamicIsland .kc-island-orb{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:13px;background:linear-gradient(145deg,#6b5cff,#b15ce8);box-shadow:0 0 20px rgba(151,93,255,.32);color:#fff;font:800 14px/1 system-ui}
+#kcDynamicIsland .kc-island-copy{display:grid;gap:4px;min-width:0;flex:1}
+#kcDynamicIsland .kc-island-copy b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff;font:750 13px/1.2 system-ui}
+#kcDynamicIsland .kc-island-copy small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#aeb6c8;font:550 11px/1.25 system-ui}
+#kcDynamicIsland .kc-island-count{flex:0 0 auto;color:#fff;font:750 12px/1 system-ui}
+#kcDynamicIsland .kc-island-chevron{color:#9ca7ba;font:600 17px/1 system-ui;transition:transform .25s}
+#kcDynamicIsland.is-expanded .kc-island-chevron{transform:rotate(180deg)}
+#kcDynamicIsland .kc-island-progress{position:absolute;left:14px;right:14px;bottom:0;height:2px;overflow:hidden;border-radius:5px;background:rgba(255,255,255,.08)}
+#kcDynamicIsland .kc-island-progress i{display:block;width:var(--kc-island-progress,34%);height:100%;border-radius:5px;background:linear-gradient(90deg,#55d6ff,#9c72ff,#f17ad8);box-shadow:0 0 12px rgba(143,117,255,.7);transition:width .35s ease}
+#kcDynamicIsland .kc-island-detail{padding:0 16px 14px;border-top:1px solid rgba(255,255,255,.08)}
+#kcDynamicIsland .kc-island-detail[hidden]{display:none!important}
+#kcDynamicIsland .kc-island-detail-label{display:block;margin-top:12px;color:#a88cff;font:800 9px/1 system-ui;letter-spacing:.16em}
+#kcDynamicIsland .kc-island-detail p{margin:7px 0 12px;color:#d7dbea;font:500 12px/1.45 system-ui}
+#kcDynamicIsland .kc-island-detail-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#kcDynamicIsland .kc-island-detail-actions button{min-height:30px;padding:0 11px;border:1px solid rgba(255,255,255,.13);border-radius:999px;background:rgba(255,255,255,.07);color:#f3f3fa;font:650 10px/1 system-ui}
+#kcDynamicIsland .kc-island-success .kc-island-orb{background:linear-gradient(145deg,#087e5d,#27d69a);box-shadow:0 0 18px rgba(39,214,154,.28)}
+#kcDynamicIsland .kc-island-failed .kc-island-orb{background:linear-gradient(145deg,#8b284d,#ee648c);box-shadow:0 0 18px rgba(238,100,140,.28)}
+#kcDynamicIsland .kc-island-pending .kc-island-orb{animation:kcIslandPulse 1.6s ease-in-out infinite}
+#kcDynamicIsland.is-indeterminate .kc-island-progress i{width:34%!important;transform:translateX(-110%);animation:kcIslandSweep 1.2s ease-in-out infinite}
+#kcDynamicIsland.is-persistent .kc-island-main{min-height:66px}
+#kcDynamicIsland .kc-island-retry[hidden]{display:none!important}
+@keyframes kcIslandPulse{50%{transform:scale(1.07);filter:brightness(1.25)}}
+@keyframes kcIslandSweep{to{transform:translateX(330%)}}
+@media(max-width:520px){#kcDynamicIsland.kc-dynamic-island{width:min(330px,calc(100vw - 48px))!important;top:calc(env(safe-area-inset-top,0px) + 6px)!important}#kcDynamicIsland .kc-island-main{min-height:59px!important;padding:9px 13px!important}}
+@media(prefers-reduced-motion:reduce){#kcDynamicIsland.kc-dynamic-island,#kcDynamicIsland *{animation:none!important;transition:none!important}}
