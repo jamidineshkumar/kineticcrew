@@ -291,3 +291,12 @@
 
 /* Event share action. */
 .kce-share-event{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;margin-top:16px;padding:0 18px;border:1px solid rgba(255,255,255,.24);border-radius:13px;background:linear-gradient(120deg,rgba(242,79,156,.2),rgba(67,209,209,.16));color:#fff;font:700 12px/1 system-ui,sans-serif;cursor:pointer}.kce-share-event:disabled{opacity:.55;cursor:wait}
+
+/* Rehearsal mode reuses the Events experience, with rehearsal-specific identity. */
+.kce-rehearsal-mode .kce-events-head h1 em,
+.kce-rehearsal-detail .kce-detail-status{
+ background:linear-gradient(100deg,#7de0d2,#8bb9ff 58%,#d5a5ff);
+ -webkit-background-clip:text;background-clip:text;color:transparent
+}
+.kce-rehearsal-mode .kce-admin-event{background:linear-gradient(110deg,#168f85,#3979c8);border:0}
+.kce-rehearsal-mode .kce-tabs button.active{border-color:rgba(92,205,190,.38)}
