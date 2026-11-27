@@ -1,0 +1,14 @@
+/* Attendance status semantics: green = present, amber = pending, red = absent. */
+#app .attendance-rosterrow .rosterperson .status.present{background:rgba(35,190,112,.18)!important;border:1px solid rgba(65,220,145,.42)!important;color:#8df0b8!important}
+#app .attendance-rosterrow .rosterperson .status.pending{background:rgba(245,190,55,.16)!important;border:1px solid rgba(255,207,83,.42)!important;color:#ffdc82!important}
+#app .attendance-rosterrow .rosterperson .status.absent{background:rgba(235,75,83,.17)!important;border:1px solid rgba(255,105,112,.42)!important;color:#ff9a9f!important}
+#app .attendance-rosterrow .attendance-status-btn[data-attendance-status="present"]{border-color:rgba(58,190,120,.28)!important}
+#app .attendance-rosterrow .attendance-status-btn[data-attendance-status="present"].selected{background:rgba(35,190,112,.2)!important;border-color:#42d58d!important;color:#9af4bf!important}
+#app .attendance-rosterrow .attendance-status-btn[data-attendance-status="pending"]{border-color:rgba(245,190,55,.3)!important}
+#app .attendance-rosterrow .attendance-status-btn[data-attendance-status="pending"].selected{background:rgba(245,190,55,.2)!important;border-color:#e9bc4c!important;color:#ffe39b!important}
+#app .attendance-rosterrow .attendance-status-btn[data-attendance-status="absent"]{border-color:rgba(235,75,83,.3)!important}
+#app .attendance-rosterrow .attendance-status-btn[data-attendance-status="absent"].selected{background:rgba(235,75,83,.2)!important;border-color:#ed666e!important;color:#ffabb0!important}
+#app .kc-qr-stage[data-state="pending"]{border-color:rgba(255,205,80,.82);box-shadow:0 0 0 2px rgba(255,205,80,.18),0 0 34px rgba(255,205,80,.18)}
+#app .kc-qr-stage[data-state="pending"] .kc-qr-state{background:rgba(125,88,13,.58);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+#app .kc-qr-stage[data-state="pending"] .kc-qr-state-mark{border-color:rgba(255,225,150,.7);background:rgba(210,155,30,.32);color:#ffdf8d}
+#app .kc-qr-stage[data-state="pending"] .kc-qr-corner{border-color:#ffdc82}
