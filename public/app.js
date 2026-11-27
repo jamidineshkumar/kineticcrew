@@ -691,34 +691,23 @@ function showDynamicIsland(detail={}){
  if(!island){
   island=document.createElement('section');island.id='kcDynamicIsland';island.className='kc-dynamic-island';
   island.setAttribute('role','status');island.setAttribute('aria-live','polite');
-  island.innerHTML='<div class="kc-island-task" role="button" tabindex="0" aria-label="Open latest Kinetic Crew update"><span class="kc-island-mark" aria-hidden="true"></span><span class="kc-island-copy"><b></b><small></small></span><span class="kc-island-count" hidden></span><button type="button" class="kc-island-retry" hidden>Retry</button><span class="kc-island-progress" aria-hidden="true"><i></i></span></div><button type="button" class="kc-island-live"><span class="kc-island-live-mark">KC</span><span class="kc-island-live-copy"><b>KC Gram · KINETIC CREW</b><small>Executive Showcase Console</small></span><span class="kc-island-live-badge">LIVE</span></button><button type="button" class="kc-island-tickets"><span class="kc-island-ticket-mark" aria-hidden="true">✉</span><span class="kc-island-ticket-copy"><b>Send Event Tickets</b><small>Dispatch 24 encrypted VIP passes</small></span><span class="kc-island-ticket-arrow" aria-hidden="true">›</span></button><button type="button" class="kc-island-publish"><span class="kc-island-publish-mark" aria-hidden="true">▣</span><span class="kc-island-publish-copy"><b>Publish Event Update</b><small>Sync KC Showcase stage schedule</small></span><span class="kc-island-publish-arrow" aria-hidden="true">›</span></button><button type="button" class="kc-island-dismiss" aria-label="Dismiss notification">×</button>';
+  island.innerHTML='<div class="kc-island-shell"><button type="button" class="kc-island-main" aria-label="Open current Kinetic Crew activity"><span class="kc-island-orb" aria-hidden="true"><i></i></span><span class="kc-island-copy"><b></b><small></small></span><span class="kc-island-count" hidden></span><span class="kc-island-chevron" aria-hidden="true">⌄</span><span class="kc-island-progress" aria-hidden="true"><i></i></span></button><div class="kc-island-detail" hidden><span class="kc-island-detail-label">LIVE ACTIVITY</span><p></p><div class="kc-island-detail-actions"><button type="button" class="kc-island-open">Open activity</button><button type="button" class="kc-island-retry" hidden>Retry</button><button type="button" class="kc-island-dismiss">Dismiss</button></div></div></div>';
   document.body.appendChild(island);
-  island.addEventListener('click',event=>{
-   if(event.target.closest('.kc-island-dismiss')){clearTimeout(kcIslandTimer);island.classList.remove('is-visible');return;}
-   if(event.target.closest('.kc-island-retry'))return;
-   const live=event.target.closest('.kc-island-live'),tickets=event.target.closest('.kc-island-tickets'),publish=event.target.closest('.kc-island-publish'),task=event.target.closest('.kc-island-task');
-   if(!live&&!tickets&&!publish&&!task)return;
-   const view=live?'gram':(tickets||publish)?'events':(island.dataset.target||'notifications'),conversationId=island.dataset.conversationId||'';
-   clearTimeout(kcIslandTimer);island.classList.remove('is-visible');
-   if(view==='gram-chat'&&conversationId)window.__kgOpenConversation=conversationId;
-   go(view);
-  });
-  island.querySelector('.kc-island-task').addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();island.querySelector('.kc-island-task').click();}});
-  island.querySelector('.kc-island-retry').addEventListener('click',event=>{
-   event.stopPropagation();
-   if(typeof kcIslandRetryAction==='function'){const action=kcIslandRetryAction;kcIslandRetryAction=null;Promise.resolve().then(action).catch(error=>console.warn('Kinetic Crew retry failed:',error));}
-  });
+  island.querySelector('.kc-island-main').addEventListener('click',()=>{island.classList.toggle('is-expanded');island.querySelector('.kc-island-detail').hidden=!island.classList.contains('is-expanded');});
+  island.querySelector('.kc-island-open').addEventListener('click',()=>{const view=island.dataset.target||'notifications',conversationId=island.dataset.conversationId||'';clearTimeout(kcIslandTimer);island.classList.remove('is-visible','is-expanded');if(view==='gram-chat'&&conversationId)window.__kgOpenConversation=conversationId;go(view);});
+  island.querySelector('.kc-island-dismiss').addEventListener('click',()=>{clearTimeout(kcIslandTimer);island.classList.remove('is-visible','is-expanded');});
+  island.querySelector('.kc-island-retry').addEventListener('click',event=>{event.stopPropagation();if(typeof kcIslandRetryAction==='function'){const action=kcIslandRetryAction;kcIslandRetryAction=null;Promise.resolve().then(action).catch(error=>console.warn('Kinetic Crew retry failed:',error));}});
  }
  island.dataset.status=status;island.dataset.target=target;island.dataset.conversationId=String(detail.conversationId||'');
  island.classList.remove('kc-island-success','kc-island-pending','kc-island-failed');island.classList.add('kc-island-'+status);
- island.querySelector('.kc-island-mark').textContent=String(detail.icon||(status==='success'?'✓':status==='failed'?'!':'↗')).slice(0,4);
- island.querySelector('.kc-island-copy b').textContent=title;island.querySelector('.kc-island-copy small').textContent=body;
+ island.querySelector('.kc-island-orb').textContent=String(detail.icon||(status==='success'?'✓':status==='failed'?'!':'↗')).slice(0,2);
+ island.querySelector('.kc-island-copy b').textContent=title;island.querySelector('.kc-island-copy small').textContent=body;island.querySelector('.kc-island-detail p').textContent=body;
  const countNode=island.querySelector('.kc-island-count');countNode.textContent=count;countNode.hidden=!count;
  const retry=island.querySelector('.kc-island-retry');kcIslandRetryAction=typeof detail.retry==='function'?detail.retry:null;retry.hidden=!(status==='failed'&&kcIslandRetryAction);
- island.style.setProperty('--kc-island-progress',progress==null?(status==='pending'?'32%':'100%'):progress+'%');
+ island.style.setProperty('--kc-island-progress',progress==null?(status==='pending'?'34%':'100%'):progress+'%');
  island.classList.toggle('has-progress',progress!=null||status==='pending');island.classList.toggle('is-indeterminate',progress==null&&status==='pending');island.classList.toggle('is-persistent',detail.persistent===true);
  island.classList.remove('is-visible');void island.offsetWidth;island.classList.add('is-visible');clearTimeout(kcIslandTimer);
- if(detail.persistent!==true){const duration=Number(detail.duration),timeout=Number.isFinite(duration)&&detail.duration!=null?Math.max(1800,Math.min(15000,duration)):(status==='failed'?9000:status==='success'?4800:6500);kcIslandTimer=setTimeout(()=>island.classList.remove('is-visible'),timeout);}
+ if(detail.persistent!==true){const duration=Number(detail.duration),timeout=Number.isFinite(duration)&&detail.duration!=null?Math.max(1800,Math.min(15000,duration)):(status==='failed'?9000:status==='success'?4800:6500);kcIslandTimer=setTimeout(()=>island.classList.remove('is-visible','is-expanded'),timeout);}
 }window.addEventListener('kc:notification',event=>{const detail=event.detail||{};if(detail.conversationId&&String(window.kcGramActiveConversation||'')===String(detail.conversationId))return;showDynamicIsland(detail);if(notificationPrefs().sound)playNoticeSound();});
 
 let kcGramInboxChannel=null,kcGramInboxUserId='';
