@@ -1,5 +1,5 @@
 {
-  "version": "1.7.03",
+  "version": "1.7.04",
   "updated_at": "2026-11-27T17:45:00+05:30",
-  "release_notes": "Rehearsals rebuilt with Events scheduling, registration, tickets, QR check-in, sharing and admin management"
+  "release_notes": "Rehearsals now use the full Events workflow; repaired Home and More carousels, hamburger navigation and resilient promotions loading"
 }
