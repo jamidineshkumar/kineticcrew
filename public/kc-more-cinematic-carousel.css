@@ -640,3 +640,26 @@
  #app .kc-more-reference .kc-more-event-ads-host .kc-more-announcement-slide::before,
  #app .kc-more-reference .kc-more-event-ads-host .kc-more-announcement-slide::after{animation:none!important}
 }
+
+
+/* Explicit slide controls and a working autoplay progress indicator. */
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-dots{
+ position:absolute!important;z-index:9!important;right:16px!important;bottom:13px!important;
+ display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:6px!important;
+ max-width:55%!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-dots button{
+ display:block!important;flex:0 0 auto!important;width:6px!important;height:6px!important;min-width:6px!important;
+ min-height:6px!important;padding:0!important;border:0!important;border-radius:999px!important;
+ background:rgba(255,255,255,.42)!important;box-shadow:none!important;transition:width .25s ease,background .25s ease!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-dots button.active{
+ width:19px!important;background:linear-gradient(90deg,#ee72b9,#73d9df)!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-progress i{
+ transform:scaleX(0)!important;transform-origin:left center!important;
+}
+@keyframes kcMoreAdsProgress{to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-dots button{transition:none!important}
+}
