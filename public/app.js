@@ -1432,6 +1432,26 @@ async function loadKCRewardsAdmin(){
 function meetPage(){
  return '<div class="kc-meet-page"><header class="kc-meet-hero"><span class="kc-meet-eyebrow">KINETIC CREW · CONNECT</span><div class="kc-meet-orbit" aria-hidden="true"><span>KC</span><i></i><i></i><i></i></div><h1>KC <em>Meet</em></h1><p>'+(admin()?'Host meetings, rehearsals and crew sessions.':'Join a live crew meeting using the code shared by your host.')+'</p><div class="kc-meet-actions">'+(admin()?'<button type="button" class="kc-meet-primary" data-kc-meet-create>＋ Start instant meeting</button>':'')+'<label class="kc-meet-join"><input id="kcMeetCode" maxlength="24" autocomplete="off" placeholder="Enter a meeting code" aria-label="Meeting code"><button type="button" data-kc-meet-join>Join</button></label></div></header>'+(admin()?'<button type="button" class="kc-meet-create-event-tile" data-kc-meet-schedule><span>◷</span><span><small>PLAN AHEAD</small><b>Create a KC Meet event</b><em>Schedule a date, invite your crew and manage who joins</em></span><i>↗</i></button>':'')+'<section class="kc-meet-scheduled-section"><div><span>UPCOMING</span><h2>Scheduled meeting events</h2><p>No tickets. No event registration. Just the invite link.</p></div><div id="kcMeetScheduledEvents" class="kcml-scheduled-grid"><p class="kcml-scheduled-empty">Loading scheduled meetings…</p></div></section><section class="kc-meet-info-grid"><article><span>▣</span><b>Video & audio</b><small>Meet face to face with your crew.</small></article><article><span>▤</span><b>Share your screen</b><small>Show choreography, plans and presentations.</small></article><article><span>♙</span><b>Approved crew access</b><small>Members can join; only admins and Super Admins can host.</small></article></section><section class="kc-meet-note"><b>How KC Meet works</b><p>Admins and Super Admins create and host meetings. Members join using the meeting code or invitation link. Your camera and microphone permissions are controlled by your device.</p></section></div>';
 }
+function isRehearsalEvent(event){return String(event?.category||'').trim().toLowerCase()==='rehearsals';}
+function rehearsalsPage(){
+ const originalEvents=S.events,originalFilter=S.eventsFilter,originalQuery=S.eventQuery;
+ S.events=(originalEvents||[]).filter(isRehearsalEvent);S.eventsFilter='all';S.eventQuery=String(S.rehearsalQuery||'');
+ let html=eventsPage();
+ S.events=originalEvents;S.eventsFilter=originalFilter;S.eventQuery=originalQuery;
+ html=html.replace('KINETIC CREW / LIVE EXPERIENCES','KINETIC CREW / PRACTICE SESSIONS')
+  .replace('Find your <em>next moment.</em>','Train together. <em>Move as one.</em>')
+  .replace('Discover what’s happening around your crew.','Plan practice sessions, reserve your place and stay in sync with the crew.')
+  .replace('data-view="new-event">＋ Create event','data-view="new-rehearsal">＋ Schedule rehearsal')
+  .replace('id="kceEventSearch"','id="kceRehearsalSearch"')
+  .replace('Search concerts, workshops, events...','Search rehearsals, practice sessions, locations...')
+  .replace('aria-label="Search concerts, workshops and events"','aria-label="Search rehearsals"')
+  .replace('class="kce-events kce-nightpulse"','class="kce-events kce-nightpulse kce-rehearsal-mode"')
+  .replace('data-event-filter="all"','data-event-filter="all" data-mode="rehearsals"')
+  .replace('data-event-filter="tickets"','data-event-filter="tickets" data-mode="rehearsals"');
+ html=html.replace(/<nav class="kce-tabs"[^>]*>[\s\S]*?<\/nav>/,'<nav class="kce-tabs" aria-label="Rehearsal filters"><button type="button" data-event-filter="all" data-mode="rehearsals" class="active" aria-pressed="true">Upcoming</button><button type="button" data-event-filter="tickets" data-mode="rehearsals" aria-pressed="false">My registrations</button><button type="button" data-event-filter="past" data-mode="rehearsals" aria-pressed="false">Past</button></nav>');
+ html=html.replace(/data-open-event="([^"]+)"/g,'data-open-event="$1" data-mode="rehearsals"');
+ return html;
+}
 function eventsPage(){
  const now=Date.now(),all=[...(S.events||[])].sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at)),upcoming=all.filter(e=>new Date(e.starts_at).getTime()>=now),registered=all.filter(e=>e.registered),past=all.filter(e=>new Date(e.starts_at).getTime()<now).reverse();
  const filter=S.eventsFilter||'all',query=String(S.eventQuery||'').trim().toLowerCase(),base=filter==='tickets'?registered:filter==='past'?past:filter==='all'?upcoming:upcoming.filter(e=>{const category=String(e.category||'').toLowerCase(),words=String((e.category||'')+' '+(e.title||'')+' '+(e.description||'')).toLowerCase();return filter==='auditions'?category==='auditions'||/audition|tryout|selection/.test(words):filter==='performances'?category==='performances'||/performance|showcase|concert|flashmob|stage/.test(words):filter==='workshops'?category==='workshops'||/workshop|class|training|masterclass/.test(words):filter==='rehearsals'?category==='rehearsals'||/rehearsal|practice/.test(words):filter==='other'?category==='other':category==='community'||/community|social|meet|festival|celebrat/.test(words);});
@@ -2265,8 +2285,8 @@ document.addEventListener('input',e=>{
 document.addEventListener('error',e=>{const img=e.target;if(!(img instanceof HTMLImageElement))return;const fallback=img.dataset.fallback;if(!fallback)return;const node=document.createElement('span');node.className=img.classList.contains('profile-photo')?'profile-photo profile-photo-placeholder':('avatar-fallback '+(img.classList.contains('small')?'small':''));node.textContent=fallback;node.setAttribute('aria-label','Profile image unavailable');img.replaceWith(node);},true);
 
 document.addEventListener('input',e=>{
- if(e.target.id!=='kceEventSearch')return;
- S.eventQuery=e.target.value;const q=S.eventQuery.trim().toLowerCase(),root=document.querySelector('.kce-events');if(!root)return;
+ if(!['kceEventSearch','kceRehearsalSearch'].includes(e.target.id))return;
+ const isRehearsal=e.target.id==='kceRehearsalSearch';if(isRehearsal)S.rehearsalQuery=e.target.value;else S.eventQuery=e.target.value;const q=e.target.value.trim().toLowerCase(),root=document.querySelector('.kce-events');if(!root)return;
  root.querySelector('.kce-featured-event')?.toggleAttribute('hidden',!!q);
  root.querySelector('.kce-category-mosaic')?.toggleAttribute('hidden',!!q);
  const grid=root.querySelector('.kce-events-grid');if(!grid)return;
