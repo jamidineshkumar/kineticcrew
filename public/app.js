@@ -844,7 +844,25 @@ function startCrewNotificationPolling(){
  }
 }
 
-function playNoticeSound(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const ctx=new C();const play=()=>{const start=ctx.currentTime;const notes=[880,1175,988,1318,880,1175,988,1318];notes.forEach((hz,i)=>{const t=start+i*.19,osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='triangle';osc.frequency.setValueAtTime(hz,t);gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.32,t+.018);gain.gain.setValueAtTime(.32,t+.115);gain.gain.exponentialRampToValueAtTime(.0001,t+.17);osc.connect(gain);gain.connect(ctx.destination);osc.start(t);osc.stop(t+.18);});setTimeout(()=>ctx.close().catch(()=>{}),1900);};if(ctx.state==='suspended')ctx.resume().then(play).catch(()=>ctx.close().catch(()=>{}));else play();}catch(error){console.warn('Kinetic Crew alert sound unavailable:',error);}}
+function playNoticeSound(){try{
+ const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+ const ctx=new C();
+ const play=()=>{
+  const start=ctx.currentTime;
+  // A short, soft two-note sine chime: deliberately quieter and less repetitive.
+  [[660,0],[880,.13]].forEach(([hz,offset])=>{
+   const osc=ctx.createOscillator(),gain=ctx.createGain(),t=start+offset;
+   osc.type='sine';osc.frequency.setValueAtTime(hz,t);
+   gain.gain.setValueAtTime(.0001,t);
+   gain.gain.exponentialRampToValueAtTime(.055,t+.035);
+   gain.gain.exponentialRampToValueAtTime(.0001,t+.24);
+   osc.connect(gain);gain.connect(ctx.destination);osc.start(t);osc.stop(t+.26);
+  });
+  setTimeout(()=>ctx.close().catch(()=>{}),650);
+ };
+ if(ctx.state==='suspended')ctx.resume().then(play).catch(()=>ctx.close().catch(()=>{}));else play();
+ }catch(error){console.warn('Kinetic Crew alert sound unavailable:',error);}}
+
 function notificationCard(a){
  const id=a.notice_id||('announcement:'+a.id),read=isRead(id),type=a.notice_type||'announcement';
  const label=type==='profile_reminder'?'PROFILE REMINDER':type==='event'?'EVENT UPDATE':type==='post'?'POST':'ANNOUNCEMENT';
