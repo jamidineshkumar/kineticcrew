@@ -243,3 +243,76 @@
 @media(prefers-reduced-motion:reduce){
  #app .kc-more-reference .kc-more-event-ads-host .kc-more-brand-wordmark em{animation:none!important}
 }
+
+/* Final mobile correction: event details and poster artwork use independent compositions. */
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-banner{
+ height:clamp(255px,68vw,300px)!important;min-height:255px!important;max-height:300px!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-campaign-slide{
+ position:absolute!important;display:block!important;overflow:hidden!important;
+ background:#10131d!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-campaign-backdrop{
+ position:absolute!important;inset:-18px!important;z-index:0!important;display:block!important;
+ width:calc(100% + 36px)!important;height:calc(100% + 36px)!important;
+ max-width:none!important;object-fit:cover!important;object-position:center!important;
+ opacity:.42!important;filter:blur(17px) saturate(1.3)!important;animation:none!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-campaign-poster{
+ position:absolute!important;inset:0!important;z-index:1!important;display:block!important;
+ width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;
+ padding:7px 14px!important;box-sizing:border-box!important;object-fit:contain!important;
+ object-position:center!important;opacity:1!important;filter:drop-shadow(0 8px 22px rgba(0,0,0,.35))!important;
+ animation:none!important;background:transparent!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-campaign-slide .kc-more-ads-media{
+ position:absolute!important;inset:0!important;z-index:1!important;width:100%!important;height:100%!important;
+ max-width:none!important;object-fit:cover!important;object-position:center!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-campaign-slide .kc-more-ads-sponsored{z-index:5!important}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-campaign-cta{z-index:6!important}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-event-slide .kc-more-ads-media{
+ position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ object-fit:cover!important;object-position:center!important;opacity:.22!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-event-slide .kc-more-ads-shade{
+ inset:0!important;background:
+ radial-gradient(ellipse at 90% 10%,rgba(214,89,164,.2),transparent 48%),
+ linear-gradient(120deg,rgba(5,9,16,.94),rgba(12,13,23,.82))!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-event-copy{
+ position:absolute!important;inset:0!important;z-index:4!important;
+ display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+ justify-content:center!important;gap:10px!important;
+ width:auto!important;max-width:none!important;margin:0!important;
+ padding:24px 24px 25px!important;box-sizing:border-box!important;
+ overflow:hidden!important;transform:none!important;text-align:left!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-event-copy h2{
+ display:block!important;width:100%!important;max-width:100%!important;margin:0!important;
+ color:#fff!important;font-size:clamp(25px,7vw,34px)!important;line-height:1.05!important;
+ letter-spacing:-.045em!important;overflow-wrap:anywhere!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-event-copy p{
+ display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;
+ width:100%!important;max-width:100%!important;margin:0!important;overflow:hidden!important;
+ color:rgba(245,243,250,.82)!important;font-size:12px!important;line-height:1.4!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-event-action{
+ display:inline-flex!important;position:relative!important;z-index:5!important;
+ flex:0 0 auto!important;align-items:center!important;justify-content:center!important;gap:9px!important;
+ min-height:39px!important;height:39px!important;width:max-content!important;max-width:100%!important;
+ margin:2px 0 0!important;padding:0 16px!important;box-sizing:border-box!important;
+ border:1px solid rgba(255,255,255,.42)!important;border-radius:999px!important;
+ background:linear-gradient(110deg,rgba(130,78,172,.55),rgba(214,91,151,.4))!important;
+ color:#fff!important;font-size:10px!important;font-weight:900!important;letter-spacing:.1em!important;
+ line-height:1!important;white-space:nowrap!important;overflow:hidden!important;
+}
+#app .kc-more-reference .kc-more-event-ads-host .kc-more-event-action b{font-size:14px!important;color:#ffc0d7!important}
+@media(max-width:560px){
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-ads-banner{height:clamp(255px,70vw,290px)!important;min-height:255px!important;max-height:290px!important}
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-campaign-poster{padding:6px 10px!important}
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-event-copy{padding:22px 20px!important;gap:9px!important}
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-event-copy h2{font-size:clamp(24px,7.2vw,32px)!important}
+ #app .kc-more-reference .kc-more-event-ads-host .kc-more-event-copy p{font-size:11px!important}
+}
