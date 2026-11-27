@@ -128,7 +128,7 @@ async function api(path,method='GET',body){
  if(action==='profile'&&method==='PATCH'){const extended=await rpc('crew_update_profile',{p_name:payload.name,p_username:payload.username||'',p_bio:payload.bio||'',p_avatar_url:payload.avatar_url||null,p_banner_url:payload.banner_url||null,p_date_of_birth:payload.date_of_birth||null,p_instagram_username:payload.instagram_username||'',p_profession:'',p_designation:'',p_registration_number:payload.registration_number||''});if(!extended.error)return extended.data;const message=extended.error.message||'';if(/could not find the function|schema cache|PGRST202/i.test(message)){const basic=await rpc('crew_update_profile',{p_name:payload.name});if(basic.error)throw Error(basic.error.message||'Profile update failed.');return {...(basic.data||{}),name:basic.data?.name||payload.name,bio:payload.bio||'',avatar_url:payload.avatar_url||S.user?.avatar_url||null,_profileLimited:true};}throw Error(message||'Profile update failed.');}
  const rpcMap={'qr-attendance':['crew_mark_qr_attendance',{p_event_id:payload.eventId,p_member_email:payload.memberEmail}],'finalize-attendance':['crew_finalize_attendance',{p_event_id:payload.eventId}],'delete-event':['crew_delete_event',{p_event_id:payload.eventId}]};
  if(rpcMap[action]){const {data,error}=await rpc(rpcMap[action][0],rpcMap[action][1]);if(error)throw Error(error.message||'Crew operation failed.');return data;}
- if(action==='attendance'&&method==='GET'){const {data,error}=await rpc('crew_attendance_roster',{p_event_id:payload.eventId});if(error)throw Error(error.message||'Attendance roster failed.');return data;}
+ if(action==='attendance'&&method==='GET'){const {data,error}=await rpc('crew_attendance_roster',{p_event_id:payload.eventId});if(error)throw Error(error.message||'Attendance roster failed.');try{const cache=JSON.parse(localStorage.getItem('kc-attendance-offline-rosters-v1')||'{}');cache[String(payload.eventId)]={saved_at:Date.now(),finalized:!!data?.finalized,roster:(data?.roster||[]).map(m=>({member_id:m.member_id,name:m.name,email:m.email,status:m.status||'pending'}))};localStorage.setItem('kc-attendance-offline-rosters-v1',JSON.stringify(cache));}catch(cacheError){console.warn('Offline attendance roster cache unavailable:',cacheError);}return data;}
  const {data,error}=await rpc('crew_api',{p_action:action,p_method:method,p_payload:payload});
  if(error)throw Error(error.message||error.details||'Crew service request failed.');
  return data;
@@ -913,12 +913,44 @@ function notificationsPage(){
  (filtered.length?filtered.map(notificationCard).join(''):(query?empty('No matching updates','Try a different search.'):('<div class="kc-notice-empty" role="status"><div class="kc-notice-empty-art"><span class="kc-notice-star">✳</span><span class="kc-notice-spark kc-spark-one">✦</span><span class="kc-notice-spark kc-spark-two">·</span><span class="kc-notice-orbit"></span></div><b>You are all caught up</b><p>New announcements, events and posts will appear here.</p><span class="kc-notice-empty-foot">A little calm before the next crew moment</span></div>')))+'</div>'+
  '</section>';
 }
-function loadOptionalScript(src){return new Promise((resolve,reject)=>{const existing=[...document.scripts].find(s=>s.src===src);if(existing){if(existing.dataset.loaded==="yes")return resolve();existing.addEventListener("load",resolve,{once:true});existing.addEventListener("error",reject,{once:true});return;}const script=document.createElement("script");script.src=src;script.async=true;script.onload=()=>{script.dataset.loaded="yes";resolve();};script.onerror=reject;document.head.appendChild(script);});} 
+function loadOptionalScript(src){return new Promise((resolve,reject)=>{const existing=[...document.scripts].find(s=>s.src===src);if(existing){if(existing.dataset.loaded==="yes")return resolve();existing.addEventListener("load",resolve,{once:true});existing.addEventListener("error",reject,{once:true});return;}const script=document.createElement("script");script.src=src;script.async=true;script.onload=()=>{script.dataset.loaded="yes";resolve();};script.onerror=reject;document.head.appendChild(script);});}
+function kcAttendanceOfflineQueue(){try{return JSON.parse(localStorage.getItem('kc-attendance-offline-queue-v1')||'[]');}catch{return [];}}
+function kcSaveAttendanceOfflineQueue(rows){try{localStorage.setItem('kc-attendance-offline-queue-v1',JSON.stringify(rows.slice(-500)));return true;}catch{return false;}}
+function kcQueueOfflineQr(eventId,email){
+ const rows=kcAttendanceOfflineQueue(),key=String(eventId)+'|'+String(email).toLowerCase();
+ if(!rows.some(row=>row.key===key&&row.status==='queued'))rows.push({key,type:'qr',eventId:String(eventId),memberEmail:String(email).toLowerCase(),queuedAt:new Date().toISOString(),status:'queued'});
+ if(!kcSaveAttendanceOfflineQueue(rows))throw Error('This device could not save the offline check-in. Free some device storage and try again.');
+}
+let kcOfflineAttendanceSyncBusy=false;
+async function kcSyncOfflineAttendance(){
+ if(!navigator.onLine||kcOfflineAttendanceSyncBusy||!S.user||!admin())return;
+ const rows=kcAttendanceOfflineQueue();if(!rows.length)return;
+ kcOfflineAttendanceSyncBusy=true;let changed=false,failed=[];
+ try{
+  for(const row of rows){
+   if(row.type!=='qr'||row.status!=='queued'){failed.push(row);continue;}
+   try{
+    await api('qr-attendance','POST',{eventId:row.eventId,memberEmail:row.memberEmail});
+    changed=true;
+   }catch(error){
+    failed.push({...row,status:'needs-review',error:String(error.message||'Sync failed').slice(0,180)});
+   }
+  }
+  kcSaveAttendanceOfflineQueue(failed);
+  if(changed){
+   if(S.rosterEvent){try{S.roster=await api('attendance?eventId='+encodeURIComponent(S.rosterEvent));S.attendanceAudit=await rpc('crew_attendance_audit',{p_event_id:S.rosterEvent}).then(x=>x.error?[]:x.data||[]);}catch{}}
+   notice('Offline QR check-ins synced. Review any items that need attention.');
+   if(S.view==='attendance')paint();
+  }
+  if(failed.some(row=>row.status==='needs-review'))notice('Some offline check-ins need review. Open the scanner while online to see the sync result.');
+ }finally{kcOfflineAttendanceSyncBusy=false;}
+}
+window.addEventListener('online',()=>{kcSyncOfflineAttendance().catch(error=>console.warn('Offline attendance sync deferred:',error));});
 function kcQrSetState(state,title,message,showRoster=false){
  const stage=$('#kcQrStage');if(!stage)return;
  stage.dataset.state=state;
  const mark=$('#kcQrMark'),heading=$('#kcQrTitle'),copy=$('#kcQrMessage'),roster=$('#kcQrViewRoster');
- if(mark)mark.textContent=state==='success'?'✓':state==='error'?'×':'⌗';
+ if(mark)mark.textContent=state==='success'?'✓':state==='pending'?'…':state==='error'?'×':'⌗';
  if(heading)heading.textContent=title;
  if(copy)copy.textContent=message;
  if(roster)roster.hidden=!showRoster;
@@ -936,11 +968,14 @@ async function startQr(){
   S.qrStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
   video.srcObject=S.qrStream;await video.play();
   const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});
-  let lastScanAt=0,invalidUntil=0,frameBusy=false;
+  let lastScanAt=0,invalidUntil=0,frameBusy=false,lastScannedRaw='';
+  const resumeAfterConfirmation=(delay=1800)=>{setTimeout(()=>{if(!S.qrStream)return;S.qrProcessing=false;invalidUntil=performance.now()+450;kcQrSetState('scanning','Ready for next ticket','Move the next member’s QR code into the frame.');requestAnimationFrame(scan);},delay);};
   const scan=async now=>{
    if(!S.qrStream||S.qrProcessing||frameBusy)return;
    if(now-lastScanAt<130){requestAnimationFrame(scan);return;}
-   lastScanAt=now;if(invalidUntil&&now>=invalidUntil&&$('#kcQrStage')?.dataset.state==='error'){invalidUntil=0;kcQrSetState('scanning','Align QR code inside the square','Keep the ticket steady and within the frame.');}frameBusy=true;
+   lastScanAt=now;
+   if(invalidUntil&&now>=invalidUntil&&['error','pending'].includes($('#kcQrStage')?.dataset.state)){invalidUntil=0;kcQrSetState('scanning','Align QR code inside the square','Keep the ticket steady and within the frame.');}
+   frameBusy=true;
    try{
     if(video.readyState>=2&&video.videoWidth&&window.jsQR){
      const edge=Math.floor(Math.min(video.videoWidth,video.videoHeight)*0.76);
@@ -949,27 +984,40 @@ async function startQr(){
      ctx.drawImage(video,sx,sy,edge,edge,0,0,420,420);
      const result=window.jsQR(ctx.getImageData(0,0,420,420).data,420,420,{inversionAttempts:'attemptBoth'});
      const raw=String(result?.data||'').trim();
-     if(raw&&now>=invalidUntil){
+     if(raw&&now>=invalidUntil&&raw!==lastScannedRaw){
       const parts=raw.split(':');
       if(parts.length!==3||parts[0]!=='KC_EVENT_ATTENDANCE'||!/^[0-9a-f-]{36}$/i.test(parts[1])||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(parts[2])){
        invalidUntil=now+1700;
        kcQrSetState('error','QR code not recognized','This is not a valid Kinetic Crew event ticket. Try another QR code.');
       }else{
-       S.qrProcessing=true;
-       kcQrSetState('scanning','Verifying ticket…','Checking the event and registered member.');
+       S.qrProcessing=true;lastScannedRaw=raw;
        const eventId=parts[1],memberEmail=parts[2];
-       try{
-        const result=await api('qr-attendance','POST',{eventId,memberEmail});
-        S.rosterEvent=eventId;
-        S.roster=await api('attendance?eventId='+encodeURIComponent(eventId));
-        const member=(S.roster?.roster||[]).find(m=>String(m.email).toLowerCase()===memberEmail.toLowerCase());
-        const event=S.events.find(e=>String(e.id)===String(eventId));
-        S.attendanceAudit=await rpc('crew_attendance_audit',{p_event_id:eventId}).then(x=>x.error?[]:x.data||[]);
-        stopQr();
-        kcQrSetState('success','Attendance verified',(member?.name||result.member||memberEmail)+' · '+(event?.title||'Kinetic Crew event'),true);
-       }catch(error){
-        S.qrProcessing=false;invalidUntil=now+1900;
-        kcQrSetState('error','Unable to verify ticket',error.message||'The ticket could not be verified. Try again or use OTP.');
+       if(!navigator.onLine){
+        try{
+         const cache=JSON.parse(localStorage.getItem('kc-attendance-offline-rosters-v1')||'{}'),cached=cache[String(eventId)];
+         const member=(cached?.roster||[]).find(m=>String(m.email).toLowerCase()===memberEmail.toLowerCase());
+         if(!cached||!member)throw Error('This event roster is not saved on this device. Open the event roster while online before scanning offline.');
+         if(cached.finalized)throw Error('This event attendance is finalized. Offline check-in is disabled.');
+         if(member.status==='present')throw Error('This member is already marked present in the last saved roster.');
+         kcQueueOfflineQr(eventId,memberEmail);
+         kcQrSetState('pending','Saved offline · sync pending',(member.name||memberEmail)+' · Check-in will be confirmed when internet returns.');
+         invalidUntil=now+1800;S.qrProcessing=false;resumeAfterConfirmation(1800);
+        }catch(error){S.qrProcessing=false;lastScannedRaw='';invalidUntil=now+2200;kcQrSetState('error','Offline check-in not saved',error.message||'Reconnect and try again.');}
+       }else{
+        kcQrSetState('scanning','Verifying ticket…','Checking the event and registered member.');
+        try{
+         const result=await api('qr-attendance','POST',{eventId,memberEmail});
+         S.rosterEvent=eventId;
+         try{S.roster=await api('attendance?eventId='+encodeURIComponent(eventId));}catch{}
+         const member=(S.roster?.roster||[]).find(m=>String(m.email).toLowerCase()===memberEmail.toLowerCase());
+         const event=S.events.find(e=>String(e.id)===String(eventId));
+         S.attendanceAudit=await rpc('crew_attendance_audit',{p_event_id:eventId}).then(x=>x.error?[]:x.data||[]).catch(()=>[]);
+         kcQrSetState('success','Attendance verified',(member?.name||result.member||memberEmail)+' · '+(event?.title||'Kinetic Crew event'),true);
+         invalidUntil=now+1900;resumeAfterConfirmation(1900);
+        }catch(error){
+         S.qrProcessing=false;lastScannedRaw='';invalidUntil=now+1900;
+         kcQrSetState('error','Unable to verify ticket',error.message||'The ticket could not be verified. Try again or use OTP.');
+        }
        }
       }
      }
@@ -984,7 +1032,7 @@ async function startQr(){
   notice(err?.name==='NotAllowedError'?'Allow camera access to scan member QR codes.':'Camera unavailable. Use OTP verification instead.');
  }
 }
-function stopQr(){if(S.qrStream){S.qrStream.getTracks().forEach(t=>t.stop());S.qrStream=null;}S.qrScanning=false;}
+function stopQr(){if(S.qrStream){S.qrStream.getTracks().forEach(t=>t.stop());S.qrStream=null;}S.qrScanning=false;S.qrProcessing=false;}
 
 function card(e){let act=e.attended?'<span class="pill">✓ Attended</span>':e.registered?'<span class="pill">✓ Registered</span>':'<span class="event-open-hint">View details ↗</span>';return '<article class="event event-clickable" role="button" tabindex="0" data-open-event="'+esc(e.id)+'"><div class="cover"><span class="datechip">'+esc(ds(e.starts_at))+'</span><span class="coversymbol">✳</span><span class="covercode">KC / EVENT '+esc(String(e.id).slice(0,5).toUpperCase())+'</span></div><div class="eventbody"><div class="eventtype"><i></i>'+(new Date(e.starts_at)>new Date()?'UPCOMING EVENT':'CREW EVENT')+'</div><h3>'+esc(e.title)+'</h3><p class="eventdesc">'+esc(e.description||'A moment to connect, create, and move together.')+'</p><div class="eventmeta"><span>'+esc(dt(e.starts_at))+'</span><span>'+esc(e.location||'Location TBA')+'</span></div><div class="eventbottom"><span class="capacity">'+Number(e.registration_count||0)+' / '+Number(e.capacity||0)+' registered</span>'+act+'</div></div></article>';}
 
