@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import nodemailer from "npm:nodemailer@6.9.16";
+import { brandedEmail } from "./email-template.ts";
 
 const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization, x-client-info, apikey, content-type","Access-Control-Allow-Methods":"POST, OPTIONS"};
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,"Content-Type":"application/json"}});
@@ -45,11 +46,17 @@ Deno.serve(async(req:Request)=>{
     if(!smtpPass)return json({error:"SMTP_PASS is not configured. Applicant was not emailed and no data was deleted."},503);
     const applyUrl="https://kineticcrew.vercel.app/audition-application.html";
     const name=String(app.name||"Applicant");
-    const subject="Kinetic Crew audition application — details need correction";
-    const textBody="Hello "+name+",\n\nThank you for your interest in Kinetic Crew. During review, we found that some details in your audition application appear to be incorrect or could not be verified. Your current application has therefore been rejected and its application data will be removed from our audition system.\n\nIf you are still interested, please check your details carefully and submit a fresh application here: "+applyUrl+"\n\nPlease use your correct registration number, contact number and email details.\n\nKinetic Crew Admin & President";
+    const subject="Kinetic Crew application update";
+    const textBody="Hello "+name+",\n\nThank you for your interest in Kinetic Crew. During review, we found that some details in your audition application appear to be incorrect or could not be verified. Your current application has therefore been rejected and its application data will be removed from our audition system.\n\nIf you are still interested, please check your details carefully and submit a fresh application here: "+applyUrl+"\n\nPlease use your correct registration number, contact number and email details.\n\nKinetic Crew";
     const mailer=nodemailer.createTransport({host:"smtp.gmail.com",port:465,secure:true,auth:{user:smtpUser,pass:smtpPass}});
     await mailer.verify();
-    await mailer.sendMail({from:{name:"Kinetic Crew",address:smtpUser},to:email,subject,text:textBody,html:'<!doctype html><html><body style="margin:0;padding:28px;background:#09080d;color:#f7f4f8;font-family:Arial,sans-serif"><div style="max-width:540px;margin:auto"><p style="letter-spacing:3px;color:#f0a2cf;font-size:11px;font-weight:bold">KINETIC CREW · AUDITION APPLICATION</p><h2 style="font-size:26px">A quick update about your application</h2><div style="padding:22px;border:1px solid #55404e;border-radius:18px;background:#211720"><p>Hello '+esc(name)+',</p><p>Thank you for your interest in Kinetic Crew. During review, we found that some details in your audition application appear to be incorrect or could not be verified.</p><p>Your current application has therefore been rejected, and its application data will be removed from our audition system.</p><p>If you are still interested, please check your information carefully and submit a fresh application using the button below.</p><p><a href="'+applyUrl+'" style="display:inline-block;padding:14px 20px;border-radius:12px;background:#d94691;color:#fff;text-decoration:none;font-weight:bold">Reapply to Kinetic Crew</a></p><p style="font-size:12px;color:#c8b9c5">Please enter your correct registration number, contact number and email details.</p></div><p style="font-size:12px;color:#9f96a2;margin-top:18px">Kinetic Crew Admin &amp; President</p></div></body></html>'});
+    await mailer.sendMail({from:{name:"Kinetic Crew",address:smtpUser},to:email,subject,text:textBody,html:brandedEmail({
+      title:"Application update",
+      subtitle:"Some details need correction.",
+      contentHtml:'<p style="margin:0 0 12px">Hello '+esc(name)+',</p><p style="margin:0 0 12px">We could not verify some details in your audition application. The application has been rejected and its data will be removed.</p><p style="margin:0">If you would still like to audition, review your details and submit a new application.</p>',
+      buttonLabel:"Submit a new application",
+      buttonUrl:applyUrl
+    })});
     const {error:logError}=await admin.from("crew_email_delivery_log").upsert({idempotency_key:key,recipient_email:email,status:"sent",sent_at:new Date().toISOString()},{onConflict:"idempotency_key,recipient_email"});
     if(logError)throw new Error("Rejection email was sent, but its delivery record could not be saved. Retry safely: "+logError.message);
    }
