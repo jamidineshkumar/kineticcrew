@@ -1,5 +1,5 @@
 const BASE=new URL(self.registration.scope).pathname.replace(/\/?$/,'/');
-const CACHE='kinetic-crew-shell-rehearsal-events-carousel-1707"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2","https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js","https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"];
+const CACHE='kinetic-crew-shell-rehearsal-events-carousel-1707-custom-alert-redirect1"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2","https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js","https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"];
 const CDN_CACHE="kinetic-crew-cdn-v1";
 
 const BRAND_LOGO_RPC='https://lkdfjiweqxshbbcadfna.supabase.co/rest/v1/rpc/crew_get_brand_logo';
@@ -39,9 +39,9 @@ if(messaging)messaging.onBackgroundMessage(async payload=>{
 self.addEventListener("notificationclick",event=>{
   event.notification.close();
   let target;
-  try{target=new URL(event.notification.data?.url||BASE+"?kc_notification_view=notifications",self.location.origin);if(target.origin!==self.location.origin)throw new Error("External notification target blocked");}
+  try{target=new URL(event.notification.data?.url||BASE+"?kc_notification_view=notifications",self.location.origin);if(!["https:","http:"].includes(target.protocol)||target.username||target.password)throw new Error("Invalid notification target");}
   catch{target=new URL(BASE+"?kc_notification_view=notifications",self.location.origin);}
-  event.waitUntil((async()=>{
+  event.waitUntil((async()=>{if(target.origin!==self.location.origin){await self.clients.openWindow(target.href);return;}
     const clients=await self.clients.matchAll({type:"window",includeUncontrolled:true});
     for(const client of clients){if(client.url.startsWith(self.location.origin)&&"focus"in client){await client.navigate(target.href);return client.focus();}}
     return self.clients.openWindow(target.href);
