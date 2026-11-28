@@ -297,6 +297,8 @@ async function handleClick(e){
  if(t.matches('[data-kg-tab]')){state.tab=t.dataset.kgTab;state.showArchived=false;$$('[data-kg-tab]').forEach(b=>b.classList.toggle('active',b===t));renderList();return;}
  if(t.matches('[data-kg-archived]')){state.showArchived=!state.showArchived;t.classList.toggle('active',state.showArchived);t.textContent=state.showArchived?'← Back to chats':'▣ Archived';renderList();return;}
  if(t.matches('[data-kg-new-menu]')){modal('<button type="button" class="kg-wa-modal-close" data-kg-modal-close>×</button><span class="kg-wa-kicker">NEW CONVERSATION</span><h2>Start chatting</h2><button type="button" class="kg-wa-option" data-kg-new="direct">Private chat</button><button type="button" class="kg-wa-option" data-kg-new="group">Create group</button>');return;}
+ if(t.matches('[data-kg-menu]')){modal('<button type="button" class="kg-wa-modal-close" data-kg-modal-close>×</button><span class="kg-wa-kicker">INBOX</span><h2>Chat settings</h2><button type="button" class="kg-wa-option" data-kg-menu-archived>Archived chats</button><button type="button" class="kg-wa-option" data-kg-new="group">Create group</button><button type="button" class="kg-wa-option" data-kg-new="direct">Start private chat</button>');return;}
+ if(t.matches('[data-kg-menu-archived]')){closeModal();state.tab='chats';state.showArchived=true;renderList();return;}
  if(t.matches('[data-kg-new="direct"]')){newDirectModal();return;}
  if(t.matches('[data-kg-new="group"]')){newGroupModal();return;}
  if(t.matches('[data-kg-new-community]')){newCommunityModal();return;}
