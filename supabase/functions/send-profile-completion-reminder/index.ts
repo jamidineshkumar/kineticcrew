@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { brandedEmail } from "./email-template.ts";
 import nodemailer from "npm:nodemailer@6.9.16";
 
 const cors = {
@@ -138,9 +139,9 @@ Deno.serve(async (req: Request) => {
       await mailer.sendMail({
         from: '"KINETIC CREW" <' + smtpUser + '>',
         to: target.email,
-        subject: title + " · Kinetic Crew",
+        subject: title + " | Kinetic Crew",
         text: message + "\n\nOpen Kinetic Crew: https://kineticcrew.vercel.app",
-        html: '<div style="margin:0;padding:32px 16px;background:#101116;color:#f4f1f7;font-family:Arial,sans-serif"><div style="max-width:560px;margin:auto;padding:28px;border:1px solid #34343c;border-radius:22px;background:#1b1d24"><p style="color:#e6a08f;letter-spacing:2px;font-size:11px;font-weight:bold">KINETIC CREW · PROFILE</p><h1 style="font-size:25px">' + esc(title) + '</h1><p style="line-height:1.7;color:#dedbe4">Hi ' + esc(target.name || target.username || "there") + ',</p><p style="line-height:1.7;color:#dedbe4">' + esc(message) + '</p><p style="margin:28px 0"><a href="https://kineticcrew.vercel.app/?kc_notification_view=profile" style="display:inline-block;padding:14px 20px;border-radius:13px;background:#f0a18f;color:#171419;text-decoration:none;font-weight:bold">Complete your profile</a></p><p style="color:#9995a1;font-size:12px">Kinetic Crew</p></div></div>',
+        html: brandedEmail({title,contentHtml:'<p style="margin:0 0 10px;">Hi '+esc(target.name || target.username || "there")+',</p><p style="margin:0;color:#c2bec8;">'+esc(message)+'</p>',buttonLabel:"Complete your profile",buttonUrl:"https://kineticcrew.vercel.app/?kc_notification_view=profile"}),
       });
       emailSent = true;
     } catch (error) {

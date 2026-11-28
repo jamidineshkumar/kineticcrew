@@ -1,37 +1,9 @@
-export type BrandedEmailOptions = {
-  eyebrow?: string;
-  title: string;
-  subtitle?: string;
-  contentHtml?: string;
-  code?: string;
-  buttonLabel?: string;
-  buttonUrl?: string;
-  footerNote?: string;
-};
-
-const esc = (value: unknown) => String(value ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]!));
-
-export function brandedEmail(options: BrandedEmailOptions): string {
-  const title = esc(options.title);
-  const subtitle = options.subtitle ? esc(options.subtitle) : "";
-  const code = options.code ? `
-    <tr><td align="center" style="padding:20px 12px 14px;">
-      <div style="font-family:Arial,Helvetica,sans-serif;font-size:clamp(36px,8vw,54px);line-height:1.1;font-weight:800;letter-spacing:clamp(5px,2vw,13px);color:#ff955d;text-shadow:0 0 16px #f4773f88;white-space:nowrap;">${esc(options.code)}</div>
-      <div style="display:inline-block;margin-top:10px;padding:6px 12px;border:1px solid #77747e;border-radius:22px;background:#35353d;color:#c3c1c9;font-size:14px;">Valid for 10 minutes</div>
-    </td></tr>` : "";
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"><title>${title} · Kinetic Crew</title></head>
-<body style="margin:0;padding:0;background:#08090d;color:#f5f3f6;font-family:Arial,Helvetica,sans-serif;">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">${subtitle || title} · Kinetic Crew</div>
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#08090d;"><tr><td align="center" style="padding:12px 10px 16px;">
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:480px;">
-<tr><td style="padding:0 6px 10px;">
-<h1 style="margin:0;font-size:clamp(32px,7vw,44px);line-height:1.08;font-weight:800;letter-spacing:-2px;color:#f7f6f8;">${title}</h1>
-${subtitle ? `<p style="margin:10px 0 0;color:#b6b3bd;font-size:17px;line-height:1.35;">${subtitle}</p>` : ""}
-</td></tr>
-<tr><td style="padding:0 0 10px;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #9d7774;border-radius:30px;background:#292832;background-image:linear-gradient(135deg,#343640 0%,#25242d 52%,#302421 100%);box-shadow:0 0 24px #f18a5830,inset 0 1px 0 #ffffff38;">
-${options.contentHtml ? `<tr><td style="padding:16px 16px 6px;color:#e9e6ed;font-size:14px;line-height:1.4;">${options.contentHtml}</td></tr>` : ""}
-${code}
-</table></td></tr>
-<tr><td style="padding:0 6px;"><p style="margin:0;color:#aaa7b0;font-size:13px;line-height:1.4;">${esc(options.footerNote || "If you didn't request this, you can safely ignore this email.")}</p></td></tr>
-</table></td></tr></table></body></html>`;
+export type BrandedEmailOptions = { eyebrow?: string; title: string; subtitle?: string; contentHtml?: string; code?: string; buttonLabel?: string; buttonUrl?: string; footerNote?: string; };
+const esc=(value:unknown)=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]!));
+export function brandedEmail(options:BrandedEmailOptions):string{
+ const title=esc(options.title),subtitle=options.subtitle?esc(options.subtitle):"";
+ const code=options.code?`<tr><td align="center" style="padding:22px 16px 18px;"><div style="font-size:42px;line-height:1.15;font-weight:800;letter-spacing:7px;color:#ff9a62;text-shadow:0 0 12px #f4773f55;white-space:nowrap;">${esc(options.code)}</div><div style="margin-top:10px;color:#aaa7b0;font-size:13px;">Valid for 10 minutes</div></td></tr>`:"";
+ const button=options.buttonLabel&&options.buttonUrl?`<tr><td align="left" style="padding:18px 22px 22px;"><a href="${esc(options.buttonUrl)}" style="display:inline-block;padding:13px 21px;border-radius:12px;background:#e88967;color:#171419;text-decoration:none;font-size:14px;line-height:1.2;font-weight:700;">${esc(options.buttonLabel)}</a></td></tr>`:"";
+ const footer=options.footerNote?`<tr><td style="padding:14px 4px 0;color:#92909a;font-size:12px;line-height:1.5;">${esc(options.footerNote)}</td></tr>`:"";
+ return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"><title>${title} | Kinetic Crew</title><style>@keyframes kcBrandSweep{0%{background-position:0% 50%}100%{background-position:200% 50%}}@media screen and (max-width:600px){.kc-shell{padding:18px 12px!important}.kc-card{border-radius:16px!important}.kc-title{font-size:25px!important;line-height:1.2!important}}</style></head><body style="margin:0;padding:0;background:#101116;color:#f5f3f6;font-family:Arial,Helvetica,sans-serif;"><div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">${subtitle||title}</div><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;background:#101116;"><tr><td align="center" class="kc-shell" style="padding:30px 16px;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:560px;"><tr><td style="padding:0 4px 18px;"><div style="font-size:23px;line-height:1.15;font-weight:800;letter-spacing:-.7px;color:#ff9a62;background-color:#ff9a62;background-image:linear-gradient(100deg,#ff9a62 0%,#f28bb2 38%,#a88bf4 68%,#ff9a62 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:kcBrandSweep 5s linear infinite;">KINETIC CREW</div></td></tr><tr><td class="kc-card" style="border:1px solid #373740;border-radius:20px;background:#1b1c23;overflow:hidden;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td style="padding:24px 22px 10px;"><h1 class="kc-title" style="margin:0;color:#f7f6f8;font-size:29px;line-height:1.18;font-weight:750;letter-spacing:-.7px;">${title}</h1>${subtitle?`<p style="margin:9px 0 0;color:#bcb9c3;font-size:15px;line-height:1.5;">${subtitle}</p>`:""}</td></tr>${options.contentHtml?`<tr><td style="padding:12px 22px 18px;color:#e8e6eb;font-size:14px;line-height:1.6;">${options.contentHtml}</td></tr>`:""}${code}${button}</table></td></tr>${footer}</table></td></tr></table></body></html>`;
 }
