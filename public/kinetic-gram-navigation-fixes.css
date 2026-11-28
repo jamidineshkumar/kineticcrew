@@ -5,6 +5,7 @@
 .kg-wa-option-danger:active{background:rgba(248,91,103,.14)!important}
 @media(max-width:759px){
  body:has(#kgWaThreadView:not([hidden])) #kcMobileDock{display:none!important}
+ body:has(#kgWaThreadView:not([hidden])) .kc-mobile-topbar{display:none!important}
  .kg-wa-app:has(.kg-wa-thread-view:not([hidden])){padding-bottom:0!important}
  .kg-wa-app:has(.kg-wa-thread-view:not([hidden])) .kg-wa-thread-view{inset:env(safe-area-inset-top) 0 0!important}
  .kg-wa-app:has(.kg-wa-thread-view:not([hidden])) .kg-wa-messages{padding-bottom:12px}
