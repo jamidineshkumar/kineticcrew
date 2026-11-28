@@ -41,9 +41,9 @@ messaging.onBackgroundMessage(async (payload) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   let target;
-  try { target = new URL(event.notification.data?.url || "/?kc_notification_view=notifications", self.location.origin); if (target.origin !== self.location.origin) throw new Error("External notification target blocked"); }
+  try { target = new URL(event.notification.data?.url || "/?kc_notification_view=notifications", self.location.origin); if (!["https:","http:"].includes(target.protocol) || target.username || target.password) throw new Error("Invalid notification target"); }
   catch { target = new URL("/?kc_notification_view=notifications", self.location.origin); }
-  event.waitUntil((async () => {
+  event.waitUntil((async () => {if(target.origin!==self.location.origin){await self.clients.openWindow(target.href);return;}
     const clientsList = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
     for (const client of clientsList) {
       if (client.url.startsWith(self.location.origin) && "focus" in client) {

@@ -36,12 +36,7 @@ async function invoke(action, extra = {}) {
 }
 let nativePushReady = false;
 let localNotificationActionReady = false;
-function openNotificationTarget(target) {
-  let url;
-  try { url = new URL(String(target || "/?kc_notification_view=notifications"), window.location.origin); if (url.origin !== window.location.origin) throw new Error("External notification URL blocked"); }
-  catch { url = new URL("/?kc_notification_view=notifications", window.location.origin); }
-  window.location.assign(url.href);
-}
+function openNotificationTarget(target){let url;try{url=new URL(String(target||"/?kc_notification_view=notifications"),window.location.origin);if(!["https:","http:"].includes(url.protocol)||url.username||url.password)throw Error("Invalid notification URL");}catch{url=new URL("/?kc_notification_view=notifications",window.location.origin);}if(url.origin!==window.location.origin){if(window.Capacitor?.isNativePlatform?.()){window.open(url.href,"_system");return;}window.open(url.href,"_blank","noopener,noreferrer");return;}window.location.assign(url.href);}
 async function enableNativePush() {
   const { PushNotifications } = await import("https://esm.sh/@capacitor/push-notifications@7.0.2");
   let permission = await PushNotifications.checkPermissions();
@@ -198,7 +193,8 @@ async function schedule(title, body, audience = "all", options = {}) {
   return invoke("schedule", {
     title, body, audience,
     imageUrl: String(options?.imageUrl || ""),
-    scheduledAt: String(options?.scheduledAt || "")
+    scheduledAt: String(options?.scheduledAt || ""),
+    url: String(options?.url || "/?kc_notification_view=notifications")
   });
 }
 async function listScheduled() {

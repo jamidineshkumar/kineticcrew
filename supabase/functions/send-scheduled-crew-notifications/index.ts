@@ -9,7 +9,10 @@ const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json" } });
 
 const APP_ORIGIN = (Deno.env.get("KC_APP_ORIGIN") || "https://kineticcrew.vercel.app").replace(/\/+$/, "");
-function notificationDestination(item: { source_type?: string; source_id?: string; notification_key?: string }) {
+function notificationDestination(item: { source_type?: string; source_id?: string; notification_key?: string; destination_url?: string }) {
+  if (String(item.source_type || "") === "custom_alert" && item.destination_url) {
+    try { const target = new URL(item.destination_url, APP_ORIGIN); if (target.protocol === "https:" && !target.username && !target.password) return target.origin === APP_ORIGIN ? target.pathname + target.search + target.hash : target.href; } catch {}
+  }
   const hint = (String(item.source_type || "") + " " + String(item.notification_key || "")).toLowerCase();
   if (hint.includes("audition")) return "/audition-admin.html";
   if (hint.includes("event") && item.source_id) return "/?kc_notification_view=event-detail&kc_event_id=" + encodeURIComponent(String(item.source_id));
@@ -130,7 +133,7 @@ Deno.serve(async (req) => {
 
     const { data: due, error: dueError } = await admin
       .from("crew_scheduled_pushes")
-      .select("id,recipient_auth_id,source_type,source_id,notification_key,title,body,attempts")
+      .select("id,recipient_auth_id,source_type,source_id,notification_key,title,body,attempts,image_url,destination_url")
       .eq("status", "pending")
       .lte("scheduled_at", new Date().toISOString())
       .order("scheduled_at", { ascending: true })
@@ -186,7 +189,7 @@ Deno.serve(async (req) => {
 
       const notificationId = String(item.id);
       const url = notificationDestination(item);
-      const absoluteUrl = APP_ORIGIN + url;
+      const absoluteUrl = url.startsWith("https://") ? url : APP_ORIGIN + url;
       const results = await Promise.all(tokens.map(async (token: string) => {
         const response = await fetch(`https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`, {
           method: "POST",
@@ -194,7 +197,7 @@ Deno.serve(async (req) => {
           body: JSON.stringify({
             message: {
               token,
-              notification: { title: item.title, body: item.body },
+              notification: { title: item.title, body: item.body, ...(item.image_url ? { image: item.image_url } : {}) },
               data: {
                 url,
                 notificationId,
@@ -207,6 +210,7 @@ Deno.serve(async (req) => {
                 notification: {
                   title: item.title,
                   body: item.body,
+                  ...(item.image_url ? { image: item.image_url } : {}),
                   icon: "/icon.svg",
                   badge: "/kc-notification-badge.svg",
                   tag: notificationId,
@@ -216,7 +220,7 @@ Deno.serve(async (req) => {
               },
               android: {
                 priority: "HIGH",
-                notification: { channel_id: "crew_updates", sound: "default", icon: "ic_stat_notification", tag: notificationId },
+                notification: { channel_id: "crew_updates", sound: "default", icon: "ic_stat_notification", tag: notificationId, ...(item.image_url ? { image: item.image_url } : {}) },
               },
               apns: { headers: { "apns-priority": "10" }, payload: { aps: { sound: "default" } } },
             },
@@ -237,6 +241,16 @@ Deno.serve(async (req) => {
         await admin.from("crew_scheduled_pushes").update({
           status: "sent", sent_at: new Date().toISOString(), last_error: null, updated_at: new Date().toISOString(),
         }).eq("id", item.id);
+        if (item.image_url) {
+          const objectPath = decodeURIComponent(new URL(item.image_url).pathname.split("/storage/v1/object/public/crew-alert-media/")[1] || "");
+          if (objectPath.startsWith("alerts/") && !objectPath.includes("..")) {
+            await admin.from("crew_alert_media_cleanup").upsert({
+              object_path: objectPath,
+              cleanup_after: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+              last_error: null,
+            }, { onConflict: "object_path" });
+          }
+        }
         sent++;
       } else {
         const attempt = Number(item.attempts || 0) + 1;
