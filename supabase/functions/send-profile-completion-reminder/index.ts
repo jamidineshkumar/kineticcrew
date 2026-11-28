@@ -139,7 +139,7 @@ Deno.serve(async (req: Request) => {
       await mailer.sendMail({
         from: '"KINETIC CREW" <' + smtpUser + '>',
         to: target.email,
-        subject: title + " · Kinetic Crew",
+        subject: title + " | Kinetic Crew",
         text: message + "\n\nOpen Kinetic Crew: https://kineticcrew.vercel.app",
         html: brandedEmail({title,contentHtml:'<p style="margin:0 0 10px;">Hi '+esc(target.name || target.username || "there")+',</p><p style="margin:0;color:#c2bec8;">'+esc(message)+'</p>',buttonLabel:"Complete your profile",buttonUrl:"https://kineticcrew.vercel.app/?kc_notification_view=profile"}),
       });
