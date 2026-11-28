@@ -24,3 +24,7 @@
  #customAlertForm .kc-custom-alert-actions{grid-template-columns:1fr}
  #customAlertForm .kc-custom-alert-actions small{grid-column:auto}
 }
+
+/* Custom alert destination fields: respect the hidden state despite field grid styling. */
+#customAlertForm [hidden]{display:none!important}
+#customAlertForm [name="externalUrl"]{font-family:inherit}
