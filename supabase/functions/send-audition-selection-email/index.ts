@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import nodemailer from "npm:nodemailer@6.9.16";
+import { brandedEmail } from "../_shared/email-template.ts";
 const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization, x-client-info, apikey, content-type","Access-Control-Allow-Methods":"POST, OPTIONS"};
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,"Content-Type":"application/json"}});
 const esc=(v:unknown)=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]!));
@@ -39,10 +40,16 @@ Deno.serve(async(req:Request)=>{
   const mailer=nodemailer.createTransport({host:"smtp.gmail.com",port:465,secure:true,auth:{user:smtpUser,pass:smtpPass}});
   await mailer.verify();
   await mailer.sendMail({
-   from:{name:"Kinetic Crew",address:smtpUser},to:email,subject:"You're selected — welcome to Kinetic Crew",
+   from:{name:"Kinetic Crew",address:smtpUser},to:email,subject:"You're selected - welcome to Kinetic Crew",
    text:"Hello "+String(app.name||"Applicant")+",\n\nCongratulations! Both the Kinetic Crew Admin and President selected your audition.\n\nYour audition account has now been upgraded automatically to regular Kinetic Crew Member access.\n\nUsername: "+String(app.username||"")+
     "\n\nSign in at https://kineticcrew.vercel.app/login.html?audition=credentials-sent with your Kinetic Crew username and the current password for your Audition Portal account. After sign-in, the app will open the mandatory Change Password screen. Enter a new private password, confirm it, and save. Use your new password for future sign-ins.\n\nKinetic Crew",
-   html:'<!doctype html><html><body style="margin:0;padding:28px;background:#09080d;color:#f7f4f8;font-family:Arial,sans-serif"><div style="max-width:520px;margin:auto"><p style="letter-spacing:4px;color:#f0a2cf;font-size:11px;font-weight:bold">KINETIC CREW · FINAL SELECTION</p><h1 style="font-size:30px;margin:12px 0">You’re selected!</h1><div style="padding:24px;border:1px solid #55404e;border-radius:22px;background:#211720"><p>Hello '+esc(app.name)+',</p><p>Both reviewers selected your audition. Welcome to Kinetic Crew.</p><p>Your Audition Portal account has been upgraded automatically to regular Member access.</p><p><b>Username</b><br>'+esc(app.username)+'</p><p>Sign in with your Kinetic Crew username and the current password for your Audition Portal account. The app will require you to set and confirm a new private password before entering the regular Crew Member app. Use that new password for future sign-ins.</p><p><a href="https://kineticcrew.vercel.app/login.html" style="display:inline-block;padding:14px 20px;border-radius:12px;background:#d94691;color:white;text-decoration:none;font-weight:bold">Sign in to Kinetic Crew</a></p></div><p style="font-size:12px;color:#9f96a2;margin-top:18px">Kinetic Crew</p></div></body></html>'
+   html:brandedEmail({
+    title:"You’re selected",
+    subtitle:"Welcome to Kinetic Crew.",
+    contentHtml:'<p style="margin:0 0 12px">Hello '+esc(app.name)+',</p><p style="margin:0 0 12px">Both reviewers selected your audition. Your account is now a regular Member account.</p><p style="margin:0"><strong>Username</strong><br>'+esc(app.username)+'</p>',
+    buttonLabel:"Sign in to Kinetic Crew",
+    buttonUrl:"https://kineticcrew.vercel.app/login.html"
+   })
   });
   const {error:profileError}=await db.from("crew_profiles").update({role:"member",approval_status:"approved",must_change_password:true,password_change_required_since:new Date().toISOString(),approved_at:new Date().toISOString()}).eq("auth_id",app.auth_id);
   if(profileError)throw profileError;
