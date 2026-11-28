@@ -30,6 +30,7 @@
  function activeView(){
   const active=document.querySelector('#nav .navitem.active[data-view],#nav [data-view].active');
   if(active)return active.dataset.view;
+  if(document.body.dataset.kcView)return document.body.dataset.kcView;
   if(document.body.classList.contains('kc-more-open'))return 'more';
   return document.body.classList.contains('kc-home-screen')?'overview':'';
  }
@@ -38,7 +39,7 @@
   home.classList.toggle('active',view==='overview');
   if(view==='overview')home.setAttribute('aria-current','page');else home.removeAttribute('aria-current');
   group.querySelectorAll('[data-view]').forEach(button=>{
-   const selected=button.dataset.view===view;button.classList.toggle('active',selected);
+   const selected=button.dataset.view===view||(button.dataset.view==='feed'&&view==='gram-chat');button.classList.toggle('active',selected);
    if(selected)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
   });
  }
