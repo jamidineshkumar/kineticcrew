@@ -11,11 +11,13 @@ const json = (body: unknown, status = 200) =>
 const APP_ORIGIN = (Deno.env.get("KC_APP_ORIGIN") || "https://kineticcrew.vercel.app").replace(/\/+$/, "");
 function safeNotificationPath(value: unknown) {
   const fallback = "/?kc_notification_view=notifications";
-  try {
-    const parsed = new URL(String(value || fallback), APP_ORIGIN);
-    if (parsed.origin !== APP_ORIGIN || !parsed.pathname.startsWith("/")) return fallback;
-    return parsed.pathname + parsed.search + parsed.hash;
-  } catch { return fallback; }
+  try { const parsed = new URL(String(value || fallback), APP_ORIGIN); if (parsed.protocol !== "https:" || parsed.origin !== APP_ORIGIN || parsed.username || parsed.password || !parsed.pathname.startsWith("/")) return fallback; return parsed.pathname + parsed.search + parsed.hash; }
+  catch { return fallback; }
+}
+function safeNotificationTarget(value: unknown) {
+  const fallback = "/?kc_notification_view=notifications";
+  try { const parsed = new URL(String(value || fallback), APP_ORIGIN); if (parsed.protocol !== "https:" || parsed.username || parsed.password) return fallback; return parsed.origin === APP_ORIGIN ? parsed.pathname + parsed.search + parsed.hash : parsed.href; }
+  catch { return fallback; }
 }
 
 function b64url(input: Uint8Array | string) {
@@ -187,24 +189,103 @@ Deno.serve(async (req) => {
       if (invalid.length) await adminClient.from("crew_push_tokens").delete().in("token", invalid);
       return json({ ok: true, sent, failed: failures.length, removed: invalid.length, message: `Delivered to ${sent} device(s).` });
     }
+    const isCrewAdmin = ["admin", "super_admin"].includes(profile.role);
+    if (["schedule", "list_scheduled", "cancel_scheduled"].includes(String(body.action || "")) && !isCrewAdmin) {
+      return json({ error: "Admin access required." }, 403);
+    }
+    if (body.action === "schedule") {
+      const title = String(body.title || "").trim().slice(0, 120);
+      const message = String(body.body || "").trim().slice(0, 1000);
+      const audience = String(body.audience || "all");
+      const imageUrl = String(body.imageUrl || "").trim();
+      const destinationUrl = safeNotificationTarget(body.url);
+      const scheduledAt = new Date(String(body.scheduledAt || ""));
+      const now = Date.now();
+      const allowedImagePrefix = (supabaseUrl.endsWith("/") ? supabaseUrl.slice(0, -1) : supabaseUrl) + "/storage/v1/object/public/crew-alert-media/alerts/";
+      if (!title || !message) return json({ error: "A title and message are required." }, 400);
+      if (!["all", "member", "admin", "super_admin"].includes(audience)) return json({ error: "Invalid audience." }, 400);
+      if (!Number.isFinite(scheduledAt.getTime()) || scheduledAt.getTime() < now + 60000 || scheduledAt.getTime() > now + 366 * 24 * 60 * 60 * 1000) {
+        return json({ error: "Choose a time at least one minute from now and within the next year." }, 400);
+      }
+      if (imageUrl && (!imageUrl.startsWith(allowedImagePrefix) || imageUrl.length > 2048)) {
+        return json({ error: "The attached image URL is invalid." }, 400);
+      }
+      let recipientQuery = adminClient.from("crew_push_tokens")
+        .select("auth_id,crew_profiles!inner(role,approval_status)")
+        .eq("crew_profiles.approval_status", "approved");
+      if (audience === "member") recipientQuery = recipientQuery.eq("crew_profiles.role", "member");
+      if (audience === "admin") recipientQuery = recipientQuery.in("crew_profiles.role", ["admin", "super_admin"]);
+      if (audience === "super_admin") recipientQuery = recipientQuery.eq("crew_profiles.role", "super_admin");
+      const { data: deviceRows, error: recipientError } = await recipientQuery;
+      if (recipientError) throw recipientError;
+      const recipients = [...new Set((deviceRows || []).map((row: any) => String(row.auth_id || "")).filter(Boolean))];
+      if (!recipients.length) return json({ ok: true, scheduled: 0, message: "No registered push devices were found for this audience." });
+      const sourceId = crypto.randomUUID();
+      const notificationKey = "custom_alert:" + sourceId;
+      const rows = recipients.map(recipient_auth_id => ({
+        recipient_auth_id, source_type: "custom_alert", source_id: sourceId,
+        notification_key: notificationKey, title, body: message,
+        scheduled_at: scheduledAt.toISOString(), status: "pending", image_url: imageUrl || null,
+        destination_url: destinationUrl,
+      }));
+      for (let offset = 0; offset < rows.length; offset += 500) {
+        const { error } = await adminClient.from("crew_scheduled_pushes").insert(rows.slice(offset, offset + 500));
+        if (error) throw error;
+      }
+      return json({ ok: true, scheduled: recipients.length, sourceId, scheduledAt: scheduledAt.toISOString(), message: "Notification scheduled." });
+    }
+    if (body.action === "list_scheduled") {
+      const { data, error } = await adminClient.from("crew_scheduled_pushes")
+        .select("source_id,title,body,scheduled_at,image_url,destination_url,recipient_auth_id")
+        .eq("source_type", "custom_alert").eq("status", "pending")
+        .gt("scheduled_at", new Date().toISOString())
+        .order("scheduled_at", { ascending: true }).limit(1000);
+      if (error) throw error;
+      const grouped = new Map<string, any>();
+      for (const row of data || []) {
+        const key = String(row.source_id);
+        if (!grouped.has(key)) grouped.set(key, {
+          id: key, title: row.title, body: row.body, scheduledAt: row.scheduled_at,
+          imageUrl: row.image_url || "", destinationUrl: row.destination_url || "", recipients: 0,
+        });
+        grouped.get(key).recipients++;
+      }
+      return json({ ok: true, items: [...grouped.values()] });
+    }
+    if (body.action === "cancel_scheduled") {
+      const sourceId = String(body.sourceId || "");
+      if (!/^[0-9a-f-]{36}$/i.test(sourceId)) return json({ error: "A valid scheduled alert is required." }, 400);
+      const { data, error } = await adminClient.from("crew_scheduled_pushes")
+        .delete().eq("source_type", "custom_alert").eq("source_id", sourceId)
+        .eq("status", "pending").select("id");
+      if (error) throw error;
+      return json({ ok: true, cancelled: data?.length || 0 });
+    }
     if (body.action !== "send") return json({ error: "Unsupported action." }, 400);
-    if (!["admin", "super_admin"].includes(profile.role)) return json({ error: "Admin access required." }, 403);
+    if (!isCrewAdmin) return json({ error: "Admin access required." }, 403);
 
     const title = String(body.title || "Kinetic Crew").trim().slice(0, 120);
     const message = String(body.body || "").trim().slice(0, 1000);
     const audience = String(body.audience || "all");
     const imageUrl = String(body.imageUrl || "").trim();
-    const notificationUrl = safeNotificationPath(body.url);
-    const absoluteNotificationUrl = APP_ORIGIN + notificationUrl;
+    const notificationUrl = safeNotificationTarget(body.url);
+    const absoluteNotificationUrl = notificationUrl.startsWith("https://") ? notificationUrl : APP_ORIGIN + notificationUrl;
     const allowedImagePrefix = supabaseUrl.replace(/\/$/, "") + "/storage/v1/object/public/crew-alert-media/alerts/";
     if (!title || !message) return json({ error: "A title and message are required." }, 400);
-    if (!["all", "member", "admin", "super_admin"].includes(audience)) return json({ error: "Invalid audience." }, 400);
+    if (!["all", "member", "admin", "super_admin", "selected"].includes(audience)) return json({ error: "Invalid audience." }, 400);
     if (imageUrl && (!imageUrl.startsWith(allowedImagePrefix) || imageUrl.length > 2048)) {
       return json({ error: "The attached image URL is invalid." }, 400);
     }
 
-    let query = adminClient.from("crew_push_tokens").select("token,auth_id,crew_profiles!inner(role)");
-    if (audience !== "all") query = query.eq("crew_profiles.role", audience);
+    let query = adminClient.from("crew_push_tokens").select("token,auth_id,crew_profiles!inner(role)").eq("crew_profiles.approval_status", "approved");
+    if (audience === "member") query = query.eq("crew_profiles.role", "member");
+    if (audience === "admin") query = query.in("crew_profiles.role", ["admin", "super_admin"]);
+    if (audience === "super_admin") query = query.eq("crew_profiles.role", "super_admin");
+    const recipientIds = [...new Set((Array.isArray(body.recipientIds) ? body.recipientIds : []).map((id: unknown) => String(id)).filter((id: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)))];
+    if (audience === "selected") {
+      if (!recipientIds.length || recipientIds.length > 100) return json({ error: "Select between 1 and 100 approved crew members." }, 400);
+      query = query.in("auth_id", recipientIds);
+    }
     const { data: devices, error: devicesError } = await query;
     if (devicesError) throw devicesError;
     const tokens = [...new Set((devices || []).map((d: any) => d.token))];
