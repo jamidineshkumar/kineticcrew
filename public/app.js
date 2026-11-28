@@ -1585,7 +1585,7 @@ function socialFeedPage(){
  if(tab==='messages'){
   const grouped=new Map();
   (S.gramMessages||[]).forEach(m=>{const other=String(m.sender_id)===String(S.user.auth_id)?m.recipient_id:m.sender_id;if(!grouped.has(other))grouped.set(other,m);});
-  body='<section class="kg-inbox"><div class="kg-section-head"><h2>Messages</h2><span>PRIVATE CREW CHATS</span></div>'+(grouped.size?[...grouped.entries()].map(([id,m])=>{const person=people.find(p=>String(p.auth_id)===String(id))||{auth_id:id,name:'Crew member'};return '<button type="button" class="kg-inbox-row" data-gram-message="'+esc(id)+'">'+avatarMarkup(person,'kg-inbox-avatar')+'<span><b>'+esc(person.name||'Crew member')+'</b><small>'+esc(m.body||'')+'</small></span><time>'+esc(dt(m.created_at))+'</time></button>';}).join(''):'<section class="kg-empty"><div class="kg-empty-mark">✉</div><b>Your messages appear here</b><p>Open a crew member profile to start a private chat.</p><button type="button" class="outline" data-view="people">Find crew</button></section>')+'</section>';
+  body='<section class="kg-inbox"><div class="kg-section-head"><h2>Messages</h2><span>PRIVATE CREW CHATS</span></div><section class="kg-empty"><div class="kg-empty-mark">✉</div><b>Open Kinetic Gram Chats</b><p>Your private and group conversations are managed in one inbox.</p><button type="button" class="primary" data-gram-open-chats>Open chats →</button></section></section>';
  }else if(tab==='reels'){
   const reels=posts.filter(p=>p.post_type==='reel');
   body='<section class="kg-reels">'+(reels.length?reels.map(p=>'<article class="kg-reel-card">'+(p.signed_media_url?'<video src="'+esc(p.signed_media_url)+'" controls playsinline preload="metadata"></video>':socialEmbed(p.link_url))+'<p>'+esc(p.caption||'')+'</p>'+socialPostCard(p)+'</article>').join(''):empty)+'</section>';
@@ -2279,7 +2279,7 @@ document.addEventListener('click',event=>{
  const password=event.target.closest('[data-open-change-password]');if(password){location.href=window.kcPath('change-password.html');return;}
 });
 document.addEventListener('click',async e=>{
- const gramTab=e.target.closest('[data-gram-tab]');if(gramTab){S.gramTab=gramTab.dataset.gramTab;paint();return;}
+ const gramTab=e.target.closest('[data-gram-tab]');if(gramTab){if(gramTab.dataset.gramTab==='messages'){S.gramTab='home';go('gram-chat');return;}S.gramTab=gramTab.dataset.gramTab;paint();return;}const gramOpenChats=e.target.closest('[data-gram-open-chats]');if(gramOpenChats){S.gramTab='home';go('gram-chat');return;}
  const gramCreate=e.target.closest('[data-gram-create]');if(gramCreate){openGramCreate();return;}
  const gramClose=e.target.closest('[data-gram-create-close]');if(gramClose){$('#modalRoot').innerHTML='';return;}
  const gramMessage=e.target.closest('[data-gram-message]');if(gramMessage){try{await openDirectMessage(gramMessage.dataset.gramMessage);}catch(error){notice(error.message||'Could not open this conversation.');}return;}
