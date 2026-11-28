@@ -67,7 +67,7 @@ Deno.serve(async (req: Request) => {
         await mailer.sendMail({
           from: "\"KINETIC CREW\" <" + smtpUser + ">",
           to: email,
-          subject: title + " · Kinetic Crew",
+          subject: title + " | Kinetic Crew",
           text: message,
           html: brandedEmail({ title, contentHtml: '<p style="margin:0;color:#e5e1e8;font-size:15px;line-height:1.65">' + safeBody + '</p>' })
         });
