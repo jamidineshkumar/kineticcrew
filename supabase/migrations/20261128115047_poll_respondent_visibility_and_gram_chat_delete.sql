@@ -76,3 +76,6 @@ end;
 $$;
 revoke all on function public.kg_delete_conversation_for_self(uuid) from public, anon;
 grant execute on function public.kg_delete_conversation_for_self(uuid) to authenticated;
+
+revoke all on function public.kg_create_group_chat(text, text, text[]) from public, anon;
+grant execute on function public.kg_create_group_chat(text, text, text[]) to authenticated;
