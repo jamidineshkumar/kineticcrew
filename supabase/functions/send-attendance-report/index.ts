@@ -139,7 +139,7 @@ Deno.serve(async(req:Request)=>{
   const mailer=nodemailer.createTransport({host:"smtp.gmail.com",port:465,secure:true,auth:{user:smtpUser,pass:smtpPass}});
   try{await mailer.verify();}catch(error){const detail=String(error instanceof Error?error.message:"SMTP authentication failed");console.error("attendance report SMTP verification failed:",detail);return json({error:/535|BadCredentials|Username and Password not accepted|Invalid login/i.test(detail)?"Gmail rejected SMTP authentication. Update SMTP_USER and the Google App Password in Supabase function secrets.":"Could not connect to Gmail SMTP. Check SMTP_USER and SMTP_PASS."},503);}
   const pdfBytes=await buildPdf(event,rows,stats,scope,String(profile.name||"Kinetic Crew"));
-  const subject=(scope==="complete"?"Full attendance history":"Personal attendance history")+" · Kinetic Crew";
+  const subject=(scope==="complete"?"Full attendance report":"Personal attendance report")+" | Kinetic Crew";
   const summary=[["Registered members",stats.total],["Present",stats.present],["Absent",stats.absent],["Pending",stats.pending],["Not attending",stats.notAttending]];
   const summaryHtml=summary.map(([label,value])=>"<tr><td style='padding:8px 10px;border-bottom:1px solid #e8e8e8;color:#555'>"+label+"</td><td align='right' style='padding:8px 10px;border-bottom:1px solid #e8e8e8;font-weight:bold'>"+value+"</td></tr>").join("");
   const rowsHtml=rows.map((r:any)=>"<tr><td style='padding:8px 10px;border-bottom:1px solid #e8e8e8'>"+esc(r.name)+"</td><td style='padding:8px 10px;border-bottom:1px solid #e8e8e8'>"+esc(statusLabel(r.status))+"</td><td style='padding:8px 10px;border-bottom:1px solid #e8e8e8'>"+esc(stampLabel(r.marked_at))+"</td></tr>").join("");
