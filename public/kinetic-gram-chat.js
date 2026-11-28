@@ -13,10 +13,10 @@ const call=async(name,args={})=>{const r=await client.rpc(name,args);if(r.error)
 const profileById=id=>state.people.find(p=>String(p.auth_id)===String(id))||{auth_id:id,name:'Crew member'};
 const activeConv=()=>state.conversations.find(c=>String(c.id)===String(state.active));
 function page(){return '<section class="kg-wa-app" id="kgWaApp">'+
-'<header class="kg-wa-top"><div class="kg-wa-title"><span class="kg-wa-brand">K</span><div><b>Kinetic Gram</b><small>PRIVATE MESSAGING</small></div></div><div class="kg-wa-top-actions"><button type="button" data-kg-new="direct" aria-label="New chat">＋</button><button type="button" data-kg-menu aria-label="More options">⋮</button></div></header>'+
+'<header class="kg-wa-top"><div class="kg-wa-title"><span class="kg-wa-brand">K</span><div><b>Kinetic Gram</b><small>PRIVATE MESSAGING</small></div></div><div class="kg-wa-top-actions"><button type="button" data-kg-new-menu aria-label="New chat or group">＋</button><button type="button" data-kg-menu aria-label="More options">⋮</button></div></header>'+
 '<label class="kg-wa-search"><span>⌕</span><input id="kgWaSearch" type="search" placeholder="Search chats, people or messages…" autocomplete="off"><button type="button" data-kg-search-clear hidden>×</button></label>'+
 '<nav class="kg-wa-tabs"><button type="button" data-kg-tab="chats" class="active">Chats</button><button type="button" data-kg-tab="groups">Groups</button><button type="button" data-kg-tab="communities">Communities</button></nav>'+
-'<div class="kg-wa-list-view" id="kgWaListView"><div class="kg-wa-list-tools"><button type="button" data-kg-archived>▣ Archived <span id="kgWaArchivedCount">0</span></button><span id="kgWaTotalCount"></span></div><div id="kgWaList"><div class="kg-wa-loading">Loading your conversations…</div></div></div>'+
+'<div class="kg-wa-list-view" id="kgWaListView"><div class="kg-wa-list-tools"><button type="button" data-kg-archived>▣ Archived <span id="kgWaArchivedCount">0</span></button><span id="kgWaTotalCount"></span><button type="button" id="kgWaCreateGroup" data-kg-new="group" hidden>Create group ＋</button></div><div id="kgWaList"><div class="kg-wa-loading">Loading your conversations…</div></div></div>'+
 '<section class="kg-wa-thread-view" id="kgWaThreadView" hidden></section>'+
 '<div class="kg-wa-fab-wrap"><button type="button" class="kg-wa-fab" data-kg-new="direct" aria-label="Start a new chat">＋</button></div>'+
 '<div class="kg-wa-modal-root" id="kgWaModalRoot"></div><input id="kgWaFileInput" type="file" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple hidden>'+
@@ -42,7 +42,7 @@ function listMarkup(){
  });
  $('#kgWaTotalCount') && ($('#kgWaTotalCount').textContent=rows.length+' conversations');
  $('#kgWaArchivedCount') && ($('#kgWaArchivedCount').textContent=state.conversations.filter(c=>c.membership?.archived_at).length);
- if(!rows.length)return '<div class="kg-wa-empty"><span>✉</span><b>'+(isArchived?'No archived chats':q?'No matching chats':'No conversations yet')+'</b><small>'+(isArchived?'Archived conversations will appear here.':q?'Try another name or message.':'Start a private chat, create a group or join a community.')+'</small><button type="button" data-kg-new="direct">Start a chat</button></div>';
+ if(!rows.length)return '<div class="kg-wa-empty"><span>✉</span><b>'+(isArchived?'No archived chats':q?'No matching chats':state.tab==='groups'?'No groups yet':'No conversations yet')+'</b><small>'+(isArchived?'Archived conversations will appear here.':q?'Try another name or message.':state.tab==='groups'?'Create a group and add your crew members.':'Start a private chat, create a group or join a community.')+'</small><button type="button" data-kg-new="'+(state.tab==='groups'?'group':'direct')+'">'+(state.tab==='groups'?'Create a group':'Start a chat')+'</button></div>';
  return rows.map(c=>{
   const title=c.kind==='direct'?directTitle(c):(c.title||'Group chat'),other=c.kind==='direct'?profileById(memberFor(c).find(m=>String(m.user_id)!==String(state.user.id))?.user_id):null;
   const last=lastMessage(c),unread=state.unreadByConversation?.[c.id]||0;
@@ -95,7 +95,7 @@ async function loadData(){
  const chatShortcut=document.querySelector('[data-gram-route="gram-chat"]');
  if(chatShortcut){chatShortcut.dataset.unread=String(unreadTotal);chatShortcut.setAttribute('aria-label',unreadTotal?('Chats, '+unreadTotal+' unread'):'Chats');}
 }
-function renderList(){const list=$('#kgWaList');if(list)list.innerHTML=listMarkup();}
+function renderList(){const list=$('#kgWaList');if(list)list.innerHTML=listMarkup();const createGroup=$('#kgWaCreateGroup');if(createGroup)createGroup.hidden=state.tab!=='groups'||state.showArchived;}
 function renderThread(){
  const conv=activeConv(),root=$('#kgWaThreadView');if(!conv||!root)return;
  const direct=conv.kind==='direct',other=direct?profileById(memberFor(conv).find(m=>String(m.user_id)!==String(state.user.id))?.user_id):null;
@@ -243,7 +243,7 @@ function rowMenu(id){
  '<button type="button" class="kg-wa-option" data-kg-pin="'+esc(id)+'">'+(mine.pinned_at?'Unpin chat':'Pin chat')+'</button>'+
  '<button type="button" class="kg-wa-option" data-kg-archive="'+esc(id)+'">'+(mine.archived_at?'Unarchive chat':'Archive chat')+'</button>'+
  '<button type="button" class="kg-wa-option" data-kg-mute="'+esc(id)+'">Mute notifications for 8 hours</button>'+
- (c.kind!=='direct'?'<button type="button" class="kg-wa-option" data-kg-group-info="'+esc(id)+'">Group information</button>':'')+
+ (c.kind!=='direct'?'<button type="button" class="kg-wa-option" data-kg-group-info="'+esc(id)+'">Group information</button>':'')+'<button type="button" class="kg-wa-option kg-wa-option-danger" data-kg-delete-chat="'+esc(id)+'">Remove from my chats</button>'+
  '</div>');
 }
 function groupInfo(id){
@@ -296,6 +296,7 @@ async function handleClick(e){
  const t=e.target.closest('button');if(!t)return;
  if(t.matches('[data-kg-tab]')){state.tab=t.dataset.kgTab;state.showArchived=false;$$('[data-kg-tab]').forEach(b=>b.classList.toggle('active',b===t));renderList();return;}
  if(t.matches('[data-kg-archived]')){state.showArchived=!state.showArchived;t.classList.toggle('active',state.showArchived);t.textContent=state.showArchived?'← Back to chats':'▣ Archived';renderList();return;}
+ if(t.matches('[data-kg-new-menu]')){modal('<button type="button" class="kg-wa-modal-close" data-kg-modal-close>×</button><span class="kg-wa-kicker">NEW CONVERSATION</span><h2>Start chatting</h2><button type="button" class="kg-wa-option" data-kg-new="direct">Private chat</button><button type="button" class="kg-wa-option" data-kg-new="group">Create group</button>');return;}
  if(t.matches('[data-kg-new="direct"]')){newDirectModal();return;}
  if(t.matches('[data-kg-new="group"]')){newGroupModal();return;}
  if(t.matches('[data-kg-new-community]')){newCommunityModal();return;}
@@ -333,6 +334,7 @@ async function handleClick(e){
  if(t.matches('[data-kg-react]')){try{await call('kg_set_message_reaction',{p_message_id:t.dataset.kgReact,p_emoji:t.dataset.kgEmoji});closeModal();await loadMessages(state.active);}catch(err){notify(err.message)}return;}
  if(t.matches('[data-kg-edit]')){const m=state.messages.find(x=>x.id===t.dataset.kgEdit),body=prompt('Edit message',m?.body||'');if(body!==null){try{await call('kg_edit_message',{p_message_id:m.id,p_body:body});await loadMessages(state.active)}catch(err){notify(err.message)}}return;}
  if(t.matches('[data-kg-delete]')){if(confirm('Delete this message for everyone?')){try{await call('kg_delete_message',{p_message_id:t.dataset.kgDelete});await loadMessages(state.active)}catch(err){notify(err.message)}}return;}
+ if(t.matches('[data-kg-delete-chat]')){const id=t.dataset.kgDeleteChat;if(!confirm('Remove this conversation from your chats? Other members will keep their messages.'))return;try{await call('kg_delete_conversation_for_self',{p_conversation_id:id});if(String(state.active)===String(id)){if(state.channel)client.removeChannel(state.channel);state.channel=null;state.active=null;window.kcGramActiveConversation='';$('#kgWaThreadView').hidden=true;$('#kgWaListView').hidden=false;$('.kg-wa-fab-wrap').hidden=false;}closeModal();await loadData();renderList();notify('Conversation removed from your chats.');}catch(err){notify(err.message||'Could not remove this conversation.');}return;}
  if(t.matches('[data-kg-group-info]')){groupInfo(t.dataset.kgGroupInfo);return;}
  if(t.matches('[data-kg-remove-member]')){try{await call('kg_remove_conversation_member',{p_conversation_id:t.dataset.kgConversation,p_user_id:t.dataset.kgRemoveMember});await loadData();groupInfo(t.dataset.kgConversation)}catch(err){notify(err.message)}return;}
  if(t.matches('[data-kg-add-members]')){const id=t.dataset.kgAddMembers;modal('<button type="button" class="kg-wa-modal-close" data-kg-modal-close>×</button><h2>Add group members</h2><div class="kg-wa-person-list">'+memberPicker()+'</div><button type="button" class="kg-wa-primary" data-kg-add-selected="'+esc(id)+'">Add selected</button>');return;}
@@ -369,7 +371,7 @@ document.addEventListener('click',e=>{if(e.target.closest('#kgWaApp'))handleClic
 document.addEventListener('submit',async e=>{
  const f=e.target;
  if(f.id==='kgWaComposer'){e.preventDefault();const body=String(new FormData(f).get('body')||'').trim();if(!body)return;const b=$('.kg-wa-send',f);b.disabled=true;try{await sendText(body,'text',state.reply?.id||null)}catch(err){notify(err.message||'Message not sent.')}finally{b.disabled=false}return;}
- if(f.id==='kgWaGroupForm'){e.preventDefault();const d=new FormData(f),members=$$('input[name="member"]:checked',f).map(x=>x.value);try{const id=await call('kg_create_group_chat',{p_title:String(d.get('title')).trim(),p_description:String(d.get('description')||''),p_member_ids:members});closeModal();await loadData();state.tab='groups';renderList();await openConversation(id)}catch(err){notify(err.message)}return;}
+ if(f.id==='kgWaGroupForm'){e.preventDefault();const d=new FormData(f),members=$('input[name="member"]:checked',f).map(x=>x.value);if(!members.length){notify('Select at least one crew member for this group.');return;}const submit=f.querySelector('button[type="submit"]');if(submit){submit.disabled=true;submit.textContent='Creating…';}try{const id=await call('kg_create_group_chat',{p_title:String(d.get('title')).trim(),p_description:String(d.get('description')||''),p_member_ids:members});closeModal();await loadData();state.tab='groups';renderList();await openConversation(id);notify('Group created.');}catch(err){notify(err.message||'Could not create group.');if(submit){submit.disabled=false;submit.textContent='Create group';}}return;}
  if(f.id==='kgWaCommunityForm'){e.preventDefault();const d=new FormData(f);try{await call('kg_create_community',{p_name:String(d.get('name')).trim(),p_description:String(d.get('description')||'')});closeModal();await loadData();state.tab='communities';renderList();notify('Community created.')}catch(err){notify(err.message)}return;}
  if(f.id==='kgWaCommunityGroupForm'){e.preventDefault();const id=f.dataset.communityId,title=new FormData(f).get('title');try{const chat=await call('kg_create_community_group',{p_community_id:id,p_title:String(title).trim(),p_member_ids:[]});closeModal();await loadData();await openConversation(chat)}catch(err){notify(err.message)}return;}
  if(f.id==='kgWaGifForm'){e.preventDefault();const url=String(new FormData(f).get('url')||'').trim();if(!/^https:\/\/\S+\.gif(?:\?\S*)?$/i.test(url)){notify('Enter a direct HTTPS .gif URL.');return;}try{await sendText(url,'gif',state.reply?.id||null)}catch(err){notify(err.message)}return;}
