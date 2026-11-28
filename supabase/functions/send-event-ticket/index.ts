@@ -44,9 +44,6 @@ Deno.serve(async(req)=>{
    }
    return json({error:"Could not connect to Gmail SMTP. Check SMTP_USER, SMTP_PASS, and Gmail SMTP access in Supabase Edge Function secrets."},503);
   }
-  const greeting="Your Kinetic Crew pass is ready";
-  const message="Keep this personal ticket ready and show its QR code at the event entrance. Each QR code is unique to its registered member.";
-  const footer="We look forward to seeing you there. · KINETIC CREW";
   const recipientMode=body.recipientMode==="single"?"single":"all";
   const singleEmail=String(body.email||"").trim().toLowerCase();
   let query=adminClient.from("crew_registrations").select("member_id,crew_profiles!inner(auth_id,name,email)").eq("event_id",eventId);
@@ -83,7 +80,7 @@ Deno.serve(async(req)=>{
    const passDigest=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(payload));
    const passId=Array.from(new Uint8Array(passDigest)).slice(0,4).map(v=>v.toString(16).padStart(2,"0")).join("").toUpperCase();
    const eventTitle=String(event.title||"Kinetic Crew Event").trim()||"Kinetic Crew Event";
-   const subject="Your "+eventTitle+" ticket · Kinetic Crew";
+   const subject="Your "+eventTitle+" ticket | Kinetic Crew";
    const eventDate=dateLabel(event.starts_at);
    const eventTime=timeLabel(event.starts_at);
    const eventVenue=String(event.location||"To be announced");
@@ -96,7 +93,7 @@ Deno.serve(async(req)=>{
    });
 
    try{
-    await mailer.sendMail({from:'"KINETIC CREW" <'+smtpUser+'>',to:recipient.email,subject,html,attachments:[{filename:"kinetic-crew-ticket-qr.png",content:qrBase64,encoding:"base64",cid:"ticket-qr.png"}]});
+    await mailer.sendMail({from:'"KINETIC CREW" <'+smtpUser+'>',to:recipient.email,subject,text:"Your event ticket\nEvent: "+eventTitle+"\nPass ID: "+passId+"\nMember: "+recipient.name+"\nDate: "+eventDate+"\nVenue: "+eventVenue+"\nTime: "+eventTime+"\nPresent the attached QR code at the entrance.",html,attachments:[{filename:"kinetic-crew-ticket-qr.png",content:qrBase64,encoding:"base64",cid:"ticket-qr.png"}]});
     if(deliveryKey){
      const {error:logError}=await adminClient.from("crew_email_delivery_log").update({status:"sent",sent_at:new Date().toISOString()}).eq("idempotency_key",deliveryKey).eq("recipient_email",recipient.email);
      if(logError)console.error("Ticket delivery log update failed:",logError.message);
