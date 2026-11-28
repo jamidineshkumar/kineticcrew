@@ -1,0 +1,12 @@
+/* Kinetic Gram: focused chat navigation and group creation controls. */
+.kg-wa-list-tools #kgWaCreateGroup[hidden]{display:none!important}
+.kg-wa-list-tools #kgWaCreateGroup{padding:8px 11px;border:1px solid rgba(32,200,121,.28);border-radius:999px;background:rgba(32,200,121,.12);color:#9aefc2;font-weight:750}
+.kg-wa-option-danger{border-color:rgba(248,91,103,.22)!important;color:#ff9a9f!important}
+.kg-wa-option-danger:active{background:rgba(248,91,103,.14)!important}
+@media(max-width:759px){
+ body:has(#kgWaThreadView:not([hidden])) #kcMobileDock{display:none!important}
+ .kg-wa-app:has(.kg-wa-thread-view:not([hidden])){padding-bottom:0!important}
+ .kg-wa-app:has(.kg-wa-thread-view:not([hidden])) .kg-wa-thread-view{inset:env(safe-area-inset-top) 0 0!important}
+ .kg-wa-app:has(.kg-wa-thread-view:not([hidden])) .kg-wa-messages{padding-bottom:12px}
+ .kg-wa-app:has(.kg-wa-thread-view:not([hidden])) .kg-wa-composer{padding-bottom:calc(9px + env(safe-area-inset-bottom))}
+}
