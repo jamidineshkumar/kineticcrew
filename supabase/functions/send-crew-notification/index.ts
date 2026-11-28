@@ -9,14 +9,8 @@ const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json" } });
 
 const APP_ORIGIN = (Deno.env.get("KC_APP_ORIGIN") || "https://kineticcrew.vercel.app").replace(/\/+$/, "");
-function safeNotificationPath(value: unknown) {
-  const fallback = "/?kc_notification_view=notifications";
-  try {
-    const parsed = new URL(String(value || fallback), APP_ORIGIN);
-    if (parsed.origin !== APP_ORIGIN || !parsed.pathname.startsWith("/")) return fallback;
-    return parsed.pathname + parsed.search + parsed.hash;
-  } catch { return fallback; }
-}
+function safeNotificationPath(value: unknown){const fallback="/?kc_notification_view=notifications";try{const p=new URL(String(value||fallback),APP_ORIGIN);if(p.protocol!=="https:"||p.origin!==APP_ORIGIN||p.username||p.password||!p.pathname.startsWith("/"))return fallback;return p.pathname+p.search+p.hash;}catch{return fallback;}}
+function safeNotificationTarget(value: unknown){const fallback="/?kc_notification_view=notifications";try{const p=new URL(String(value||fallback),APP_ORIGIN);if(p.protocol!=="https:"||p.username||p.password)return fallback;return p.origin===APP_ORIGIN?p.pathname+p.search+p.hash:p.href;}catch{return fallback;}}
 
 function b64url(input: Uint8Array | string) {
   const bytes = typeof input === "string" ? new TextEncoder().encode(input) : input;
@@ -194,8 +188,8 @@ Deno.serve(async (req) => {
     const message = String(body.body || "").trim().slice(0, 1000);
     const audience = String(body.audience || "all");
     const imageUrl = String(body.imageUrl || "").trim();
-    const notificationUrl = safeNotificationPath(body.url);
-    const absoluteNotificationUrl = APP_ORIGIN + notificationUrl;
+    const notificationUrl = safeNotificationTarget(body.url);
+    const absoluteNotificationUrl = notificationUrl.startsWith("https://") ? notificationUrl : APP_ORIGIN + notificationUrl;
     const allowedImagePrefix = supabaseUrl.replace(/\/$/, "") + "/storage/v1/object/public/crew-alert-media/alerts/";
     if (!title || !message) return json({ error: "A title and message are required." }, 400);
     if (!["all", "member", "admin", "super_admin"].includes(audience)) return json({ error: "Invalid audience." }, 400);
