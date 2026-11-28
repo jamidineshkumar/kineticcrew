@@ -46,7 +46,7 @@ Deno.serve(async(req:Request)=>{
     if(!smtpPass)return json({error:"SMTP_PASS is not configured. Applicant was not emailed and no data was deleted."},503);
     const applyUrl="https://kineticcrew.vercel.app/audition-application.html";
     const name=String(app.name||"Applicant");
-    const subject="Kinetic Crew audition application — details need correction";
+    const subject="Kinetic Crew audition application: details need correction";
     const textBody="Hello "+name+",\n\nThank you for your interest in Kinetic Crew. During review, we found that some details in your audition application appear to be incorrect or could not be verified. Your current application has therefore been rejected and its application data will be removed from our audition system.\n\nIf you are still interested, please check your details carefully and submit a fresh application here: "+applyUrl+"\n\nPlease use your correct registration number, contact number and email details.\n\nKinetic Crew";
     const mailer=nodemailer.createTransport({host:"smtp.gmail.com",port:465,secure:true,auth:{user:smtpUser,pass:smtpPass}});
     await mailer.verify();
