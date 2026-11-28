@@ -1,4 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { brandedEmail } from "./email-template.ts";
 import nodemailer from "npm:nodemailer@6.9.16";
 
 const cors = {
@@ -89,15 +90,7 @@ Deno.serve(async (req: Request) => {
           "Your Kinetic Crew audition application has been received successfully.\n\n" +
           "Use this private link to track your application status:\n" + trackingUrl +
           "\n\nKeep this link private. It is intended only for the personal email address used in your application.\n\nKinetic Crew",
-        html:
-          '<!doctype html><html><body style="margin:0;padding:28px;background:#09080d;color:#f7f4f8;font-family:Arial,sans-serif">' +
-          '<div style="max-width:520px;margin:auto"><p style="letter-spacing:4px;color:#f0a2cf;font-size:11px;font-weight:bold">KINETIC CREW · AUDITIONS</p>' +
-          '<h1 style="font-size:30px;margin:12px 0">Application received</h1>' +
-          '<div style="padding:24px;border:1px solid #55404e;border-radius:22px;background:#211720">' +
-          '<p>Hello ' + esc(app.name) + ',</p><p>Your audition application has been received successfully.</p>' +
-          '<p style="margin:26px 0"><a href="' + esc(trackingUrl) + '" style="display:inline-block;padding:14px 20px;border-radius:12px;background:#d94691;color:white;text-decoration:none;font-weight:bold">Track Application</a></p>' +
-          '<p style="font-size:12px;color:#c4b7c4">Keep this private link confidential. It is intended only for you.</p></div>' +
-          '<p style="font-size:12px;color:#9f96a2;margin-top:18px">Kinetic Crew</p></div></body></html>',
+        html:brandedEmail({title:"Application received",subtitle:"Your audition application was received successfully.",contentHtml:'<p style="margin:0 0 12px;">Hello '+esc(app.name)+',</p><p style="margin:0;color:#c2bec8;">Use the private link below to check your application status. Keep this link confidential.</p>',buttonLabel:"Track application",buttonUrl:trackingUrl}),
       });
       const { error: markError } = await db.from("crew_email_delivery_log").update({
         status: "sent", sent_at: new Date().toISOString(),
